@@ -13,13 +13,13 @@
 #'
 predict.mid <- function(
     object, newdata = NULL, na.action = getOption("na.action"),
-    type = c("response", "link", "terms"), terms = mid.terms(object), ...) {
+    type = c("response", "link", "terms"), terms = object$terms, ...) {
   type <- match.arg(type)
   if (!missing(terms))
     terms <- unique(terms)
   if (is.null(newdata)) {
     preds <- object$fitted.matrix
-    naa <- stats::na.action(preds)
+    naa <- stats::na.action(object)
   } else {
     if ("mid" %in% colnames(newdata))
       colnames(newdata)[colnames(newdata) == "mid"] <- ".mid"
@@ -28,6 +28,7 @@ predict.mid <- function(
       newdata <- stats::model.frame(formula = formula,
                                     data = newdata, na.action = NULL)
     }
+    attr(newdata, "na.action") <- NULL
     newdata <- do.call(na.action, list(newdata))
     naa <- stats::na.action(newdata)
     n <- nrow(newdata)

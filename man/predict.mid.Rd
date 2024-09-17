@@ -10,7 +10,7 @@
   newdata = NULL,
   na.action = getOption("na.action"),
   type = c("response", "link", "terms"),
-  terms = mid.terms(object),
+  terms = object$terms,
   ...
 )
 

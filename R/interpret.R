@@ -87,22 +87,24 @@ interpret.default <- function(
     ifelse(!is.null(dots$weighted.encoding), dots$weighted.encoding, FALSE)
 
   # preprocess data --------
-  inn <- nrow(x)
-  ids <- 1L:inn
   if (!is.data.frame(x))
     x <- as.data.frame(x)
+  inn <- nrow(x)
+  ids <- 1L:inn
   if (is.null(colnames(x)))
     colnames(x) <- paste0("x", 1L:ncol(x))
   if ("mid" %in% colnames(x))
     colnames(x)[colnames(x) == "mid"] <- ".mid"
+  tags <- colnames(x)
   if(missing(weights))
     weights <- attr(x, "weights")
+  attr(x, "na.action") <- NULL
   x <- do.call(na.action, list(x))
   if (!is.null(naa.x <- stats::na.action(x))) {
     y <- y[-naa.x]
     weights <- weights[-naa.x]
     ids <- ids[-naa.x]
-    naa.class <- attr(naa.x, "class")
+    attr(x, "na.action") <- NULL
   }
   if (is.null(y)) {
     if (missing(object))
@@ -119,14 +121,19 @@ interpret.default <- function(
     yres <- y
     y <- link$linkfun(y)
   }
+  attr(y, "na.action") <- NULL
   y <- do.call(na.action, list(y))
   if (anyNA(y))
     stop("NA values in 'y' are not allowed")
   if (!is.null(naa.y <- stats::na.action(y))) {
     x <- x[-naa.y, ]
+    if (!is.data.frame(x)) {
+      x <- as.data.frame(x)
+      colnames(x) <- tags
+    }
     weights <- weights[-naa.y]
     ids <- ids[-naa.y]
-    naa.class <- attr(naa.y, "class")
+    attr(y, "na.action") <- NULL
   }
   if (is.null(weights))
     weights <- rep.int(1, nrow(x))
@@ -137,7 +144,6 @@ interpret.default <- function(
   if (any(weights < 0))
     stop("negative weights not allowed")
   wsum <- sum(weights)
-  tags <- colnames(x)
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
   if (is.null(terms)) {
@@ -430,11 +436,11 @@ interpret.default <- function(
     obj$ie.encoders <- iencs
   }
   obj$uninterpreted.rate <- uir
-  obj$fitted.matrix <- predict.mid(obj, x, na.action, type = "terms")
-  obj$fitted.values <- predict.mid(obj, NULL, na.action, type = "response")
+  obj$fitted.matrix <- predict.mid(obj, x, "na.pass", type = "terms")
+  obj$fitted.values <- predict.mid(obj, NULL, "na.pass", type = "response")
   obj$residuals <- rsd
   if (!is.null(link)) {
-    obj$linear.predictors <- predict.mid(obj, NULL, na.action, type = "link")
+    obj$linear.predictors <- predict.mid(obj, NULL, "na.pass", type = "link")
     mu <- stats::weighted.mean(yres, weights)
     rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
     ruiq <- stats::weighted.mean((rr <- yres - obj$fitted.values) ^ 2, weights)
@@ -442,8 +448,10 @@ interpret.default <- function(
     obj$response.residuals <- as.numeric(rr)
     obj$uninterpreted.rate <- c(working = uir, response = ruir)
   }
-  if (length(ids) < inn)
+  if (length(ids) < inn) {
+    naa.class <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")
     obj$na.action <- structure((1L:inn)[-ids], class = naa.class)
+  }
   return(obj)
 }
 
@@ -467,35 +475,40 @@ interpret.formula <- function(
   mf$... <- NULL
   mf$model <- NULL
   mf$pred.fun <- NULL
-  if (!missing(model)) {
+  if (use.model <- !missing(model)) {
     if (is.null(data))
       stop("'data' is required to get predicted values from the 'model'")
-    inn <- nrow(data)
-    ids <- 1L:inn
     if (!is.data.frame(data))
       data <- as.data.frame(data)
+    inn <- nrow(data)
+    ids <- 1L:inn
     if (is.null(weights))
       weights <- attr(data, "weights")
     yvar <- ifelse("yhat" %in% colnames(data), ".yhat", "yhat")
     rvar <- deparse(formula[[2L]])
+    attr(data, "na.action") <- NULL
     data <- do.call(na.action, list(data[names(data) != rvar]))
     if (!is.null(naa.x <- stats::na.action(data))) {
       weights <- weights[-naa.x]
       ids <- ids[-naa.x]
-      naa.class <- attr(naa.x, "class")
+      attr(data, "na.action") <- NULL
     }
-    attr(data, "na.action") <- NULL
     yhat <- pred.fun(X.model = model, newdata = data)
+    attr(yhat, "na.action") <- NULL
     yhat <- do.call(na.action, list(yhat))
     if (anyNA(yhat))
       stop("NA values found in the model predictions")
     if (!is.null(naa.y <- stats::na.action(yhat))) {
+      tags <- colnames(data)
       data <- data[-naa.y, ]
+      if (!is.data.frame(data)) {
+        data <- as.data.frame(data)
+        colnames(data) <- tags
+      }
       weights <- weights[-naa.y]
       ids <- ids[-naa.y]
-      naa.class <- attr(naa.y, "class")
+      attr(yhat, "na.action") <- NULL
     }
-    attr(yhat, "na.action") <- NULL
     data[[yvar]] <- yhat
     formula[[2L]] <- as.name(yvar)
     cl$formula <- mf$formula <- formula
@@ -503,7 +516,6 @@ interpret.formula <- function(
     mf$weights <- weights
   } else {
     message("'model' is not passed: the response variable in the data is used.")
-    inn <- NULL
     if (is.matrix(eval(mf$data)))
       mf$data <- as.data.frame(eval(mf$data))
     if (is.null(eval(mf$weights)))
@@ -511,14 +523,13 @@ interpret.formula <- function(
   }
   mf[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf, parent.frame())
-  if (is.null(inn)) {
-    inn <- nrow(mf)
+  naa.data <- stats::na.action(mf)
+  if (!use.model) {
+    inn <- nrow(mf) + length(naa.data)
     ids <- 1L:inn
   }
-  if (!is.null(naa.data <- stats::na.action(mf))) {
+  if (!is.null(naa.data))
     ids <- ids[-naa.data]
-    naa.class <- attr(naa.data, "class")
-  }
   x <- structure(as.data.frame(mf), na.action = NULL)
   y <- stats::model.response(mf, "numeric")
   w <- as.vector(stats::model.weights(mf))
@@ -527,11 +538,11 @@ interpret.formula <- function(
                            terms = tl, na.action = na.action, ...)
   cl[[1L]] <- as.name("interpret")
   ret$call <- cl
-  if (!is.null(naa.ret <- ret$na.action)) {
+  if (!is.null(naa.ret <- ret$na.action))
     ids <- ids[-naa.ret]
-    naa.class <- attr(naa.ret, "class")
-  }
-  if (length(ids) < inn)
+  if (length(ids) < inn) {
+    naa.class <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")
     ret$na.action <- structure((1L:inn)[-ids], class = naa.class)
+  }
   return(ret)
 }

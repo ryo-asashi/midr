@@ -41,7 +41,7 @@ The main function of the package is `interpret()`, which can be used to fit a pr
 
 In the following example, we construct a model for the `price` of diamonds whose prediction function is the sum of eleven component functions: the *intercept* (or the zeroth-order effect), four first-order *main effects* corresponding to each predictor variable (`carat`, `clarity`, `color` and `cut`), and six second-order *interactions* corresponding to each pair of the variables.
 
-```{r }
+```{r diamonds_dataset}
 # required packages
 library(midr)
 library(ggplot2)
@@ -56,7 +56,7 @@ print(mid, omit.values = TRUE)
 
 It is easy to visualize each component function of the fitted MID model.
 
-```{r}
+```{r diamonds_terms}
 # main effects
 grid.arrange(grobs = mid.plots(mid, limits = NULL))
 # interactions
@@ -64,7 +64,7 @@ interactions <- mid.terms(mid, main.effect = FALSE)
 grid.arrange(grobs = mid.plots(mid, interactions, limits = NULL))
 ```
 
-```{r}
+```{r diamonds_ggmid}
 # custom visualization
 ggmid(mid, "carat:clarity", scale.type = "viridis",
       add.intercept = TRUE, include.main.effects = TRUE) +
@@ -75,7 +75,7 @@ ggmid(mid, "carat:clarity", scale.type = "viridis",
 
 In the next example, we construct a ranger model of `wage` based on the `Wage` dataset in `ISLR2` and a MID surrogate of it.
 
-```{r ranger}
+```{r wage_dataset}
 # Wage dataset
 data(Wage, package = "ISLR2")
 set.seed(42)
@@ -96,7 +96,7 @@ rmse(predict(model, valid)$predictions, valid$wage)
 
 When the argument `model` is passed, `interpret()` replaces the values of the response variable with the predicted values extracted from the target model. Thus, the fitted MID model can be viewed as an interpretable model of the target model.
 
-```{r}
+```{r wage_mid}
 # MID surrogae or the ranger model
 mid <- interpret(wage ~ .^2, train, model = model, lambda = .05)
 print(mid, omit.values = TRUE)
@@ -106,7 +106,7 @@ rmse(predict(mid, valid), predict(model, valid)$predictions)
 
 To the extent that the MID model is acceptable as a surrogate for the target model, we can use the former to understand the latter.
 
-```{r}
+```{r wage_terms}
 # main effects
 grid.arrange(grobs = mid.plots(mid))
 # custom plot for the most important interaction
@@ -117,7 +117,7 @@ ggmid(mid, term = "age:education",
 
 The importance of each term (or the corresponding component function) of a MID model can be measured as the mean absolute effect of it.
 
-```{r, fig.height = 4}
+```{r importance, fig.height = 4}
 # importance of the component terms
 autoplot(mid.importance(mid), max.terms = 20)
 # permutation feature importance of variables

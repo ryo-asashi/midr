@@ -72,7 +72,7 @@ It is easy to visualize each component function of the fitted MID model.
 grid.arrange(grobs = mid.plots(mid, limits = NULL))
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-diamonds_terms-1.png" width="100%" />
 
 ``` r
 # interactions
@@ -80,7 +80,7 @@ interactions <- mid.terms(mid, main.effect = FALSE)
 grid.arrange(grobs = mid.plots(mid, interactions, limits = NULL))
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
+<img src="man/figures/README-diamonds_terms-2.png" width="100%" />
 
 ``` r
 # custom visualization
@@ -89,7 +89,7 @@ ggmid(mid, "carat:clarity", scale.type = "viridis",
   geom_violin(data = diamonds, alpha = .2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-diamonds_ggmid-1.png" width="100%" />
 
 **Fitting a MID Model as a Global Surrogate of the Target Model**
 
@@ -155,7 +155,7 @@ target model, we can use the former to understand the latter.
 grid.arrange(grobs = mid.plots(mid))
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-wage_terms-1.png" width="100%" />
 
 ``` r
 # custom plot for the most important interaction
@@ -164,7 +164,7 @@ ggmid(mid, term = "age:education",
   geom_violin(data = train, alpha = .2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
+<img src="man/figures/README-wage_terms-2.png" width="100%" />
 
 The importance of each term (or the corresponding component function) of
 a MID model can be measured as the mean absolute effect of it.
@@ -174,7 +174,7 @@ a MID model can be measured as the mean absolute effect of it.
 autoplot(mid.importance(mid), max.terms = 20)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-importance-1.png" width="100%" />
 
 ``` r
 # permutation feature importance of variables
@@ -184,4 +184,4 @@ ggplot(imp, aes(y = variable, x = importance)) +
   geom_col()
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
+<img src="man/figures/README-importance-2.png" width="100%" />
