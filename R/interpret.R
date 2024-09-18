@@ -111,6 +111,13 @@ interpret.default <- function(
       stop("either 'object' or 'y' must be supplied")
     y <- pred.fun(X.model = object, newdata = x)
   }
+  if (is.character(y))
+    y <- as.factor(y)
+  target.level <- NULL
+  if (is.factor(y)) {
+    target.level <- levels(y)[1L]
+    y <- (y == target.level)
+  }
   if (!is.numeric(y))
     y <- as.numeric(y)
   if (length(y) != nrow(x))
@@ -135,6 +142,8 @@ interpret.default <- function(
     ids <- ids[-naa.y]
     attr(y, "na.action") <- NULL
   }
+  if (any(is.infinite(as.matrix(x))) || any(is.infinite(y)))
+    stop("'Inf' and '-Inf' are not allowed")
   if (is.null(weights))
     weights <- rep.int(1, nrow(x))
   if (!is.numeric(weights) || anyNA(weights))
@@ -424,6 +433,7 @@ interpret.default <- function(
   cl[[1L]] <- as.name("interpret")
   obj$weights <- weights
   obj$call <- cl
+  obj$target.level <- target.level
   obj$terms <- terms
   obj$link <- link
   obj$intercept <- intercept
@@ -515,7 +525,7 @@ interpret.formula <- function(
     mf$data <- data
     mf$weights <- weights
   } else {
-    message("'model' is not passed: the response variable in the data is used.")
+    message("'model' is not passed: the response variable in the data is used")
     if (is.matrix(eval(mf$data)))
       mf$data <- as.data.frame(eval(mf$data))
     if (is.null(eval(mf$weights)))
@@ -531,7 +541,7 @@ interpret.formula <- function(
   if (!is.null(naa.data))
     ids <- ids[-naa.data]
   x <- structure(as.data.frame(mf), na.action = NULL)
-  y <- stats::model.response(mf, "numeric")
+  y <- stats::model.response(mf, "any")
   w <- as.vector(stats::model.weights(mf))
   tl <- attr(attr(mf, "terms"), "term.labels")
   ret <- interpret.default(model = model, x = x, y = y, weights = w,

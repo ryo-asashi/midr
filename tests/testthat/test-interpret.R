@@ -26,6 +26,7 @@ test_that("interpret() returns weighted least-norm solutions", {
                ignore_attr = TRUE)
 })
 
+
 test_that("interpret() returns valid 'na.action'", {
   x <- c(1, 2, 3, 4, NA)
   y <- c(1, 2, NA, 4, 5)
@@ -54,3 +55,23 @@ test_that("interpret() returns valid 'na.action'", {
 })
 
 
+test_that("interpret() runs successfully for factor responses", {
+  x <- 1:5
+  y <- factor(c("a", "a", "a", "b", "b"), levels = c("b", "a"))
+  mid <- interpret(y ~ x)
+  expect_equal(mid$intercept, 0.4)
+  expect_equal(mid$target.level, "b")
+  f <- function(X.model, newdata) ifelse(newdata$x < 4, "alice", "bob")
+  mid <- interpret(object = NULL, x = x, pred.fun = f)
+  expect_equal(mid$intercept, 0.6)
+  expect_equal(mid$target.level, "alice")
+})
+
+
+test_that("interpret() returns valid result with weighted data", {
+  x <- c(1, 1, 2, 2, 3)
+  mid <- interpret(2 * x ~ x)
+  mid2 <- interpret(x = 1:3, y = (1:3) * 2, weights = c(2, 2, 1))
+  expect_equal(mid$main.effects, mid2$main.effects)
+  expect_equal(mid$intercept, mid2$intercept)
+})
