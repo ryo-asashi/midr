@@ -3,7 +3,7 @@
 #' Creates a data frame showing the importance of each functional decomposition term.
 #' \code{mid.importance()} returns a object of class "mid.importance", for which methods for \code{ggplot2::autoplot()} and \code{graphics::barplot()} are defined.
 #'
-#' @param x a mid object.
+#' @param object a mid object.
 #' @param data data to be used to calculate the importance. If NULL, the fitted matrix is extracted from the mid object. If the number of row equals to one, the mid breakdown will be calculated.
 #' @param weights a numeric vector of weights.
 #' @param sort logical. If TRUE, the data.frame will be sorted by magnitude of importance
@@ -14,18 +14,18 @@
 #' model <- glm(Ozone ~ Solar.R + Temp + Wind + Month, "poisson", airquality)
 #' mid <- interpret(Ozone ~ Solar.R + Temp + Wind + Month, airquality, model)
 #' mid.importance(mid)
-#' ggplot2::autoplot(mid.importance(mid))
+#' ggmid(mid.importance(mid))
 #' @export mid.importance
 #'
 mid.importance <- function(
-    x, data = NULL, weights = NULL, sort = TRUE, measure = 1L) {
+    object, data = NULL, weights = NULL, sort = TRUE, measure = 1L) {
   if (is.null(data)) {
-    if (is.null(x$fitted.matrix))
+    if (is.null(object$fitted.matrix))
       stop("fitted matrix can't be extracted: 'data' must be passed")
-    preds <- x$fitted.matrix
-    weights <- x$weights
+    preds <- object$fitted.matrix
+    weights <- object$weights
   } else {
-    preds <- predict.mid(x, data, type = "terms")
+    preds <- predict.mid(object, data, type = "terms")
   }
   if (!is.null(weights) && diff(range(weights, na.rm = TRUE)) == 0)
     weights <- NULL
@@ -48,16 +48,17 @@ mid.importance <- function(
   df
 }
 
+#'
 #' @rdname mid.importance
-#' @param object a mid.importance object. i.e., a data.frame representing MID-based importance.
+#' @param object a mid.importance object to be visualized.
 #' @param type a character or an integer, specifying the type of the plot. Possible alternatives are 1 : "barplot" and 2 : "heatmap".
 #' @param max.terms an integer, specifying the maximum number of functional decomposition terms to be plotted.
 #' @param scale.palette color palette used to draw the interaction heatmap.
 #' @param ... optional arguments to be passed to graphic functions.
 #'
-#' @exportS3Method ggplot2::autoplot
+#' @exportS3Method midr::ggmid
 #'
-autoplot.mid.importance <- function(
+ggmid.mid.importance <- function(
     object, type = c("barplot", "heatmap"), max.terms = NA,
     scale.palette = c("#FFFFFF", "#464646"), ...) {
   type = match.arg(type)
@@ -93,8 +94,18 @@ autoplot.mid.importance <- function(
   }
 }
 
+
+#'
 #' @rdname mid.importance
-#' @param object a mid.importance object to be visualized.
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.mid.importance <- function(object, ...) {
+  ggmid.mid.importance(object = object, ...)
+}
+
+
+#'
+#' @rdname mid.importance
 #' @exportS3Method graphics::barplot
 #'
 barplot.mid.importance <- function(object, max.terms = NA, ...) {
@@ -104,8 +115,9 @@ barplot.mid.importance <- function(object, max.terms = NA, ...) {
   graphics::barplot.default(height, ...)
 }
 
+#'
 #' @rdname mid.importance
-#' @param object a mid.importance object to be visualized.
+#' @param x a mid.importance object to plot.
 #' @exportS3Method base::plot
 #'
 plot.mid.importance <- function(
