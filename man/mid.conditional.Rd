@@ -2,7 +2,6 @@
 % Please edit documentation in R/mid_conditional.R
 \name{mid.conditional}
 \alias{mid.conditional}
-\alias{ggmid.mid.conditional}
 \alias{print.mid.conditional}
 \alias{summary.mid.conditional}
 \title{Calculate and Visualize MID-based Individual Conditional Expectation}
@@ -11,20 +10,10 @@ mid.conditional(
   object,
   data,
   variable,
+  keep.effects = TRUE,
   partition = 100L,
+  max.nrow = 100000L,
   type = c("response", "link")
-)
-
-\method{ggmid}{mid.conditional}(
-  object,
-  limits = c(NA, NA),
-  plot.main = TRUE,
-  centered = FALSE,
-  show.dots = TRUE,
-  sample = NULL,
-  term = NULL,
-  alpha = 0.2,
-  ...
 )
 
 \method{print}{mid.conditional}(x, ...)
@@ -38,27 +27,17 @@ mid.conditional(
 
 \item{variable}{a name of the predictor variable to calculate the individual conditional expectations for.}
 
+\item{keep.effects}{logical. If TRUE, the effects of component terms are stored in the output object.}
+
 \item{partition}{an integer specifying the coarseness of the grid for a "raster" type interaction plot.}
+
+\item{max.nrow}{the maximum number of rows of the output data frame.}
 
 \item{type}{the type of the prediction to use when the model has a link function. The default is "response".}
 
-\item{limits}{NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.}
-
-\item{plot.main}{logical. If TRUE, lines representing the individual conditional expectations are drawn.}
-
-\item{centered}{logical.}
-
-\item{show.dots}{logical. If TRUE, points representing the predictions at the observed values are}
-
-\item{sample}{a vector specifying the set of names of the observations to be plotted.}
-
-\item{term}{an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.}
-
-\item{alpha}{the parameter to be passed to \code{ggplot2::geom_line()}, determining the opacity of lines.}
-
-\item{...}{additional parameters to be passed to \code{ggplot2::geom_line()}.}
-
 \item{x}{a mid.conditional object to print.}
+
+\item{...}{additional arguments to be passed to the methods for \code{data.frame}.}
 }
 \description{
 Creates a data frame to be used to visualize the individual conditional expectation.

@@ -5,13 +5,16 @@
 #' @param object a mid object
 #' @param data a data frame representing the observation results.
 #' @param variable a name of the predictor variable to calculate the individual conditional expectations for.
+#' @param keep.effects logical. If TRUE, the effects of component terms are stored in the output object.
 #' @param partition an integer specifying the coarseness of the grid for a "raster" type interaction plot.
+#' @param max.nrow the maximum number of rows of the output data frame.
 #' @param type the type of the prediction to use when the model has a link function. The default is "response".
 #'
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, data, variable, partition = 100L, type = c("response", "link")) {
+    object, data, variable, keep.effects = TRUE, partition = 100L,
+    max.nrow = 1e5L, type = c("response", "link")) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))
   rv <- length(tv <- mid.terms(object, require = variable))
@@ -19,7 +22,6 @@ mid.conditional <- function(
     stop("'variable' must be a character denoting a valid predictor variable of the model")
   if (!is.data.frame(data))
     data <- as.data.frame(data)
-  ids <- rownames(data)
   if ("mid" %in% colnames(data))
     colnames(data)[colnames(data) == "mid"] <- ".mid"
   if (!is.null(formula <- eval(object$call$formula))) {
@@ -29,7 +31,24 @@ mid.conditional <- function(
                                data = data, na.action = "na.pass")
     data <- data[, -which(colnames(data) == yvar)]
   }
+  mf <- mid.frames(object)[[variable]]
+  if (is.list(mf))
+    mf <- mf[[1L]]
+  if (inherits(mf, "numeric.frame")) {
+    br <- attr(mf, "breaks")
+    values <- seq.int(br[1L], br[length(br)], length.out = partition)
+  } else {
+    values <- attr(mf, "levels")
+  }
+  m <- length(values)
   n <- nrow(data)
+  if (!is.null(max.nrow) && m * n > max.nrow) {
+    max.n <- max.nrow %/% m
+    message(paste0("the number of evaluation points exceeds the limit: the data is reduced to ", max.n," observations"))
+    data <- data[sample(n, max.n), ]
+    n <- nrow(data)
+  }
+  ids <- rownames(data)
   pmat <- matrix(0, nrow = n, ncol = rf)
   for (i in seq_len(rf))
     pmat[, i] <- mid.f(object, tf[i], x = data)
@@ -44,21 +63,12 @@ mid.conditional <- function(
   res <- list()
   res$terms <- tv
   res$observed <- cbind(id = ids, yhat = yhat, data)
-  res$observed.effects <- pmat
-  x <- data[, variable]
-  if (is.numeric(x)) {
-    rng <- range(x)
-    if (diff(rng) == 0)
-      rng <- rng + c(-.5, +.5)
-    vals <- seq.int(from = rng[1L], to = rng[2L], length.out = partition)
-  } else {
-    vals <- sort(unique(x))
-  }
-  m <- length(vals)
+  if (keep.effects)
+    res$observed.effects <- pmat
   ldata <- list()
   for (col in colnames(data)) {
     if (col == variable) {
-      ldata[[col]] <- lvals <- rep(vals, each = n)
+      ldata[[col]] <- rep(values, each = n)
       next
     }
     ldata[[col]] <- rep.int(data[[col]], times = m)
@@ -73,71 +83,20 @@ mid.conditional <- function(
   if (type == "response" && !is.null(object$link))
     lyhat <- object$link$linkinv(lyhat)
   res$conditional <- cbind(id = rep.int(ids, m), yhat = lyhat, ldata)
-  res$conditional.effects <- pmat
-  res$grid.points <- vals
-  class(res) <- c("mid.conditional")
+  if (keep.effects)
+    res$conditional.effects <- pmat
+  res$grid.points <- values
+  class(res) <- c("mid.conditional",
+                  if (keep.effects) "mid.conditional.effects")
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res
 }
 
-
-#'
-#' @rdname mid.conditional
-#' @param limits NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.
-#' @param plot.main logical. If TRUE, lines representing the individual conditional expectations are drawn.
-#' @param centered logical.
-#' @param show.dots logical. If TRUE, points representing the predictions at the observed values are
-#' @param sample a vector specifying the set of names of the observations to be plotted.
-#' @param term an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.
-#' @param alpha the parameter to be passed to \code{ggplot2::geom_line()}, determining the opacity of lines.
-#' @param ... additional parameters to be passed to \code{ggplot2::geom_line()}.
-#' @exportS3Method midr::ggmid
-#'
-ggmid.mid.conditional <- function(
-    object, limits = c(NA, NA), plot.main = TRUE, centered = FALSE,
-    show.dots = TRUE, sample = NULL, term = NULL, alpha = .2, ...) {
-  v <- attr(object, "variable")
-  obs <- object$observed
-  con <- object$conditional
-  yvar <- "yhat"
-  if (!is.null(term)) {
-    if (!term %in% object$terms) {
-      term <- paste0(rev(unlist(strsplit(term, ":"))), collapse = ":")
-      if (!term %in% object$terms)
-        stop(paste0("'", term, "' is not a relevant term"))
-    }
-    yvar <- paste0("mid(", term, ")")
-    obs[, yvar] <- object$observed.effects[, term]
-    con[, yvar] <- object$conditional.effects[, term]
-  }
-  if (centered) {
-    n <- attr(object, "n")
-    stp <- con[, yvar][1:n]
-    ynew <- paste0("centered ", yvar)
-    obs[, ynew] <- obs[, yvar] - stp
-    con[, ynew] <- con[, yvar] - stp
-    yvar <- ynew
-  }
-  if (!is.null(sample)) {
-    obs <- obs[obs$id %in% sample, ]
-    con <- con[con$id %in% sample, ]
-  }
-  pl <- ggplot2::ggplot(data = con,
-    ggplot2::aes(x = .data[[v]], y = .data[[yvar]], group = .data[["id"]]))
-  if (plot.main)
-    pl <- pl + ggplot2::geom_line(alpha = alpha, ...)
-  if (show.dots)
-    pl <- pl + ggplot2::geom_point(ggplot2::aes(group = NULL), data = obs)
-  if (!is.null(limits))
-    pl <- pl + ggplot2::scale_y_continuous(limits = limits)
-  pl
-}
-
-
 #'
 #' @rdname mid.conditional
 #' @param x a mid.conditional object to print.
+#' @param ... additional arguments to be passed to the methods for \code{data.frame}.
 #' @exportS3Method base::print
 #'
 print.mid.conditional <- function(x, ...) {
