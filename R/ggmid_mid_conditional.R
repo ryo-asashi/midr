@@ -13,7 +13,7 @@
 #' @param variable.colour a name of the predictor variable to use to set \code{color} for each plot.
 #' @param variable.linetype a name of the predictor variable to use to set \code{linetype} for each plot.
 #' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
-#' @param ... additional parameters to be directly passed to \code{ggplot2::geom_line()}.
+#' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(
@@ -23,6 +23,7 @@ ggmid.mid.conditional <- function(
     variable.linetype = NULL, variable.linewidth = NULL, ...) {
   mc <- match.call(expand.dots = TRUE)
   v <- attr(object, "variable")
+  n <- attr(object, "n")
   obs <- object$observed
   con <- object$conditional
   yvar <- "yhat"
@@ -39,7 +40,6 @@ ggmid.mid.conditional <- function(
     con[, yvar] <- object$conditional.effects[, term]
   }
   if (centered) {
-    n <- attr(object, "n")
     stp <- con[, yvar][1:n]
     ynew <- paste0("centered ", yvar)
     obs[, ynew] <- obs[, yvar] - stp
@@ -58,22 +58,22 @@ ggmid.mid.conditional <- function(
     }
     if (!is.null(mc$variable.alpha)) {
       alp <- e2c(mc$variable.alpha)
-      pl <- pl + ggplot2::aes(alpha = eval(quote(.data[[alp]]))) +
+      pl <- pl + ggplot2::aes(alpha = .data[[alp]]) +
         ggplot2::labs(alpha = alp)
     }
     if (!is.null(mc$variable.colour)) {
       col <- e2c(mc$variable.colour)
-      pl <- pl + ggplot2::aes(colour = eval(quote(.data[[col]]))) +
+      pl <- pl + ggplot2::aes(colour = .data[[col]]) +
         ggplot2::labs(colour = col)
     }
     if (!is.null(mc$variable.linetype)) {
       lty <- e2c(mc$variable.linetype)
-      pl <- pl + ggplot2::aes(linetype = eval(quote(.data[[lty]]))) +
+      pl <- pl + ggplot2::aes(linetype = .data[[lty]]) +
         ggplot2::labs(linetype = lty)
     }
     if (!is.null(mc$variable.linewidth)) {
       lwd <- e2c(mc$variable.linewidth)
-      pl <- pl + ggplot2::aes(linewidth = eval(quote(.data[[lwd]]))) +
+      pl <- pl + ggplot2::aes(linewidth = .data[[lwd]]) +
         ggplot2::labs(linewidth = lty)
     }
     pl <- pl + ggplot2::geom_line(data = con,
