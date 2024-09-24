@@ -53,28 +53,27 @@ ggmid.mid.conditional <- function(
   pl <- ggplot2::ggplot(data = obs,
                         ggplot2::aes(x = .data[[v]], y = .data[[yvar]]))
   if (plot.main) {
+    e2c <- function(expr) {
+      ifelse(is.character(expr), expr, deparse(expr))
+    }
     if (!is.null(mc$variable.alpha)) {
-      alp <- as.character(mc$variable.alpha)
-      variable.alpha <- quote(.data[[alp]])
-      pl <- pl + ggplot2::aes(alpha = eval(variable.alpha)) +
+      alp <- e2c(mc$variable.alpha)
+      pl <- pl + ggplot2::aes(alpha = eval(quote(.data[[alp]]))) +
         ggplot2::labs(alpha = alp)
     }
     if (!is.null(mc$variable.colour)) {
-      col <- as.character(mc$variable.colour)
-      variable.colour <- quote(.data[[col]])
-      pl <- pl + ggplot2::aes(colour = eval(variable.colour)) +
+      col <- e2c(mc$variable.colour)
+      pl <- pl + ggplot2::aes(colour = eval(quote(.data[[col]]))) +
         ggplot2::labs(colour = col)
     }
     if (!is.null(mc$variable.linetype)) {
-      lty <- as.character(mc$variable.linetype)
-      variable.linetype <- quote(.data[[lty]])
-      pl <- pl + ggplot2::aes(linetype = eval(variable.linetype)) +
+      lty <- e2c(mc$variable.linetype)
+      pl <- pl + ggplot2::aes(linetype = eval(quote(.data[[lty]]))) +
         ggplot2::labs(linetype = lty)
     }
     if (!is.null(mc$variable.linewidth)) {
-      lwd <- as.character(mc$variable.linewidth)
-      variable.linewidth <- quote(.data[[lwd]])
-      pl <- pl + ggplot2::aes(linewidth = eval(variable.linewidth)) +
+      lwd <- e2c(mc$variable.linewidth)
+      pl <- pl + ggplot2::aes(linewidth = eval(quote(.data[[lwd]]))) +
         ggplot2::labs(linewidth = lty)
     }
     pl <- pl + ggplot2::geom_line(data = con,

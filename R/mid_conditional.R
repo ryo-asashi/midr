@@ -32,7 +32,7 @@ mid.conditional <- function(
     data <- data[, -which(colnames(data) == yvar)]
   }
   mf <- mid.frames(object)[[variable]]
-  if (is.list(mf))
+  if (inherits(mf, "list"))
     mf <- mf[[1L]]
   if (inherits(mf, "numeric.frame")) {
     br <- attr(mf, "breaks")
@@ -69,11 +69,12 @@ mid.conditional <- function(
   for (col in colnames(data)) {
     if (col == variable) {
       ldata[[col]] <- rep(values, each = n)
-      next
+    } else {
+      ldata[[col]] <- rep.int(data[[col]], times = m)
     }
-    ldata[[col]] <- rep.int(data[[col]], times = m)
   }
   ldata <- as.data.frame(ldata)
+  colnames(ldata) <- colnames(data)
   pmat <- matrix(0, nrow = n * m, ncol = rv, dimnames = list(NULL, tv))
   for (i in seq_len(rv))
     pmat[, i] <- mid.f(object, tv[i], x = ldata)
@@ -85,7 +86,7 @@ mid.conditional <- function(
   res$conditional <- cbind(id = rep.int(ids, m), yhat = lyhat, ldata)
   if (keep.effects)
     res$conditional.effects <- pmat
-  res$grid.points <- values
+  res$values <- values
   class(res) <- c("mid.conditional",
                   if (keep.effects) "mid.conditional.effects")
   attr(res, "variable") <- variable
