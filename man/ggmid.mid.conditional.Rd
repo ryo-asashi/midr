@@ -10,7 +10,7 @@
   limits = c(NA, NA),
   plot.main = TRUE,
   centered = FALSE,
-  show.dots = TRUE,
+  draw.dots = TRUE,
   sample = NULL,
   term = NULL,
   variable.alpha = NULL,
@@ -31,7 +31,7 @@
 
 \item{centered}{logical.}
 
-\item{show.dots}{logical. If TRUE, points representing the predictions at the observed values are}
+\item{draw.dots}{logical. If TRUE, points representing the predictions at the observed values are}
 
 \item{sample}{a vector specifying the set of names of the observations to be plotted.}
 

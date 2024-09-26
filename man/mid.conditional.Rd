@@ -21,19 +21,19 @@ mid.conditional(
 \method{summary}{mid.conditional}(object, ...)
 }
 \arguments{
-\item{object}{a mid object}
+\item{object}{a mid object to compute the individual conditional expectations.}
 
 \item{data}{a data frame representing the observation results.}
 
-\item{variable}{a name of the predictor variable to calculate the individual conditional expectations for.}
+\item{variable}{a character or an expression specifying the predictor variable to calculate the individual conditional expectations for.}
 
 \item{keep.effects}{logical. If TRUE, the effects of component terms are stored in the output object.}
 
-\item{partition}{an integer specifying the coarseness of the grid for a "raster" type interaction plot.}
+\item{partition}{an integer specifying the number of the sample values.}
 
 \item{max.nrow}{the maximum number of rows of the output data frame.}
 
-\item{type}{the type of the prediction to use when the model has a link function. The default is "response".}
+\item{type}{the type of the prediction to use when the model has a link function. The default is \code{response}.}
 
 \item{x}{a mid.conditional object to print.}
 

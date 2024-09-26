@@ -18,20 +18,20 @@ weighted.quantile(
 \arguments{
 \item{x}{an object containing the values whose weighted quantiles is to be computed.}
 
-\item{w}{a numerical vector of the same length as 'x' giving the weights to use for elements of it.}
+\item{w}{a numeric vector of the same length as 'x' giving the weights to use for elements of it.}
 
-\item{probs}{numeric vector of probabilities with values in [0, 1].}
+\item{probs}{a numeric vector of probabilities with values in [0, 1].}
 
-\item{na.rm}{logical. If TRUE, any NAs are removed from 'x' before the quantiles are computed.}
+\item{na.rm}{logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.}
 
 \item{names}{logical. If TRUE, the result has a names attribute.}
 
 \item{digits}{used only when \code{names} is TRUE. The precision to use when formatting the percentages.}
 
-\item{type}{an integer selecting the quantile algorithms. Only 1 is permitted for the weighted quantile.}
+\item{type}{an integer selecting the quantile algorithms. Only 1 is available for the weighted quantile.}
 
-\item{...}{arguments to be passed to \code{stats::quantile()} when the weights is not passed.}
+\item{...}{further arguments passed to \code{stats::quantile()} when the weights is not passed.}
 }
 \description{
-Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of ECDF) can be calculated.
+Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
 }

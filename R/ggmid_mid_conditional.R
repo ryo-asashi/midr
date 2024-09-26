@@ -6,7 +6,7 @@
 #' @param limits NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.
 #' @param plot.main logical. If TRUE, lines representing the individual conditional expectations are drawn.
 #' @param centered logical.
-#' @param show.dots logical. If TRUE, points representing the predictions at the observed values are
+#' @param draw.dots logical. If TRUE, points representing the predictions at the observed values are
 #' @param sample a vector specifying the set of names of the observations to be plotted.
 #' @param term an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.
 #' @param variable.alpha a name of the predictor variable to use to set \code{alpha} for each plot.
@@ -18,11 +18,11 @@
 #'
 ggmid.mid.conditional <- function(
     object, limits = c(NA, NA), plot.main = TRUE, centered = FALSE,
-    show.dots = TRUE, sample = NULL, term = NULL,
+    draw.dots = TRUE, sample = NULL, term = NULL,
     variable.alpha = NULL, variable.colour = NULL,
     variable.linetype = NULL, variable.linewidth = NULL, ...) {
-  mc <- match.call(expand.dots = TRUE)
-  v <- attr(object, "variable")
+  cl <- match.call(expand.dots = TRUE)
+  variable <- attr(object, "variable")
   n <- attr(object, "n")
   obs <- object$observed
   con <- object$conditional
@@ -40,7 +40,7 @@ ggmid.mid.conditional <- function(
     con[, yvar] <- object$conditional.effects[, term]
   }
   if (centered) {
-    stp <- con[, yvar][1:n]
+    stp <- con[, yvar][1L:n]
     ynew <- paste0("centered ", yvar)
     obs[, ynew] <- obs[, yvar] - stp
     con[, ynew] <- con[, yvar] - stp
@@ -49,9 +49,10 @@ ggmid.mid.conditional <- function(
   if (!is.null(sample)) {
     obs <- obs[obs$id %in% sample, ]
     con <- con[con$id %in% sample, ]
+    n <- nrow(obs)
   }
   pl <- ggplot2::ggplot(data = obs,
-                        ggplot2::aes(x = .data[[v]], y = .data[[yvar]]))
+                        ggplot2::aes(x = .data[[variable]], y = .data[[yvar]]))
   if (plot.main) {
     characterize <- function(expr) {
       ifelse(is.character(expr), expr, deparse(expr))
@@ -59,25 +60,25 @@ ggmid.mid.conditional <- function(
     is.discrete <- function(x) {
       is.factor(x) || is.character(x) || is.logical(x)
     }
-    if (!is.null(mc$variable.alpha)) {
-      alp <- characterize(mc$variable.alpha)
+    if (!is.null(cl$variable.alpha)) {
+      alp <- characterize(cl$variable.alpha)
       pl <- pl + ggplot2::aes(alpha = .data[[alp]]) +
         ggplot2::labs(alpha = alp)
     }
-    if (!is.null(mc$variable.colour)) {
-      col <- characterize(mc$variable.colour)
+    if (!is.null(cl$variable.colour)) {
+      col <- characterize(cl$variable.colour)
       pl <- pl + ggplot2::aes(colour = .data[[col]]) +
         ggplot2::labs(colour = col)
     }
-    if (!is.null(mc$variable.linetype)) {
-      lty <- characterize(mc$variable.linetype)
+    if (!is.null(cl$variable.linetype)) {
+      lty <- characterize(cl$variable.linetype)
       pl <- pl + ggplot2::aes(linetype = .data[[lty]]) +
         ggplot2::labs(linetype = lty)
       if (!is.discrete(obs[, lty]))
         pl <- pl + ggplot2::scale_linetype_binned()
     }
-    if (!is.null(mc$variable.linewidth)) {
-      lwd <- characterize(mc$variable.linewidth)
+    if (!is.null(cl$variable.linewidth)) {
+      lwd <- characterize(cl$variable.linewidth)
       pl <- pl + ggplot2::aes(linewidth = .data[[lwd]]) +
         ggplot2::labs(linewidth = lwd)
       if (is.discrete(obs[, lwd])) {
@@ -89,7 +90,7 @@ ggmid.mid.conditional <- function(
     pl <- pl + ggplot2::geom_line(data = con,
       mapping = ggplot2::aes(group = .data[["id"]]), ...)
   }
-  if (show.dots)
+  if (draw.dots)
     pl <- pl + ggplot2::geom_point()
   if (!is.null(limits))
     pl <- pl + ggplot2::scale_y_continuous(limits = limits)

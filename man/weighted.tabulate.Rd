@@ -9,7 +9,7 @@ weighted.tabulate(bin, w = NULL, nbins = max(1L, bin, na.rm = TRUE))
 \arguments{
 \item{bin}{a numeric vector of positive integers or a factor.}
 
-\item{w}{a numerical vector of the same length as 'bin' giving the weights to use for elements of it.}
+\item{w}{a numeric vector of the same length as 'bin' giving the weights to use for elements of it.}
 
 \item{nbins}{the number of bins to be used.}
 }

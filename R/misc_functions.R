@@ -1,15 +1,15 @@
 #' Weighted Sample Quantile
 #'
-#' Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of ECDF) can be calculated.
+#' Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
 #'
 #' @param x an object containing the values whose weighted quantiles is to be computed.
-#' @param w a numerical vector of the same length as 'x' giving the weights to use for elements of it.
-#' @param probs numeric vector of probabilities with values in [0, 1].
-#' @param na.rm logical. If TRUE, any NAs are removed from 'x' before the quantiles are computed.
+#' @param w a numeric vector of the same length as 'x' giving the weights to use for elements of it.
+#' @param probs a numeric vector of probabilities with values in [0, 1].
+#' @param na.rm logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.
 #' @param names logical. If TRUE, the result has a names attribute.
 #' @param digits used only when \code{names} is TRUE. The precision to use when formatting the percentages.
-#' @param type an integer selecting the quantile algorithms. Only 1 is permitted for the weighted quantile.
-#' @param ... arguments to be passed to \code{stats::quantile()} when the weights is not passed.
+#' @param type an integer selecting the quantile algorithms. Only 1 is available for the weighted quantile.
+#' @param ... further arguments passed to \code{stats::quantile()} when the weights is not passed.
 #'
 #' @export weighted.quantile
 #'
@@ -76,7 +76,7 @@ weighted.quantile <- function(
 #' Returns the sum of weights for each interger occurs in the integer valued argument \code{bin}.
 #'
 #' @param bin a numeric vector of positive integers or a factor.
-#' @param w a numerical vector of the same length as 'bin' giving the weights to use for elements of it.
+#' @param w a numeric vector of the same length as 'bin' giving the weights to use for elements of it.
 #' @param nbins the number of bins to be used.
 #'
 #' @export weighted.tabulate
@@ -111,8 +111,8 @@ weighted.tabulate <- function(
 #' @param x a numeric vector of deviations based on which the loss is calculated.
 #' @param y an optional numeric vector. If 'y' is passed, the loss is calculated based on the difference of x minus y.
 #' @param w a numeric vector of the same length as 'x' giving the weights to use for elements of it.
-#' @param ... optional augments to be passed to other functions internally used.
-#' @param na.rm logical. If TRUE, any NAs are removed from 'x' before the quantiles are computed.
+#' @param ... optional augments passed to other functions and methods.
+#' @param na.rm logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.
 #' @export weighted.rmse
 #'
 weighted.rmse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
@@ -154,6 +154,7 @@ weighted.mae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
   }
   sum(abs(x) * w) / sum(w)
 }
+
 
 #' @rdname weighted.rmse
 #' @export weighted.medae

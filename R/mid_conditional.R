@@ -2,13 +2,13 @@
 #'
 #' Creates a data frame to be used to visualize the individual conditional expectation.
 #'
-#' @param object a mid object
+#' @param object a mid object to compute the individual conditional expectations.
 #' @param data a data frame representing the observation results.
-#' @param variable a name of the predictor variable to calculate the individual conditional expectations for.
+#' @param variable a character or an expression specifying the predictor variable to calculate the individual conditional expectations for.
 #' @param keep.effects logical. If TRUE, the effects of component terms are stored in the output object.
-#' @param partition an integer specifying the coarseness of the grid for a "raster" type interaction plot.
+#' @param partition an integer specifying the number of the sample values.
 #' @param max.nrow the maximum number of rows of the output data frame.
-#' @param type the type of the prediction to use when the model has a link function. The default is "response".
+#' @param type the type of the prediction to use when the model has a link function. The default is \code{response}.
 #'
 #' @export mid.conditional
 #'
@@ -94,6 +94,7 @@ mid.conditional <- function(
   attr(res, "n") <- n
   res
 }
+
 
 #'
 #' @rdname mid.conditional

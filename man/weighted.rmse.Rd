@@ -19,9 +19,9 @@ weighted.medae(x, y = NULL, w = NULL, ..., na.rm = FALSE)
 
 \item{w}{a numeric vector of the same length as 'x' giving the weights to use for elements of it.}
 
-\item{...}{optional augments to be passed to other functions internally used.}
+\item{...}{optional augments passed to other functions and methods.}
 
-\item{na.rm}{logical. If TRUE, any NAs are removed from 'x' before the quantiles are computed.}
+\item{na.rm}{logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.}
 }
 \description{
 Returns a weighted loss calculated for the given vector(s). \code{weighted.rmse} is for the root mean square error, \code{weighted.mae} is for the mean absolute error, and \code{weighted.medae} is for the median absolute error
