@@ -38,7 +38,8 @@ mid.conditional <- function(
     br <- attr(mf, "breaks")
     values <- seq.int(br[1L], br[length(br)], length.out = partition)
   } else {
-    values <- attr(mf, "levels")
+    values <- mf[, 1L]
+    attr(values, "catchall") <- attr(mf, "catchall")
   }
   m <- length(values)
   n <- nrow(data)

@@ -14,7 +14,7 @@
   variable.colour = NULL,
   variable.linetype = NULL,
   variable.linewidth = NULL,
-  scale.palette = grDevices::hcl.colors(24L, "Zissou 1"),
+  scale.palette = NULL,
   ...
 )
 }
@@ -37,7 +37,7 @@
 
 \item{variable.linewidth}{a name of the predictor variable to use to set \code{linewidth} for each plot.}
 
-\item{scale.palette}{a character vector of color names, specifying the colors to be used in the interaction plot.}
+\item{scale.palette}{a character vector of color names, specifying the colors to be used.}
 
 \item{...}{optional parameters to be directly passed to \code{ggplot2::geom_line()}.}
 }

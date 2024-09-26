@@ -53,28 +53,38 @@ ggmid.mid.conditional <- function(
   pl <- ggplot2::ggplot(data = obs,
                         ggplot2::aes(x = .data[[v]], y = .data[[yvar]]))
   if (plot.main) {
-    e2c <- function(expr) {
+    characterize <- function(expr) {
       ifelse(is.character(expr), expr, deparse(expr))
     }
+    is.discrete <- function(x) {
+      is.factor(x) || is.character(x) || is.logical(x)
+    }
     if (!is.null(mc$variable.alpha)) {
-      alp <- e2c(mc$variable.alpha)
+      alp <- characterize(mc$variable.alpha)
       pl <- pl + ggplot2::aes(alpha = .data[[alp]]) +
         ggplot2::labs(alpha = alp)
     }
     if (!is.null(mc$variable.colour)) {
-      col <- e2c(mc$variable.colour)
+      col <- characterize(mc$variable.colour)
       pl <- pl + ggplot2::aes(colour = .data[[col]]) +
         ggplot2::labs(colour = col)
     }
     if (!is.null(mc$variable.linetype)) {
-      lty <- e2c(mc$variable.linetype)
+      lty <- characterize(mc$variable.linetype)
       pl <- pl + ggplot2::aes(linetype = .data[[lty]]) +
         ggplot2::labs(linetype = lty)
+      if (!is.discrete(obs[, lty]))
+        pl <- pl + ggplot2::scale_linetype_binned()
     }
     if (!is.null(mc$variable.linewidth)) {
-      lwd <- e2c(mc$variable.linewidth)
+      lwd <- characterize(mc$variable.linewidth)
       pl <- pl + ggplot2::aes(linewidth = .data[[lwd]]) +
-        ggplot2::labs(linewidth = lty)
+        ggplot2::labs(linewidth = lwd)
+      if (is.discrete(obs[, lwd])) {
+        pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))
+      } else {
+        pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))
+      }
     }
     pl <- pl + ggplot2::geom_line(data = con,
       mapping = ggplot2::aes(group = .data[["id"]]), ...)
@@ -92,5 +102,7 @@ ggmid.mid.conditional <- function(
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mid.conditional <- function(object, ...) {
-  ggmid.mid.conditional(object, ...)
+  args <- as.list(match.call())
+  args[[1L]] <- NULL
+  do.call("ggmid.mid.conditional", args)
 }

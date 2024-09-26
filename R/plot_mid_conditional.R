@@ -11,7 +11,7 @@
 #' @param variable.colour a name of the predictor variable to use to set \code{color} for each plot.
 #' @param variable.linetype a name of the predictor variable to use to set \code{linetype} for each plot.
 #' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
-#' @param scale.palette a character vector of color names, specifying the colors to be used in the interaction plot.
+#' @param scale.palette a character vector of color names, specifying the colors to be used.
 #' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
 #' @exportS3Method base::plot
 #'
@@ -19,7 +19,7 @@ plot.mid.conditional <- function(
     x, centered = FALSE, show.dots = TRUE, sample = NULL, term = NULL,
     variable.alpha = NULL, variable.colour = NULL,
     variable.linetype = NULL, variable.linewidth = NULL,
-    scale.palette = grDevices::hcl.colors(24L, "Zissou 1"), ...) {
+    scale.palette = NULL, ...) {
   mc <- match.call(expand.dots = TRUE)
   dots <- list(...)
   v <- attr(x, "variable")
@@ -51,54 +51,58 @@ plot.mid.conditional <- function(
     con <- con[con$id %in% sample, ]
     n <- nrow(obs)
   }
-  mat <- matrix(con[[yvar]], nrow = n)
+  values <- x$values
+  mat <- matrix(con[[yvar]], nrow = n, ncol = length(values))
+  colnames(mat) <- values
+  if (n == 0L)
+    return(invisible(mat))
   rownames(mat) <- obs$ids
-  colnames(mat) <- values <- x$values
-  if (isf <- !is.numeric(values)) {
-    values <- as.factor(values)
-    lvs <- levels(values)
-    values <- as.numeric(values)
-  }
   aes <- list(col = rep.int(1L, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
-  e2c <- function(expr) {
+  characterize <- function(expr) {
     ifelse(is.character(expr), expr, deparse(expr))
   }
-  if (!is.null(mc$variable.colour)) {
-    ref <- obs[, e2c(mc$variable.colour)]
+  is.discrete <- function(x) {
+    is.factor(x) || is.character(x) || is.logical(x)
+  }
+  rescale <- function(x) {
+    ref <- x
     if (!is.numeric(ref))
       ref <- as.numeric(as.factor(ref))
     rng <- range(ref, na.rm = TRUE)
-    ref <- (ref - rng[1L]) / (rng[2L] - rng[1L])
+    (ref - rng[1L]) / max(1L, rng[2L] - rng[1L])
+  }
+  if (!is.null(mc$variable.colour)) {
+    cln <- characterize(mc$variable.colour)
+    if (is.null(scale.palette)) {
+      scale.palette <- if (is.discrete(obs[, cln])) {
+        grDevices::hcl.colors(24L, "Zissou 1", rev = TRUE)
+      } else {
+        c("#132B43", "#56B1F7")
+      }
+    }
     ramp <- grDevices::colorRamp(scale.palette, alpha = FALSE)
-    ref <- ramp(ref)
+    rgbs <- ramp(rescale(obs[, cln]))
     aes[["col"]] <-
-      grDevices::rgb(ref[, 1L], ref[, 2L], ref[, 3L], maxColorValue = 255L)
+      grDevices::rgb(rgbs[, 1L], rgbs[, 2L], rgbs[, 3L], maxColorValue = 255L)
   }
   if (!is.null(mc$variable.alpha)) {
-    ref <- obs[, e2c(mc$variable.alpha)]
-    if (!is.numeric(ref))
-      ref <- as.numeric(as.factor(ref))
-    rng <- range(ref, na.rm = TRUE)
-    ref <- (ref - rng[1L]) / (rng[2L] - rng[1L])
-    aes[["alpha"]] <- ref * 3 / 4 + .25
+    ref <- rescale(obs[, characterize(mc$variable.alpha)])
+    aes[["alpha"]] <- ref * .75 + .25
   }
   if (!is.null(mc$variable.linetype)) {
-    ref <- obs[, e2c(mc$variable.linetype)]
-    if (!is.numeric(ref))
-      ref <- as.numeric(as.factor(ref))
-    rng <- range(ref, na.rm = TRUE)
-    ref <- (ref - rng[1L]) / (rng[2L] - rng[1L])
+    ref <- rescale(obs[, characterize(mc$variable.linetype)])
     aes[["lty"]] <- pmin(ref * 6 + 1, 6L)
   }
   if (!is.null(mc$variable.linewidth)) {
-    ref <- obs[, e2c(mc$variable.linewidth)]
-    if (!is.numeric(ref))
-      ref <- as.numeric(as.factor(ref))
-    rng <- range(ref, na.rm = TRUE)
-    ref <- (ref - rng[1L]) / (rng[2L] - rng[1L])
+    ref <- rescale(obs[, characterize(mc$variable.linewidth)])
     aes[["lwd"]] <- ref * 3
   }
-  args <- list(x = values, ylim = range(mat), xlab = v, ylab = yvar, type = "l")
+  if (fv <- is.factor(values)) {
+    flvs <- levels(values)
+    values <- as.numeric(values)
+  }
+  args <- list(x = values, ylim = range(mat), xlab = v, ylab = yvar,
+               type = "l", xaxt = if (fv) "n")
   for (arg in names(dots)) {
     if (arg %in% c("col", "lty", "lwd", "alpha")) {
       aes[[arg]] <- rep_len(dots[[arg]], length.out = n)
@@ -106,26 +110,29 @@ plot.mid.conditional <- function(
       args[[arg]] <- dots[[arg]]
     }
   }
-  if (!is.null(aes[["alpha"]])) {
-    clr <- grDevices::col2rgb(col = aes[["col"]])
-    aes[["col"]] <-
-      grDevices::rgb(clr[1L, ], clr[2L, ], clr[3L, ],
-                     round(aes[["alpha"]] * 255), maxColorValue = 255L)
+  aes$dcol <- aes$col
+  if (!is.null(aes$alpha)) {
+    clr <- grDevices::col2rgb(col = aes$col)
+    aes$col <- grDevices::rgb(clr[1L,], clr[2L,], clr[3L,],
+                              round(aes$alpha * 255), maxColorValue = 255L)
   }
-  if (isf)
-    args$xaxt <- "n"
   args$y = mat[1L,]
   for (p in c("col", "lty", "lwd")) args[[p]] <- aes[[p]][1L]
   do.call("plot", args)
-  if (isf)
-    graphics::axis(side = 1L, at = seq_len(length(lvs)), labels = lvs)
+  if (fv)
+    graphics::axis(side = 1L, at = seq_len(length(values)), labels = flvs)
   for (i in seq_len(n - 1L)) {
     args$y <- mat[i + 1L,]
     for (p in c("col", "lty", "lwd")) args[[p]] <- aes[[p]][i + 1L]
     do.call("points", args)
   }
   if (show.dots) {
-    graphics::points(x = obs[[v]], y = obs[[yvar]], pch = 16L, col = aes$col)
+    if (fv) {
+      obs[, v] <- factor(obs[ ,v], levels = flvs)
+      if (!is.null(attr(values, "catchall")))
+        obs[is.na(obs[, v]), v] <- attr(values, "catchall")
+    }
+    graphics::points(x = obs[, v], y = obs[, yvar], pch = 16L, col = aes$dcol)
   }
   invisible(mat)
 }
