@@ -21,7 +21,7 @@ predict.mid <- function(
     preds <- object$fitted.matrix
     naa <- stats::na.action(object)
   } else {
-    if ("mid" %in% colnames(newdata))
+    if (any("mid" == colnames(newdata)))
       colnames(newdata)[colnames(newdata) == "mid"] <- ".mid"
     if (!is.null(formula <- eval(object$call$formula))) {
       newdata[, deparse(formula[[2L]])] <- 0L
@@ -45,7 +45,7 @@ predict.mid <- function(
       return(stats::napredict(naa, preds))
     return(structure(preds, na.action = naa))
   }
-  preds <- apply(preds, MARGIN = 1L, FUN = sum) + object$intercept
+  preds <- rowSums(preds) + object$intercept
   if (type == "response" && !is.null(object$link))
     preds <- object$link$linkinv(preds)
   if (inherits(naa, "exclude"))
@@ -60,11 +60,11 @@ predict.mid <- function(
 #' @export mid.f
 #'
 mid.f <- function(object, term, x, y = NULL) {
-  if (!term %in% object$terms) {
+  if (!any(term == object$terms)) {
     message(paste0("The term '", term, "' does not exist."))
     return(0)
   }
-  tags <- unlist(strsplit(term, ":"))
+  tags <- unlist(strsplit(term, ":"), use.names = FALSE)
   ie <- length(tags) == 2L
   if (is.matrix(x) || is.data.frame(x)) {
     if (ie)
@@ -75,23 +75,20 @@ mid.f <- function(object, term, x, y = NULL) {
   if (!ie) {
     # main effect
     enc <- object$me.encoders[[term]]
-    X <- matrix(0, nrow = n, ncol = enc$n)
-    for (j in seq_len(enc$n)) {
-      X[, j] <- enc$encode(x, j)
-    }
+    X <- enc$encode(x)
     mid <- object$main.effects[[term]]$mid
   } else {
     # interaction
     if (length(x) != length(y))
       stop("x and y must have the same length.")
-    enc1 <- object$ie.encoders[[tags[1]]]
-    enc2 <- object$ie.encoders[[tags[2]]]
-    uni <- as.matrix(expand.grid(1:enc1$n, 1:enc2$n))
+    enc1 <- object$ie.encoders[[tags[1L]]]
+    enc2 <- object$ie.encoders[[tags[2L]]]
+    mat1 <- enc1$encode(x)
+    mat2 <- enc2$encode(y)
+    uni <- as.matrix(expand.grid(1L:enc1$n, 1L:enc2$n))
     X <- matrix(0, nrow = n, ncol = nrow(uni))
-    for (j in seq_len(nrow(uni))) {
-      val <- uni[j, ]
-      X[, j] <- as.numeric(enc1$encode(x, val[1]) * enc2$encode(y, val[2]))
-    }
+    for (j in seq_len(nrow(uni)))
+      X[, j] <- as.numeric(mat1[, uni[j, 1L]] * mat2[, uni[j, 2L]])
     mid <- object$interactions[[term]]$mid
   }
   mid[is.na(mid)] <- 0

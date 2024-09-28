@@ -71,52 +71,44 @@ numeric.encoder <- function(
                          encoding.digits = encoding.digits, tag = tag)
   # define encoder function --------
   if (type == 1L) {
-    encode <- function(new_x, i, ...) {
-      i <- as.integer(i)
-      if (i < 1L || i > n.rep)
-        return(numeric(length(new_x)))
-      if (n.rep == 1L)
-        return(rep.int(1L, length(new_x)))
-      if (i < n.rep) {
-        rat <- (reps[i + 1L] - new_x) / (reps[i + 1L] - reps[i])
-        rat[is.na(rat)] <- 0
-        if (!is.null(encoding.digits))
-          rat <- round(rat, encoding.digits)
-        rat <- pmax(rat, 0)
-        if (i == 1L)
-          return(pmin(rat, 1))
+    encode <- function(new_x, ...) {
+      n <- length(new_x)
+      mat <- matrix(0, nrow = n, ncol = n.rep)
+      itv <- findInterval(new_x, reps)
+      for (i in seq_len(n)) {
+        if (is.na(itv[i]))
+          next
+        if (itv[i] == 0L) {
+          mat[i, 1L] <- 1
+        } else if (itv[i] == n.rep) {
+          mat[i, n.rep] <- 1
+        } else {
+          l <- reps[itv[i]]
+          r <- reps[itv[i] + 1L]
+          prop <- (r - new_x[i]) / (r - l)
+          mat[i, itv[i]] <- prop
+          mat[i, itv[i] + 1L] <- 1 - prop
+        }
       }
-      if (i > 1L) {
-        lat <- (new_x - reps[i - 1L]) / (reps[i] - reps[i - 1L])
-        lat[is.na(lat)] <- 0
-        if (!is.null(encoding.digits))
-          lat <- round(lat, encoding.digits)
-        lat <- pmax(lat, 0)
-        if (i == n.rep)
-          return(pmin(lat, 1))
-      }
-      pmin(rat, lat)
+      if (!is.null(encoding.digits))
+        mat <- round(mat, digits = encoding.digits)
+      mat
     }
   } else if (type == 0L) {
-    encode <- function(new_x, i, ...) {
-      i <- as.integer(i)
-      if (i < 1L || i > n.rep)
-        return(numeric(length(new_x)))
-      if (n.rep == 1L)
-        return(rep.int(1L, length(new_x)))
-      if (i == 1L) {
-        cd <- ifelse(new_x <= br[i + 1L], 1L, 0L)
-      } else if (i == n.rep) {
-        cd <- ifelse(br[i] < new_x, 1L, 0L)
-      } else {
-        cd <- ifelse(br[i] < new_x & new_x <= br[i + 1L], 1L, 0L)
+    encode <- function(new_x, ...) {
+      n <- length(new_x)
+      mat <- matrix(0, nrow = n, ncol = n.rep)
+      itv <- findInterval(new_x, br, all.inside = TRUE)
+      for (i in seq_len(n)) {
+        if (is.na(itv[i]))
+          next
+        mat[i, itv[i]] <- 1
       }
-      cd[is.na(cd)] <- 0
-      cd
+      mat
     }
   } else {
-    encode <- function(new_x, i, ...) {
-      numeric(length(new_x))
+    encode <- function(new_x, ...) {
+      matrix(0, nrow = length(new_x), ncol = 1L)
     }
   }
   type <- switch(type + 2L, "null", "constant", "linear")

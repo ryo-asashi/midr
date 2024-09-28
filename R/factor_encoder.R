@@ -31,7 +31,7 @@ factor.encoder <- function(
     if (use.catchall && k > 0L && length(flvs) > k) {
       tbl <- weighted.tabulate(bin = match(x, flvs), w = weights)
       ord <- order(tbl, decreasing = TRUE)
-      flvs <- flvs[ord][seq_len(k - 1)]
+      flvs <- flvs[ord][seq_len(k - 1L)]
     }
     flvs <- flvs[flvs %in% x]
     if (use.catchall)
@@ -42,17 +42,20 @@ factor.encoder <- function(
     catchall <- NULL
   frame <- factor.frame(levels = flvs, catchall = catchall, tag = tag)
   # define encoder function --------
-  encode <- function(new_x, i, ...) {
-    i <- as.integer(i)
-    if (i < 1L || i > nlvs)
-      return(numeric(length(new_x)))
+  encode <- function(new_x, ...) {
+    n <- length(new_x)
+    mat <- matrix(0, nrow = n, ncol = nlvs)
     if (!is.factor(new_x) || !identical(levels(new_x), flvs))
       new_x <- factor(new_x, levels = flvs)
     if (use.catchall)
       new_x[is.na(new_x)] <- catchall
-    cds <- as.numeric(new_x == flvs[[i]])
-    cds[is.na(cds)] <- 0
-    cds
+    new_x <- as.integer(new_x)
+    for (i in seq_len(n)) {
+      if (is.na(new_x[i]))
+        next
+      mat[i, new_x[i]] <- 1
+    }
+    mat
   }
   list(frame = frame, encode = encode, n = nlvs, type = "factor")
 }
