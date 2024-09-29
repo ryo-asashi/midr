@@ -487,7 +487,7 @@ interpret.default <- function(
 #'
 interpret.formula <- function(
     formula, data = NULL, model = NULL, pred.fun = get.yhat, weights = NULL,
-    subset = NULL, na.action = getOption("na.action"),
+    subset = NULL, na.action = getOption("na.action"), mode = 1L,
     drop.unused.levels = FALSE, ...
 ) {
   cl <- match.call()
@@ -495,6 +495,7 @@ interpret.formula <- function(
   mf$... <- NULL
   mf$model <- NULL
   mf$pred.fun <- NULL
+  mf$mode <- NULL
   if (use.model <- !missing(model)) {
     if (is.null(data))
       stop("'data' is required to get predicted values from the 'model'")
@@ -554,7 +555,7 @@ interpret.formula <- function(
   w <- as.vector(stats::model.weights(mf))
   tl <- attr(attr(mf, "terms"), "term.labels")
   ret <- interpret.default(model = model, x = x, y = y, weights = w,
-                           terms = tl, na.action = na.action, ...)
+                           terms = tl, mode = mode, na.action = na.action, ...)
   cl[[1L]] <- as.name("interpret")
   ret$call <- cl
   if (!is.null(naa.ret <- ret$na.action))

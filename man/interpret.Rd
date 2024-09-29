@@ -43,6 +43,7 @@ interpret(object, ...)
   weights = NULL,
   subset = NULL,
   na.action = getOption("na.action"),
+  mode = 1L,
   drop.unused.levels = FALSE,
   ...
 )
