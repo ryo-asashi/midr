@@ -134,8 +134,11 @@ It is also easy to create ICE plots for the fitted MID surrogate.
 mc <- mid.conditional(mid, "age", train)
 # visualize the individual conditional expectation
 ggmid(mc, variable.colour = education, alpha = .2)
-# visualize effects of the component function
-ggmid(mc, term = "education:age", variable.colour = education,
-      draw.dots = FALSE) +
-  geom_point(size = 1)
+# visualize the effects of each component function
+grid.arrange(
+  ggmid(mc, term = "age:education", variable.colour = education),
+  ggmid(mc, term = "maritl:age", variable.colour = maritl),
+  ggmid(mc, term = "age:race", variable.colour = race),
+  ggmid(mc, term = "age:health", variable.colour = health)
+)
 ```

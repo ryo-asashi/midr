@@ -198,10 +198,13 @@ ggmid(mc, variable.colour = education, alpha = .2)
 <img src="man/figures/README-conditional-1.png" width="100%" />
 
 ``` r
-# visualize effects of the component function
-ggmid(mc, term = "education:age", variable.colour = education,
-      draw.dots = FALSE) +
-  geom_point(size = 1)
+# visualize the effects of each component function
+grid.arrange(
+  ggmid(mc, term = "age:education", variable.colour = education),
+  ggmid(mc, term = "maritl:age", variable.colour = maritl),
+  ggmid(mc, term = "age:race", variable.colour = race),
+  ggmid(mc, term = "age:health", variable.colour = health)
+)
 ```
 
 <img src="man/figures/README-conditional-2.png" width="100%" />
