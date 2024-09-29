@@ -4,7 +4,7 @@
 library(midr)
 library(ggplot2)
 m <- 10L
-v <- seq(-5, 5, length.out = m)
+v <- seq(-6, 6, length.out = m)
 z <- rep(v, times = m ^ 3)
 u1 <- rep(v, times = m ^ 2, each = m)
 u2 <- rep(v, times = m, each = m ^ 2)
@@ -24,7 +24,7 @@ weighted.mean(mid_it$residuals ^ 2, w) /
 ggmid(mid_it, "x1:x2")
 #> uninterpreted rate : 0.12%
 # two-dimensional MID decomposition
-mid2 <- interpret(y ~ (x1 + x2 + x3) ^ 2, data = x, k = 0, ok = TRUE)
+mid2 <- interpret(y ~ (x1 + x2 + x3) ^ 2, data = x, k = 0, ok = TRUE, mode = 2)
 summary(mid2)
 ggmid(mid2, "x1:x2")
 #> uninterpreted rate : 0%

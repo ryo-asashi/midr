@@ -91,10 +91,10 @@ interpret.default <- function(
   dots <- list(...)
   if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
-  fit.intercept <- if.not.null(dots$fit.intercept, FALSE)
-  interpolate.beta <- if.not.null(dots$interpolate.beta, TRUE)
-  weighted.norm <- if.not.null(dots$weighted.norm, singular.ok)
-  weighted.encoding <- if.not.null(dots$weighted.encoding, FALSE)
+  fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
+  interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
+  weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
+  weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
 
   # preprocess data --------
   if (!is.data.frame(x))
@@ -187,7 +187,7 @@ interpret.default <- function(
   if (length(type) == 1L)
     type <- c(type, type)
   f <- function(tag, d) {
-    if.not.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
+    ifnot.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
   }
   if (is.null(method))
     method <- ifelse(!singular.ok, 0L, 5L)

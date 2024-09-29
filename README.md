@@ -123,12 +123,12 @@ interpretable model of the target model.
 
 ``` r
 # MID surrogae or the ranger model
-mid <- interpret(wage ~ .^2, train, model = model, lambda = .05)
+mid <- interpret(wage ~ .^2, train, model = model, ok = TRUE)
 print(mid, omit.values = TRUE)
 #> 
 #> Call:
 #> interpret(formula = yhat ~ .^2, data = train, model = model,
-#>  lambda = 0.05)
+#>  ok = TRUE)
 #> 
 #> Intercept: 112.54
 #> 
@@ -138,13 +138,13 @@ print(mid, omit.values = TRUE)
 #> Interactions:
 #> 36 interaction terms
 #> 
-#> Uninterpreted Rate: 0.012012
+#> Uninterpreted Rate: 0.012007
 ```
 
 ``` r
 # interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
-#> RMSE : 2.75393
+#> RMSE : 2.75628
 ```
 
 To the extent that the MID model is acceptable as a surrogate for the
@@ -185,3 +185,23 @@ ggplot(imp, aes(y = variable, x = importance)) +
 ```
 
 <img src="man/figures/README-importance-2.png" width="100%" />
+
+It is also easy to create ICE plots for the fitted MID surrogate.
+
+``` r
+# create a mid conditional object
+mc <- mid.conditional(mid, "age", train)
+# visualize the individual conditional expectation
+ggmid(mc, variable.colour = education, alpha = .2)
+```
+
+<img src="man/figures/README-conditional-1.png" width="100%" />
+
+``` r
+# visualize effects of the component function
+ggmid(mc, term = "education:age", variable.colour = education,
+      draw.dots = FALSE) +
+  geom_point(size = 1)
+```
+
+<img src="man/figures/README-conditional-2.png" width="100%" />

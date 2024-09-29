@@ -98,7 +98,7 @@ When the argument `model` is passed, `interpret()` replaces the values of the re
 
 ```{r wage_mid}
 # MID surrogae or the ranger model
-mid <- interpret(wage ~ .^2, train, model = model, lambda = .05)
+mid <- interpret(wage ~ .^2, train, model = model, ok = TRUE)
 print(mid, omit.values = TRUE)
 # interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
@@ -125,4 +125,17 @@ imp <- sort(model$variable.importance, decreasing = FALSE)
 imp <- data.frame(variable = factor(names(imp), levels = names(imp)),                   importance = imp)
 ggplot(imp, aes(y = variable, x = importance)) +
   geom_col()
+```
+
+It is also easy to create ICE plots for the fitted MID surrogate.
+
+```{r conditional}
+# create a mid conditional object
+mc <- mid.conditional(mid, "age", train)
+# visualize the individual conditional expectation
+ggmid(mc, variable.colour = education, alpha = .2)
+# visualize effects of the component function
+ggmid(mc, term = "education:age", variable.colour = education,
+      draw.dots = FALSE) +
+  geom_point(size = 1)
 ```

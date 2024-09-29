@@ -30,7 +30,7 @@ mid.extract <- function(object, component, ...) {
     plots = mid.plots(object, ...),
     terms = mid.terms(object, ...)
   )
-  if.not.null(rt, object[[component]])
+  ifnot.null(rt, object[[component]])
 }
 
 #' @rdname mid.extract

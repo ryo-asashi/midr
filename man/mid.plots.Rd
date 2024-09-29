@@ -5,17 +5,17 @@
 \title{Create Plots for Multiple Functional Decomposition Terms}
 \usage{
 mid.plots(
-  x,
-  terms = mid.terms(x, main.effect = T, interaction = F),
+  object,
+  terms = mid.terms(object, interaction = FALSE),
   limits = c(NA, NA),
   add.intercept = FALSE,
-  max.plots = 16L,
+  max.plots = NULL,
   engine = c("ggplot2", "base", "graphics"),
   ...
 )
 }
 \arguments{
-\item{x}{a mid object.}
+\item{object}{a mid object.}
 
 \item{terms}{a character vector that specifies the names of the terms to be visualized.}
 

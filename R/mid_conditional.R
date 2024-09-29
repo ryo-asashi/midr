@@ -3,8 +3,8 @@
 #' Creates a data frame to be used to visualize the individual conditional expectation.
 #'
 #' @param object a mid object to compute the individual conditional expectations.
-#' @param data a data frame representing the observation results.
 #' @param variable a character or an expression specifying the predictor variable to calculate the individual conditional expectations for.
+#' @param data a data frame representing the observation results.
 #' @param keep.effects logical. If TRUE, the effects of component terms are stored in the output object.
 #' @param partition an integer specifying the number of the sample values.
 #' @param max.nrow the maximum number of rows of the output data frame.
@@ -13,7 +13,7 @@
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, data, variable, keep.effects = TRUE, partition = 100L,
+    object, variable, data, keep.effects = TRUE, partition = 100L,
     max.nrow = 1e5L, type = c("response", "link")) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))

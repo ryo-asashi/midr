@@ -1,4 +1,4 @@
-if.not.null <- function(x, y) {
+ifnot.null <- function(x, y) {
   if (!is.null(x)) x else y
 }
 

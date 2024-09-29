@@ -8,8 +8,8 @@
 \usage{
 mid.conditional(
   object,
-  data,
   variable,
+  data,
   keep.effects = TRUE,
   partition = 100L,
   max.nrow = 100000L,
@@ -23,9 +23,9 @@ mid.conditional(
 \arguments{
 \item{object}{a mid object to compute the individual conditional expectations.}
 
-\item{data}{a data frame representing the observation results.}
-
 \item{variable}{a character or an expression specifying the predictor variable to calculate the individual conditional expectations for.}
+
+\item{data}{a data frame representing the observation results.}
 
 \item{keep.effects}{logical. If TRUE, the effects of component terms are stored in the output object.}
 
