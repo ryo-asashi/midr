@@ -31,9 +31,9 @@ mid.conditional <- function(
                                data = data, na.action = "na.pass")
     data <- data[, -which(colnames(data) == yvar)]
   }
-  mf <- mid.frames(object)[[variable]]
-  if (inherits(mf, "list"))
-    mf <- mf[[1L]]
+  mf <- object$me.encoders[[variable]]$frame
+  if (is.null(mf))
+    mf <- object$ie.encoders[[variable]]$frame
   if (inherits(mf, "numeric.frame")) {
     br <- attr(mf, "breaks")
     values <- seq.int(br[1L], br[length(br)], length.out = partition)

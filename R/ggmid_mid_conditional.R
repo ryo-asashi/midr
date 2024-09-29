@@ -54,32 +54,30 @@ ggmid.mid.conditional <- function(
   pl <- ggplot2::ggplot(data = obs,
                         ggplot2::aes(x = .data[[variable]], y = .data[[yvar]]))
   if (plot.main) {
-    characterize <- function(expr) {
-      ifelse(is.character(expr), expr, deparse(expr))
-    }
-    is.discrete <- function(x) {
-      is.factor(x) || is.character(x) || is.logical(x)
-    }
     if (!is.null(cl$variable.alpha)) {
       alp <- characterize(cl$variable.alpha)
-      pl <- pl + ggplot2::aes(alpha = .data[[alp]]) +
+      pl <- pl +
+        ggplot2::aes(alpha = .data[[alp]]) +
         ggplot2::labs(alpha = alp)
     }
     if (!is.null(cl$variable.colour)) {
       col <- characterize(cl$variable.colour)
-      pl <- pl + ggplot2::aes(colour = .data[[col]]) +
+      pl <- pl +
+        ggplot2::aes(colour = .data[[col]]) +
         ggplot2::labs(colour = col)
     }
     if (!is.null(cl$variable.linetype)) {
       lty <- characterize(cl$variable.linetype)
-      pl <- pl + ggplot2::aes(linetype = .data[[lty]]) +
+      pl <- pl +
+        ggplot2::aes(linetype = .data[[lty]]) +
         ggplot2::labs(linetype = lty)
       if (!is.discrete(obs[, lty]))
         pl <- pl + ggplot2::scale_linetype_binned()
     }
     if (!is.null(cl$variable.linewidth)) {
       lwd <- characterize(cl$variable.linewidth)
-      pl <- pl + ggplot2::aes(linewidth = .data[[lwd]]) +
+      pl <- pl +
+        ggplot2::aes(linewidth = .data[[lwd]]) +
         ggplot2::labs(linewidth = lwd)
       if (is.discrete(obs[, lwd])) {
         pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))

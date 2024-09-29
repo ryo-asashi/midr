@@ -21,8 +21,10 @@ interpret(object, ...)
   interaction = FALSE,
   terms = NULL,
   singular.ok = FALSE,
+  mode = 1L,
   method = NULL,
   lambda = 0L,
+  kappa = 1e+06,
   na.action = getOption("na.action"),
   encoding.digits = 3L,
   use.catchall = FALSE,
@@ -72,9 +74,13 @@ interpret(object, ...)
 
 \item{singular.ok}{logical. If FALSE, a singular fit is an error.}
 
+\item{mode}{an integer specifying the general method of calculation. When \code{mode} is set to 1, centralization constraints are treated as penalties for the least squares problem. If \code{mode} is 2, the centralization constraints are used to reduce the number of unknown parameters, making the calculation safer and more robust.}
+
 \item{method}{an integer or a vector of length two, specifying the methods to be used to solve the least squares problem. A non-negative value will be passed to RcppEigen::fastLmPure and if a negative value is passed, stats::lm.fit will be used.}
 
-\item{lambda}{a numeric parameter for the weighted ridge regularization.}
+\item{lambda}{a numeric parameter for the penalty of weighted ridge regularization.}
+
+\item{kappa}{a numeric parameter for the penalty of the centralization constraints. Only used if \code{mode} is 1.}
 
 \item{na.action}{a function or a character which indicates what should happen when the data contain missing values (NAs). The default is na.omit.}
 

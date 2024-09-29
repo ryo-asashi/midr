@@ -2,45 +2,44 @@
 #'
 #' Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
 #'
-#' @param x a mid object.
+#' @param object a mid object.
 #' @param component a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "importance", "UR", "encoders", and names of any functional decomposition terms like "x1:x2" can be used.
 #' @param ... optional arguments to be passed to the specific functions used to extract information.
 #'
 #' @examples
 #' data(trees, package = "datasets")
 #' mid <- interpret(Volume ~ ., trees, k = 10)
-#' mid.extract(mid, encoders)
-#' mid.extract(mid, intercept)
+#' mid.extract(mid, encoding.info)
 #' mid.extract(mid, uninterpreted.rate)
 #' mid.extract(mid, Girth)
+#' mid.extract(mid, intercept)
 #' @export mid.extract
 #'
-mid.extract <- function(x, component, ...) {
+mid.extract <- function(object, component, ...) {
   component <- as.character(substitute(component))
-  if (component %in% x$terms) {
+  if (any(component == object$terms)) {
     if (grepl(":", component))
-      return(x$interactions[[component]])
-    return(x$main.effects[[component]])
+      return(object$interactions[[component]])
+    return(object$main.effects[[component]])
   }
   rt <- switch(component,
-    encoding.info = mid.encoding.info(x, ...),
-    frames = mid.frames(x, ...),
-    importance = mid.importance(x, ...),
-    plots = mid.plots(x, ...),
-    terms = mid.terms(x, ...)
+    conditional = mid.conditional(object, ...),
+    encoding.info = mid.encoding.info(object, ...),
+    frames = mid.frames(object, ...),
+    importance = mid.importance(object, ...),
+    plots = mid.plots(object, ...),
+    terms = mid.terms(object, ...)
   )
-  if (is.null(rt))
-    rt <- x[[component]]
-  rt
+  if.not.null(rt, object[[component]])
 }
 
 #' @rdname mid.extract
 #' @export mid.encoding.info
 #'
-mid.encoding.info <- function(x, ...) {
+mid.encoding.info <- function(object, ...) {
   fun <- function(enc) paste0(enc$type, "(", enc$n, ")")
-  mencs <- sapply(x$me.encoders, fun)
-  iencs <- sapply(x$ie.encoders, fun)
+  mencs <- sapply(object$me.encoders, fun)
+  iencs <- sapply(object$ie.encoders, fun)
   tags <- unique(c(mtags <- names(mencs), itags <- names(iencs)))
   df <- data.frame(row.names = tags)
   if (length(mtags) > 0L) {
@@ -60,22 +59,20 @@ mid.encoding.info <- function(x, ...) {
 #' @rdname mid.extract
 #' @export mid.frames
 #'
-mid.frames <- function(x, ...) {
-  mfl <- lapply(x$me.encoders, function(enc) enc$frame)
-  ifl <- lapply(x$ie.encoders, function(enc) enc$frame)
+mid.frames <- function(object, ...) {
+  mfl <- lapply(object$me.encoders, function(enc) enc$frame)
+  ifl <- lapply(object$ie.encoders, function(enc) enc$frame)
   tags <- unique(c(names(mfl), names(ifl)))
-  frs <- list()
+  res <- list()
   for (tag in tags) {
-    frs[[tag]] <-
-      if (is.null(ifl[[tag]]) || identical(mfl[[tag]], ifl[[tag]])) {
-        mfl[[tag]]
-      } else if (is.null(mfl[[tag]])) {
-        ifl[[tag]]
-      } else {
-        list(mfl[[tag]], ifl[[tag]])
+    if (identical(mfl[[tag]], ifl[[tag]])) {
+      res[[tag]] <- mfl[[tag]]
+    } else {
+      res[[paste0("|", tag)]] <- mfl[[tag]]
+      res[[paste0(":", tag)]] <- ifl[[tag]]
     }
   }
-  frs
+  res
 }
 
 
@@ -89,14 +86,14 @@ mid.frames <- function(x, ...) {
 #' @export mid.terms
 #'
 mid.terms <- function(
-    x, main.effect = TRUE, interaction = TRUE,
+    object, main.effect = TRUE, interaction = TRUE,
     require = NULL, remove = NULL, ...) {
   dots <- list(...)
   if (missing(main.effect) && !is.null(dots$me))
     main.effect <- dots$me
   if (missing(interaction) && !is.null(dots$ie))
     interaction <- dots$ie
-  terms <- x$terms
+  terms <- object$terms
   if (!main.effect)
     terms <- terms[grepl(":", terms)]
   if (!interaction)
@@ -113,8 +110,9 @@ mid.terms <- function(
 }
 
 #' @rdname mid.extract
+#' @param x a mid object.
 #' @exportS3Method stats::terms
 #'
 terms.mid <- function(x, ...) {
-  mid.terms(x, ...)
+  mid.terms(object = x, ...)
 }

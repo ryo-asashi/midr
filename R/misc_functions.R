@@ -1,3 +1,27 @@
+if.not.null <- function(x, y) {
+  if (!is.null(x)) x else y
+}
+
+attract <- function(x, margin) {
+  if (abs(x) <= margin) 0 else x
+}
+
+is.discrete <- function(x) {
+  is.factor(x) || is.character(x) || is.logical(x)
+}
+
+characterize <- function(expr) {
+  if (is.character(expr)) expr else deparse(expr)
+}
+
+rescale <- function(x) {
+  if (!is.numeric(x))
+    x <- as.numeric(as.factor(x))
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1L]) / max(1L, rng[2L] - rng[1L])
+}
+
+
 #' Weighted Sample Quantile
 #'
 #' Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
@@ -179,3 +203,4 @@ weighted.medae <- function(
   weighted.quantile(abs(x), w, probs = 0.5,
                     na.rm = na.rm, names = FALSE, type = 1L, ...)
 }
+

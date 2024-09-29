@@ -8,14 +8,14 @@
 \alias{terms.mid}
 \title{Extract Information from a mid Object}
 \usage{
-mid.extract(x, component, ...)
+mid.extract(object, component, ...)
 
-mid.encoding.info(x, ...)
+mid.encoding.info(object, ...)
 
-mid.frames(x, ...)
+mid.frames(object, ...)
 
 mid.terms(
-  x,
+  object,
   main.effect = TRUE,
   interaction = TRUE,
   require = NULL,
@@ -26,7 +26,7 @@ mid.terms(
 \method{terms}{mid}(x, ...)
 }
 \arguments{
-\item{x}{a mid object.}
+\item{object}{a mid object.}
 
 \item{component}{a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "importance", "UR", "encoders", and names of any functional decomposition terms like "x1:x2" can be used.}
 
@@ -39,6 +39,8 @@ mid.terms(
 \item{require}{a character vector of feature names. Only terms related to at least one of the specified features will be returned.}
 
 \item{remove}{a character vector of feature names. All terms related to at least one of the specified features will not be returned.}
+
+\item{x}{a mid object.}
 }
 \description{
 Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
@@ -46,8 +48,8 @@ Returns information on the mid object including a summary for encoders, uninterp
 \examples{
 data(trees, package = "datasets")
 mid <- interpret(Volume ~ ., trees, k = 10)
-mid.extract(mid, encoders)
-mid.extract(mid, intercept)
+mid.extract(mid, encoding.info)
 mid.extract(mid, uninterpreted.rate)
 mid.extract(mid, Girth)
+mid.extract(mid, intercept)
 }

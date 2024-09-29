@@ -60,16 +60,6 @@ plot.mid.conditional <- function(
   }
   rownames(mat) <- obs$ids
   aes <- list(col = rep.int(1L, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
-  characterize <- function(expr)
-    ifelse(is.character(expr), expr, deparse(expr))
-  is.discrete <- function(x)
-    is.factor(x) || is.character(x) || is.logical(x)
-  rescale <- function(x) {
-    if (!is.numeric(x))
-      x <- as.numeric(as.factor(x))
-    rng <- range(x, na.rm = TRUE)
-    (x - rng[1L]) / max(1L, rng[2L] - rng[1L])
-  }
   if (!is.null(cl$variable.colour)) {
     cln <- characterize(cl$variable.colour)
     if (is.null(scale.palette)) {

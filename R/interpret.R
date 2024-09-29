@@ -62,8 +62,10 @@ UseMethod("interpret")
 #' @param interaction logical. If TRUE, and if \code{terms} and \code{formula} are not supplied, all second order interaction effects for each pair of features in \code{x} are calculated.
 #' @param terms a character vector of term labels, specifying the set of decomposition terms. If not passed, all main effects (and all second order interactions if \code{interaction} is TRUE) of \code{x} are used.
 #' @param singular.ok logical. If FALSE, a singular fit is an error.
+#' @param mode an integer specifying the general method of calculation. When \code{mode} is set to 1, centralization constraints are treated as penalties for the least squares problem. If \code{mode} is 2, the centralization constraints are used to reduce the number of unknown parameters, making the calculation safer and more robust.
 #' @param method an integer or a vector of length two, specifying the methods to be used to solve the least squares problem. A non-negative value will be passed to RcppEigen::fastLmPure and if a negative value is passed, stats::lm.fit will be used.
-#' @param lambda a numeric parameter for the weighted ridge regularization.
+#' @param lambda a numeric parameter for the penalty of weighted ridge regularization.
+#' @param kappa a numeric parameter for the penalty of the centralization constraints. Only used if \code{mode} is 1.
 #' @param na.action a function or a character which indicates what should happen when the data contain missing values (NAs). The default is na.omit.
 #' @param encoding.digits an integer specifying the rounding digits for encoding numeric variables when \code{type} is 1 (piecewise linear functions).
 #' @param use.catchall logical. If TRUE, less frequent levels are dropped and replaced with the catchall level.
@@ -79,30 +81,20 @@ UseMethod("interpret")
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
-    terms = NULL, singular.ok = FALSE, method = NULL, lambda = 0L,
-    na.action = getOption("na.action"),
+    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
+    lambda = 0L, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
 ) {
 
   cl <- match.call()
   dots <- list(...)
-  if (missing(interaction) && !is.null(dots$ie))
-    interaction <- dots$ie
-  if (missing(singular.ok) && !is.null(dots$ok))
-    singular.ok <- dots$ok
-  expand.matrix <-
-    ifelse(!is.null(dots$expand.matrix), dots$expand.matrix, FALSE)
-  kappa <-
-    ifelse(!is.null(dots$kappa), dots$kappa, 1L)
-  weighted.norm <-
-    ifelse(!is.null(dots$weighted.norm), dots$weighted.norm, singular.ok)
-  fit.intercept <-
-    ifelse(!is.null(dots$fit.intercept), dots$fit.intercept, FALSE)
-  interpolate.beta <-
-    ifelse(!is.null(dots$interpolate.beta), dots$interpolate.beta, TRUE)
-  weighted.encoding <-
-    ifelse(!is.null(dots$weighted.encoding), dots$weighted.encoding, FALSE)
+  if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
+  if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
+  fit.intercept <- if.not.null(dots$fit.intercept, FALSE)
+  interpolate.beta <- if.not.null(dots$interpolate.beta, TRUE)
+  weighted.norm <- if.not.null(dots$weighted.norm, singular.ok)
+  weighted.encoding <- if.not.null(dots$weighted.encoding, FALSE)
 
   # preprocess data --------
   if (!is.data.frame(x))
@@ -195,10 +187,7 @@ interpret.default <- function(
   if (length(type) == 1L)
     type <- c(type, type)
   f <- function(tag, d) {
-    frm <- frames[[tag]]
-    if (inherits(frm, "list"))
-      return(frm[[min(d, length(frm))]])
-    frm
+    if.not.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
   }
   if (is.null(method))
     method <- ifelse(!singular.ok, 0L, 5L)
@@ -275,7 +264,7 @@ interpret.default <- function(
     X[, 1L] <- 1
   } else {
     intercept <- stats::weighted.mean(Y, weights)
-    intercept <- ifelse(abs(intercept) < nil, 0, intercept)
+    intercept <- attract(intercept, nil)
     Y <- Y - intercept
   }
   ## main effects
@@ -350,14 +339,14 @@ interpret.default <- function(
       R[i, fi + i] <- ifelse(weighted.norm, 1, Ddiag[fi + i])
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
-    w <- c(w, rep.int(lambda, nreg))
+    w <- c(w, rep.int(sqrt(lambda), nreg))
   }
 
   # get the least squares solution --------
-  if (expand.matrix) {
+  if (mode == 1L) {
     X <- rbind(X, M)
     Y <- c(Y, numeric(nrow(M)))
-    w <- c(w, rep.int(kappa, nrow(M)))
+    w <- c(w, rep.int(sqrt(kappa), nrow(M)))
     r <- 0L
     if (method >= 0L) {
       z <- try(RcppEigen::fastLmPure(X * w, Y * w, method), silent = TRUE)
@@ -368,9 +357,10 @@ interpret.default <- function(
     }
     beta <- z$coefficients
     rsd <- z$residuals[1L:n] / w[1L:n]
-    crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
+    crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)] / sqrt(kappa)
     if (any(abs(crsd) > nil)) {
-      message("centralization is not strictly achieved")
+      message(paste0("centralization is not strictly achieved: ",
+                     format(max(abs(crsd)), digits = 6L)))
     }
   } else {
     Msvd <- svd(M, nv = ncol)
@@ -445,7 +435,7 @@ interpret.default <- function(
   # calculate the uninterpreted rate --------
   tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
   uiq <- stats::weighted.mean(rsd ^ 2, weights)
-  uir <- ifelse(abs(uir <- uiq / tot) < nil, 0, uir)
+  uir <- attract(uiq / tot, nil)
 
   # output the result --------
   obj <- list()
@@ -474,7 +464,7 @@ interpret.default <- function(
     mu <- stats::weighted.mean(yres, weights)
     rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
     ruiq <- stats::weighted.mean((rr <- yres - obj$fitted.values) ^ 2, weights)
-    ruir <- ifelse(abs(ruir <- ruiq / rtot) < nil, 0, ruir)
+    ruir <- attract(ruiq / rtot, nil)
     obj$response.residuals <- as.numeric(rr)
     obj$uninterpreted.rate <- c(working = uir, response = ruir)
   }
