@@ -64,11 +64,53 @@ interactions <- mid.terms(mid, main.effect = FALSE)
 grid.arrange(grobs = mid.plots(mid, interactions, limits = NULL))
 ```
 
-```{r diamonds_ggmid}
-# custom visualization
-ggmid(mid, "carat:clarity", scale.type = "viridis",
-      add.intercept = TRUE, include.main.effects = TRUE) +
-  geom_violin(data = diamonds, alpha = .2)
+As another example, we fit a two-dimensional MID model of the `Bikeshare` dataset included in `ISLR2`.
+
+```{r bikeshare_model}
+# Bikeshare dataset
+data(Bikeshare, package = "ISLR2")
+set.seed(42)
+train_rows <- sample(nrow(Bikeshare), nrow(Bikeshare) * .75)
+train <- Bikeshare[ train_rows, ]
+valid <- Bikeshare[-train_rows, ]
+# fit a two-dimensional model
+mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
+                 weathersit + temp + hum + windspeed)^2,
+                 data = train, lambda = .01, link = "log")
+```
+
+The fitted MID model can be used to predict the number of bike rentals.
+
+```{r bikeshare_prediction}
+# predict the number of bike rentals
+preds <- predict(mid, valid)
+data.frame(actual = valid$bikers[1:12], predicted = preds[1:12])
+# rmse loss
+rmse <- function(x, y) {
+  cat("RMSE:", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
+}
+rmse(valid$bikers, preds)
+```
+
+```{r bikeshare_main_effects}
+# main effects
+plots <- mid.plots(mid)
+grid.arrange(grobs = plots[1:4], nrow = 2)
+grid.arrange(grobs = plots[5:7], nrow = 1)
+```
+
+The importance of each term (or the corresponding component function) of a MID model can be measured as the mean absolute effect of it. Drawing a heatmap is a useful way to find important two-way interactions.
+
+```{r bikeshare_importance}
+# draw a heatmap of term importance
+ggmid(mid.importance(mid), type = "heatmap")
+```
+
+And in the visualization of the most important two-way interaction between `hr` and `workingday`, we can see the difference in the hourly pattern of bike rentals on weekdays and holidays due to the effect of commuting.
+
+```{r bikeshare_interaction}
+# visualize the most important interaction effect
+ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE)
 ```
 
 **Fitting a MID Model as a Global Surrogate of the Target Model**
@@ -88,13 +130,10 @@ model <- ranger(wage ~ ., train, importance = "permutation",
                 num.trees = 1000, mtry = 3, min.node.size = 13,
                 sample.fraction = .2281)
 # RMSE loss
-rmse <- function(x, y) {
-  cat("RMSE :", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
-}
 rmse(predict(model, valid)$predictions, valid$wage)
 ```
 
-When the argument `model` is passed, `interpret()` replaces the values of the response variable with the predicted values extracted from the target model. Thus, the fitted MID model can be viewed as an interpretable model of the target model.
+When the target model is passed to the argument `model`, `interpret()` replaces the response variable with the values predicted by the target model. Thus, the fitted MID model can be viewed as *an interpretable model of the target model*.
 
 ```{r wage_mid}
 # MID surrogae or the ranger model
@@ -110,26 +149,27 @@ To the extent that the MID model is acceptable as a surrogate for the target mod
 # main effects
 grid.arrange(grobs = mid.plots(mid))
 # custom plot for the most important interaction
-ggmid(mid, term = "age:education",
-      include.main.effects = TRUE, scale.type = "viridis") +
-  geom_violin(data = train, alpha = .2)
+ggmid(mid, term = "age:education", include.main.effects = TRUE)
 ```
 
-The importance of each term (or the corresponding component function) of a MID model can be measured as the mean absolute effect of it.
+The following plot compares the *permutation feature importance* (PFI) of the target `ranger` model and the term importance (TI) of the MID surrogate model.
 
-```{r importance, fig.height = 4}
-# importance of the component terms
-autoplot(mid.importance(mid), max.terms = 20)
+```{r wage_importance, fig.height = 4}
 # permutation feature importance of variables
 imp <- sort(model$variable.importance, decreasing = FALSE)
 imp <- data.frame(variable = factor(names(imp), levels = names(imp)),                   importance = imp)
-ggplot(imp, aes(y = variable, x = importance)) +
-  geom_col()
+# importance of the component terms
+grid.arrange(nrow = 1,
+  ggmid(mid.importance(mid), max.terms = 12) +
+    labs(subtitle = "Surrogate Model (TI)"),
+  ggplot(imp, aes(y = variable, x = importance)) +
+    geom_col() + labs(subtitle = "Target Model (PFI)")
+)
 ```
 
-It is also easy to create ICE plots for the fitted MID surrogate.
+It is easy to generate *individual conditional expectation* (ICE) plots for the fitted MID surrogate model. In addition, the ICE can be decomposed into the effects of the component functions.
 
-```{r conditional}
+```{r wage_conditional}
 # create a mid conditional object
 mc <- mid.conditional(mid, "age", train)
 # visualize the individual conditional expectation

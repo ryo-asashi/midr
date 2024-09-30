@@ -82,14 +82,88 @@ grid.arrange(grobs = mid.plots(mid, interactions, limits = NULL))
 
 <img src="man/figures/README-diamonds_terms-2.png" width="100%" />
 
+As another example, we fit a two-dimensional MID model of the
+`Bikeshare` dataset included in `ISLR2`.
+
 ``` r
-# custom visualization
-ggmid(mid, "carat:clarity", scale.type = "viridis",
-      add.intercept = TRUE, include.main.effects = TRUE) +
-  geom_violin(data = diamonds, alpha = .2)
+# Bikeshare dataset
+data(Bikeshare, package = "ISLR2")
+set.seed(42)
+train_rows <- sample(nrow(Bikeshare), nrow(Bikeshare) * .75)
+train <- Bikeshare[ train_rows, ]
+valid <- Bikeshare[-train_rows, ]
+# fit a two-dimensional model
+mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
+                 weathersit + temp + hum + windspeed)^2,
+                 data = train, lambda = .01, link = "log")
 ```
 
-<img src="man/figures/README-diamonds_ggmid-1.png" width="100%" />
+The fitted MID model can be used to predict the number of bike rentals.
+
+``` r
+# predict the number of bike rentals
+preds <- predict(mid, valid)
+data.frame(actual = valid$bikers[1:12], predicted = preds[1:12])
+#>    actual  predicted
+#> 1       1   1.698917
+#> 2      56  83.267599
+#> 3      84  99.675678
+#> 4      93  76.897613
+#> 5      37  39.543672
+#> 6      36  29.854852
+#> 7       6   5.191092
+#> 8       3   1.066961
+#> 9      53  67.526821
+#> 10     93 100.375652
+#> 11     31  35.168636
+#> 12      3   4.316586
+```
+
+``` r
+# rmse loss
+rmse <- function(x, y) {
+  cat("RMSE:", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
+}
+rmse(valid$bikers, preds)
+#> RMSE: 41.0327
+```
+
+``` r
+# main effects
+plots <- mid.plots(mid)
+grid.arrange(grobs = plots[1:4], nrow = 2)
+```
+
+<img src="man/figures/README-bikeshare_main_effects-1.png" width="100%" />
+
+``` r
+grid.arrange(grobs = plots[5:7], nrow = 1)
+```
+
+<img src="man/figures/README-bikeshare_main_effects-2.png" width="100%" />
+
+The importance of each term (or the corresponding component function) of
+a MID model can be measured as the mean absolute effect of it. Drawing a
+heatmap is a useful way to find important two-way interactions.
+
+``` r
+# draw a heatmap of term importance
+ggmid(mid.importance(mid), type = "heatmap")
+```
+
+<img src="man/figures/README-bikeshare_importance-1.png" width="100%" />
+
+And in the visualization of the most important two-way interaction
+between `hr` and `workingday`, we can see the difference in the hourly
+pattern of bike rentals on weekdays and holidays due to the effect of
+commuting.
+
+``` r
+# visualize the most important interaction effect
+ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE)
+```
+
+<img src="man/figures/README-bikeshare_interaction-1.png" width="100%" />
 
 **Fitting a MID Model as a Global Surrogate of the Target Model**
 
@@ -109,17 +183,14 @@ model <- ranger(wage ~ ., train, importance = "permutation",
                 num.trees = 1000, mtry = 3, min.node.size = 13,
                 sample.fraction = .2281)
 # RMSE loss
-rmse <- function(x, y) {
-  cat("RMSE :", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
-}
 rmse(predict(model, valid)$predictions, valid$wage)
-#> RMSE : 32.9839
+#> RMSE: 32.9839
 ```
 
-When the argument `model` is passed, `interpret()` replaces the values
-of the response variable with the predicted values extracted from the
-target model. Thus, the fitted MID model can be viewed as an
-interpretable model of the target model.
+When the target model is passed to the argument `model`, `interpret()`
+replaces the response variable with the values predicted by the target
+model. Thus, the fitted MID model can be viewed as *an interpretable
+model of the target model*.
 
 ``` r
 # MID surrogae or the ranger model
@@ -144,7 +215,7 @@ print(mid, omit.values = TRUE)
 ``` r
 # interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
-#> RMSE : 2.75628
+#> RMSE: 2.75628
 ```
 
 To the extent that the MID model is acceptable as a surrogate for the
@@ -159,34 +230,33 @@ grid.arrange(grobs = mid.plots(mid))
 
 ``` r
 # custom plot for the most important interaction
-ggmid(mid, term = "age:education",
-      include.main.effects = TRUE, scale.type = "viridis") +
-  geom_violin(data = train, alpha = .2)
+ggmid(mid, term = "age:education", include.main.effects = TRUE)
 ```
 
 <img src="man/figures/README-wage_terms-2.png" width="100%" />
 
-The importance of each term (or the corresponding component function) of
-a MID model can be measured as the mean absolute effect of it.
-
-``` r
-# importance of the component terms
-autoplot(mid.importance(mid), max.terms = 20)
-```
-
-<img src="man/figures/README-importance-1.png" width="100%" />
+The following plot compares the *permutation feature importance* (PFI)
+of the target `ranger` model and the term importance (TI) of the MID
+surrogate model.
 
 ``` r
 # permutation feature importance of variables
 imp <- sort(model$variable.importance, decreasing = FALSE)
 imp <- data.frame(variable = factor(names(imp), levels = names(imp)),                   importance = imp)
-ggplot(imp, aes(y = variable, x = importance)) +
-  geom_col()
+# importance of the component terms
+grid.arrange(nrow = 1,
+  ggmid(mid.importance(mid), max.terms = 12) +
+    labs(subtitle = "Surrogate Model (TI)"),
+  ggplot(imp, aes(y = variable, x = importance)) +
+    geom_col() + labs(subtitle = "Target Model (PFI)")
+)
 ```
 
-<img src="man/figures/README-importance-2.png" width="100%" />
+<img src="man/figures/README-wage_importance-1.png" width="100%" />
 
-It is also easy to create ICE plots for the fitted MID surrogate.
+It is easy to generate *individual conditional expectation* (ICE) plots
+for the fitted MID surrogate model. In addition, the ICE can be
+decomposed into the effects of the component functions.
 
 ``` r
 # create a mid conditional object
@@ -195,7 +265,7 @@ mc <- mid.conditional(mid, "age", train)
 ggmid(mc, variable.colour = education, alpha = .2)
 ```
 
-<img src="man/figures/README-conditional-1.png" width="100%" />
+<img src="man/figures/README-wage_conditional-1.png" width="100%" />
 
 ``` r
 # visualize the effects of each component function
@@ -207,4 +277,4 @@ grid.arrange(
 )
 ```
 
-<img src="man/figures/README-conditional-2.png" width="100%" />
+<img src="man/figures/README-wage_conditional-2.png" width="100%" />

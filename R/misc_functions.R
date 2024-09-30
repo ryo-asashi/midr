@@ -3,7 +3,8 @@ ifnot.null <- function(x, y) {
 }
 
 attract <- function(x, margin) {
-  if (abs(x) <= margin) 0 else x
+  x[abs(x) <= margin] <- 0
+  x
 }
 
 is.discrete <- function(x) {
@@ -18,7 +19,9 @@ rescale <- function(x) {
   if (!is.numeric(x))
     x <- as.numeric(as.factor(x))
   rng <- range(x, na.rm = TRUE)
-  (x - rng[1L]) / max(1L, rng[2L] - rng[1L])
+  if (rng[1L] == rng[2L])
+    return(x - rng[1L])
+  (x - rng[1L]) / (rng[2L]- rng[1L])
 }
 
 

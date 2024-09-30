@@ -359,7 +359,7 @@ interpret.default <- function(
     rsd <- z$residuals[1L:n] / w[1L:n]
     crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)] / sqrt(kappa)
     if (any(abs(crsd) > nil)) {
-      message(paste0("centralization is not strictly achieved: ",
+      message(paste0("centralization is not strictly achieved: max residual ",
                      format(max(abs(crsd)), digits = 6L)))
     }
   } else {
@@ -398,7 +398,7 @@ interpret.default <- function(
     if (inherits(beta, "try-error"))
       beta <- as.numeric(stats::lm.fit(Memp, beta)$coefficients)
   }
-  beta[abs(beta) < nil] <- 0
+  beta <- attract(beta, nil)
 
   # summarize results of the decomposition --------
   ## intercept
