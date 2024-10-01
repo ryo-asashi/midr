@@ -21,7 +21,7 @@ interpret(object, ...)
   interaction = FALSE,
   terms = NULL,
   singular.ok = FALSE,
-  mode = 1L,
+  mode = NULL,
   method = NULL,
   lambda = 0L,
   kappa = 1e+06,

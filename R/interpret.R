@@ -81,7 +81,7 @@ UseMethod("interpret")
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
-    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
+    terms = NULL, singular.ok = FALSE, mode = NULL, method = NULL,
     lambda = 0L, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
@@ -189,8 +189,10 @@ interpret.default <- function(
   f <- function(tag, d) {
     ifnot.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
   }
+  if (is.null(mode))
+    mode <- if (lambda <= 0) 1L else 2L
   if (is.null(method))
-    method <- ifelse(!singular.ok, 0L, 5L)
+    method <- if (!singular.ok) 0L else 5L
   if (!singular.ok && any(method == 1L:2L))
     message("when 'method' is set to 1 or 2, singular fits cannot be detected")
 
@@ -251,7 +253,7 @@ interpret.default <- function(
   ncol <- fi + u + v
   ncon <- p + mi
   if (ncol > max.ncol)
-    stop("number of columns of the design matrix exceeded the limit")
+    stop(paste0("number of columns of the design matrix (", ncol, ") exceeded the limit (", max.ncol, ")"))
   X <- matrix(0, nrow = n, ncol = ncol)
   M <- matrix(0, nrow = ncon, ncol = ncol)
   Y <- y
@@ -356,11 +358,12 @@ interpret.default <- function(
       z <- stats::lm.fit(X * w, Y * w)
     }
     beta <- z$coefficients
+    beta[is.na(beta)] <- 0
     rsd <- z$residuals[1L:n] / w[1L:n]
-    crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)] / sqrt(kappa)
-    if (any(abs(crsd) > nil)) {
-      message(paste0("centralization is not strictly achieved: max residual ",
-                     format(max(abs(crsd)), digits = 6L)))
+    crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
+    if (any(abs(crsd) > (nil * sqrt(kappa) * wsum))) {
+      message(paste0("not strictly centralized: max absolute expected effect is ",
+                     format(max(abs(crsd)) / sqrt(kappa) / wsum, digits = 6L)))
     }
   } else {
     Msvd <- svd(M, nv = ncol)
@@ -398,7 +401,7 @@ interpret.default <- function(
     if (inherits(beta, "try-error"))
       beta <- as.numeric(stats::lm.fit(Memp, beta)$coefficients)
   }
-  beta <- attract(beta, nil)
+  beta[abs(beta) <= nil] <- 0
 
   # summarize results of the decomposition --------
   ## intercept
