@@ -22,30 +22,25 @@ mid.plots <- function(
     limits = c(NA, NA), add.intercept = FALSE, max.plots = NULL,
     engine = c("ggplot2", "base", "graphics"), ...) {
   engine <- match.arg(engine)
-  if (length(terms) == 0)
+  if (length(terms) == 0L)
     return(NULL)
   if (!is.null(max.plots) && length(terms) > max.plots) {
     message("the number of terms exceeded the maximum number of plots")
-    terms <- terms[1:max.plots]
+    terms <- terms[1L:max.plots]
   }
   true_terms <- terms
   for (i in seq_len(length(terms))) {
-    if (!(terms[i] %in% object$terms)) {
-      tags <- unlist(strsplit(terms[i], ":"))
-      true_terms[i] <- paste0(rev(tags), collapse=":")
-      if (!(true_terms[i] %in% object$terms))
-        stop(paste0("the term `", terms[i], "` does not exist"))
-    }
+    true_terms[i] <- term.check(terms[i], object$terms, stop = TRUE)
   }
-  if (!is.null(limits) && (is.na(limits[1]) || is.na(limits[2]))) {
+  if (!is.null(limits) && (is.na(limits[1L]) || is.na(limits[2L]))) {
     dfs <- c(object$main.effects, object$interactions)[true_terms]
-    if (is.na(limits[1])) {
-      limits[1] <-
+    if (is.na(limits[1L])) {
+      limits[1L] <-
         min(sapply(dfs, function(x) min(x$mid, na.rm = TRUE))) +
         ifelse(add.intercept, object$intercept, 0)
     }
-    if (is.na(limits[2])) {
-      limits[2] <-
+    if (is.na(limits[2L])) {
+      limits[2L] <-
         max(sapply(dfs, function(x) max(x$mid, na.rm = TRUE))) +
         ifelse(add.intercept, object$intercept, 0)
     }

@@ -24,6 +24,24 @@ rescale <- function(x) {
   (x - rng[1L]) / (rng[2L]- rng[1L])
 }
 
+term.split <- function(x) {
+  unlist(strsplit(x, split = ":"), use.names = FALSE)
+}
+
+term.check <- function(x, terms, stop = TRUE) {
+  if (!any(x == terms)) {
+    rx <- paste0(rev(term.split(x)), collapse = ":")
+    if (!any(rx == terms)) {
+      if (stop)
+        stop(paste0("term '", x, "' does not exist"))
+      message(paste0("term '", x, "' does not exist"))
+      return(NULL)
+    }
+    return(rx)
+  }
+  return(x)
+}
+
 
 #' Weighted Sample Quantile
 #'

@@ -17,7 +17,7 @@ UseMethod("get.yhat")
 #'
 get.yhat.default <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   yhat <- try(DALEX::yhat(X.model, newdata, ...), silent = TRUE)
   if (inherits(yhat, "try-error")) {
     yhat <- stats::predict(X.model, newdata, ...)
@@ -63,7 +63,7 @@ get.yhat.glm <- function(X.model, newdata, ...) {
 #'
 get.yhat.rpart <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   nclass <- length(attr(X.model, "ylevels"))
   if (nclass > 0L) {
     yhat <- stats::predict(object = X.model, newdata = newdata,
@@ -83,7 +83,7 @@ get.yhat.rpart <- function(X.model, newdata, ...) {
 #'
 get.yhat.randomForest <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   if (X.model$type == "regression") {
     yhat <- stats::predict(object = X.model, newdata = newdata)
   } else {
@@ -100,7 +100,7 @@ get.yhat.randomForest <- function(X.model, newdata, ...) {
 #'
 get.yhat.ranger <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   if (na.exists <- anyNA(newdata)) {
     newdata <- stats::na.exclude(newdata)
     naa <- stats::na.action(newdata)
@@ -125,7 +125,7 @@ get.yhat.ranger <- function(X.model, newdata, ...) {
 #'
 get.yhat.svm <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   if (X.model$type == 0) {
     yhat <- stats::predict(object = X.model, newdata = newdata,
                            probability = TRUE, na.action = stats::na.exclude)
@@ -145,11 +145,11 @@ get.yhat.svm <- function(X.model, newdata, ...) {
 #'
 get.yhat.ksvm <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
-  if (X.model@type %in% c("eps-svr", "eps-bsvr", "nu-svr")) {
+  target <- ifnot.null(dots$target, 1L)
+  if (any(X.model@type == c("eps-svr", "eps-bsvr", "nu-svr"))) {
     yhat <- kernlab::predict(object = X.model, newdata = newdata,
                              type = "response")
-  } else if (X.model@type %in% c("C-svc", "nu-svc", "C-bsvm", "spoc-svc")) {
+  } else if (any(X.model@type == c("C-svc", "nu-svc", "C-bsvm", "spoc-svc"))) {
     yhat <- kernlab::predict(object = X.model, newdata = newdata,
                              type = "probabilities")
     if (is.matrix(yhat))
@@ -164,7 +164,7 @@ get.yhat.ksvm <- function(X.model, newdata, ...) {
 #'
 get.yhat.AccurateGLM <- function(X.model, newdata, ...) {
   dots <- list(...)
-  s <- ifelse(!is.null(dots$s), dots$s, 0)
+  s <- ifnot.null(dots$s, 0L)
   if (na.exists <- anyNA(newdata)) {
     newdata <- stats::na.exclude(newdata)
     naa <- stats::na.action(newdata)
@@ -185,7 +185,7 @@ get.yhat.AccurateGLM <- function(X.model, newdata, ...) {
 #'
 get.yhat.model_fit <- function(X.model, newdata, ...) {
   dots <- list(...)
-  target <- ifelse(!is.null(dots$target), dots$target, 1L)
+  target <- ifnot.null(dots$target, 1L)
   if (X.model$spec$mode == "regression") {
     yhat <- stats::predict(object = X.model, new_data = newdata,
                            type = "numeric")

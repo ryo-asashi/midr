@@ -42,7 +42,8 @@ ggmid.mid <- function(
     scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
     partition = 100L, ...) {
   interaction.type = match.arg(interaction.type)
-  tags <- unlist(strsplit(term, ":"))
+  tags <- term.split(term)
+  term <- term.check(term, object$terms, stop = TRUE)
   if ((len <- length(tags)) == 1L) {
     # main effect
     df <- object$main.effects[[term]]
@@ -71,8 +72,6 @@ ggmid.mid <- function(
       pl <- pl + ggplot2::scale_y_continuous(limits = limits)
   } else if (len == 2L) {
     # interaction
-    if (!(term %in% object$terms))
-      term <- paste0(rev(tags), collapse=":")
     df <- object$interactions[[term]]
     df <- stats::na.omit(df)
     if (add.intercept)
@@ -89,7 +88,7 @@ ggmid.mid <- function(
       }
     }
     cns <- paste0(rep(tags, each = 2L), c("_min", "_max"))
-    mpt <- ifelse(add.intercept, object$intercept, 0)
+    mpt <- if (add.intercept) object$intercept else 0
     pl <- ggplot2::ggplot(data = df,
       ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
     if (is.function(scale.type) || scale.type %in% c("viridis", "gradient")) {

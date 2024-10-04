@@ -81,7 +81,7 @@ UseMethod("interpret")
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
-    terms = NULL, singular.ok = FALSE, mode = NULL, method = NULL,
+    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
     lambda = 0L, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
@@ -142,11 +142,7 @@ interpret.default <- function(
   if (anyNA(y))
     stop("NA values in 'y' are not allowed")
   if (!is.null(naa.y <- stats::na.action(y))) {
-    x <- x[-naa.y, ]
-    if (!is.data.frame(x)) {
-      x <- as.data.frame(x)
-      colnames(x) <- tags
-    }
+    x <- x[-naa.y, , drop = FALSE]
     weights <- weights[-naa.y]
     naai$ids <- naai$ids[-naa.y]
     attr(y, "na.action") <- NULL
@@ -181,7 +177,7 @@ interpret.default <- function(
   if (length(k) == 1L)
     k <- c(k, ceiling(sqrt(max(k, 0L))))
   if (is.na(k[1L]))
-    k[1L] <- min(25L, max(2L, ifelse(singular.ok, 25L, n %/% p)))
+    k[1L] <- min(25L, max(2L, if (singular.ok) 25L else n %/% p))
   if (is.na(k[2L]))
     k[2L] <- min(5L, max(2L, floor(sqrt(n / q))))
   if (length(type) == 1L)
@@ -189,8 +185,6 @@ interpret.default <- function(
   f <- function(tag, d) {
     ifnot.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
   }
-  if (is.null(mode))
-    mode <- if (lambda <= 0) 1L else 2L
   if (is.null(method))
     method <- if (!singular.ok) 0L else 5L
   if (!singular.ok && any(method == 1L:2L))
@@ -224,7 +218,7 @@ interpret.default <- function(
   if (ie <- (q > 0L)) {
     iencs <- list()
     imats <- list()
-    for (tag in unique(unlist(strsplit(its, ":"), use.names = FALSE))) {
+    for (tag in unique(term.split(its))) {
       iencs[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(x = x[, tag], k = k[2L], type = type[2L], tag = tag,
@@ -239,9 +233,9 @@ interpret.default <- function(
     }
     ilens <- sapply(iencs, function(x) x$n)
     plens <- structure(integer(q), names = its)
-    for (it in its) {
-      pcl <- unlist(strsplit(it, ":"), use.names = FALSE)
-      plens[it] <- ilens[pcl[1L]] * ilens[pcl[2L]]
+    for (i in seq_len(q)) {
+      pcl <- term.split(its[i])
+      plens[i] <- ilens[pcl[1L]] * ilens[pcl[2L]]
       mi <- mi + ilens[pcl[1L]] + ilens[pcl[2L]]
     }
     pcumlens <- structure(cumsum(c(0L, plens)), names = c(its, NA))
@@ -277,9 +271,8 @@ interpret.default <- function(
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
       if (vsum == 0) {
-        ctp <- c(ifelse(orvs[i] && j > 1L, m - 1L, NA),
-                 ifelse(orvs[i] && j < mlens[[i]], m + 1L, NA))
-        ctp <- stats::na.omit(ctp)
+        ctp <- c(if (orvs[i] && j > 1L) m - 1L,
+                 if (orvs[i] && j < mlens[[i]]) m + 1L)
         emp[[length(emp) + 1L]] <-
           list(m = m, ctp = ctp, len = max(1L, length(ctp)))
         next
@@ -296,7 +289,7 @@ interpret.default <- function(
   ## interactions
   ofs <- p
   for (i in seq_len(q)) {
-    pcl <- unlist(strsplit(its[i], ":"), use.names = FALSE)
+    pcl <- term.split(its[i])
     nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
     vals <- as.matrix(expand.grid(1L:nval[1L], 1L:nval[2L]))
     for (j in 1L:plens[[i]]) {
@@ -305,11 +298,10 @@ interpret.default <- function(
       X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
       vsum <- sum(X[, m] * weights)
       if (vsum == 0) {
-        ctp <- c(ifelse(orvs[pcl[1L]] && val[1L] > 1L, m - 1L, NA),
-                 ifelse(orvs[pcl[1L]] && val[1L] < nval[1L], m + 1L, NA),
-                 ifelse(orvs[pcl[2L]] && val[2L] > 1L, m - nval[1L], NA),
-                 ifelse(orvs[pcl[2L]] && val[2L] < nval[2L], m + nval[1L], NA))
-        ctp <- stats::na.omit(ctp)
+        ctp <- c(if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
+                 if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
+                 if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
+                 if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L])
         emp[[length(emp) + 1L]] <-
           list(m = m, ctp = ctp, len = max(1L, length(ctp)))
         next
@@ -338,7 +330,7 @@ interpret.default <- function(
     nreg <- u + v
     R <- matrix(0, nrow = nreg, ncol = ncol)
     for (i in seq_len(nreg))
-      R[i, fi + i] <- ifelse(weighted.norm, 1, Ddiag[fi + i])
+      R[i, fi + i] <- if (weighted.norm) 1 else Ddiag[fi + i]
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
     w <- c(w, rep.int(sqrt(lambda), nreg))
@@ -392,7 +384,7 @@ interpret.default <- function(
     beta <- beta / Ddiag
   if (interpolate.beta && nemp > 0L) {
     bemp <- diag(1, ncol)
-    for (i in 1:nemp) {
+    for (i in 1L:nemp) {
       bemp[emp[[i]]$m, emp[[i]]$ctp] <- 1
       bemp[emp[[i]]$m, emp[[i]]$m] <- - emp[[i]]$len
     }
@@ -405,34 +397,44 @@ interpret.default <- function(
   beta[abs(beta) <= nil] <- 0
 
   # summarize results of the decomposition --------
+  fm <- matrix(0, nrow = n, ncol = p + q)
+  colnames(fm) <- terms
   ## intercept
   if(fit.intercept)
     intercept <- beta[1L]
+  attr(fm, "constant") <- intercept
   ## main effects
   if (me) {
     main.effects <- list()
     for (i in seq_len(p)) {
       dat <- mencs[[mts[i]]]$frame
-      dat$density <- dns[(fi + mcumlens[i] + 1L):(fi + mcumlens[i + 1L])]
-      dat$mid <- beta[(fi + mcumlens[i] + 1L):(fi + mcumlens[i + 1L])]
+      lt <- fi + mcumlens[i] + 1L
+      rt <- fi + mcumlens[i + 1L]
+      dat$density <- dns[lt:rt]
+      dat$mid <- beta[lt:rt]
       main.effects[[mts[i]]] <- dat
+      xmat <- mmats[[mts[i]]]
+      fm[, i] <- xmat %*% dat$mid
     }
   }
   ## interactions
   if (ie) {
     interactions <- list()
     for (i in seq_len(q)) {
-      pcl <- unlist(strsplit(its[i], ":"), use.names = FALSE)
+      pcl <- term.split(its[i])
       nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
       vals <- expand.grid(1L:nval[1L], 1L:nval[2L])
       dat <- cbind(iencs[[pcl[1L]]]$frame[vals[, 1L], ],
                    iencs[[pcl[2L]]]$frame[vals[, 2L], ])
-      dat$density <-
-        dns[(fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])]
-      dat$mid <-
-        beta[(fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])]
+      lt <- fi + u + pcumlens[i] + 1L
+      rt <- fi + u + pcumlens[i + 1L]
+      dat$density <- dns[lt:rt]
+      dat$mid <- beta[lt:rt]
       rownames(dat) <- NULL
       interactions[[its[i]]] <- dat
+      xmat <- X[1L:n, lt:rt]
+      mult <- if (weighted.norm) dat$mid * Ddiag[lt:rt] else dat$mid
+      fm[, p + i] <- xmat %*% mult
     }
   }
 
@@ -460,16 +462,17 @@ interpret.default <- function(
     obj$ie.encoders <- iencs
   }
   obj$uninterpreted.rate <- uir
-  obj$fitted.matrix <- predict.mid(obj, x, "na.pass", type = "terms")
-  obj$fitted.values <- predict.mid(obj, NULL, "na.pass", type = "response")
+  obj$fitted.matrix <- fm
+  obj$fitted.values <- rowSums(fm) + intercept
   obj$residuals <- rsd
   if (!is.null(link)) {
-    obj$linear.predictors <- predict.mid(obj, NULL, "na.pass", type = "link")
+    obj$linear.predictors <- obj$fitted.values
+    obj$fitted.values <- link$linkinv(obj$fitted.values)
+    obj$response.residuals <- yres - obj$fitted.values
     mu <- stats::weighted.mean(yres, weights)
     rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
-    ruiq <- stats::weighted.mean((rr <- yres - obj$fitted.values) ^ 2, weights)
+    ruiq <- stats::weighted.mean(obj$response.residuals ^ 2, weights)
     ruir <- attract(ruiq / rtot, nil)
-    obj$response.residuals <- as.numeric(rr)
     obj$uninterpreted.rate <- c(working = uir, response = ruir)
   }
   if (length(naai$ids) < naai$n.init) {
@@ -508,7 +511,7 @@ interpret.formula <- function(
     naai <- list(n.init = nrow(data), ids = 1L:nrow(data))
     if (is.null(weights))
       weights <- attr(data, "weights")
-    yvar <- ifelse(any("yhat" == colnames(data)), ".yhat", "yhat")
+    yvar <- if (any("yhat" == colnames(data))) ".yhat" else "yhat"
     rvar <- deparse(formula[[2L]])
     attr(data, "na.action") <- NULL
     data <- do.call(na.action, list(data[names(data) != rvar]))
@@ -524,11 +527,7 @@ interpret.formula <- function(
       stop("NA values found in the model predictions")
     if (!is.null(naa.y <- stats::na.action(yhat))) {
       tags <- colnames(data)
-      data <- data[-naa.y, ]
-      if (!is.data.frame(data)) {
-        data <- as.data.frame(data)
-        colnames(data) <- tags
-      }
+      data <- data[-naa.y, , drop = FALSE]
       weights <- weights[-naa.y]
       naai$ids <- naai$ids[-naa.y]
       attr(yhat, "na.action") <- NULL

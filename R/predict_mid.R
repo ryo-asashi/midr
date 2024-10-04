@@ -15,10 +15,13 @@ predict.mid <- function(
     object, newdata = NULL, na.action = getOption("na.action"),
     type = c("response", "link", "terms"), terms = object$terms, ...) {
   type <- match.arg(type)
-  if (!missing(terms))
-    terms <- unique(terms)
+  if (!missing(terms)) {
+    for (i in seq_len(length(terms)))
+      terms[i] <- term.check(terms[i], object$terms, stop = FALSE)
+    terms <- unique(terms[!is.na(terms)])
+  }
   if (is.null(newdata)) {
-    preds <- object$fitted.matrix
+    preds <- object$fitted.matrix[ , terms, drop = FALSE]
     naa <- stats::na.action(object)
   } else {
     if (any("mid" == colnames(newdata)))
@@ -33,10 +36,35 @@ predict.mid <- function(
     naa <- stats::na.action(newdata)
     n <- nrow(newdata)
     r <- length(terms)
-    preds <- matrix(0, nrow = n, ncol = r, dimnames = list(NULL, terms))
+    preds <- matrix(0, nrow = n, ncol = r)
+    colnames(preds) <- terms
+    spl <- sapply(strsplit(terms, ":"), length)
+    mts <- unique(terms[spl == 1L])
+    its <- unique(terms[spl == 2L])
+    mmats <- list()
+    for (tag in mts)
+      mmats[[tag]] <- object$me.encoders[[tag]]$encode(newdata[, tag])
+    imats <- list()
+    for (tag in unique(term.split(its)))
+      imats[[tag]] <- object$ie.encoders[[tag]]$encode(newdata[, tag])
     for (i in seq_len(r)) {
       term <- terms[i]
-      preds[, i] <- mid.f(object, term, x = newdata)
+      tags <- term.split(term)
+      if (length(tags) == 1L) {
+        X <- mmats[[term]]
+        mid <- object$main.effects[[term]]$mid
+      } else if (length(tags) == 2L) {
+        n1 <- object$ie.encoders[[tags[1L]]]$n
+        n2 <- object$ie.encoders[[tags[2L]]]$n
+        uni <- as.matrix(expand.grid(1L:n1, 1L:n2))
+        X <- matrix(0, nrow = n, ncol = nrow(uni))
+        for (j in seq_len(nrow(uni))) {
+          X[, j] <- as.numeric(imats[[tags[1L]]][, uni[j, 1L]] *
+                               imats[[tags[2L]]][, uni[j, 2L]])
+        }
+        mid <- object$interactions[[term]]$mid
+      }
+      preds[, i] <- X %*% mid
     }
     attr(preds, "constant") <- object$intercept
   }
@@ -60,11 +88,7 @@ predict.mid <- function(
 #' @export mid.f
 #'
 mid.f <- function(object, term, x, y = NULL) {
-  if (!any(term == object$terms)) {
-    message(paste0("The term '", term, "' does not exist."))
-    return(0)
-  }
-  tags <- unlist(strsplit(term, ":"), use.names = FALSE)
+  tags <- term.split(term)
   ie <- length(tags) == 2L
   if (is.matrix(x) || is.data.frame(x)) {
     if (ie)
@@ -72,25 +96,28 @@ mid.f <- function(object, term, x, y = NULL) {
     x <- x[, tags[1L]]
   }
   n <- length(x)
+  .term <- term.check(term, object$terms, stop = FALSE)
+  if (is.null(.term))
+    return(numeric(n))
   if (!ie) {
-    # main effect
-    enc <- object$me.encoders[[term]]
+    enc <- object$me.encoders[[.term]]
     X <- enc$encode(x)
-    mid <- object$main.effects[[term]]$mid
+    mid <- object$main.effects[[.term]]$mid
   } else {
-    # interaction
     if (length(x) != length(y))
-      stop("x and y must have the same length.")
-    enc1 <- object$ie.encoders[[tags[1L]]]
-    enc2 <- object$ie.encoders[[tags[2L]]]
-    mat1 <- enc1$encode(x)
-    mat2 <- enc2$encode(y)
-    uni <- as.matrix(expand.grid(1L:enc1$n, 1L:enc2$n))
+      stop("x and y must have the same length")
+    encs <- list(object$ie.encoders[[tags[1L]]],
+                 object$ie.encoders[[tags[2L]]])
+    mats <- list(encs[[1L]]$encode(x), encs[[2L]]$encode(y))
+    lr <- if (term == .term) 1L:2L else 2L:1L
+    uni <- as.matrix(expand.grid(1L:encs[[lr[1L]]]$n, 1L:encs[[lr[2L]]]$n))
     X <- matrix(0, nrow = n, ncol = nrow(uni))
-    for (j in seq_len(nrow(uni)))
-      X[, j] <- as.numeric(mat1[, uni[j, 1L]] * mat2[, uni[j, 2L]])
-    mid <- object$interactions[[term]]$mid
+    for (j in seq_len(nrow(uni))) {
+      X[, j] <- as.numeric(mats[[lr[1L]]][, uni[j, 1L]] *
+                           mats[[lr[2L]]][, uni[j, 2L]])
+    }
+    mid <- object$interactions[[.term]]$mid
   }
   mid[is.na(mid)] <- 0
-  as.numeric(X %*% mid)
+  X %*% mid
 }

@@ -131,7 +131,7 @@ plot.mid.importance <- function(
     graphics::barplot.default(height, ...)
   } else if (type == "heatmap") {
     rownames(x) <- terms <- as.character(x$term)
-    tags <- unique(unlist(strsplit(terms, ":")))
+    tags <- unique(term.split(terms))
     m <- length(tags)
     mat <- matrix(NA, m, m)
     for (i in seq_len(m)) {

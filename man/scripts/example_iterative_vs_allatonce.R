@@ -29,7 +29,7 @@ summary(mid2)
 ggmid(mid2, "x1:x2")
 #> uninterpreted rate : 0%
 # compare x1 main effect
-ggplot() + xlim(-11.1, 11.1) +
+ggplot() + xlim(-10, 10) +
   geom_function(fun = function(x) mid.f(mid, "x1", x)) +
   geom_function(fun = function(x) (5 / 6 * (x ^ 2 - 2)), lty = 2, col = 1) +
   geom_function(fun = function(x) mid.f(mid2, "x1", x)) +

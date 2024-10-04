@@ -86,12 +86,12 @@ numeric.encoder <- function(
           l <- reps[itv[i]]
           r <- reps[itv[i] + 1L]
           prop <- (r - new_x[i]) / (r - l)
+          if (!is.null(encoding.digits))
+            prop <- round(prop, digits = encoding.digits)
           mat[i, itv[i]] <- prop
           mat[i, itv[i] + 1L] <- 1 - prop
         }
       }
-      if (!is.null(encoding.digits))
-        mat <- round(mat, digits = encoding.digits)
       mat
     }
   } else if (type == 0L) {

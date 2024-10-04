@@ -27,12 +27,10 @@ plot(mid, "factor(workingday):hr")
 # create an object for ICE plots
 set.seed(42)
 ice.rows <- sample(nrow(valid), 200L)
-mc <- mid.conditional(mid, valid[ice.rows,], "hr")
-mc2 <- mid.conditional(mid, valid[ice.rows,], "factor(workingday)")
+mc <- mid.conditional(mid, "hr", data = valid[ice.rows,])
+mc2 <- mid.conditional(mid, "factor(workingday)", data = valid[ice.rows,])
 # visualize ICE plots
 plot(mc, variable.colour = factor(workingday))
 ggmid(mc, variable.colour = factor(workingday))
-ggmid(mc, variable.colour = factor(workingday)) +
-  coord_polar()
 plot(mc2, variable.colour = hr)
 ggmid(mc2, variable.colour = hr)

@@ -56,11 +56,13 @@ test_that("interpret() returns valid 'na.action'", {
 
 
 test_that("interpret() runs successfully for factor responses", {
+  # test 1
   x <- 1:5
   y <- factor(c("a", "a", "a", "b", "b"), levels = c("b", "a"))
   mid <- interpret(y ~ x)
   expect_equal(mid$intercept, 0.4)
   expect_equal(mid$target.level, "b")
+  # test 2
   f <- function(X.model, newdata) ifelse(newdata$x < 4, "alice", "bob")
   mid <- interpret(object = NULL, x = x, pred.fun = f)
   expect_equal(mid$intercept, 0.6)
@@ -69,9 +71,10 @@ test_that("interpret() runs successfully for factor responses", {
 
 
 test_that("interpret() returns valid result with weighted data", {
+  # test 1
   x <- c(1, 1, 2, 2, 3)
-  mid <- interpret(2 * x ~ x)
+  mid1 <- interpret(2 * x ~ x)
   mid2 <- interpret(x = 1:3, y = (1:3) * 2, weights = c(2, 2, 1))
-  expect_equal(mid$main.effects, mid2$main.effects)
-  expect_equal(mid$intercept, mid2$intercept)
+  expect_equal(mid1$main.effects, mid2$main.effects)
+  expect_equal(mid1$intercept, mid2$intercept)
 })

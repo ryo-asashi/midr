@@ -30,11 +30,7 @@ plot.mid.conditional <- function(
   if (!is.null(term)) {
     if (!inherits(x, "mid.conditional.effects"))
       stop("the term effects are not stored in the object")
-    if (!term %in% x$terms) {
-      term <- paste0(rev(unlist(strsplit(term, ":"))), collapse = ":")
-      if (!term %in% x$terms)
-        stop(paste0("'", term, "' is not a relevant term"))
-    }
+    term <- term.check(term, x$terms, stop = TRUE)
     yvar <- paste0("mid(", term, ")")
     obs[, yvar] <- x$observed.effects[, term]
     con[, yvar] <- x$conditional.effects[, term]

@@ -1,6 +1,6 @@
 #'
 #' datasets::airquality
-#' 
+#'
 library(midr)
 library(ggplot2)
 library(ranger)
@@ -36,3 +36,4 @@ grid.arrange(
   ggmid(mid, "Wind:Temp", add = TRUE, scale.type = "viridis") +
     geom_point(data = na.omit(train))
 ) |> suppressWarnings()
+

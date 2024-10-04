@@ -28,18 +28,19 @@ plot.mid <- function(
     scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
     m = 100L, ...) {
   dots <- list(...)
-  tags <- unlist(strsplit(term, ":"))
-  if ((len <- length(tags)) == 1) {
+  tags <- term.split(term)
+  term <- term.check(term, x$terms, stop = TRUE)
+  if ((len <- length(tags)) == 1L) {
     # main effect
     df <- x$main.effects[[term]]
     df <- stats::na.omit(df)
     if (add.intercept)
       df$mid <- df$mid + x$intercept
-    if (is.numeric(df[, 1])) {
+    if (is.numeric(df[, 1L])) {
       if (x$me.encoders[[term]]$type == "constant") {
         cns <- paste0(term, c("_min", "_max"))
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
-                          y = rep(df$mid, each = 2))
+                          y = rep(df$mid, each = 2L))
         args <- list(x = rdf$x, y = rdf$y, type = "l",
                      ylab = "mid", xlab = term)
       } else {
@@ -57,10 +58,8 @@ plot.mid <- function(
         args[[arg]] <- dots[[arg]]
       do.call("barplot", args)
     }
-  } else if (len == 2) {
+  } else if (len == 2L) {
     # interaction
-    if (!(term %in% x$terms))
-      term <- paste0(rev(tags), collapse=":")
     ms <- c(m, m)
     xy <- list(NULL, NULL)
     lat <- list(NULL, NULL)
@@ -95,7 +94,7 @@ plot.mid <- function(
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
     }
     if (is.function(scale.type)) {
-      stop("function is not allowed for 'scale.type' of 'plot.mid'.")
+      stop("function is not allowed for 'scale.type'")
     } else if (scale.type == "default") {
       zmax <- max(abs(zlim - zmid))
       zlim <- c(-zmax, zmax) + zmid
@@ -106,7 +105,7 @@ plot.mid <- function(
     } else if (scale.type == "gradient") {
       scale.palette <- c("#132B43", "#56B1F7")
     } else if (scale.type != "uncentralized") {
-      stop("invalid 'scale.type' is passed.")
+      stop("invalid 'scale.type' is passed")
     }
     if (is.function(scale.palette)) {
       pal <- scale.palette
