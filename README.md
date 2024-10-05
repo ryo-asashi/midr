@@ -105,18 +105,18 @@ The fitted MID model can be used to predict the number of bike rentals.
 preds <- predict(mid, valid)
 data.frame(actual = valid$bikers[1:12], predicted = preds[1:12])
 #>    actual  predicted
-#> 1       1   1.698917
-#> 2      56  83.267599
-#> 3      84  99.675678
-#> 4      93  76.897613
-#> 5      37  39.543672
-#> 6      36  29.854852
-#> 7       6   5.191092
-#> 8       3   1.066961
-#> 9      53  67.526821
-#> 10     93 100.375652
-#> 11     31  35.168636
-#> 12      3   4.316586
+#> 1       1   1.698922
+#> 2      56  83.267957
+#> 3      84  99.675279
+#> 4      93  76.897362
+#> 5      37  39.543823
+#> 6      36  29.854763
+#> 7       6   5.191190
+#> 8       3   1.066977
+#> 9      53  67.527428
+#> 10     93 100.374671
+#> 11     31  35.168873
+#> 12      3   4.316623
 ```
 
 ``` r
@@ -165,6 +165,19 @@ ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE)
 
 <img src="man/figures/README-bikeshare_interaction-1.png" width="100%" />
 
+It is easy to generate *individual conditional expectation* (ICE) plots
+for the fitted MID surrogate model.
+
+``` r
+# create a mid conditional object
+ice_rows <- sample(nrow(valid), 200L)
+mc <- mid.conditional(mid, "hr", data = valid[ice_rows,])
+# visualize the individual conditional expectation
+ggmid(mc, variable.colour = factor(workingday), alpha = .2)
+```
+
+<img src="man/figures/README-bikeshare_conditional-1.png" width="100%" />
+
 **Fitting a MID Model as a Global Surrogate of the Target Model**
 
 In the next example, we construct a ranger model of `wage` based on the
@@ -188,9 +201,9 @@ rmse(predict(model, valid)$predictions, valid$wage)
 ```
 
 When the target model is passed to the argument `model`, `interpret()`
-replaces the response variable with the values predicted by the target
-model. Thus, the fitted MID model can be viewed as *an interpretable
-model of the target model*.
+replaces the response variable with the predicted values given by the
+target model. Thus, the fitted MID model can be viewed as *an
+interpretable model of the target model*.
 
 ``` r
 # MID surrogae or the ranger model
@@ -215,7 +228,7 @@ print(mid, omit.values = TRUE)
 ``` r
 # interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
-#> RMSE: 2.75628
+#> RMSE: 2.75629
 ```
 
 To the extent that the MID model is acceptable as a surrogate for the
@@ -235,9 +248,9 @@ ggmid(mid, term = "age:education", include.main.effects = TRUE)
 
 <img src="man/figures/README-wage_terms-2.png" width="100%" />
 
-The following plot compares the *permutation feature importance* (PFI)
-of the target `ranger` model and the term importance (TI) of the MID
-surrogate model.
+The following plot compares the term importance (TI) of the `midr`
+surrogate with the *permutation feature importance* (PFI) of the target
+`ranger` model.
 
 ``` r
 # permutation feature importance of variables
@@ -254,15 +267,15 @@ grid.arrange(nrow = 1,
 
 <img src="man/figures/README-wage_importance-1.png" width="100%" />
 
-It is easy to generate *individual conditional expectation* (ICE) plots
-for the fitted MID surrogate model. In addition, the ICE can be
-decomposed into the effects of the component functions.
+Because the prediction function of the MID model is a sum of the simple
+component terms, the individual conditional effect can be decomposed
+into the effects of each term.
 
 ``` r
 # create a mid conditional object
 mc <- mid.conditional(mid, "age", train)
 # visualize the individual conditional expectation
-ggmid(mc, variable.colour = education, alpha = .2)
+ggmid(mc, variable.colour = education, centered = TRUE, alpha = .2)
 ```
 
 <img src="man/figures/README-wage_conditional-1.png" width="100%" />

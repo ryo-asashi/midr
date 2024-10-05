@@ -35,7 +35,7 @@ term.check <- function(x, terms, stop = TRUE) {
       if (stop)
         stop(paste0("term '", x, "' does not exist"))
       message(paste0("term '", x, "' does not exist"))
-      return(NULL)
+      return(NA)
     }
     return(rx)
   }

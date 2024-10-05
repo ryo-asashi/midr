@@ -380,8 +380,10 @@ interpret.default <- function(
       stop("singular fit encountered")
     message("singular fit encountered")
   }
-  if (weighted.norm)
+  if (weighted.norm) {
+    gamm <- beta
     beta <- beta / Ddiag
+  }
   if (interpolate.beta && nemp > 0L) {
     bemp <- diag(1, ncol)
     for (i in 1L:nemp) {
@@ -433,7 +435,7 @@ interpret.default <- function(
       rownames(dat) <- NULL
       interactions[[its[i]]] <- dat
       xmat <- X[1L:n, lt:rt]
-      mult <- if (weighted.norm) dat$mid * Ddiag[lt:rt] else dat$mid
+      mult <- if (!weighted.norm) dat$mid else gamm[lt:rt]
       fm[, p + i] <- xmat %*% mult
     }
   }

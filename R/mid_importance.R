@@ -45,30 +45,34 @@ mid.importance <- function(
   } else {
     class(df) <- c("mid.importance", "data.frame")
   }
+  df$degree <-
+    as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
   df
 }
 
 #'
 #' @rdname mid.importance
 #' @param object a mid.importance object to be visualized.
-#' @param type a character or an integer, specifying the type of the plot. Possible alternatives are 1 : "barplot" and 2 : "heatmap".
-#' @param max.terms an integer, specifying the maximum number of functional decomposition terms to be plotted.
+#' @param type a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".
+#' @param plot.main logical. If TRUE, lines, bars or rectangles representing mid values are drawn.
+#' @param max.terms an integer, specifying the maximum number of component terms to be plotted in the barplot.
 #' @param scale.palette color palette used to draw the interaction heatmap.
 #' @param ... optional arguments to be passed to graphic functions.
 #'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.importance <- function(
-    object, type = c("barplot", "heatmap"), max.terms = NA,
-    scale.palette = c("#FFFFFF", "#464646"), ...) {
+    object, type = c("barplot", "heatmap"), plot.main = TRUE,
+    max.terms = NA, scale.palette = c("#FFFFFF", "#464646"), ...) {
   type = match.arg(type)
   if (type == "barplot") {
     object <- object[1L:min(max.terms, nrow(object), na.rm = TRUE), ]
     var <- ifelse(inherits(object, "mid.breakdown"), "mid", "importance")
-    ggp <- ggplot2::ggplot(
-      object, ggplot2::aes(x = .data[[var]], y = .data[["term"]])) +
-      ggplot2::geom_col(...)
-    return(ggp)
+    pl <- ggplot2::ggplot(object,
+                          ggplot2::aes(x = .data[[var]], y = .data[["term"]]))
+    if (plot.main)
+      pl <- pl + ggplot2::geom_col(...)
+    return(pl)
   } else if (type == "heatmap") {
     terms <- as.character(object$term)
     spt <- strsplit(terms, ":")
@@ -78,19 +82,18 @@ ggmid.mid.importance <- function(
     fr <- data.frame(x = c(stag, ftag), y = c(ftag, stag),
                      importance = rep.int(object$importance, 2L))
     fr <- unique(fr)
-    spl <- scale.palette
+    spl <- ifnot.null(scale.palette, c("#FFFFFF", "#464646"))
     if (is.function(spl))
       spl <- spl(2L)
     if (length(spl) < 2L)
       spl <- c("#FFFFFF", spl)
-    ggp <- ggplot2::ggplot(fr,
+    pl <- ggplot2::ggplot(fr,
       ggplot2::aes(.data[["x"]], .data[["y"]], fill = .data[["importance"]])) +
       ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::geom_tile(...) +
       ggplot2::scale_fill_gradient(low = spl[1L], high = spl[2L])
-    return(ggp)
-  } else {
-    stop(paste0("type (", type, ") is not valid"))
+    if (plot.main)
+      pl <- pl + ggplot2::geom_tile(...)
+    return(pl)
   }
 }
 
@@ -121,8 +124,8 @@ barplot.mid.importance <- function(object, max.terms = NA, ...) {
 #' @exportS3Method base::plot
 #'
 plot.mid.importance <- function(
-    x, type = c("barplot", "heatmap"), max.terms = NA,
-    scale.palette = c("#FFFFFF", "#464646"), ...) {
+    x, type = c("barplot", "heatmap"),
+    max.terms = NA, scale.palette = c("#FFFFFF", "#464646"), ...) {
   type = match.arg(type)
   if (type == "barplot") {
     x <- x[1L:min(max.terms, nrow(x), na.rm = TRUE), ]

@@ -21,7 +21,7 @@ predict.mid <- function(
     terms <- unique(terms[!is.na(terms)])
   }
   if (is.null(newdata)) {
-    preds <- object$fitted.matrix[ , terms, drop = FALSE]
+    preds <- object$fitted.matrix[, terms, drop = FALSE]
     naa <- stats::na.action(object)
   } else {
     if (any("mid" == colnames(newdata)))
@@ -97,7 +97,7 @@ mid.f <- function(object, term, x, y = NULL) {
   }
   n <- length(x)
   .term <- term.check(term, object$terms, stop = FALSE)
-  if (is.null(.term))
+  if (is.na(.term))
     return(numeric(n))
   if (!ie) {
     enc <- object$me.encoders[[.term]]

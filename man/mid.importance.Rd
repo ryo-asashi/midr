@@ -13,6 +13,7 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \method{ggmid}{mid.importance}(
   object,
   type = c("barplot", "heatmap"),
+  plot.main = TRUE,
   max.terms = NA,
   scale.palette = c("#FFFFFF", "#464646"),
   ...
@@ -41,9 +42,11 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 
 \item{measure}{an integer specifying the type of function to evaluate the importance of each effect. Possible values are "1" for the mean absolute effect, "2" for the root mean square effect, and "3" for the median absolute effect.}
 
-\item{type}{a character or an integer, specifying the type of the plot. Possible alternatives are 1 : "barplot" and 2 : "heatmap".}
+\item{type}{a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".}
 
-\item{max.terms}{an integer, specifying the maximum number of functional decomposition terms to be plotted.}
+\item{plot.main}{logical. If TRUE, lines, bars or rectangles representing mid values are drawn.}
+
+\item{max.terms}{an integer, specifying the maximum number of component terms to be plotted in the barplot.}
 
 \item{scale.palette}{color palette used to draw the interaction heatmap.}
 

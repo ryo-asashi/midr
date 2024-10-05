@@ -30,8 +30,10 @@ mid.plots <- function(
   }
   true_terms <- terms
   for (i in seq_len(length(terms))) {
-    true_terms[i] <- term.check(terms[i], object$terms, stop = TRUE)
+    true_terms[i] <- term.check(terms[i], object$terms, stop = FALSE)
   }
+  terms <- terms[!is.na(true_terms)]
+  true_terms <- true_terms[!is.na(true_terms)]
   if (!is.null(limits) && (is.na(limits[1L]) || is.na(limits[2L]))) {
     dfs <- c(object$main.effects, object$interactions)[true_terms]
     if (is.na(limits[1L])) {
