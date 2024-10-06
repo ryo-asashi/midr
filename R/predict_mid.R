@@ -64,7 +64,7 @@ predict.mid <- function(
         }
         mid <- object$interactions[[term]]$mid
       }
-      preds[, i] <- X %*% mid
+      preds[, i] <- as.numeric(X %*% mid)
     }
     attr(preds, "constant") <- object$intercept
   }
@@ -119,5 +119,5 @@ mid.f <- function(object, term, x, y = NULL) {
     mid <- object$interactions[[.term]]$mid
   }
   mid[is.na(mid)] <- 0
-  X %*% mid
+  as.numeric(X %*% mid)
 }

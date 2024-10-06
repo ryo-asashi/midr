@@ -271,8 +271,8 @@ interpret.default <- function(
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
       if (vsum == 0) {
-        ctp <- c(if (orvs[i] && j > 1L) m - 1L,
-                 if (orvs[i] && j < mlens[[i]]) m + 1L)
+        ctp <- c(if (orvs[mcl] && j > 1L) m - 1L,
+                 if (orvs[mcl] && j < mlens[[i]]) m + 1L)
         emp[[length(emp) + 1L]] <-
           list(m = m, ctp = ctp, len = max(1L, length(ctp)))
         next
@@ -416,7 +416,7 @@ interpret.default <- function(
       dat$mid <- beta[lt:rt]
       main.effects[[mts[i]]] <- dat
       xmat <- mmats[[mts[i]]]
-      fm[, i] <- xmat %*% dat$mid
+      fm[, i] <- as.numeric(xmat %*% dat$mid)
     }
   }
   ## interactions
@@ -436,7 +436,7 @@ interpret.default <- function(
       interactions[[its[i]]] <- dat
       xmat <- X[1L:n, lt:rt]
       mult <- if (!weighted.norm) dat$mid else gamm[lt:rt]
-      fm[, p + i] <- xmat %*% mult
+      fm[, p + i] <- as.numeric(xmat %*% mult)
     }
   }
 
