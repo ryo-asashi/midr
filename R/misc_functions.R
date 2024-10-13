@@ -102,8 +102,7 @@ weighted.quantile <- function(
   wcum <- c(0, cumsum(w))
   wsum <- wcum[length(wcum)]
   wppm <- wsum * probs
-  wppm <- pmax(0, pmin(wsum, wppm))
-  j <- .bincode(wppm, wcum, right = TRUE, include.lowest = TRUE)
+  j <- findInterval(wppm, wcum, all.inside = TRUE, left.open = TRUE)
   out <- x[j]
   out[!ok] <- NA
   if (is.character(lx))

@@ -112,11 +112,12 @@ latticized <- function(
       enc <- numeric.encoder(x = x, k = k, type = type,
                              tag = tag, frame = frames[[tag]])
       br <- attr(enc$frame, "breaks")
-      x <- pmax(pmin(x, br[length(br)]), br[1L])
-      x <- .bincode(x, br, right = TRUE, include.lowest = TRUE)
-      reps <- attr(enc$frame, "reps")
-      if (keep.mean)
-        reps <- tapply(data[, i], x, mean)
+      x <- findInterval(x, br, all.inside = TRUE)
+      reps <- if (keep.mean) {
+        tapply(data[, i], x, mean)
+      } else {
+        attr(enc$frame, "reps")
+      }
       data[, i] <- reps[x]
     } else {
       enc <- factor.encoder(x = x, k = k,
