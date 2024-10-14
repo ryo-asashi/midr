@@ -9,7 +9,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    ggplot2,
     graphics,
     grDevices,
     RcppEigen,
@@ -20,6 +19,7 @@ Suggests:
     datasets,
     DALEX,
     e1071,
+    ggplot2,
     gridExtra,
     ISLR2,
     kernlab,

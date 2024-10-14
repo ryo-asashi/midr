@@ -273,21 +273,19 @@ into the effects of each term.
 
 ``` r
 # create a mid conditional object
-mc <- mid.conditional(mid, "age", train)
-# visualize the individual conditional expectation
-ggmid(mc, variable.colour = education, centered = TRUE, alpha = .2)
-```
-
-<img src="man/figures/README-wage_conditional-1.png" width="100%" />
-
-``` r
+mc <- mid.conditional(mid, "education", train)
 # visualize the effects of each component function
+mc$conditional$education <- as.numeric(mc$conditional$education)
 grid.arrange(
-  ggmid(mc, term = "age:education", variable.colour = education),
-  ggmid(mc, term = "maritl:age", variable.colour = maritl),
-  ggmid(mc, term = "age:race", variable.colour = race),
-  ggmid(mc, term = "age:health", variable.colour = health)
+  ggmid(mc, term = "age:education",
+        variable.colour = age, draw.dots = FALSE),
+  ggmid(mc, term = "maritl:education",
+        variable.linetype = maritl, draw.dots = FALSE),
+  ggmid(mc, term = "race:education",
+        variable.linetype = race, draw.dots = FALSE),
+  ggmid(mc, term = "education:health",
+        variable.linetype = health, draw.dots = FALSE)
 )
 ```
 
-<img src="man/figures/README-wage_conditional-2.png" width="100%" />
+<img src="man/figures/README-wage_conditional-1.png" width="100%" />
