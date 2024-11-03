@@ -42,5 +42,5 @@
 \item{...}{optional parameters to be directly passed to \code{ggplot2::geom_line()}.}
 }
 \description{
-Creates a plot representing the MID-based individual conditional expectations
+Creates a plot showing the MID-based individual conditional expectations
 }

@@ -1,6 +1,6 @@
 #' Plot MID Individual Conditional Expectations with graphics Package
 #'
-#' Creates a plot representing the MID-based individual conditional expectations
+#' Creates a plot showing the MID-based individual conditional expectations
 #'
 #' @param x a mid.conditional object to visualize.
 #' @param centered logical.

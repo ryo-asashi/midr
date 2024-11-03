@@ -50,14 +50,14 @@ mid.conditional <- function(
     n <- nrow(data)
   }
   ids <- rownames(data)
-  pmat <- matrix(0, nrow = n, ncol = rf)
+  pm <- matrix(0, nrow = n, ncol = rf)
   for (i in seq_len(rf))
-    pmat[, i] <- mid.f(object, tf[i], x = data)
-  pf <- apply(pmat, MARGIN = 1L, FUN = sum)
-  pmat <- matrix(0, nrow = n, ncol = rv, dimnames = list(NULL, tv))
+    pm[, i] <- mid.f(object, tf[i], x = data)
+  pf <- rowSums(pm)
+  pm <- matrix(0, nrow = n, ncol = rv, dimnames = list(NULL, tv))
   for (i in seq_len(rv))
-    pmat[, i] <- mid.f(object, tv[i], x = data)
-  pv <- apply(pmat, MARGIN = 1L, FUN = sum)
+    pm[, i] <- mid.f(object, tv[i], x = data)
+  pv <- rowSums(pm)
   yhat <- pf + pv + object$intercept
   if (type == "response" && !is.null(object$link))
     yhat <- object$link$linkinv(yhat)
@@ -65,7 +65,7 @@ mid.conditional <- function(
   res$terms <- tv
   res$observed <- cbind(id = ids, yhat = yhat, data)
   if (keep.effects)
-    res$observed.effects <- pmat
+    res$observed.effects <- pm
   ldata <- list()
   for (col in colnames(data)) {
     if (col == variable) {
@@ -76,17 +76,17 @@ mid.conditional <- function(
   }
   ldata <- as.data.frame(ldata)
   colnames(ldata) <- colnames(data)
-  pmat <- matrix(0, nrow = n * m, ncol = rv, dimnames = list(NULL, tv))
+  pm <- matrix(0, nrow = n * m, ncol = rv, dimnames = list(NULL, tv))
   for (i in seq_len(rv))
-    pmat[, i] <- mid.f(object, tv[i], x = ldata)
-  pv <- apply(pmat, MARGIN = 1L, FUN = sum)
+    pm[, i] <- mid.f(object, tv[i], x = ldata)
+  pv <- rowSums(pm)
   pf <- rep.int(pf, m)
   lyhat <- pf + pv + object$intercept
   if (type == "response" && !is.null(object$link))
     lyhat <- object$link$linkinv(lyhat)
   res$conditional <- cbind(id = rep.int(ids, m), yhat = lyhat, ldata)
   if (keep.effects)
-    res$conditional.effects <- pmat
+    res$conditional.effects <- pm
   res$values <- values
   class(res) <- c("mid.conditional",
                   if (keep.effects) "mid.conditional.effects")

@@ -45,6 +45,7 @@ library(ggplot2)
 library(gridExtra)
 library(ranger)
 library(ISLR2)
+theme_set(theme_midr())
 # fit a two-dimensional MID model to the 'diamonds' data
 data("diamonds", package = "ggplot2")
 mid <- interpret(price ~ (carat + clarity + color + cut)^2, diamonds)
@@ -148,7 +149,15 @@ heatmap is a useful way to find important two-way interactions.
 
 ``` r
 # draw a heatmap of term importance
-ggmid(mid.importance(mid), type = "heatmap")
+grid.arrange(nrow = 1L,
+  ggmid(mid.importance(mid), plot.main = FALSE, max.terms = 30L) +
+    geom_point(aes(shape = degree)) +
+    scale_shape_manual(values = c(16L, 1L)) +
+    theme_midr(grid = "y") +
+    theme(legend.position = "top"),
+  ggmid(mid.importance(mid), type = "heatmap") +
+    theme(legend.position = "top")
+)
 ```
 
 <img src="man/figures/README-bikeshare_importance-1.png" width="100%" />
@@ -160,7 +169,12 @@ commuting.
 
 ``` r
 # visualize the most important interaction effect
-ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE)
+grid.arrange(
+  ggmid(mid, "hr:factor(workingday)") +
+    labs(title = "interaction"),
+  ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE) +
+    labs(title = "interaction + main effects")
+)
 ```
 
 <img src="man/figures/README-bikeshare_interaction-1.png" width="100%" />
@@ -173,7 +187,10 @@ for the fitted MID surrogate model.
 ice_rows <- sample(nrow(valid), 200L)
 mc <- mid.conditional(mid, "hr", data = valid[ice_rows,])
 # visualize the individual conditional expectation
-ggmid(mc, variable.colour = factor(workingday), alpha = .2)
+grid.arrange(
+  ggmid(mc, variable.colour = factor(workingday), alpha = .2),
+  ggmid(mc, variable.colour = temp, centered = TRUE, alpha = .1)
+)
 ```
 
 <img src="man/figures/README-bikeshare_conditional-1.png" width="100%" />
@@ -242,8 +259,10 @@ grid.arrange(grobs = mid.plots(mid))
 <img src="man/figures/README-wage_terms-1.png" width="100%" />
 
 ``` r
-# custom plot for the most important interaction
-ggmid(mid, term = "age:education", include.main.effects = TRUE)
+# important interactions
+imp <- mid.importance(mid)
+terms <- mid.terms(imp, main.effect = FALSE)[1:4]
+grid.arrange(grobs = mid.plots(mid, terms = terms))
 ```
 
 <img src="man/figures/README-wage_terms-2.png" width="100%" />
@@ -254,14 +273,15 @@ surrogate with the *permutation feature importance* (PFI) of the target
 
 ``` r
 # permutation feature importance of variables
-imp <- sort(model$variable.importance, decreasing = FALSE)
-imp <- data.frame(variable = factor(names(imp), levels = names(imp)),                   importance = imp)
+pfi <- sort(model$variable.importance, decreasing = FALSE)
+pfi <- data.frame(variable = factor(names(pfi), levels = names(pfi)),                   importance = pfi)
 # importance of the component terms
 grid.arrange(nrow = 1,
-  ggmid(mid.importance(mid), max.terms = 12) +
+  ggmid(imp, max.terms = 12) +
     labs(subtitle = "Surrogate Model (TI)"),
-  ggplot(imp, aes(y = variable, x = importance)) +
-    geom_col() + labs(subtitle = "Target Model (PFI)")
+  ggplot(pfi, aes(y = variable, x = importance)) +
+    geom_col() +
+    labs(subtitle = "Target Model (PFI)", y = NULL)
 )
 ```
 

@@ -1,6 +1,6 @@
 #' Plot MID Values with graphics Package
 #'
-#' Creates a plot representing mid values of the functional decomposition term.
+#' Creates a plot showing mid values of the functional decomposition term.
 #'
 #' @param x mid object to be visualized.
 #' @param term name of term to be plotted.

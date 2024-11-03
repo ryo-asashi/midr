@@ -224,3 +224,43 @@ weighted.medae <- function(
                     na.rm = na.rm, names = FALSE, type = 1L, ...)
 }
 
+
+#' Themes for ggplot Objects
+#'
+#' Returns a complete theme for \code{ggplot} objects.
+#' @param grid_type one of "none", "x", "y" or "both".
+#' @param base_size a positive value for the base font size, given in pts.
+#' @param base_family a character specifying the base font family.
+#' @param base_line_size a positive value for the base size for line elements.
+#' @param base_rect_size a positive value for the base size for rect elements.
+#' @export
+#'
+theme_midr <- function(
+    grid_type = c("none", "x", "y", "xy"),
+    base_size = 11,
+    base_family = "serif",
+    base_line_size = base_size / 22,
+    base_rect_size = base_size / 22) {
+  grid_type = match.arg(grid_type)
+  grid_x <- any(grid_type == c("x", "xy"))
+  grid_y <- any(grid_type == c("y", "xy"))
+  e1 <- ggplot2::theme_light(
+    base_size = base_size,
+    base_family = base_family,
+    base_line_size = base_line_size,
+    base_rect_size = base_rect_size
+  )
+  e2 <- ggplot2::theme(
+    axis.line = ggplot2::element_blank(),
+    panel.border = ggplot2::element_rect(fill = NA,
+                                         colour = "gray5",
+                                         linewidth = ggplot2::rel(0.5)),
+    panel.grid.major.x = if (!grid_x) ggplot2::element_blank(),
+    panel.grid.minor.x = if (!grid_x) ggplot2::element_blank(),
+    panel.grid.major.y = if (!grid_y) ggplot2::element_blank(),
+    panel.grid.minor.y = if (!grid_y) ggplot2::element_blank(),
+    complete = TRUE
+  )
+  e1[names(e2)] <- e2
+  e1
+}

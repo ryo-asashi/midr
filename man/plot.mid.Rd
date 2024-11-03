@@ -33,7 +33,7 @@
 \item{...}{optional parameters to be passed to \code{plot()}, \code{barplot()} or \code{filled.contour()}.}
 }
 \description{
-Creates a plot representing mid values of the functional decomposition term.
+Creates a plot showing mid values of the functional decomposition term.
 }
 \examples{
 data(diamonds, package = "ggplot2")

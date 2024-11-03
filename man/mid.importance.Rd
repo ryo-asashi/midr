@@ -2,37 +2,12 @@
 % Please edit documentation in R/mid_importance.R
 \name{mid.importance}
 \alias{mid.importance}
-\alias{ggmid.mid.importance}
-\alias{autoplot.mid.importance}
-\alias{barplot.mid.importance}
-\alias{plot.mid.importance}
 \title{Calculate and Visualize MID-based Importance and Breakdown}
 \usage{
 mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
-
-\method{ggmid}{mid.importance}(
-  object,
-  type = c("barplot", "heatmap"),
-  plot.main = TRUE,
-  max.terms = NA,
-  scale.palette = c("#FFFFFF", "#464646"),
-  ...
-)
-
-\method{autoplot}{mid.importance}(object, ...)
-
-\method{barplot}{mid.importance}(object, max.terms = NA, ...)
-
-\method{plot}{mid.importance}(
-  x,
-  type = c("barplot", "heatmap"),
-  max.terms = NA,
-  scale.palette = c("#FFFFFF", "#464646"),
-  ...
-)
 }
 \arguments{
-\item{object}{a mid.importance object to be visualized.}
+\item{object}{a mid object.}
 
 \item{data}{data to be used to calculate the importance. If NULL, the fitted matrix is extracted from the mid object. If the number of row equals to one, the mid breakdown will be calculated.}
 
@@ -41,18 +16,6 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \item{sort}{logical. If TRUE, the data.frame will be sorted by magnitude of importance}
 
 \item{measure}{an integer specifying the type of function to evaluate the importance of each effect. Possible values are "1" for the mean absolute effect, "2" for the root mean square effect, and "3" for the median absolute effect.}
-
-\item{type}{a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".}
-
-\item{plot.main}{logical. If TRUE, lines, bars or rectangles representing mid values are drawn.}
-
-\item{max.terms}{an integer, specifying the maximum number of component terms to be plotted in the barplot.}
-
-\item{scale.palette}{color palette used to draw the interaction heatmap.}
-
-\item{...}{optional arguments to be passed to graphic functions.}
-
-\item{x}{a mid.importance object to plot.}
 }
 \description{
 Creates a data frame showing the importance of each functional decomposition term.

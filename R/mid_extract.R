@@ -93,7 +93,7 @@ mid.terms <- function(
     main.effect <- dots$me
   if (missing(interaction) && !is.null(dots$ie))
     interaction <- dots$ie
-  terms <- object$terms
+  terms <- ifnot.null(object$terms, attr(object, "terms"))
   if (!main.effect)
     terms <- terms[grepl(":", terms)]
   if (!interaction)
