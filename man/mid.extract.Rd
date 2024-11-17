@@ -6,6 +6,7 @@
 \alias{mid.frames}
 \alias{mid.terms}
 \alias{terms.mid}
+\alias{terms.mid.importance}
 \title{Extract Information from a mid Object}
 \usage{
 mid.extract(object, component, ...)
@@ -24,6 +25,8 @@ mid.terms(
 )
 
 \method{terms}{mid}(x, ...)
+
+\method{terms}{mid.importance}(x, ...)
 }
 \arguments{
 \item{object}{a mid object.}
@@ -40,7 +43,7 @@ mid.terms(
 
 \item{remove}{a character vector of feature names. All terms related to at least one of the specified features will not be returned.}
 
-\item{x}{a mid object.}
+\item{x}{a mid object or a mid.importance object.}
 }
 \description{
 Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.

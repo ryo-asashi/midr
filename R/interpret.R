@@ -91,6 +91,7 @@ interpret.default <- function(
   dots <- list(...)
   if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
+  adjacency.ridge <- ifnot.null(dots$adjacency.ridge, TRUE) && lambda > 0
   fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
   interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
   weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
@@ -270,13 +271,13 @@ interpret.default <- function(
       m <- fi + mcumlens[i] + j
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
-      if (vsum == 0) {
-        ctp <- c(if (orvs[mcl] && j > 1L) m - 1L,
+      if (vsum == 0 || adjacency.ridge) {
+        adj <- c(if (orvs[mcl] && j > 1L) m - 1L,
                  if (orvs[mcl] && j < mlens[[i]]) m + 1L)
-        emp[[length(emp) + 1L]] <-
-          list(m = m, ctp = ctp, len = max(1L, length(ctp)))
-        next
+        emp[[length(emp) + 1L]] <- list(m = m, adj = adj)
       }
+      if (vsum == 0)
+        next
       M[i, m] <- vsum
       Ddiag[m] <- sqrt(vsum)
       if (weighted.norm) {
@@ -297,15 +298,15 @@ interpret.default <- function(
       m <- fi + u + pcumlens[i] + j
       X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
       vsum <- sum(X[, m] * weights)
-      if (vsum == 0) {
-        ctp <- c(if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
+      if (vsum == 0 || adjacency.ridge) {
+        adj <- c(if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
                  if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
                  if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
                  if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L])
-        emp[[length(emp) + 1L]] <-
-          list(m = m, ctp = ctp, len = max(1L, length(ctp)))
-        next
+        emp[[length(emp) + 1L]] <- list(m = m, adj = adj)
       }
+      if (vsum == 0)
+        next
       M[ofs + val[1L], m] <- vsum
       M[ofs + nval[1L] + val[2L], m] <- vsum
       Ddiag[m] <- sqrt(vsum)
@@ -318,7 +319,7 @@ interpret.default <- function(
     ofs <- ofs + nval[1L] + nval[2L]
   }
   ## additional constraints for columns filled with zero
-  if ((nemp <- length(emp)) > 0) {
+  if (!adjacency.ridge && (nemp <- length(emp)) > 0) {
     Memp <- matrix(0, nrow = nemp, ncol = ncol)
     for (i in 1L:nemp)
       Memp[i, emp[[i]]$m] <- 1
@@ -327,10 +328,23 @@ interpret.default <- function(
   ## ridge regularization
   nreg <- 0L
   if (lambda > 0) {
-    nreg <- u + v
-    R <- matrix(0, nrow = nreg, ncol = ncol)
-    for (i in seq_len(nreg))
-      R[i, fi + i] <- if (weighted.norm) 1 else Ddiag[fi + i]
+    if (adjacency.ridge) {
+      nreg <- length(emp)
+      R <- matrix(0, nrow = nreg, ncol = ncol)
+      for (i in seq_len(nreg)) {
+        ladj <- length(emp[[i]]$adj)
+        if (ladj == 0)
+          next
+        wt <- if (weighted.norm) 1 else Ddiag[fi + i]
+        R[emp[[i]]$m, emp[[i]]$adj] <- wt / ladj
+        R[emp[[i]]$m, emp[[i]]$m] <- - wt
+      }
+    } else {
+      nreg <- u + v
+      R <- matrix(0, nrow = nreg, ncol = ncol)
+      for (i in seq_len(nreg))
+        R[i, fi + i] <- if (weighted.norm) 1 else Ddiag[fi + i]
+    }
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
     w <- c(w, rep.int(sqrt(lambda), nreg))
@@ -384,11 +398,11 @@ interpret.default <- function(
     gamm <- beta
     beta <- beta / Ddiag
   }
-  if (interpolate.beta && nemp > 0L) {
+  if (interpolate.beta && !adjacency.ridge && nemp > 0L) {
     bemp <- diag(1, ncol)
     for (i in 1L:nemp) {
-      bemp[emp[[i]]$m, emp[[i]]$ctp] <- 1
-      bemp[emp[[i]]$m, emp[[i]]$m] <- - emp[[i]]$len
+      bemp[emp[[i]]$m, emp[[i]]$adj] <- 1
+      bemp[emp[[i]]$m, emp[[i]]$m] <- - max(1, length(emp[[i]]$adj))
     }
     beta <- try(RcppEigen::fastLmPure(bemp, beta, 0L)$coefficients,
                 silent = TRUE)

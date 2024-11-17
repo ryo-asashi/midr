@@ -13,8 +13,13 @@ valid <- xy[-train_rows, ]
 mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
                    weathersit + temp + hum + windspeed)^2,
                  data = train, lambda = .01, link = "log")
+mid <- interpret(bikers ~ (mnth + factor(workingday) + ordered(hr) +
+                             weathersit + temp + hum + windspeed)^2,
+                 data = train, lambda = 0,
+                 adjacency.ridge = F, ok = TRUE)
 pred <- get.yhat(mid, valid)
 weighted.rmse(valid$bikers, pred)
+mid
 # visualize main effects
 grid.arrange(grobs = mid.plots(mid))
 # visualize term importance

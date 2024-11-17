@@ -37,3 +37,21 @@ grid.arrange(
     geom_point(data = na.omit(train))
 ) |> suppressWarnings()
 
+
+mid <- interpret(Ozone ~ .^2, train, model, lambda = 10)
+weighted.rmse(get.yhat(mid, valid), get.yhat(model, valid), na.rm = TRUE)
+#> mid vs model : RMSE 5.738283
+weighted.rmse(get.yhat(mid, valid), valid$Ozone, na.rm = TRUE)
+#> mid vs valid : RMSE 21.83065
+# visualize important term effects
+autoplot(mid.importance(mid))
+grid.arrange(
+  ggmid(mid, "Temp", add = TRUE) +
+    geom_point(aes(y = Ozone), data = train),
+  ggmid(mid, "Wind", add = TRUE) +
+    geom_point(aes(y = Ozone), data = train),
+  ggmid(mid, "Solar.R", add = TRUE) +
+    geom_point(aes(y = Ozone), data = train),
+  ggmid(mid, "Wind:Temp", add = TRUE, scale.type = "viridis") +
+    geom_point(data = na.omit(train))
+) |> suppressWarnings()
