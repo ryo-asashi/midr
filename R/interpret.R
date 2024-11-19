@@ -82,7 +82,7 @@ interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
-    lambda = 0L, kappa = 1e6, na.action = getOption("na.action"),
+    lambda = 0, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
 ) {
@@ -178,9 +178,9 @@ interpret.default <- function(
   if (length(k) == 1L)
     k <- c(k, ceiling(sqrt(max(k, 0L))))
   if (is.na(k[1L]))
-    k[1L] <- min(25L, max(2L, if (singular.ok) 25L else n %/% p))
+    k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% p))
   if (is.na(k[2L]))
-    k[2L] <- min(5L, max(2L, floor(sqrt(n / q))))
+    k[2L] <- min(5L, max(2L, if (lambda > 0) 5L else floor(sqrt(n / q))))
   if (length(type) == 1L)
     type <- c(type, type)
   f <- function(tag, d) {
@@ -271,10 +271,11 @@ interpret.default <- function(
       m <- fi + mcumlens[i] + j
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
-      if (vsum == 0 || adjacency.ridge) {
+      if (adjacency.ridge || vsum == 0) {
         adj <- c(if (orvs[mcl] && j > 1L) m - 1L,
                  if (orvs[mcl] && j < mlens[[i]]) m + 1L)
-        emp[[length(emp) + 1L]] <- list(m = m, adj = adj)
+        if (!adjacency.ridge || length(adj) > 0L)
+          emp[[length(emp) + 1L]] <- c(m, adj)
       }
       if (vsum == 0)
         next
@@ -298,12 +299,13 @@ interpret.default <- function(
       m <- fi + u + pcumlens[i] + j
       X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
       vsum <- sum(X[, m] * weights)
-      if (vsum == 0 || adjacency.ridge) {
+      if (adjacency.ridge || vsum == 0) {
         adj <- c(if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
                  if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
                  if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
                  if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L])
-        emp[[length(emp) + 1L]] <- list(m = m, adj = adj)
+        if (!adjacency.ridge || length(adj) > 0L)
+          emp[[length(emp) + 1L]] <- c(m, adj)
       }
       if (vsum == 0)
         next
@@ -322,7 +324,7 @@ interpret.default <- function(
   if (!adjacency.ridge && (nemp <- length(emp)) > 0) {
     Memp <- matrix(0, nrow = nemp, ncol = ncol)
     for (i in 1L:nemp)
-      Memp[i, emp[[i]]$m] <- 1
+      Memp[i, emp[[i]][1L]] <- 1
     M <- rbind(M, Memp)
   }
   ## ridge regularization
@@ -332,12 +334,10 @@ interpret.default <- function(
       nreg <- length(emp)
       R <- matrix(0, nrow = nreg, ncol = ncol)
       for (i in seq_len(nreg)) {
-        ladj <- length(emp[[i]]$adj)
-        if (ladj == 0)
-          next
-        wt <- if (weighted.norm) 1 else Ddiag[fi + i]
-        R[emp[[i]]$m, emp[[i]]$adj] <- wt / ladj
-        R[emp[[i]]$m, emp[[i]]$m] <- - wt
+        m <- emp[[i]][1L]
+        wt <- if (weighted.norm) 1 else Ddiag[m]
+        R[i, emp[[i]]] <- wt / (length(emp[[i]]) - 1L)
+        R[i, m] <- - wt
       }
     } else {
       nreg <- u + v
@@ -401,8 +401,9 @@ interpret.default <- function(
   if (interpolate.beta && !adjacency.ridge && nemp > 0L) {
     bemp <- diag(1, ncol)
     for (i in 1L:nemp) {
-      bemp[emp[[i]]$m, emp[[i]]$adj] <- 1
-      bemp[emp[[i]]$m, emp[[i]]$m] <- - max(1, length(emp[[i]]$adj))
+      m <- emp[[i]][1L]
+      bemp[m, emp[[i]]] <- 1
+      bemp[m, m] <- - max(1, length(emp[[i]]) - 1)
     }
     beta <- try(RcppEigen::fastLmPure(bemp, beta, 0L)$coefficients,
                 silent = TRUE)

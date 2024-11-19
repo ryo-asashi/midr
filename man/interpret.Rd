@@ -23,7 +23,7 @@ interpret(object, ...)
   singular.ok = FALSE,
   mode = 1L,
   method = NULL,
-  lambda = 0L,
+  lambda = 0,
   kappa = 1e+06,
   na.action = getOption("na.action"),
   encoding.digits = 3L,
