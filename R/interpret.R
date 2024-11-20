@@ -274,7 +274,7 @@ interpret.default <- function(
       if (adjacency.ridge || vsum == 0) {
         adj <- c(if (orvs[mcl] && j > 1L) m - 1L,
                  if (orvs[mcl] && j < mlens[[i]]) m + 1L)
-        if (!adjacency.ridge || length(adj) > 0L)
+        if (!adjacency.ridge || length(adj) > 0L || vsum == 0)
           emp[[length(emp) + 1L]] <- c(m, adj)
       }
       if (vsum == 0)
@@ -304,7 +304,7 @@ interpret.default <- function(
                  if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
                  if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
                  if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L])
-        if (!adjacency.ridge || length(adj) > 0L)
+        if (!adjacency.ridge || length(adj) > 0L || vsum == 0)
           emp[[length(emp) + 1L]] <- c(m, adj)
       }
       if (vsum == 0)
@@ -336,7 +336,7 @@ interpret.default <- function(
       for (i in seq_len(nreg)) {
         m <- emp[[i]][1L]
         wt <- if (weighted.norm) 1 else Ddiag[m]
-        R[i, emp[[i]]] <- wt / (length(emp[[i]]) - 1L)
+        R[i, emp[[i]]] <- wt / max(1, length(emp[[i]]) - 1)
         R[i, m] <- - wt
       }
     } else {

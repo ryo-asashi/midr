@@ -96,7 +96,7 @@ valid <- Bikeshare[-train_rows, ]
 # fit a two-dimensional model
 mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
                  weathersit + temp + hum + windspeed)^2,
-                 data = train, lambda = .5, link = "log", ok = TRUE)
+                 data = train, lambda = .5, link = "log")
 ```
 
 The fitted MID model can be used to predict the number of bike rentals.
@@ -106,18 +106,18 @@ The fitted MID model can be used to predict the number of bike rentals.
 preds <- predict(mid, valid)
 data.frame(actual = valid$bikers[1:12], predicted = preds[1:12])
 #>    actual predicted
-#> 1       1  1.774780
-#> 2      56 65.268805
-#> 3      84 87.465772
-#> 4      93 68.953229
-#> 5      37 49.841976
-#> 6      36 34.739264
-#> 7       6  6.882253
-#> 8       3  1.611838
-#> 9      53 65.782053
-#> 10     93 93.201159
-#> 11     31 34.557592
-#> 12      3  4.879038
+#> 1       1  1.825043
+#> 2      56 69.896538
+#> 3      84 97.044403
+#> 4      93 73.188603
+#> 5      37 52.836723
+#> 6      36 38.289120
+#> 7       6  7.385312
+#> 8       3  1.839790
+#> 9      53 68.557587
+#> 10     93 95.353527
+#> 11     31 33.161113
+#> 12      3  4.472374
 ```
 
 ``` r
@@ -126,7 +126,7 @@ rmse <- function(x, y) {
   cat("RMSE:", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
 }
 rmse(valid$bikers, preds)
-#> RMSE: 40.4237
+#> RMSE: 40.2342
 ```
 
 ``` r
