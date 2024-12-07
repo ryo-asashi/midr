@@ -5,6 +5,7 @@ library(midr)
 library(ggplot2)
 library(ranger)
 library(gridExtra)
+theme_set(theme_midr())
 # import data
 xy <- datasets::airquality
 set.seed(42)
@@ -40,9 +41,9 @@ grid.arrange(
 
 mid <- interpret(Ozone ~ .^2, train, model, lambda = 10)
 weighted.rmse(get.yhat(mid, valid), get.yhat(model, valid), na.rm = TRUE)
-#> mid vs model : RMSE 5.738283
+#> mid vs model : RMSE 8,483216
 weighted.rmse(get.yhat(mid, valid), valid$Ozone, na.rm = TRUE)
-#> mid vs valid : RMSE 21.83065
+#> mid vs valid : RMSE 22.68976
 # visualize important term effects
 autoplot(mid.importance(mid))
 grid.arrange(

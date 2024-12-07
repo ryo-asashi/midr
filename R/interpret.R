@@ -253,9 +253,10 @@ interpret.default <- function(
   M <- matrix(0, nrow = ncon, ncol = ncol)
   Y <- y
   w <- sqrt(weights)
-  Ddiag <- rep.int(1, ncol)
-  dns <- numeric(ncol)
-  emp <- list()
+  D <- rep.int(1, ncol)
+  dens <- numeric(ncol)
+  vnil <- logical(ncol)
+  adjs <- as.list(integer(ncol))
   ## intercept
   if (fit.intercept) {
     X[, 1L] <- 1
@@ -269,23 +270,23 @@ interpret.default <- function(
     mcl <- mts[i]
     for (j in 1L:mlens[[i]]) {
       m <- fi + mcumlens[i] + j
+      adjs[[m]] <- c(m,
+        if (orvs[mcl] && j > 1L) m - 1L,
+        if (orvs[mcl] && j < mlens[[i]]) m + 1L
+      )
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
-      if (adjacency.ridge || vsum == 0) {
-        adj <- c(if (orvs[mcl] && j > 1L) m - 1L,
-                 if (orvs[mcl] && j < mlens[[i]]) m + 1L)
-        if (!adjacency.ridge || length(adj) > 0L || vsum == 0)
-          emp[[length(emp) + 1L]] <- c(m, adj)
-      }
-      if (vsum == 0)
+      if (vsum == 0) {
+        vnil[m] <- TRUE
         next
-      M[i, m] <- vsum
-      Ddiag[m] <- sqrt(vsum)
-      if (weighted.norm) {
-        X[, m] <- X[, m] / Ddiag[m]
-        M[i, m] <- M[i, m] / Ddiag[m]
       }
-      dns[m] <- vsum / wsum
+      M[i, m] <- vsum
+      D[m] <- sqrt(vsum)
+      if (weighted.norm) {
+        X[, m] <- X[, m] / D[m]
+        M[i, m] <- M[i, m] / D[m]
+      }
+      dens[m] <- vsum / wsum
     }
   }
   ## interactions
@@ -297,57 +298,61 @@ interpret.default <- function(
     for (j in 1L:plens[[i]]) {
       val <- vals[j, ]
       m <- fi + u + pcumlens[i] + j
+      adjs[[m]] <- c(m,
+        if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
+        if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
+        if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
+        if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L]
+      )
       X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
       vsum <- sum(X[, m] * weights)
-      if (adjacency.ridge || vsum == 0) {
-        adj <- c(if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
-                 if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
-                 if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
-                 if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L])
-        if (!adjacency.ridge || length(adj) > 0L || vsum == 0)
-          emp[[length(emp) + 1L]] <- c(m, adj)
-      }
-      if (vsum == 0)
+      if (vsum == 0) {
+        vnil[m] <- TRUE
         next
+      }
       M[ofs + val[1L], m] <- vsum
       M[ofs + nval[1L] + val[2L], m] <- vsum
-      Ddiag[m] <- sqrt(vsum)
+      D[m] <- sqrt(vsum)
       if (weighted.norm) {
-        X[, m] <- X[, m] / Ddiag[m]
-        M[, m] <- M[, m] / Ddiag[m]
+        X[, m] <- X[, m] / D[m]
+        M[, m] <- M[, m] / D[m]
       }
-      dns[m] <- vsum / wsum
+      dens[m] <- vsum / wsum
     }
     ofs <- ofs + nval[1L] + nval[2L]
-  }
-  ## additional constraints for columns filled with zero
-  if (!adjacency.ridge && (nemp <- length(emp)) > 0) {
-    Memp <- matrix(0, nrow = nemp, ncol = ncol)
-    for (i in 1L:nemp)
-      Memp[i, emp[[i]][1L]] <- 1
-    M <- rbind(M, Memp)
   }
   ## ridge regularization
   nreg <- 0L
   if (lambda > 0) {
-    if (adjacency.ridge) {
-      nreg <- length(emp)
-      R <- matrix(0, nrow = nreg, ncol = ncol)
-      for (i in seq_len(nreg)) {
-        m <- emp[[i]][1L]
-        wt <- if (weighted.norm) 1 else Ddiag[m]
-        R[i, emp[[i]]] <- wt / max(1, length(emp[[i]]) - 1)
-        R[i, m] <- - wt
+    targets <- which(!vnil)
+    nreg <- length(targets)
+    R <- matrix(0, nrow = nreg, ncol = ncol)
+    for (i in seq_len(nreg)) {
+      m <- targets[i]
+      wt <- if (weighted.norm) 1 else D[m]
+      if (adjacency.ridge) {
+        adj <- adjs[[m]]
+        adj <- adj[!vnil[adj]]
+        if (length(adj) == 1)
+          next
+        R[i, adj] <- - wt / (length(adj) - 1)
+        R[i, m] <- wt
+      } else {
+        R[i, m] <- wt
       }
-    } else {
-      nreg <- u + v
-      R <- matrix(0, nrow = nreg, ncol = ncol)
-      for (i in seq_len(nreg))
-        R[i, fi + i] <- if (weighted.norm) 1 else Ddiag[fi + i]
     }
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
     w <- c(w, rep.int(sqrt(lambda), nreg))
+  }
+  ## additional constraints for columns filled with zero
+  nils <- which(vnil)
+  nnil <- length(nils)
+  if (nnil > 0L) {
+    Mnil <- matrix(0, nrow = nnil, ncol = ncol)
+    for (i in 1L:nnil)
+      Mnil[i, nils[i]] <- 1
+    M <- rbind(M, Mnil)
   }
 
   # get the least squares solution --------
@@ -396,16 +401,17 @@ interpret.default <- function(
   }
   if (weighted.norm) {
     gamm <- beta
-    beta <- beta / Ddiag
+    beta <- beta / D
   }
-  if (interpolate.beta && !adjacency.ridge && nemp > 0L) {
-    bemp <- diag(1, ncol)
-    for (i in 1L:nemp) {
-      m <- emp[[i]][1L]
-      bemp[m, emp[[i]]] <- 1
-      bemp[m, m] <- - max(1, length(emp[[i]]) - 1)
+  if (interpolate.beta && nnil > 0L) {
+    bnil <- diag(1, ncol)
+    for (i in 1L:nnil) {
+      m <- nils[i]
+      adj <- adjs[[m]]
+      bnil[m, adj] <- -1
+      bnil[m, m] <- max(1, length(adj) - 1)
     }
-    beta <- try(RcppEigen::fastLmPure(bemp, beta, 0L)$coefficients,
+    beta <- try(RcppEigen::fastLmPure(bnil, beta, 0L)$coefficients,
                 silent = TRUE)
     if (inherits(beta, "try-error"))
       beta <- as.numeric(stats::lm.fit(Memp, beta)$coefficients)
@@ -427,7 +433,7 @@ interpret.default <- function(
       dat <- mencs[[mts[i]]]$frame
       lt <- fi + mcumlens[i] + 1L
       rt <- fi + mcumlens[i + 1L]
-      dat$density <- dns[lt:rt]
+      dat$density <- dens[lt:rt]
       dat$mid <- beta[lt:rt]
       main.effects[[mts[i]]] <- dat
       xmat <- mmats[[mts[i]]]
@@ -445,7 +451,7 @@ interpret.default <- function(
                    iencs[[pcl[2L]]]$frame[vals[, 2L], ])
       lt <- fi + u + pcumlens[i] + 1L
       rt <- fi + u + pcumlens[i + 1L]
-      dat$density <- dns[lt:rt]
+      dat$density <- dens[lt:rt]
       dat$mid <- beta[lt:rt]
       rownames(dat) <- NULL
       interactions[[its[i]]] <- dat

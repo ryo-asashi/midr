@@ -12,13 +12,8 @@ valid <- xy[-train_rows, ]
 # fit a two-dimensional MID model
 mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
                    weathersit + temp + hum + windspeed)^2,
-                 data = train, lambda = .01, link = "log")
-mid <- interpret(bikers ~ (mnth + factor(workingday) + ordered(hr) +
-                             weathersit + temp + hum + windspeed)^2,
-                 data = train, lambda = 0,
-                 adjacency.ridge = F, ok = TRUE)
-pred <- get.yhat(mid, valid)
-weighted.rmse(valid$bikers, pred)
+                 data = train, lambda = .5, link = "log")
+weighted.rmse(valid$bikers, get.yhat(mid, valid))
 mid
 # visualize main effects
 grid.arrange(grobs = mid.plots(mid))

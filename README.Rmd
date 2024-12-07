@@ -77,7 +77,7 @@ valid <- Bikeshare[-train_rows, ]
 # fit a two-dimensional model
 mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
                  weathersit + temp + hum + windspeed)^2,
-                 data = train, lambda = .5, link = "log")
+                 data = train, lambda = .4, link = "log")
 ```
 
 The fitted MID model can be used to predict the number of bike rentals.
