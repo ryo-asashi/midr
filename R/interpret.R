@@ -329,17 +329,17 @@ interpret.default <- function(
     R <- matrix(0, nrow = nreg, ncol = ncol)
     for (i in seq_len(nreg)) {
       m <- targets[i]
-      wt <- if (weighted.norm) 1 else D[m]
       if (adjacency.ridge) {
-        adj <- adjs[[m]]
+        adj <- adjs[[m]][-1L]
         adj <- adj[!vnil[adj]]
-        if (length(adj) == 1)
+        if ((nadj <- length(adj)) == 0L)
           next
-        R[i, adj] <- - wt / (length(adj) - 1)
-        R[i, m] <- wt
-      } else {
-        R[i, m] <- wt
+        wm <- D[m]
+        wadj <- D[adj]
+        R[i, adj] <-
+          - D[m] / sum(wadj ^ 2) * (if (weighted.norm) wadj else wadj ^ 2)
       }
+      R[i, m] <- if (weighted.norm) 1 else D[m]
     }
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
