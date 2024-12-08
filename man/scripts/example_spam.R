@@ -24,3 +24,4 @@ grid.arrange(grobs = mid.plots(mid, terms(imp)[1:9]))
 roc_mid <- roc(valid$type, predict(mid, valid))
 ggroc(roc_mid) + theme_midr() +
   labs(subtitle = paste("mid auc : ", round(roc_mid$auc, 4)))
+

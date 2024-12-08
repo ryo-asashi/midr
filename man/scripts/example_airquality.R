@@ -39,11 +39,11 @@ grid.arrange(
 ) |> suppressWarnings()
 
 
-mid <- interpret(Ozone ~ .^2, train, model, lambda = 10)
+mid <- interpret(Ozone ~ .^2, train, model, lambda = 5)
 weighted.rmse(get.yhat(mid, valid), get.yhat(model, valid), na.rm = TRUE)
-#> mid vs model : RMSE 8,483216
+#> mid vs model : RMSE 8,027231
 weighted.rmse(get.yhat(mid, valid), valid$Ozone, na.rm = TRUE)
-#> mid vs valid : RMSE 22.68976
+#> mid vs valid : RMSE 22.68434
 # visualize important term effects
 autoplot(mid.importance(mid))
 grid.arrange(

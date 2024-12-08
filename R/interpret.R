@@ -332,9 +332,8 @@ interpret.default <- function(
       if (adjacency.ridge) {
         adj <- adjs[[m]][-1L]
         adj <- adj[!vnil[adj]]
-        if ((nadj <- length(adj)) == 0L)
+        if (length(adj) == 0L)
           next
-        wm <- D[m]
         wadj <- D[adj]
         R[i, adj] <-
           - D[m] / sum(wadj ^ 2) * (if (weighted.norm) wadj else wadj ^ 2)
