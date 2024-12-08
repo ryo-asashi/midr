@@ -414,7 +414,7 @@ interpret.default <- function(
     beta <- try(RcppEigen::fastLmPure(bnil, beta, 0L)$coefficients,
                 silent = TRUE)
     if (inherits(beta, "try-error"))
-      beta <- as.numeric(stats::lm.fit(Memp, beta)$coefficients)
+      beta <- as.numeric(stats::lm.fit(bnil, beta)$coefficients)
     beta[is.na(beta)] <- 0
   }
   beta[abs(beta) <= nil] <- 0
