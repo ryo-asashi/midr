@@ -15,14 +15,14 @@ model <- ranger(medv ~ ., train, mtry = 5)
 weighted.rmse(valid$medv, get.yhat(model, valid))
 # rmse 3.295881
 
-mid <- interpret(medv ~ .^2, train, lambda = 1)
+mid <- interpret(medv ~ .^2, train, lambda = .7, penalty.type = 2)
 weighted.rmse(valid$medv, get.yhat(mid, valid))
-# rmse 3.303718
+# rmse 3.186782
 
 ggmid(mid.importance(mid), max = 20) +
   aes(alpha = degree)
 grid.arrange(grobs = mid.plots(mid))
-ggmid(mid, "lstat:dis", include = TRUE) +
+ggmid(mid, "dis:lstat", include = TRUE) +
   geom_point(data = train)
 ggmid(mid, "lstat:age", include = TRUE) +
   geom_point(data = train)

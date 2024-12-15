@@ -91,11 +91,11 @@ interpret.default <- function(
   dots <- list(...)
   if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
-  adjacency.ridge <- ifnot.null(dots$adjacency.ridge, TRUE) && lambda > 0
   fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
   interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
   weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
   weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
+  penalty.type <- ifnot.null(dots$penalty.type, 2L)
 
   # preprocess data --------
   if (!is.data.frame(x))
@@ -256,7 +256,7 @@ interpret.default <- function(
   D <- rep.int(1, ncol)
   dens <- numeric(ncol)
   vnil <- logical(ncol)
-  adjs <- as.list(integer(ncol))
+  ladj <- as.list(integer(ncol))
   ## intercept
   if (fit.intercept) {
     X[, 1L] <- 1
@@ -268,11 +268,12 @@ interpret.default <- function(
   ## main effects
   for (i in seq_len(p)) {
     mcl <- mts[i]
+    ord <- orvs[mcl]
     for (j in 1L:mlens[[i]]) {
       m <- fi + mcumlens[i] + j
-      adjs[[m]] <- c(m,
-        if (orvs[mcl] && j > 1L) m - 1L,
-        if (orvs[mcl] && j < mlens[[i]]) m + 1L
+      ladj[[m]] <- c(m,
+        if (ord && j > 1L) m - 1L,
+        if (ord && j < mlens[[i]]) m + 1L
       )
       X[, m] <- mmats[[i]][, j]
       vsum <- sum(X[, m] * weights)
@@ -295,14 +296,15 @@ interpret.default <- function(
     pcl <- term.split(its[i])
     nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
     vals <- as.matrix(expand.grid(1L:nval[1L], 1L:nval[2L]))
+    ords <- orvs[c(pcl[1L], pcl[2L])]
     for (j in 1L:plens[[i]]) {
       val <- vals[j, ]
       m <- fi + u + pcumlens[i] + j
-      adjs[[m]] <- c(m,
-        if (orvs[pcl[1L]] && val[1L] > 1L) m - 1L,
-        if (orvs[pcl[1L]] && val[1L] < nval[1L]) m + 1L,
-        if (orvs[pcl[2L]] && val[2L] > 1L) m - nval[1L],
-        if (orvs[pcl[2L]] && val[2L] < nval[2L]) m + nval[1L]
+      ladj[[m]] <- c(m,
+        if (ords[1L] && val[1L] > 1L) m - 1L,
+        if (ords[1L] && val[1L] < nval[1L]) m + 1L,
+        if (ords[2L] && val[2L] > 1L) m - nval[1L],
+        if (ords[2L] && val[2L] < nval[2L]) m + nval[1L]
       )
       X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
       vsum <- sum(X[, m] * weights)
@@ -321,36 +323,49 @@ interpret.default <- function(
     }
     ofs <- ofs + nval[1L] + nval[2L]
   }
+  nadj <- vapply(ladj, length, 0L) - 1L
   ## ridge regularization
   nreg <- 0L
   if (lambda > 0) {
-    targets <- which(!vnil)
-    nreg <- length(targets)
+    if (penalty.type == 1L) {
+      pars <- which(!vnil)
+    } else if (penalty.type == 2L) {
+      pars <- which(!vnil & nadj > 0L)
+    } else if (penalty.type == 3L) {
+      pars <- which(nadj > 0L)
+      vnil <- vnil & nadj == 0L
+    }
+    nreg <- length(pars)
+    wreg <- rep.int(sqrt(lambda * wsum), nreg)
     R <- matrix(0, nrow = nreg, ncol = ncol)
     for (i in seq_len(nreg)) {
-      m <- targets[i]
-      if (adjacency.ridge) {
-        adj <- adjs[[m]][-1L]
-        adj <- adj[!vnil[adj]]
-        if (length(adj) == 0L)
+      m <- pars[i]
+      if (penalty.type > 1L) {
+        adj <- ladj[[m]][-1L]
+        wadj <- if (penalty.type == 2L) {
+          as.double(!vnil[adj])
+        } else if (penalty.type == 3L) {
+          rep.int(1, length(adj))
+        }
+        if (sum(wadj) == 0)
           next
-        wadj <- D[adj]
-        R[i, adj] <-
-          - D[m] / sum(wadj ^ 2) * (if (weighted.norm) wadj else wadj ^ 2)
+        R[i, adj] <- - (if (weighted.norm) 1 / D[adj] else 1) * wadj / sum(wadj)
       }
-      R[i, m] <- if (weighted.norm) 1 else D[m]
+      R[i, m] <- (if (weighted.norm) 1 / D[m] else 1)
+      if (penalty.type < 3L)
+        wreg[i] <- wreg[i] / sqrt(wsum) * D[m]
     }
     X <- rbind(X, R)
     Y <- c(Y, numeric(nreg))
-    w <- c(w, rep.int(sqrt(lambda), nreg))
+    w <- c(w, wreg)
   }
   ## additional constraints for columns filled with zero
-  nils <- which(vnil)
-  nnil <- length(nils)
-  if (nnil > 0L) {
-    Mnil <- matrix(0, nrow = nnil, ncol = ncol)
-    for (i in 1L:nnil)
-      Mnil[i, nils[i]] <- 1
+  pars <- which(vnil)
+  npar <- length(pars)
+  if (npar > 0L) {
+    Mnil <- matrix(0, nrow = npar, ncol = ncol)
+    for (i in 1L:npar)
+      Mnil[i, pars[i]] <- 1
     M <- rbind(M, Mnil)
   }
 
@@ -402,18 +417,19 @@ interpret.default <- function(
     gamm <- beta
     beta <- beta / D
   }
-  if (interpolate.beta && nnil > 0L) {
-    bnil <- diag(1, ncol)
-    for (i in 1L:nnil) {
-      m <- nils[i]
-      adj <- adjs[[m]]
-      bnil[m, adj] <- -1
-      bnil[m, m] <- max(1, length(adj) - 1)
+  pars <- which(vnil & nadj > 0L)
+  npar <- length(pars)
+  if (interpolate.beta && npar > 0L) {
+    B <- diag(1, ncol)
+    for (i in 1L:npar) {
+      m <- pars[i]
+      adj <- ladj[[m]][-1L]
+      B[m, adj] <- - 1 / nadj[m]
     }
-    beta <- try(RcppEigen::fastLmPure(bnil, beta, 0L)$coefficients,
+    beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients,
                 silent = TRUE)
     if (inherits(beta, "try-error"))
-      beta <- as.numeric(stats::lm.fit(bnil, beta)$coefficients)
+      beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
     beta[is.na(beta)] <- 0
   }
   beta[abs(beta) <= nil] <- 0
