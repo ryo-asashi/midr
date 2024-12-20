@@ -15,9 +15,9 @@ model <- ranger(medv ~ ., train, mtry = 5)
 weighted.rmse(valid$medv, get.yhat(model, valid))
 # rmse 3.295881
 
-mid <- interpret(medv ~ .^2, train, lambda = .7, penalty.type = 2)
+mid <- interpret(medv ~ .^2, train, lambda = .1)
 weighted.rmse(valid$medv, get.yhat(mid, valid))
-# rmse 3.186782
+# rmse 3.148203
 
 ggmid(mid.importance(mid), max = 20) +
   aes(alpha = degree)
