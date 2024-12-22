@@ -6,10 +6,11 @@
 #' @param digits number of significant digits.
 #' @param omit.values logical. If TRUE, mid values of main effect terms are not printed.
 #' @param ... not used.
-#'
 #' @examples
 #' data(cars, package = "datasets")
 #' print(interpret(dist ~ speed, cars))
+#' @returns
+#' \code{print.mid()} returns the 'mid' object passed to the function without any modification.
 #' @exportS3Method base::print
 #'
 print.mid <- function(

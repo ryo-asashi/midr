@@ -34,6 +34,19 @@ factor.frame(levels, catchall = "(others)", tag = "x")
 
 \item{levels}{a vector to be used as the levels of the variable.}
 }
+\value{
+\code{factor.encoder()} returns a list containing the following components:
+\item{frame}{a data frame containing the encoding information.}
+\item{encode}{a function to encode new data into a dummy matrix.}
+\item{n}{the number of encoding levels.}
+\item{type}{type of encoding.}
+}
 \description{
 Returns a list consisting of the encoding information of a predictor variable as a qualitative variable.
+}
+\examples{
+data(iris, package = "datasets")
+enc <- factor.encoder(x = iris$Species, use.catchall = FALSE)
+enc$frame
+enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 }

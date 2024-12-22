@@ -9,6 +9,7 @@ mid.plots(
   terms = mid.terms(object, interaction = FALSE),
   limits = c(NA, NA),
   add.intercept = FALSE,
+  include.main.effects = FALSE,
   max.plots = NULL,
   engine = c("ggplot2", "base", "graphics"),
   ...
@@ -23,18 +24,24 @@ mid.plots(
 
 \item{add.intercept}{logical. If TRUE, the intercept is added to the mid values and the scale for the plot is shifted.}
 
+\item{include.main.effects}{logical. If TRUE, the main effects are added to the interaction mid values.}
+
 \item{max.plots}{the number of maximum number of plots.}
 
 \item{engine}{a name of the package used to create plots. Possible values are "ggplot2" and "base" ("graphics").}
 
 \item{...}{optional parameters to be passed to ggmid() function.}
 }
+\value{
+If \code{engine} is 'ggplot2', \code{mid.plots()} returns a list of ggplot objects, otherwise \code{mid.plots()} creates plots and returns nothing.
+}
 \description{
 Returns a list of ggplot objects, each representing the mid values for the corresponding functional decomposition term.
 }
 \examples{
 data(diamonds, package = "ggplot2")
-diamonds <- diamonds[sample(nrow(diamonds), 1e4L), ]
-mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds)
-mid.plots(mid, c("carat", "color", "carat:color", "clarity:color"), NULL)
+set.seed(42)
+idx <- sample(nrow(diamonds), 1e4L)
+mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds[idx, ])
+mid.plots(mid, c("carat", "color", "carat:color", "clarity:color"), limits = NULL)
 }

@@ -32,17 +32,19 @@
 
 \item{...}{optional parameters to be passed to \code{plot()}, \code{barplot()} or \code{filled.contour()}.}
 }
+\value{
+\code{plot.mid()} produces a line plot or a bar plot for the main effect and a filled contour plot for the interaction.
+}
 \description{
 Creates a plot showing mid values of the functional decomposition term.
 }
 \examples{
-data(diamonds, package = "ggplot2")
-model <- lm(price ~ carat + cut + color + clarity + carat:clarity, diamonds)
-mid <- interpret(price ~ carat + cut + color + clarity + carat:clarity,
-                 data = diamonds, model = model)
-plot(mid, "carat")
-plot(mid, "clarity")
-plot(mid, "carat:clarity")
-plot(mid, "carat:clarity", add.intercept = TRUE,
-     include.main.effects = TRUE)
+data(airquality, package = "datasets")
+airquality$Month <- factor(airquality$Month)
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+plot(mid, "Temp")
+plot(mid, "Month")
+plot(mid, "Wind:Temp")
+plot(mid, "Solar.R:Month", scale.type = "viridis",
+     add.intercept = TRUE, include.main.effects = TRUE)
 }

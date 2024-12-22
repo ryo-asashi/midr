@@ -42,6 +42,19 @@ numeric.frame(
 
 \item{breaks}{a numeric vector to be used as the breaks of the binning.}
 }
+\value{
+\code{numeric.encoder()} returns a list containing the following components:
+\item{frame}{a data frame containing the encoding information.}
+\item{encode}{a function to encode new data into a dummy matrix.}
+\item{n}{the number of encoding levels.}
+\item{type}{type of encoding: 'linear' (first degree) or 'constant' (zeroth degree).}
+}
 \description{
 Returns a list consisting of the encoding information of a predictor variable as a quantitative variable.
+}
+\examples{
+data(iris, package = "datasets")
+enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L)
+enc$frame
+enc$encode(new_x = 4:8)
 }

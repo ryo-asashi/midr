@@ -13,6 +13,8 @@
 #' ggmid(mid, "carat:clarity")
 #' ggmid(mid, "carat:clarity", add.intercept = TRUE,
 #'       include.main.effects = TRUE, scale.type = "viridis")
+#' @returns
+#' \code{ggmid()} returns a \code{ggplot} object.
 #' @export ggmid
 #'
 ggmid <- function(object, ...)

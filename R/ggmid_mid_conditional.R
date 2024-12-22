@@ -14,6 +14,13 @@
 #' @param variable.linetype a name of the predictor variable to use to set \code{linetype} for each plot.
 #' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
 #' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
+#' @examples
+#' data(airquality, package = "datasets")
+#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#' mc <- mid.conditional(mid, "Wind", airquality)
+#' ggmid(mc, variable.colour = "Solar.R", centered = TRUE)
+#' @returns
+#' \code{ggmid.mid.conditional()} returns a \code{ggplot} object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(

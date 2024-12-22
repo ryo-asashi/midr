@@ -7,6 +7,16 @@
 #' @param max.terms an integer, specifying the maximum number of component terms to be plotted in the barplot.
 #' @param scale.palette color palette used to draw the interaction heatmap.
 #' @param ... optional arguments to be passed to graphic functions.
+#' @examples
+#' data(diamonds, package = "ggplot2")
+#' set.seed(42)
+#' mid <- interpret(price ~ (carat + cut + color + clarity)^2,
+#'                  diamonds[sample(nrow(diamonds), 1e4), ])
+#' imp <- mid.importance(mid)
+#' ggmid(imp)
+#' ggmid(imp, type = "heatmap")
+#' @returns
+#' \code{plot.mid.importance()} produces a bar plot or a heat map for the term importance.
 #' @exportS3Method base::plot
 #'
 plot.mid.importance <- function(

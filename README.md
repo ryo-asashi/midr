@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# midr: Create an Interpretable Surrogate of Black-Box ML Models
+# midr <img src="man/figures/logo.png" align="right" height="114"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -15,8 +15,15 @@ decomposition technique called *Maximum Interpretation Decomposition*
 
 ## Installation
 
-You can install the development version of `midr` from
-[GitHub](https://github.com/) with:
+You can install the released version of `midr` from
+[CRAN](https://cran.r-project.org/) with:
+
+``` r
+install.packages("midr") # not yet available
+```
+
+And the development version of `midr` from [GitHub](https://github.com/)
+with:
 
 ``` r
 # install.packages("devtools")
@@ -27,16 +34,26 @@ devtools::install_github("ryo-asashi/midr")
 
 The main function of the package is `interpret()`, which can be used to
 fit a predictive model consisting of a set of functions, each with up to
-two variables.
+two variables. The prediction function of a fitted model has the
+following structure:
+
+$$
+f^{MID}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{\{j\}}(X_j) + \Sigma_{j,k\ \in D} f_{\{j,\ k\}}(X_j, X_k)
+$$
+
+where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias*
+*term*), $f_{\{j\}}(x_j)$ is the *main effect* of the feature $j$, and
+$\Sigma_{\{j,\ k\}}(x_j, x_k)$ is the *second-order interaction*
+*effect* between the two features $j$ and $k$.
 
 **Fitting an MID Model to the Data**
 
 In the following example, we construct a model for the `price` of
 diamonds whose prediction function is the sum of eleven component
-functions: the *intercept* (or the zeroth-order effect), four
-first-order *main effects* corresponding to each predictor variable
-(`carat`, `clarity`, `color` and `cut`), and six second-order
-*interactions* corresponding to each pair of the variables.
+functions: the *intercept*, four first-order *main effects*
+corresponding to each predictor variable (`carat`, `clarity`, `color`
+and `cut`), and six second-order *interactions* corresponding to each
+pair of the variables.
 
 ``` r
 # required packages

@@ -15,6 +15,9 @@
 
 \item{...}{not used.}
 }
+\value{
+\code{print.mid()} returns the 'mid' object passed to the function without any modification.
+}
 \description{
 Prints the summary of the fitted mid object.
 }

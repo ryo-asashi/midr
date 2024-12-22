@@ -17,14 +17,16 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 
 \item{measure}{an integer specifying the type of function to evaluate the importance of each effect. Possible values are "1" for the mean absolute effect, "2" for the root mean square effect, and "3" for the median absolute effect.}
 }
+\value{
+\code{mid.importance} returns a data frame for the term importance, measured as the average magnitude of the effect.
+}
 \description{
 Creates a data frame showing the importance of each functional decomposition term.
 \code{mid.importance()} returns a object of class "mid.importance", for which methods for \code{ggplot2::autoplot()} and \code{graphics::barplot()} are defined.
 }
 \examples{
 data(airquality, package = "datasets")
-model <- glm(Ozone ~ Solar.R + Temp + Wind + Month, "poisson", airquality)
-mid <- interpret(Ozone ~ Solar.R + Temp + Wind + Month, airquality, model)
-mid.importance(mid)
-ggmid(mid.importance(mid))
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+imp <- mid.importance(mid)
+imp
 }

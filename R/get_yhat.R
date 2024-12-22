@@ -5,7 +5,13 @@
 #' @param X.model a model object to be interpreted.
 #' @param newdata a data.frame or a matrix.
 #' @param ... other parameters that will be passed to the predict function.
-#'
+#' @examples
+#' data(trees, package = "datasets")
+#' model <- glm(Volume ~ ., trees, family = Gamma(log))
+#' predict(model, trees, "response")
+#' get.yhat(model, trees)
+#' @returns
+#' \code{get.yhat()} returns a numeric vector of model predictions.
 #' @export get.yhat
 #'
 get.yhat <- function(X.model, newdata, ...)

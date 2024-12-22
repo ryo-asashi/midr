@@ -13,6 +13,12 @@ weighted.tabulate(bin, w = NULL, nbins = max(1L, bin, na.rm = TRUE))
 
 \item{nbins}{the number of bins to be used.}
 }
+\value{
+\code{weighted.tabulate()} returns an integer valued vector.
+}
 \description{
 Returns the sum of weights for each interger occurs in the integer valued argument \code{bin}.
+}
+\examples{
+weighted.tabulate(bin = c(2, 2, 3, 5), w = 1:4)
 }

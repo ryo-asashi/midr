@@ -15,10 +15,13 @@
 
 \item{...}{not used.}
 }
+\value{
+\code{summary.mid()} returns the 'mid' object passed to the function without any modification.
+}
 \description{
 Prints the summary of the fitted mid object.
 }
 \examples{
 data(cars, package = "datasets")
-print(interpret(dist ~ speed, cars))
+summary(interpret(dist ~ speed, cars))
 }

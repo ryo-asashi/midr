@@ -29,6 +29,18 @@
 
 \item{...}{optional arguments to be passed to graphic functions.}
 }
+\value{
+\code{ggmid.mid.importance()} returns a \code{ggplot} object.
+}
 \description{
 Creates a ggplot object representing the MID-based term importance
+}
+\examples{
+data(diamonds, package = "ggplot2")
+set.seed(42)
+idx <- sample(nrow(diamonds), 1e4)
+mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
+imp <- mid.importance(mid)
+ggmid(imp)
+ggmid(imp, type = "heatmap")
 }

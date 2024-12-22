@@ -30,6 +30,9 @@
 #'   ggplot2::geom_point() +
 #'   ggplot2::labs(title = "latticized") +
 #'   ggplot2::theme_bw()
+#' @returns
+#' \code{weighted()} returns a data frame with the 'weights' attribute.
+#' \code{augmented()}, \code{shuffled()}, and \code{latticized()} returns a weighted data frame with the additional, randomized or simplified values.
 #' @export weighted
 #'
 weighted <- function(data, weights = NULL, ...) {

@@ -41,6 +41,15 @@
 
 \item{...}{optional parameters to be directly passed to \code{ggplot2::geom_line()}.}
 }
+\value{
+\code{plot.mid.conditional()} produces an ICE plot for the conditional effect of the target variable.
+}
 \description{
 Creates a plot showing the MID-based individual conditional expectations
+}
+\examples{
+data(airquality, package = "datasets")
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+mc <- mid.conditional(mid, "Wind", na.omit(airquality))
+plot(mc, variable.colour = "Solar.R", centered = TRUE)
 }

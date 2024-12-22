@@ -6,10 +6,11 @@
 #' @param digits number of significant digits.
 #' @param top.n an integer specifying the maximum number of terms to be displayed with importance values.
 #' @param ... not used.
-#'
 #' @examples
 #' data(cars, package = "datasets")
-#' print(interpret(dist ~ speed, cars))
+#' summary(interpret(dist ~ speed, cars))
+#' @returns
+#' \code{summary.mid()} returns the 'mid' object passed to the function without any modification.
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(

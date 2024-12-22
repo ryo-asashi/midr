@@ -1,10 +1,10 @@
 Package: midr
 Type: Package
 Title: Create an Interpretable Surrogate of Black-Box ML Models
-Version: 0.3.2
-Authors@R:  c(person("Ryoichi", "Asasihba", role = c("aut", "cre"), email = "ryoichi.asashiba@gmail.com"), person("Hirokazu", "Iwasawa", role = c("aut")), person("Reiji", "Kozuma", role = c("ctb")))
-Maintainer@R: person("Ryoichi", "Asasihba", role = c("aut", "cre"), email = "ryoichi.asashiba@gmail.com")
-Description: Construct a globally interpretable surrogate of a black-box ML model, decomposing the prediction function of the target model to a set of component functions including the intercept, the main effects and the second order interactions.
+Version: 0.3.3
+Authors@R:  c(person("Ryoichi", "Asasihba", role = c("aut", "cre", "cph"), email = "ryoichi.asashiba@gmail.com"), person("Hirokazu", "Iwasawa", role = c("aut")), person("Reiji", "Kozuma", role = c("ctb")))
+Maintainer@R: person("Ryoichi", "Asasihba", role = c("aut", "cre", "cph"), email = "ryoichi.asashiba@gmail.com")
+Description: Construct a globally interpretable surrogate of a black-box ML model by decomposing the prediction function of the target model into a set of component functions including the intercept, the main effects and the second-order interactions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

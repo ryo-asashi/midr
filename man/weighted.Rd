@@ -52,6 +52,10 @@ latticized(
 
 \item{object}{a weighted data frame.}
 }
+\value{
+\code{weighted()} returns a data frame with the 'weights' attribute.
+\code{augmented()}, \code{shuffled()}, and \code{latticized()} returns a weighted data frame with the additional, randomized or simplified values.
+}
 \description{
 Returns a data frame of class \code{weighted} and \code{data.frame}, which contains the additional attribute "weights".
 Weights can be extracted using functions like \code{attr()} or \code{stats::weights()}.

@@ -9,7 +9,17 @@
 #' @param tag name of the variable.
 #' @param frame a \code{factor.frame} object or a vector, containing the information about the levels of the variable.
 #' @param weights optional. a numeric vector indicating the weight of each value of 'x'.
-#'
+#' @examples
+#' data(iris, package = "datasets")
+#' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE)
+#' enc$frame
+#' enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+#' @returns
+#' \code{factor.encoder()} returns a list containing the following components:
+#' \item{frame}{a data frame containing the encoding information.}
+#' \item{encode}{a function to encode new data into a dummy matrix.}
+#' \item{n}{the number of encoding levels.}
+#' \item{type}{type of encoding.}
 #' @export factor.encoder
 #'
 factor.encoder <- function(
@@ -28,7 +38,7 @@ factor.encoder <- function(
     if (!is.factor(x))
       x <- factor(x)
     flvs <- levels(x)
-    if (use.catchall && k > 0L && length(flvs) > k) {
+    if (use.catchall && k > 0L && length(flvs) >= k) {
       tbl <- weighted.tabulate(bin = match(x, flvs), w = weights)
       ord <- order(tbl, decreasing = TRUE)
       flvs <- flvs[ord][seq_len(k - 1L)]

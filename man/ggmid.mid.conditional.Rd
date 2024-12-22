@@ -47,6 +47,15 @@
 
 \item{...}{optional parameters to be directly passed to \code{ggplot2::geom_line()}.}
 }
+\value{
+\code{ggmid.mid.conditional()} returns a \code{ggplot} object.
+}
 \description{
 Creates a ggplot object representing the MID-based individual conditional expectations
+}
+\examples{
+data(airquality, package = "datasets")
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+mc <- mid.conditional(mid, "Wind", airquality)
+ggmid(mc, variable.colour = "Solar.R", centered = TRUE)
 }

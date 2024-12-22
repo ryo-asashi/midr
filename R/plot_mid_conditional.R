@@ -13,6 +13,13 @@
 #' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
 #' @param scale.palette a character vector of color names, specifying the colors to be used.
 #' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
+#' @examples
+#' data(airquality, package = "datasets")
+#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#' mc <- mid.conditional(mid, "Wind", na.omit(airquality))
+#' plot(mc, variable.colour = "Solar.R", centered = TRUE)
+#' @returns
+#' \code{plot.mid.conditional()} produces an ICE plot for the conditional effect of the target variable.
 #' @exportS3Method base::plot
 #'
 plot.mid.conditional <- function(

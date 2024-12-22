@@ -29,6 +29,11 @@ term.split <- function(x) {
 }
 
 term.check <- function(x, terms, stop = TRUE) {
+  if (is.na(x)) {
+    if (stop)
+      stop("term can't be NA")
+    return(NA)
+  }
   if (!any(x == terms)) {
     rx <- paste0(rev(term.split(x)), collapse = ":")
     if (!any(rx == terms)) {
@@ -55,7 +60,10 @@ term.check <- function(x, terms, stop = TRUE) {
 #' @param digits used only when \code{names} is TRUE. The precision to use when formatting the percentages.
 #' @param type an integer selecting the quantile algorithms. Only 1 is available for the weighted quantile.
 #' @param ... further arguments passed to \code{stats::quantile()} when the weights is not passed.
-#'
+#' @examples
+#' weighted.quantile(x = 1:10, w = 1:10, probs = c(0, .25, .50, .75, 1))
+#' @returns
+#' \code{weighted.quantile()} produces sample weighted quantiles corresponding to the given probabilities.
 #' @export weighted.quantile
 #'
 weighted.quantile <- function(
@@ -122,7 +130,10 @@ weighted.quantile <- function(
 #' @param bin a numeric vector of positive integers or a factor.
 #' @param w a numeric vector of the same length as 'bin' giving the weights to use for elements of it.
 #' @param nbins the number of bins to be used.
-#'
+#' @examples
+#' weighted.tabulate(bin = c(2, 2, 3, 5), w = 1:4)
+#' @returns
+#' \code{weighted.tabulate()} returns an integer valued vector.
 #' @export weighted.tabulate
 #'
 weighted.tabulate <- function(
@@ -157,6 +168,12 @@ weighted.tabulate <- function(
 #' @param w a numeric vector of the same length as 'x' giving the weights to use for elements of it.
 #' @param ... optional augments passed to other functions and methods.
 #' @param na.rm logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.
+#' @examples
+#' weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+#' weighted.mae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+#' weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+#' @returns
+#' \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a weighted loss between two numeric vectors.
 #' @export weighted.rmse
 #'
 weighted.rmse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
@@ -233,6 +250,10 @@ weighted.medae <- function(
 #' @param base_family a character specifying the base font family.
 #' @param base_line_size a positive value for the base size for line elements.
 #' @param base_rect_size a positive value for the base size for rect elements.
+#' @examples
+#' ggplot2::theme_set(theme_midr())
+#' @returns
+#' \code{theme_midr()} provides a ggplot2 theme customized for the \code{midr} package.
 #' @export
 #'
 theme_midr <- function(

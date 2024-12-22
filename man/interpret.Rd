@@ -129,28 +129,32 @@ interpret(object, ...)
 Construct a predictive model consisting of a set of functions, each with up to two variables.
 }
 \examples{
-model <- lm(Volume ~ . + I(Girth^2) + Girth:Height, trees)
-mid <- interpret(Volume ~ . ^ 2, trees, model, k = 10)
-print(mid)
-plot(mid, "Girth")
-plot(mid, "Height")
-plot(mid, "Girth:Height")
-
-# a theoretical example
-z <- seq(-6, 6, length.out=100)
-x1 <- rep(z, each = 100)
-x2 <- x1 ^ 2 - z ^ 2
-X <- weighted(data.frame(x1, x2), dnorm(x1) * dnorm(z))
-# one-dimensional MID decomposition
-mid <- interpret(x1 * x2 ~ x1 + x2, X, k = c(100, 20))
-mid.plots(mid, engine = "base")
+data(cars, package = "datasets")
+model <- lm(dist ~ I(speed^2) + speed, cars)
+mid <- interpret(dist ~ speed, cars, model)
+plot(mid, "speed", add.intercept = TRUE) +
+  points(cars)
 summary(mid)
-# two-dimensional MID decomposition
-mid2 <- interpret(x1 * x2 ~ (x1 + x2)^2, X, k = c(100, 20))
-mid.plots(mid2, terms(mid2), engine = "base")
-summary(mid2)
-plot(mid.importance(mid), main = "Term Importance")
-# comparison of x1 main effects
-plot(mid, "x1")
-curve(mid.f(mid2, "x1", x), add = TRUE, col = "red")
+
+data(Nile, package = "datasets")
+mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
+plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+  points(x = 1L:100L, y = Nile)
+# reduce number of knots by k parameter
+mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
+plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+  points(x = 1L:100L, y = Nile)
+# pseudo-smoothing by lambda parameter
+mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
+plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+  points(x = 1L:100L, y = Nile)
+
+data(airquality, package = "datasets")
+airquality$Month <- factor(airquality$Month)
+model <- glm(Ozone ~ .^2, Gamma(log), airquality)
+mid <- interpret(Ozone ~ .^2, na.omit(airquality), model, lambda = .1)
+summary(mid)
+plot(mid, "Wind")
+plot(mid, "Temp")
+plot(mid, "Wind:Month", include.main.effects = TRUE)
 }

@@ -23,6 +23,14 @@ weighted.medae(x, y = NULL, w = NULL, ..., na.rm = FALSE)
 
 \item{na.rm}{logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.}
 }
+\value{
+\code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a weighted loss between two numeric vectors.
+}
 \description{
 Returns a weighted loss calculated for the given vector(s). \code{weighted.rmse} is for the root mean square error, \code{weighted.mae} is for the mean absolute error, and \code{weighted.medae} is for the median absolute error
+}
+\examples{
+weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+weighted.mae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 }

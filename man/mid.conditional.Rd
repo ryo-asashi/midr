@@ -39,6 +39,19 @@ mid.conditional(
 
 \item{...}{additional arguments to be passed to the methods for \code{data.frame}.}
 }
+\value{
+\code{mid.conditional()} returns a 'mid.conditional' object that contains the following components:
+\item{terms}{a character vector of relevant terms.}
+\item{observed}{a data frame of the observations and the corresponding predictions.}
+\item{conditional}{a data frame of the hypothetical observations.}
+\item{values}{a numeric vector of the representative values of the target variable.}
+}
 \description{
 Creates a data frame to be used to visualize the individual conditional expectation.
+}
+\examples{
+data(airquality, package = "datasets")
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+mc <- mid.conditional(mid, "Wind", airquality)
+mc
 }

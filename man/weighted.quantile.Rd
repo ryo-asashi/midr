@@ -32,6 +32,12 @@ weighted.quantile(
 
 \item{...}{further arguments passed to \code{stats::quantile()} when the weights is not passed.}
 }
+\value{
+\code{weighted.quantile()} produces sample weighted quantiles corresponding to the given probabilities.
+}
 \description{
 Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
+}
+\examples{
+weighted.quantile(x = 1:10, w = 1:10, probs = c(0, .25, .50, .75, 1))
 }

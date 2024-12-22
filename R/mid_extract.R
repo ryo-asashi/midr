@@ -3,16 +3,21 @@
 #' Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
 #'
 #' @param object a mid object.
-#' @param component a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "importance", "UR", "encoders", and names of any functional decomposition terms like "x1:x2" can be used.
+#' @param component a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "frames", "encoding.info", and names of component functions like "x1:x2" can be used.
 #' @param ... optional arguments to be passed to the specific functions used to extract information.
-#'
 #' @examples
 #' data(trees, package = "datasets")
 #' mid <- interpret(Volume ~ ., trees, k = 10)
 #' mid.extract(mid, encoding.info)
 #' mid.extract(mid, uninterpreted.rate)
+#' mid.extract(mid, frames)
 #' mid.extract(mid, Girth)
 #' mid.extract(mid, intercept)
+#' @returns
+#' \code{mid.extract()} returns the 'component' extracted from the mid object.
+#' \code{mid.encoding.info()} returns basic information of the encoders.
+#' \code{mid.frames()} returns encoding frames of each feature.
+#' \code{mid.terms()} returns a character vector of term names.
 #' @export mid.extract
 #'
 mid.extract <- function(object, component, ...) {

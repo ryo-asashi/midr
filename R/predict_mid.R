@@ -8,7 +8,13 @@
 #' @param type the type of prediction required. The default is on the scale of the response varialbe; the alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.
 #' @param terms a character vector, specifying names of the terms to be used to make predictions.
 #' @param ... not used.
-#'
+#' @examples
+#' data(cars, package = "datasets")
+#' mid <- interpret(dist ~ speed, cars, lambda = 1)
+#' predict(mid, newdata = data.frame(speed = 5:25))
+#' mid.f(mid, "speed", 5:25) + mid$intercept
+#' @returns
+#' \code{predict.mid()} returns a numeric vector of MID model predictions. \code{mid.f()} works as a component function of the MID model and returns a term effects.
 #' @exportS3Method stats::predict
 #'
 predict.mid <- function(

@@ -6,7 +6,9 @@
 \alias{midr-package}
 \title{midr: Create an Interpretable Surrogate of Black-Box ML Models}
 \description{
-Construct a globally interpretable surrogate of a black-box ML model, decomposing the prediction function of the target model to a set of component functions including the intercept, the main effects and the second order interactions.
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+Construct a globally interpretable surrogate of a black-box ML model by decomposing the prediction function of the target model into a set of component functions including the intercept, the main effects and the second-order interactions.
 }
 \seealso{
 Useful links:
@@ -17,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Ryoichi Asasihba \email{ryoichi.asashiba@gmail.com}
+\strong{Maintainer}: Ryoichi Asasihba \email{ryoichi.asashiba@gmail.com} [copyright holder]
 
 Authors:
 \itemize{

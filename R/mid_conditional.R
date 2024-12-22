@@ -9,7 +9,17 @@
 #' @param partition an integer specifying the number of the sample values.
 #' @param max.nrow the maximum number of rows of the output data frame.
 #' @param type the type of the prediction to use when the model has a link function. The default is \code{response}.
-#'
+#' @examples
+#' data(airquality, package = "datasets")
+#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#' mc <- mid.conditional(mid, "Wind", airquality)
+#' mc
+#' @returns
+#' \code{mid.conditional()} returns a 'mid.conditional' object that contains the following components:
+#' \item{terms}{a character vector of relevant terms.}
+#' \item{observed}{a data frame of the observations and the corresponding predictions.}
+#' \item{conditional}{a data frame of the hypothetical observations.}
+#' \item{values}{a numeric vector of the representative values of the target variable.}
 #' @export mid.conditional
 #'
 mid.conditional <- function(

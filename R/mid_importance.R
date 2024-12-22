@@ -8,13 +8,13 @@
 #' @param weights a numeric vector of weights.
 #' @param sort logical. If TRUE, the data.frame will be sorted by magnitude of importance
 #' @param measure an integer specifying the type of function to evaluate the importance of each effect. Possible values are "1" for the mean absolute effect, "2" for the root mean square effect, and "3" for the median absolute effect.
-#'
 #' @examples
 #' data(airquality, package = "datasets")
-#' model <- glm(Ozone ~ Solar.R + Temp + Wind + Month, "poisson", airquality)
-#' mid <- interpret(Ozone ~ Solar.R + Temp + Wind + Month, airquality, model)
-#' mid.importance(mid)
-#' ggmid(mid.importance(mid))
+#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#' imp <- mid.importance(mid)
+#' imp
+#' @returns
+#' \code{mid.importance} returns a data frame for the term importance, measured as the average magnitude of the effect.
 #' @export mid.importance
 #'
 mid.importance <- function(

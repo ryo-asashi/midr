@@ -47,6 +47,9 @@ ggmid(object, ...)
 
 \item{partition}{an integer specifying the coarseness of the grid for a "raster" type interaction plot.}
 }
+\value{
+\code{ggmid()} returns a \code{ggplot} object.
+}
 \description{
 Creates a ggplot object representing mid values of the functional decomposition term.
 }

@@ -46,6 +46,15 @@ get.yhat(X.model, newdata, ...)
 
 \item{...}{other parameters that will be passed to the predict function.}
 }
+\value{
+\code{get.yhat()} returns a numeric vector of model predictions.
+}
 \description{
 Returns the predicted values or the target class probabilities of a predictive model for the \code{newdata}.
+}
+\examples{
+data(trees, package = "datasets")
+model <- glm(Volume ~ ., trees, family = Gamma(log))
+predict(model, trees, "response")
+get.yhat(model, trees)
 }

@@ -31,7 +31,7 @@ mid.terms(
 \arguments{
 \item{object}{a mid object.}
 
-\item{component}{a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "importance", "UR", "encoders", and names of any functional decomposition terms like "x1:x2" can be used.}
+\item{component}{a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "frames", "encoding.info", and names of component functions like "x1:x2" can be used.}
 
 \item{...}{optional arguments to be passed to the specific functions used to extract information.}
 
@@ -45,6 +45,12 @@ mid.terms(
 
 \item{x}{a mid object or a mid.importance object.}
 }
+\value{
+\code{mid.extract()} returns the 'component' extracted from the mid object.
+\code{mid.encoding.info()} returns basic information of the encoders.
+\code{mid.frames()} returns encoding frames of each feature.
+\code{mid.terms()} returns a character vector of term names.
+}
 \description{
 Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
 }
@@ -53,6 +59,7 @@ data(trees, package = "datasets")
 mid <- interpret(Volume ~ ., trees, k = 10)
 mid.extract(mid, encoding.info)
 mid.extract(mid, uninterpreted.rate)
+mid.extract(mid, frames)
 mid.extract(mid, Girth)
 mid.extract(mid, intercept)
 }

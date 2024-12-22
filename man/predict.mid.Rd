@@ -35,6 +35,15 @@ mid.f(object, term, x, y = NULL)
 
 \item{y}{a vector to be used as inputs to the second argument of the decomposed interaction function.}
 }
+\value{
+\code{predict.mid()} returns a numeric vector of MID model predictions. \code{mid.f()} works as a component function of the MID model and returns a term effects.
+}
 \description{
 Returns predictions of the fitted mid object and optionally breakdown of those predictions into the functional decomposition terms.
+}
+\examples{
+data(cars, package = "datasets")
+mid <- interpret(dist ~ speed, cars, lambda = 1)
+predict(mid, newdata = data.frame(speed = 5:25))
+mid.f(mid, "speed", 5:25) + mid$intercept
 }
