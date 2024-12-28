@@ -7,18 +7,22 @@
 weighted.tabulate(bin, w = NULL, nbins = max(1L, bin, na.rm = TRUE))
 }
 \arguments{
-\item{bin}{a numeric vector of positive integers or a factor.}
+\item{bin}{a numeric vector of positive integers, or a factor.}
 
-\item{w}{a numeric vector of the same length as 'bin' giving the weights to use for elements of it.}
+\item{w}{a numeric vector of the sample weights for each value in \code{bin}.}
 
 \item{nbins}{the number of bins to be used.}
 }
 \value{
-\code{weighted.tabulate()} returns an integer valued vector.
+\code{weighted.tabulate()} returns an numeric vector.
 }
 \description{
-Returns the sum of weights for each interger occurs in the integer valued argument \code{bin}.
+\code{weighted.tabulate()} returns the sum of weights for each integer in the vector \code{bin}.
+}
+\details{
+\code{weighted.tabulate()} is a wrapper function of \code{tabulate()} to reflect sample weights.
 }
 \examples{
+tabulate(bin = c(2, 2, 3, 5))
 weighted.tabulate(bin = c(2, 2, 3, 5), w = 1:4)
 }

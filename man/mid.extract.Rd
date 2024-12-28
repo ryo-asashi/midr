@@ -2,16 +2,16 @@
 % Please edit documentation in R/mid_extract.R
 \name{mid.extract}
 \alias{mid.extract}
-\alias{mid.encoding.info}
+\alias{mid.encoding.scheme}
 \alias{mid.frames}
 \alias{mid.terms}
 \alias{terms.mid}
 \alias{terms.mid.importance}
-\title{Extract Information from a mid Object}
+\title{Extract Components from a MID Model}
 \usage{
 mid.extract(object, component, ...)
 
-mid.encoding.info(object, ...)
+mid.encoding.scheme(object, ...)
 
 mid.frames(object, ...)
 
@@ -29,35 +29,35 @@ mid.terms(
 \method{terms}{mid.importance}(x, ...)
 }
 \arguments{
-\item{object}{a mid object.}
+\item{object}{a 'mid' object.}
 
-\item{component}{a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "frames", "encoding.info", and names of component functions like "x1:x2" can be used.}
+\item{component}{a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".}
 
-\item{...}{optional arguments to be passed to the specific functions used to extract information.}
+\item{...}{optional parameters to be passed to the function used to extract the component.}
 
-\item{main.effect}{logical. If FALSE, all main effects are excluded.}
+\item{main.effect}{logical. If \code{FALSE}, the main effect terms are excluded.}
 
-\item{interaction}{logical. If FALSE, all interactions are excluded.}
+\item{interaction}{logical. If \code{FALSE}, the interaction terms are excluded.}
 
-\item{require}{a character vector of feature names. Only terms related to at least one of the specified features will be returned.}
+\item{require}{a character vector of variable names. The terms that are not related to any of the specified names are excluded.}
 
-\item{remove}{a character vector of feature names. All terms related to at least one of the specified features will not be returned.}
+\item{remove}{a character vector of variable names. The terms that are related to at least one of the specified names are excluded.}
 
-\item{x}{a mid object or a mid.importance object.}
+\item{x}{a 'mid' or 'mid.importance' object to extract the terms.}
 }
 \value{
-\code{mid.extract()} returns the 'component' extracted from the mid object.
-\code{mid.encoding.info()} returns basic information of the encoders.
-\code{mid.frames()} returns encoding frames of each feature.
-\code{mid.terms()} returns a character vector of term names.
+\code{mid.extract()} returns the \code{component} extracted from the \code{object}.
+\code{mid.encoding.scheme()} returns a data frame of the encoding schemes.
+\code{mid.frames()} returns a list of the encoding frames.
+\code{mid.terms()} returns a character vector of the terms.
 }
 \description{
-Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
+\code{mid.extract()} returns a component of a 'mid' object.
 }
 \examples{
 data(trees, package = "datasets")
-mid <- interpret(Volume ~ ., trees, k = 10)
-mid.extract(mid, encoding.info)
+mid <- interpret(Volume ~ .^2, trees, k = 10)
+mid.extract(mid, encoding.scheme)
 mid.extract(mid, uninterpreted.rate)
 mid.extract(mid, frames)
 mid.extract(mid, Girth)

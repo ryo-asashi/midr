@@ -1,15 +1,15 @@
-#' Create Plots for Multiple Functional Decomposition Terms
+#' Plot Multiple MID Component Functions
 #'
-#' Returns a list of ggplot objects, each representing the mid values for the corresponding functional decomposition term.
+#' \code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a 'mid' object.
 #'
-#' @param object a mid object.
-#' @param terms a character vector that specifies the names of the terms to be visualized.
-#' @param limits NULL or a numeric vector of length two providing limits of the scale. NA will be replaced by the minimum or maximum mid value in all terms.
-#' @param add.intercept logical. If TRUE, the intercept is added to the mid values and the scale for the plot is shifted.
-#' @param include.main.effects logical. If TRUE, the main effects are added to the interaction mid values.
-#' @param max.plots the number of maximum number of plots.
-#' @param engine a name of the package used to create plots. Possible values are "ggplot2" and "base" ("graphics").
-#' @param ... optional parameters to be passed to ggmid() function.
+#' @param object a 'mid' object.
+#' @param terms a character vector. The names of the terms to be visualized.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.
+#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the scale range for the plot is shifted.
+#' @param include.main.effects logical. If \code{TRUE}, the main effects MID values are added to the interaction MID values.
+#' @param max.plots an integer specifying the number of maximum number of plots.
+#' @param engine a character string. One of "ggplot2" or "graphics".
+#' @param ... optional parameters to be passed to graphing functions.
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -17,7 +17,7 @@
 #' mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds[idx, ])
 #' mid.plots(mid, c("carat", "color", "carat:color", "clarity:color"), limits = NULL)
 #' @returns
-#' If \code{engine} is 'ggplot2', \code{mid.plots()} returns a list of ggplot objects, otherwise \code{mid.plots()} creates plots and returns nothing.
+#' If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of ggplot objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
 #' @export mid.plots
 #'
 mid.plots <- function(

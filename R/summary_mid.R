@@ -1,10 +1,12 @@
-#' Summary Method for MID Objects
+#' Summarizing MID Model
 #'
-#' Prints the summary of the fitted mid object.
+#' For 'mid' objects, \code{summary()} prints information about the fitted MID model.
 #'
-#' @param object a mid object to be printed.
-#' @param digits number of significant digits.
-#' @param top.n an integer specifying the maximum number of terms to be displayed with importance values.
+#' The S3 method of \code{summary()} for 'mid' objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
+#'
+#' @param object a 'mid' object to be summarized.
+#' @param digits an integer specifying the number of significant digits.
+#' @param top.n an integer specifying the maximum number of terms to display MID importance.
 #' @param ... not used.
 #' @examples
 #' data(cars, package = "datasets")
@@ -43,7 +45,7 @@ summary.mid <- function(
   graphics::panel.smooth(yhat, rsd, iter = 3L)
   graphics::abline(h = 0L, lty = 3L, col = "darkgray")
   cat("\nEncoding:\n")
-  print.data.frame(mid.encoding.info(object))
+  print.data.frame(mid.encoding.scheme(object))
   cat("\nImportance:\n")
   imp <- utils::head(mid.importance(object), top.n)
   imp$importance <- format(imp$importance, digits = digits)

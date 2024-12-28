@@ -1,10 +1,13 @@
 #' Weighted Data Frames
 #'
-#' Returns a data frame of class \code{weighted} and \code{data.frame}, which contains the additional attribute "weights".
-#' Weights can be extracted using functions like \code{attr()} or \code{stats::weights()}.
+#' \code{weighted()} returns a data frame with sample weights.
 #'
-#' @param data a data frame for which weights are to be added.
-#' @param weights a numeric vector, specifying the weights of each record.
+#' \code{weighted()} returns a data frame with the 'weights' attribute that can be extracted using \code{stats::weights()}, and three derivative functions, \code{augmented()}, \code{shuffled()} and \code{latticized()}, return a modified data frame with sample weights.
+#' These functions are designed for use with \code{interpret()}.
+#' Since the modified data frames do not preserve the original correlation structure between the variables, the values of the objective variable (y) should always be replaced by the model predictions (yhat).
+#'
+#' @param data a data frame.
+#' @param weights a numeric vector specifying the sample weights for each observation.
 #' @param ... not used.
 #' @examples
 #' x1 <- runif(1000L, -1, 1)
@@ -31,8 +34,10 @@
 #'   ggplot2::labs(title = "latticized") +
 #'   ggplot2::theme_bw()
 #' @returns
-#' \code{weighted()} returns a data frame with the 'weights' attribute.
-#' \code{augmented()}, \code{shuffled()}, and \code{latticized()} returns a weighted data frame with the additional, randomized or simplified values.
+#' \code{weighted()} returns a data frame with the attribute 'weights'.
+#' \code{augmented()} returns a weighted data frame of the original data and the shuffled data with relatively small weights.
+#' \code{shuffled()} returns a weighted data frame of the shuffled data.
+#' \code{latticized()} returns a weighted data frame of latticized data, whose values are grouped and replaced by the representative value of the corresponding group.
 #' @export weighted
 #'
 weighted <- function(data, weights = NULL, ...) {
@@ -52,11 +57,11 @@ weighted <- function(data, weights = NULL, ...) {
 }
 
 #' @rdname weighted
-#' @param size an integer, specifying the number of new rows to be added to the original data frame.
-#' @param ratio a numeric value. Weights for the new rows are calculated as \code{nrow(data) * ratio / size}.
+#' @param size an integer specifying the number of random observations to add to the data frame.
+#' @param r a double. The weight for the random observations is calculated as \code{sum(attr(data, "weights")) * r / size}.
 #' @export augmented
 #'
-augmented <- function(data, weights = NULL, size = nrow(data), ratio = .01) {
+augmented <- function(data, weights = NULL, size = nrow(data), r = .01) {
   cl <- as.list(match.call())
   cl[[1L]] <- NULL
   data <- do.call(weighted, cl)
@@ -67,7 +72,7 @@ augmented <- function(data, weights = NULL, size = nrow(data), ratio = .01) {
     new.data[[i]] <- sample(data[, i], size, TRUE, prob = weights)
   new.data <- as.data.frame(new.data)
   colnames(new.data) <- colnames(data)
-  w <- sum(weights) * ratio / size
+  w <- sum(weights) * r / size
   wts <- c(weights, rep.int(w, size))
   data <- rbind(data, new.data)
   structure(data, class = c("weighted", "data.frame"), weights = wts)
@@ -93,12 +98,12 @@ shuffled <- function(data, weights = NULL, size = nrow(data)) {
 
 
 #' @rdname weighted
-#' @param k an integer or a numeric vector of length two for main effects and interactions, specifying the maximum number of sample points for each numeric predictor variable. If an integer is passed, k is used for main effect terms and the square root of k is used for interaction terms. If not positive, all unique values are used as sample points.
-#' @param type an integer or a vector of length two, specifying the type of piecewise functions to be fit on numeric variables. '0' is for step functions on discretised intervals, and '1' is for piecewise linear functions connecting at representative values.
-#' @param use.catchall logical. If TRUE, less frequent levels of factor variables are dropped and replaced with the catchall level.
-#' @param catchall a character used as the name of "catchall" level for unused levels of each factor variable. Used only when \code{factor.option} is not 0.
-#' @param frames a named list of encoding frames, which specifies bins for quantitative features or levels for qualitative features.
-#' @param keep.mean logical. If TRUE, the mean is used
+#' @param k an integer or a numeric vector of length two, specifying the maximum number of sample points for each variable. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.
+#' @param type an integer or a numeric vector of length two, specifying the type of encoding.
+#' @param use.catchall logical. If \code{TRUE}, less frequent levels of factor variables are dropped and replaced by the catchall level.
+#' @param catchall a character specifying the catchall level.
+#' @param frames a named list of encoding frames.
+#' @param keep.mean logical. If \code{TRUE}, the representative values of each group is the mean of the corresponding group.
 #' @export latticized
 #'
 latticized <- function(

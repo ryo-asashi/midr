@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_plots.R
 \name{mid.plots}
 \alias{mid.plots}
-\title{Create Plots for Multiple Functional Decomposition Terms}
+\title{Plot Multiple MID Component Functions}
 \usage{
 mid.plots(
   object,
@@ -16,27 +16,27 @@ mid.plots(
 )
 }
 \arguments{
-\item{object}{a mid object.}
+\item{object}{a 'mid' object.}
 
-\item{terms}{a character vector that specifies the names of the terms to be visualized.}
+\item{terms}{a character vector. The names of the terms to be visualized.}
 
-\item{limits}{NULL or a numeric vector of length two providing limits of the scale. NA will be replaced by the minimum or maximum mid value in all terms.}
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.}
 
-\item{add.intercept}{logical. If TRUE, the intercept is added to the mid values and the scale for the plot is shifted.}
+\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the scale range for the plot is shifted.}
 
-\item{include.main.effects}{logical. If TRUE, the main effects are added to the interaction mid values.}
+\item{include.main.effects}{logical. If \code{TRUE}, the main effects MID values are added to the interaction MID values.}
 
-\item{max.plots}{the number of maximum number of plots.}
+\item{max.plots}{an integer specifying the number of maximum number of plots.}
 
-\item{engine}{a name of the package used to create plots. Possible values are "ggplot2" and "base" ("graphics").}
+\item{engine}{a character string. One of "ggplot2" or "graphics".}
 
-\item{...}{optional parameters to be passed to ggmid() function.}
+\item{...}{optional parameters to be passed to graphing functions.}
 }
 \value{
-If \code{engine} is 'ggplot2', \code{mid.plots()} returns a list of ggplot objects, otherwise \code{mid.plots()} creates plots and returns nothing.
+If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of ggplot objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
 }
 \description{
-Returns a list of ggplot objects, each representing the mid values for the corresponding functional decomposition term.
+\code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a 'mid' object.
 }
 \examples{
 data(diamonds, package = "ggplot2")

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 The `midr` package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model.\
-The basic concepts underlying the package were developed as a functional decomposition technique called *Maximum Interpretation Decomposition* (MID).
+The basic concepts underlying the package were developed as a functional decomposition technique called *Maximum Interpretation Decomposition* (MID). For the theoretical details of MID, see Iwasawa and Matsumori (2024).
 
 ## Installation
 
@@ -41,17 +41,17 @@ devtools::install_github("ryo-asashi/midr")
 
 ## Examples
 
-The main function of the package is `interpret()`, which can be used to fit a predictive model consisting of a set of functions, each with up to two variables. The prediction function of a fitted model has the following structure:
+The main function of the package is `interpret()`, which can be used to fit a predictive model consisting of a set of functions, each with up to two variables. The prediction function of a fitted MID model $\hat{f}(x)$ has the following structure:
 
 $$
-f^{MID}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{\{j\}}(X_j) + \Sigma_{j,k\ \in D} f_{\{j,\ k\}}(X_j, X_k)
+\hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
 $$
 
-where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias* *term*), $f_{\{j\}}(x_j)$ is the *main effect* of the feature $j$, and $\Sigma_{\{j,\ k\}}(x_j, x_k)$ is the *second-order interaction* *effect* between the two features $j$ and $k$.
+where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias* *term*), $f_{j}(x_j)$ is the *main effect* of the feature $j$, and $\Sigma_{j,k}(x_j, x_k)$ is the *second-order interaction* *effect* between the two features $j$ and $k$. The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
 
 **Fitting an MID Model to the Data**
 
-In the following example, we construct a model for the `price` of diamonds whose prediction function is the sum of eleven component functions: the *intercept*, four first-order *main effects* corresponding to each predictor variable (`carat`, `clarity`, `color` and `cut`), and six second-order *interactions* corresponding to each pair of the variables.
+In the following example, we construct a MID model for the `price` of diamonds whose prediction function is the sum of eleven component functions: the *intercept*, four first-order *main effects* corresponding to each predictor variable (`carat`, `clarity`, `color` and `cut`), and six second-order *interactions* corresponding to each pair of the variables.
 
 ```{r diamonds_dataset}
 # required packages
@@ -112,7 +112,7 @@ grid.arrange(grobs = plots[1:4], nrow = 2)
 grid.arrange(grobs = plots[5:7], nrow = 1)
 ```
 
-The importance of each term (or the corresponding component function) of a MID model can be measured as the mean absolute effect of it. Drawing a heatmap is a useful way to find important two-way interactions.
+The importance of each component function of a MID model can be measured by $E[\ |f_j(X_j)|\ ]$ and $E[\ |f_{j,k}(X_j,X_k)|\ ]$, i.e., the mean absolute effect of it. Drawing a heat map of MID importance is a useful way to find important two-way interactions.
 
 ```{r bikeshare_importance}
 # draw a heatmap of term importance
@@ -172,13 +172,13 @@ model <- ranger(wage ~ ., train, importance = "permutation",
 rmse(predict(model, valid)$predictions, valid$wage)
 ```
 
-When the target model is passed to the argument `model`, `interpret()` replaces the response variable with the predicted values given by the target model. Thus, the fitted MID model can be viewed as *an interpretable model of the target model*.
+When the target model is passed to the argument `model`, `interpret()` replaces the response variable by the predictions obtained from the target model. Thus, the fitted MID model can be viewed as *an interpretable model of the target model*.
 
 ```{r wage_mid}
 # MID surrogae or the ranger model
 mid <- interpret(wage ~ .^2, train, model = model, ok = TRUE)
 print(mid, omit.values = TRUE)
-# interpretation loss
+# RMSE as the interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
 ```
 
@@ -190,10 +190,10 @@ grid.arrange(grobs = mid.plots(mid))
 # important interactions
 imp <- mid.importance(mid)
 terms <- mid.terms(imp, main.effect = FALSE)[1:4]
-grid.arrange(grobs = mid.plots(mid, terms = terms))
+grid.arrange(grobs = mid.plots(mid, terms = terms, limits = NULL))
 ```
 
-The following plot compares the term importance (TI) of the `midr` surrogate with the *permutation feature importance* (PFI) of the target `ranger` model.
+The following plot compares the MID importance plot of the fitted `midr` model with the *permutation feature importance* (PFI) plot of the target `ranger` model.
 
 ```{r wage_importance, fig.height = 4}
 # permutation feature importance of variables
@@ -201,15 +201,15 @@ pfi <- sort(model$variable.importance, decreasing = FALSE)
 pfi <- data.frame(variable = factor(names(pfi), levels = names(pfi)),                   importance = pfi)
 # importance of the component terms
 grid.arrange(nrow = 1,
-  ggmid(imp, max.terms = 12) +
-    labs(subtitle = "Surrogate Model (TI)"),
+  ggmid(imp, max.bars = 12) +
+    labs(subtitle = "MID Model"),
   ggplot(pfi, aes(y = variable, x = importance)) +
     geom_col() +
     labs(subtitle = "Target Model (PFI)", y = NULL)
 )
 ```
 
-Because the prediction function of the MID model is a sum of the simple component terms, the individual conditional effect can be decomposed into the effects of each term.
+As the prediction function of the MID model is a sum of the simple component functions, the individual conditional effect can be decomposed into the effects of each term.
 
 ```{r wage_conditional}
 # create a mid conditional object

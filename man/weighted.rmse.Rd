@@ -13,21 +13,24 @@ weighted.mae(x, y = NULL, w = NULL, ..., na.rm = FALSE)
 weighted.medae(x, y = NULL, w = NULL, ..., na.rm = FALSE)
 }
 \arguments{
-\item{x}{a numeric vector of deviations based on which the loss is calculated.}
+\item{x}{a numeric vector of errors.}
 
-\item{y}{an optional numeric vector. If 'y' is passed, the loss is calculated based on the difference of x minus y.}
+\item{y}{an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}.}
 
-\item{w}{a numeric vector of the same length as 'x' giving the weights to use for elements of it.}
+\item{w}{a numeric vector of the sample weights for each value in \code{x}.}
 
-\item{...}{optional augments passed to other functions and methods.}
+\item{...}{optional parameters.}
 
-\item{na.rm}{logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.}
+\item{na.rm}{logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation}
 }
 \value{
-\code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a weighted loss between two numeric vectors.
+\code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 }
 \description{
-Returns a weighted loss calculated for the given vector(s). \code{weighted.rmse} is for the root mean square error, \code{weighted.mae} is for the mean absolute error, and \code{weighted.medae} is for the median absolute error
+\code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss for a weighted vector of prediction errors.
+}
+\details{
+\code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
 }
 \examples{
 weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))

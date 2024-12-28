@@ -1,25 +1,28 @@
-#' Plot MID Individual Conditional Expectations with graphics Package
+#' Plot ICE of MID Model with Basic Functions
 #'
-#' Creates a plot showing the MID-based individual conditional expectations
+#' For 'mid.conditional' objects, \code{plot()} visualizes ICE curves of a MID model.
 #'
-#' @param x a mid.conditional object to visualize.
-#' @param centered logical.
-#' @param draw.dots logical. If TRUE, points representing the predictions at the observed values are
-#' @param sample a vector specifying the set of names of the observations to be plotted.
-#' @param term an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.
-#' @param variable.alpha a name of the predictor variable to use to set \code{alpha} for each plot.
-#' @param variable.colour a name of the predictor variable to use to set \code{color} for each plot.
-#' @param variable.linetype a name of the predictor variable to use to set \code{linetype} for each plot.
-#' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
+#' The S3 method of \code{plot()} for 'mid.conditional' objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
+#' For the details of ICE, see Goldstein et al. (2013).
+#'
+#' @param x a 'mid.conditional' object to be visualized.
+#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.
+#' @param draw.dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
+#' @param sample a vector specifying the names of observations to be plotted.
+#' @param term an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.
+#' @param variable.alpha a name of the variable to use to set \code{alpha}.
+#' @param variable.colour a name of the variable to use to set \code{colour}.
+#' @param variable.linetype a name of the variable to use to set \code{linetype}.
+#' @param variable.linewidth a name of the variable to use to set \code{linewidth}.
 #' @param scale.palette a character vector of color names, specifying the colors to be used.
-#' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
+#' @param ... optional parameters to be passed to \code{base::plot()}.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' mc <- mid.conditional(mid, "Wind", na.omit(airquality))
 #' plot(mc, variable.colour = "Solar.R", centered = TRUE)
 #' @returns
-#' \code{plot.mid.conditional()} produces an ICE plot for the conditional effect of the target variable.
+#' \code{plot.mid.conditional()} produces an ICE plot and invisibly returns the ICE matrix used for the plot.
 #' @exportS3Method base::plot
 #'
 plot.mid.conditional <- function(

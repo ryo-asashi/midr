@@ -2,39 +2,42 @@
 % Please edit documentation in R/plot_mid_importance.R
 \name{plot.mid.importance}
 \alias{plot.mid.importance}
-\title{Plot Term Importance with graphics Package}
+\title{Plot MID Importance with Basic Functions}
 \usage{
 \method{plot}{mid.importance}(
   x,
   type = c("barplot", "heatmap"),
-  max.terms = NA,
+  max.bars = NA,
   scale.palette = c("#FFFFFF", "#464646"),
   ...
 )
 }
 \arguments{
-\item{x}{a mid.importance object to plot.}
+\item{x}{a 'mid.importance' object to be visualized.}
 
-\item{type}{a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".}
+\item{type}{a character, "barplot" or "heatmap", specifying the type of the plot.}
 
-\item{max.terms}{an integer, specifying the maximum number of component terms to be plotted in the barplot.}
+\item{max.bars}{an integer specifying the maximum number of bars.}
 
-\item{scale.palette}{color palette used to draw the interaction heatmap.}
+\item{scale.palette}{a character vector of length two. The color palette for the heatmap.}
 
-\item{...}{optional arguments to be passed to graphic functions.}
+\item{...}{optional parameters to be passed to the graphing function.}
 }
 \value{
-\code{plot.mid.importance()} produces a bar plot or a heat map for the term importance.
+\code{plot.mid.importance()} produces a bar plot or heat map and returns \code{NULL}.
 }
 \description{
-Creates a plot showing the MID-based term importance
+For 'mid.importance' objects, \code{plot()} visualizes the importance of MID component functions.
+}
+\details{
+The S3 method of \code{plot()} for 'mid.importance' objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
 }
 \examples{
 data(diamonds, package = "ggplot2")
 set.seed(42)
-mid <- interpret(price ~ (carat + cut + color + clarity)^2,
-                 diamonds[sample(nrow(diamonds), 1e4), ])
+idx <- sample(nrow(diamonds), 1e4)
+mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
-ggmid(imp)
-ggmid(imp, type = "heatmap")
+plot(imp)
+plot(imp, type = "heatmap")
 }

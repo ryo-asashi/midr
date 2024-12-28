@@ -1,25 +1,36 @@
 #' Encoder for Qualitative Variables
 #'
-#' Returns a list consisting of the encoding information of a predictor variable as a qualitative variable.
+#' \code{factor.encoder()} returns an encoder for a qualitative variable.
 #'
-#' @param x a vector to be encoded as a qualitative variable.
-#' @param k an integer specifying the max number of the levels after the encoding. If not positive, all unique values of x are chosen as sample points.
-#' @param use.catchall logical. If TRUE, less frequent levels are dropped and replaced with the catchall level.
-#' @param catchall a character used as the name of "catchall" level for unused levels.
-#' @param tag name of the variable.
-#' @param frame a \code{factor.frame} object or a vector, containing the information about the levels of the variable.
-#' @param weights optional. a numeric vector indicating the weight of each value of 'x'.
+#' \code{factor.encoder()} extracts the unique values (levels) of the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
+#' If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k}, only the most frequent k - 1 levels are used and the other values are replaced by the \code{catchall}.
+#'
+#' @param x a vector to encode as a qualitative variable.
+#' @param k an integer specifying the maximum number of distinct levels. If not positive, all unique values of x are used as levels.
+#' @param use.catchall logical. If \code{TRUE}, less frequent levels are dropped and replaced by the catchall level.
+#' @param catchall a character to use as the catchall level.
+#' @param tag a character specifying the name of the variable.
+#' @param frame a 'factor.frame' object or a character vector that defines the levels of the variable.
+#' @param weights optional. A numeric vector of the sample weights for each value of \code{x}.
 #' @examples
 #' data(iris, package = "datasets")
-#' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE)
+#' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 #' enc$frame
 #' enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+#'
+#' frm <- factor.frame(c("setosa", "virginica"), "other iris")
+#' enc <- factor.encoder(x = iris$Species, frame = frm)
+#' enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+#'
+#' enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
+#' enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 #' @returns
 #' \code{factor.encoder()} returns a list containing the following components:
-#' \item{frame}{a data frame containing the encoding information.}
-#' \item{encode}{a function to encode new data into a dummy matrix.}
+#' \item{frame}{a 'factor.frame' object containing the encoding information.}
+#' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
-#' \item{type}{type of encoding.}
+#' \item{type}{a character. The type of encoding.}
+#' \code{factor.frame()} returns a 'factor.frame' object containing the encoding information.
 #' @export factor.encoder
 #'
 factor.encoder <- function(
@@ -28,7 +39,7 @@ factor.encoder <- function(
   # set levels --------
   if (!is.null(frame)) {
     if (is.vector(frame))
-      frame <- factor.frame(levels = frame, catchall = frame[length(frame)])
+      frame <- factor.frame(levels = frame, catchall = NULL)
     if (!inherits(frame, "factor.frame"))
       stop("invalid factor.frame supplied")
     flvs <- attr(frame, "levels")
@@ -65,6 +76,7 @@ factor.encoder <- function(
         next
       mat[i, new_x[i]] <- 1
     }
+    colnames(mat) <- flvs
     mat
   }
   list(frame = frame, encode = encode, n = nlvs, type = "factor")

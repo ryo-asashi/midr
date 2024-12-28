@@ -1,10 +1,12 @@
-#' Print Method for MID Objects
+#' Print MID Values
 #'
-#' Prints the summary of the fitted mid object.
+#' For 'mid' objects, \code{print()} prints the MID values and the uninterpreted rate.
 #'
-#' @param x a mid object to be printed.
-#' @param digits number of significant digits.
-#' @param omit.values logical. If TRUE, mid values of main effect terms are not printed.
+#' The S3 method of \code{print()} for 'mid' objects prints the MID values of a fitted MID model and its uninterpreted rate.
+#'
+#' @param x a 'mid' object to be printed.
+#' @param digits an integer specifying the number of significant digits.
+#' @param omit.values logical. If \code{TRUE}, MID values of main effect are not printed.
 #' @param ... not used.
 #' @examples
 #' data(cars, package = "datasets")

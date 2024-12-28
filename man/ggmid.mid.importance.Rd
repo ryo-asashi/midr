@@ -3,13 +3,13 @@
 \name{ggmid.mid.importance}
 \alias{ggmid.mid.importance}
 \alias{autoplot.mid.importance}
-\title{Plot Term Importance with ggplot2 Package}
+\title{Plot MID Importance with ggplot2 Package}
 \usage{
 \method{ggmid}{mid.importance}(
   object,
   type = c("barplot", "heatmap"),
   plot.main = TRUE,
-  max.terms = NA,
+  max.bars = NA,
   scale.palette = c("#FFFFFF", "#464646"),
   ...
 )
@@ -17,23 +17,27 @@
 \method{autoplot}{mid.importance}(object, ...)
 }
 \arguments{
-\item{object}{a mid.importance object to be visualized.}
+\item{object}{a 'mid.importance' object to be visualized.}
 
-\item{type}{a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".}
+\item{type}{a character, "barplot" or "heatmap", specifying the type of the plot.}
 
-\item{plot.main}{logical. If TRUE, lines, bars or rectangles representing mid values are drawn.}
+\item{plot.main}{logical. If \code{TRUE}, the main layer is not drawn.}
 
-\item{max.terms}{an integer, specifying the maximum number of component terms to be plotted in the barplot.}
+\item{max.bars}{an integer specifying the maximum number of bars.}
 
-\item{scale.palette}{color palette used to draw the interaction heatmap.}
+\item{scale.palette}{a character vector of length two. The color palette for the heatmap.}
 
-\item{...}{optional arguments to be passed to graphic functions.}
+\item{...}{optional parameters to be passed to the main layer.}
 }
 \value{
 \code{ggmid.mid.importance()} returns a \code{ggplot} object.
 }
 \description{
-Creates a ggplot object representing the MID-based term importance
+For 'mid.importance' objects, \code{ggmid()} visualizes the importance of MID component functions.
+}
+\details{
+The S3 method of \code{ggmid()} for 'mid.importance' objects creates a 'ggplot' object that visualizes the term importance of a fitted MID model.
+The main layer is drawn using \code{geom_col()} or \code{geom_tile()}.
 }
 \examples{
 data(diamonds, package = "ggplot2")

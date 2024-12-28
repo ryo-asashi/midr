@@ -1,23 +1,23 @@
-#' Extract Information from a mid Object
+#' Extract Components from a MID Model
 #'
-#' Returns information on the mid object including a summary for encoders, uninterpreted rates, or other special components.
+#' \code{mid.extract()} returns a component of a 'mid' object.
 #'
-#' @param object a mid object.
-#' @param component a literal character string that specifies the name of the component to extract. Any component of the mid object can be extracted. In addition, some special values such as "frames", "encoding.info", and names of component functions like "x1:x2" can be used.
-#' @param ... optional arguments to be passed to the specific functions used to extract information.
+#' @param object a 'mid' object.
+#' @param component a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".
+#' @param ... optional parameters to be passed to the function used to extract the component.
 #' @examples
 #' data(trees, package = "datasets")
-#' mid <- interpret(Volume ~ ., trees, k = 10)
-#' mid.extract(mid, encoding.info)
+#' mid <- interpret(Volume ~ .^2, trees, k = 10)
+#' mid.extract(mid, encoding.scheme)
 #' mid.extract(mid, uninterpreted.rate)
 #' mid.extract(mid, frames)
 #' mid.extract(mid, Girth)
 #' mid.extract(mid, intercept)
 #' @returns
-#' \code{mid.extract()} returns the 'component' extracted from the mid object.
-#' \code{mid.encoding.info()} returns basic information of the encoders.
-#' \code{mid.frames()} returns encoding frames of each feature.
-#' \code{mid.terms()} returns a character vector of term names.
+#' \code{mid.extract()} returns the \code{component} extracted from the \code{object}.
+#' \code{mid.encoding.scheme()} returns a data frame of the encoding schemes.
+#' \code{mid.frames()} returns a list of the encoding frames.
+#' \code{mid.terms()} returns a character vector of the terms.
 #' @export mid.extract
 #'
 mid.extract <- function(object, component, ...) {
@@ -29,7 +29,7 @@ mid.extract <- function(object, component, ...) {
   }
   rt <- switch(component,
     conditional = mid.conditional(object, ...),
-    encoding.info = mid.encoding.info(object, ...),
+    encoding.scheme = mid.encoding.scheme(object, ...),
     frames = mid.frames(object, ...),
     importance = mid.importance(object, ...),
     plots = mid.plots(object, ...),
@@ -39,12 +39,12 @@ mid.extract <- function(object, component, ...) {
 }
 
 #' @rdname mid.extract
-#' @export mid.encoding.info
+#' @export mid.encoding.scheme
 #'
-mid.encoding.info <- function(object, ...) {
+mid.encoding.scheme <- function(object, ...) {
   fun <- function(enc) paste0(enc$type, "(", enc$n, ")")
-  mencs <- sapply(object$me.encoders, fun)
-  iencs <- sapply(object$ie.encoders, fun)
+  mencs <- sapply(object$encoders[["main.effects"]], fun)
+  iencs <- sapply(object$encoders[["interactions"]], fun)
   tags <- unique(c(mtags <- names(mencs), itags <- names(iencs)))
   df <- data.frame(row.names = tags)
   if (length(mtags) > 0L) {
@@ -65,8 +65,8 @@ mid.encoding.info <- function(object, ...) {
 #' @export mid.frames
 #'
 mid.frames <- function(object, ...) {
-  mfl <- lapply(object$me.encoders, function(enc) enc$frame)
-  ifl <- lapply(object$ie.encoders, function(enc) enc$frame)
+  mfl <- lapply(object$encoders[["main.effects"]], function(enc) enc$frame)
+  ifl <- lapply(object$encoders[["interactions"]], function(enc) enc$frame)
   tags <- unique(c(names(mfl), names(ifl)))
   res <- list()
   for (tag in tags) {
@@ -82,12 +82,10 @@ mid.frames <- function(object, ...) {
 
 
 #' @rdname mid.extract
-#'
-#' @param main.effect logical. If FALSE, all main effects are excluded.
-#' @param interaction logical. If FALSE, all interactions are excluded.
-#' @param require a character vector of feature names. Only terms related to at least one of the specified features will be returned.
-#' @param remove a character vector of feature names. All terms related to at least one of the specified features will not be returned.
-#'
+#' @param main.effect logical. If \code{FALSE}, the main effect terms are excluded.
+#' @param interaction logical. If \code{FALSE}, the interaction terms are excluded.
+#' @param require a character vector of variable names. The terms that are not related to any of the specified names are excluded.
+#' @param remove a character vector of variable names. The terms that are related to at least one of the specified names are excluded.
 #' @export mid.terms
 #'
 mid.terms <- function(
@@ -115,7 +113,7 @@ mid.terms <- function(
 }
 
 #' @rdname mid.extract
-#' @param x a mid object or a mid.importance object.
+#' @param x a 'mid' or 'mid.importance' object to extract the terms.
 #' @exportS3Method stats::terms
 #'
 terms.mid <- function(x, ...) {

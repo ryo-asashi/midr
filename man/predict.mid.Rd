@@ -3,7 +3,7 @@
 \name{predict.mid}
 \alias{predict.mid}
 \alias{mid.f}
-\title{Predict Method for MID-based Surrogate Models}
+\title{Predict Method for MID Model}
 \usage{
 \method{predict}{mid}(
   object,
@@ -17,33 +17,38 @@
 mid.f(object, term, x, y = NULL)
 }
 \arguments{
-\item{object}{a mid object to be used as a surrogate model.}
+\item{object}{a 'mid' object to be used to make predictions.}
 
-\item{newdata}{data frame for which the predictions are to be made.}
+\item{newdata}{a data frame of the new observations.}
 
-\item{na.action}{a function which indicates what should happen when the data contain missing values (NAs).}
+\item{na.action}{a function which indicates what should happen when the data contain \code{NA}s.}
 
-\item{type}{the type of prediction required. The default is on the scale of the response varialbe; the alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.}
+\item{type}{the type of prediction required. The default is on the scale of the response varialbe. The alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.}
 
-\item{terms}{a character vector, specifying names of the terms to be used to make predictions.}
+\item{terms}{a character vector specifying the subset of component functions to be used for prediction.}
 
 \item{...}{not used.}
 
-\item{term}{a character, specifying the name of the term of the decomposed function.}
+\item{term}{a character specifying the component function of a fitted MID model.}
 
-\item{x}{a vector to be used as inputs to the first argument of the decomposed function. If a matrix or data.frame is passed, inputs are extracted from the matrix or data.frame.}
+\item{x}{a vector to be used as the input to the first argument of the component function. If a matrix or data frame is passed, inputs are extracted from the matrix or data frame.}
 
-\item{y}{a vector to be used as inputs to the second argument of the decomposed interaction function.}
+\item{y}{a vector to be used as the input to the second argument of the component function.}
 }
 \value{
-\code{predict.mid()} returns a numeric vector of MID model predictions. \code{mid.f()} works as a component function of the MID model and returns a term effects.
+\code{predict.mid()} returns a numeric vector of MID model predictions.
 }
 \description{
-Returns predictions of the fitted mid object and optionally breakdown of those predictions into the functional decomposition terms.
+The method of \code{predict()} for 'mid' objects obtains predictions from a fitted MID model.
+}
+\details{
+The S3 method of \code{predict()} for MID models returns the model predictions.
+\code{mid.f()} works as a component function of a MID model.
 }
 \examples{
 data(cars, package = "datasets")
 mid <- interpret(dist ~ speed, cars, lambda = 1)
 predict(mid, newdata = data.frame(speed = 5:25))
+mid.f(mid, "speed", 5:25)
 mid.f(mid, "speed", 5:25) + mid$intercept
 }

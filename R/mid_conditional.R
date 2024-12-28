@@ -1,29 +1,32 @@
-#' Calculate and Visualize MID-based Individual Conditional Expectation
+#' Calculate ICE of MID Models
 #'
-#' Creates a data frame to be used to visualize the individual conditional expectation.
+#' \code{mid.conditional()} creates an object to draw ICE curves of a MID model.
 #'
-#' @param object a mid object to compute the individual conditional expectations.
-#' @param variable a character or an expression specifying the predictor variable to calculate the individual conditional expectations for.
-#' @param data a data frame representing the observation results.
-#' @param keep.effects logical. If TRUE, the effects of component terms are stored in the output object.
-#' @param partition an integer specifying the number of the sample values.
-#' @param max.nrow the maximum number of rows of the output data frame.
-#' @param type the type of the prediction to use when the model has a link function. The default is \code{response}.
+#' \code{mid.conditional()} obtains predictions for hypothetical observations from a 'mid' object and returns a 'mid.conditional' object.
+#' The graphing functions \code{ggmid()} and \code{plot()} can be used to generate the ICE curve plots.
+#'
+#' @param object a 'mid' object.
+#' @param variable a character or expression specifying the variable for the ICE calculation.
+#' @param data a data frame of observations.
+#' @param keep.effects logical. If \code{TRUE}, the effects of component functions are stored in the output object.
+#' @param n.samples an integer specifying the number of the sample points.
+#' @param max.nrow an integer specifying the maximum number of rows of the output data frame.
+#' @param type the type of the prediction. The default is "response". "link" is possible if the MID model uses a link function.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' mc <- mid.conditional(mid, "Wind", airquality)
 #' mc
 #' @returns
-#' \code{mid.conditional()} returns a 'mid.conditional' object that contains the following components:
+#' \code{mid.conditional()} returns a 'mid.conditional' object with the following components:
 #' \item{terms}{a character vector of relevant terms.}
-#' \item{observed}{a data frame of the observations and the corresponding predictions.}
-#' \item{conditional}{a data frame of the hypothetical observations.}
-#' \item{values}{a numeric vector of the representative values of the target variable.}
+#' \item{observed}{a data frame of the actual observations and the corresponding predictions.}
+#' \item{conditional}{a data frame of the hypothetical observations and the corresponding predictions.}
+#' \item{values}{a numeric vector of the sample points for the target variable.}
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, variable, data, keep.effects = TRUE, partition = 100L,
+    object, variable, data, keep.effects = TRUE, n.samples = 100L,
     max.nrow = 1e5L, type = c("response", "link")) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))
@@ -41,12 +44,12 @@ mid.conditional <- function(
                                data = data, na.action = "na.pass")
     data <- data[, -which(colnames(data) == yvar)]
   }
-  mf <- object$me.encoders[[variable]]$frame
+  mf <- object$encoders[["main.effects"]][[variable]]$frame
   if (is.null(mf))
-    mf <- object$ie.encoders[[variable]]$frame
+    mf <- object$encoders[["interactions"]][[variable]]$frame
   if (inherits(mf, "numeric.frame")) {
     br <- attr(mf, "breaks")
-    values <- seq.int(br[1L], br[length(br)], length.out = partition)
+    values <- seq.int(br[1L], br[length(br)], length.out = n.samples)
   } else {
     values <- mf[, 1L]
     attr(values, "catchall") <- attr(mf, "catchall")
@@ -106,10 +109,9 @@ mid.conditional <- function(
 }
 
 
-#'
 #' @rdname mid.conditional
-#' @param x a mid.conditional object to print.
-#' @param ... additional arguments to be passed to the methods for \code{data.frame}.
+#' @param x a 'mid.conditional' object to print.
+#' @param ... additional parameters to be passed to \code{print.default()} to print sample points.
 #' @exportS3Method base::print
 #'
 print.mid.conditional <- function(x, ...) {
@@ -117,25 +119,6 @@ print.mid.conditional <- function(x, ...) {
   cat(paste0("\nIndividual Conditional Expectation for ",
              n, " Observation", if (n > 1L) "s", "\n"))
   cat(paste0("\nVariable: ", attr(x, "variable"), "\n"))
-  cat("\nObserved:\n")
-  print.data.frame(utils::head(x$observed), ...)
-  cat("\nConditional:\n")
-  print.data.frame(utils::head(x$conditional), ...)
+  cat("\nSample Points:\n")
+  print.default(x$values, ...)
 }
-
-
-#'
-#' @rdname mid.conditional
-#' @exportS3Method base::summary
-#'
-summary.mid.conditional <- function(object, ...) {
-  n <- attr(object, "n")
-  cat(paste0("\nIndividual Conditional Expectation for ",
-             n, " Observation", if (n > 1L) "s", "\n"))
-  cat(paste0("\nVariable: ", attr(object, "variable"), "\n"))
-  cat("\nObserved:\n")
-  print(summary.data.frame(object$observed, ...))
-  cat("\nConditional:\n")
-  print(summary.data.frame(object$conditional, ...))
-}
-

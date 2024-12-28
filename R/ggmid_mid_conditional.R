@@ -1,26 +1,29 @@
-#' Plot MID Individual Conditional Expectations with ggplot2 Package
+#' Plot ICE of MID Model with ggplot2 Package
 #'
-#' Creates a ggplot object representing the MID-based individual conditional expectations
+#' For 'mid.conditional' objects, \code{ggmid()} visualizes ICE curves of a MID model.
 #'
-#' @param object a mid.conditional object to visualize.
-#' @param limits NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.
-#' @param plot.main logical. If TRUE, lines representing the individual conditional expectations are drawn.
-#' @param centered logical.
-#' @param draw.dots logical. If TRUE, points representing the predictions at the observed values are
-#' @param sample a vector specifying the set of names of the observations to be plotted.
-#' @param term an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.
-#' @param variable.alpha a name of the predictor variable to use to set \code{alpha} for each plot.
-#' @param variable.colour a name of the predictor variable to use to set \code{color} for each plot.
-#' @param variable.linetype a name of the predictor variable to use to set \code{linetype} for each plot.
-#' @param variable.linewidth a name of the predictor variable to use to set \code{linewidth} for each plot.
-#' @param ... optional parameters to be directly passed to \code{ggplot2::geom_line()}.
+#' The S3 method of \code{ggmid()} for 'mid.conditional' objects creates a 'ggplot' object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
+#' For the details of ICE, see Goldstein et al. (2013).
+#'
+#' @param object a 'mid.conditional' object to be visualized.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.
+#' @param plot.main logical. If \code{FALSE}, the main layer is not drawn.
+#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.
+#' @param draw.dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
+#' @param sample a vector specifying the names of observations to be plotted.
+#' @param term an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.
+#' @param variable.alpha a name of the variable to use to set \code{alpha}.
+#' @param variable.colour a name of the variable to use to set \code{colour}.
+#' @param variable.linetype a name of the variable to use to set \code{linetype}.
+#' @param variable.linewidth a name of the variable to use to set \code{linewidth}.
+#' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' mc <- mid.conditional(mid, "Wind", airquality)
 #' ggmid(mc, variable.colour = "Solar.R", centered = TRUE)
 #' @returns
-#' \code{ggmid.mid.conditional()} returns a \code{ggplot} object.
+#' \code{ggmid.mid.conditional()} returns a 'ggplot' object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(
@@ -99,7 +102,6 @@ ggmid.mid.conditional <- function(
 }
 
 
-#'
 #' @rdname ggmid.mid.conditional
 #' @exportS3Method ggplot2::autoplot
 #'

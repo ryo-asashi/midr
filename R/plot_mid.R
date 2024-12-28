@@ -1,15 +1,17 @@
-#' Plot MID Values with graphics Package
+#' Plot MID with Basic Functions
 #'
-#' Creates a plot showing mid values of the functional decomposition term.
+#' For 'mid' objects, \code{plot()} visualizes a MID component function.
 #'
-#' @param x mid object to be visualized.
-#' @param term name of term to be plotted.
-#' @param add.intercept logical. If TRUE, the intercept is added to the mid values and the scale for the plot is shifted.
-#' @param include.main.effects logical. If TRUE, the main effects are added to the interaction mid values.
-#' @param scale.type color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aestetics like \code{ggplot2::scale_fill_viridis_c}.
+#' The S3 method of \code{plot()} for 'mid' objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
+#'
+#' @param x a 'mid' object to be visualized.
+#' @param term a character specifying the component function to plot.
+#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plot scale is shifted.
+#' @param include.main.effects logical. If \code{TRUE}, the main effects are added to the interaction effect.
+#' @param scale.type a character specifying the color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aesthetics like \code{ggplot2::scale_fill_viridis_c()}.
 #' @param scale.palette a character vector of color names, specifying the colors to be used in the interaction plot.
-#' @param m an integer specifying the coarseness of the grid for a interaction plot.
-#' @param ... optional parameters to be passed to \code{plot()}, \code{barplot()} or \code{filled.contour()}.
+#' @param cells.count an integer or numeric vector of length two, specifying the number of cells for the raster interaction plot.
+#' @param ... optional parameters to be passed to the graphing function.
 #' @examples
 #' data(airquality, package = "datasets")
 #' airquality$Month <- factor(airquality$Month)
@@ -20,13 +22,13 @@
 #' plot(mid, "Solar.R:Month", scale.type = "viridis",
 #'      add.intercept = TRUE, include.main.effects = TRUE)
 #' @returns
-#' \code{plot.mid()} produces a line plot or a bar plot for the main effect and a filled contour plot for the interaction.
+#' \code{plot.mid()} produces a line plot or bar plot for a main effect and a filled contour plot for an interaction and returns \code{NULL}.
 #' @exportS3Method base::plot
 #'
 plot.mid <- function(
     x, term, add.intercept = FALSE, include.main.effects = FALSE,
     scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-    m = 100L, ...) {
+    cells.count = c(100L, 100L), ...) {
   dots <- list(...)
   tags <- term.split(term)
   term <- term.check(term, x$terms, stop = TRUE)
@@ -37,7 +39,7 @@ plot.mid <- function(
     if (add.intercept)
       df$mid <- df$mid + x$intercept
     if (is.numeric(df[, 1L])) {
-      if (x$me.encoders[[term]]$type == "constant") {
+      if (x$encoders[["main.effects"]][[term]]$type == "constant") {
         cns <- paste0(term, c("_min", "_max"))
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
                           y = rep(df$mid, each = 2L))
@@ -60,11 +62,14 @@ plot.mid <- function(
     }
   } else if (len == 2L) {
     # interaction
-    ms <- c(m, m)
+    ms <- cells.count
+    if (length(ms) == 1L)
+      ms <- c(ms, ms)
     xy <- list(NULL, NULL)
     lat <- list(NULL, NULL)
     lab <- list(NULL, NULL)
-    encs <- list(x$ie.encoders[[tags[1L]]], x$ie.encoders[[tags[2L]]])
+    encs <- list(x$encoders[["interactions"]][[tags[1L]]],
+                 x$encoders[["interactions"]][[tags[2L]]])
     for (i in 1L:2L) {
       if (encs[[i]]$type == "factor") {
         ms[i] <- encs[[i]]$n * 2L
@@ -75,7 +80,7 @@ plot.mid <- function(
         cns <- paste0(tags[i], c("_min", "_max"))
         xy[[i]] <- seq(min(encs[[i]]$frame[[cns[1L]]]),
                        max(encs[[i]]$frame[[cns[2L]]]),
-                       length.out = m)
+                       length.out = ms[i])
       }
     }
     rdf <- data.frame(rep(xy[[1L]], times = ms[2L]),

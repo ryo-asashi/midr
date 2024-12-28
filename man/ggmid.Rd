@@ -4,7 +4,7 @@
 \alias{ggmid}
 \alias{ggmid.mid}
 \alias{autoplot.mid}
-\title{Plot MID Values with ggplot2 Package}
+\title{Plot MID with ggplot2 Package}
 \usage{
 ggmid(object, ...)
 
@@ -18,46 +18,51 @@ ggmid(object, ...)
   interaction.type = c("default", "raster", "rectangle"),
   scale.type = "default",
   scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-  partition = 100L,
+  cells.count = c(100L, 100L),
   ...
 )
 
 \method{autoplot}{mid}(object, ...)
 }
 \arguments{
-\item{object}{a mid object to be visualized.}
+\item{object}{a 'mid' object to be visualized.}
 
-\item{...}{optional parameters to be passed to the main layer (\code{geom_line}, \code{geom_path}, \code{geom_bar}, or \code{geom_rect}) of each plot.}
+\item{...}{optional parameters to be passed to the main layer.}
 
-\item{term}{a name of the functional decomposition term to be plotted.}
+\item{term}{a character specifying the component function to plot.}
 
-\item{limits}{NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.}
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.}
 
-\item{plot.main}{logical. If TRUE, lines, bars or rectangles representing mid values are drawn.}
+\item{plot.main}{logical. If \code{FALSE}, the main layer is not drawn.}
 
-\item{add.intercept}{logical. If TRUE, the intercept is added to the mid values and the scale for the plot is shifted.}
+\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plot scale is shifted.}
 
-\item{include.main.effects}{logical. If TRUE, the main effects are added to the interaction mid values.}
+\item{include.main.effects}{logical. If \code{TRUE}, the main effects are added to the interaction effect.}
 
-\item{interaction.type}{a character, specifying the plotting method of interaction effects.}
+\item{interaction.type}{a character specifying the method for plotting the interaction effect.}
 
-\item{scale.type}{color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aestetics like \code{ggplot2::scale_fill_viridis_c}.}
+\item{scale.type}{a character specifying the color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aesthetics like \code{ggplot2::scale_fill_viridis_c()}.}
 
 \item{scale.palette}{a character vector of color names, specifying the colors to be used in the interaction plot.}
 
-\item{partition}{an integer specifying the coarseness of the grid for a "raster" type interaction plot.}
+\item{cells.count}{an integer or numeric vector of length two, specifying the number of cells for the raster interaction plot.}
 }
 \value{
-\code{ggmid()} returns a \code{ggplot} object.
+\code{ggmid.mid()} returns a 'ggplot' object.
 }
 \description{
-Creates a ggplot object representing mid values of the functional decomposition term.
+For 'mid' objects, \code{ggmid()} visualizes a MID component function using the ggplot2 package.
+}
+\details{
+The S3 method of \code{ggmid()} for 'mid' objects creates a 'ggplot' object that visualizes a MID component function.
+The main layer is drawn using \code{geom_line()} or \code{geom_path()} for a main effect of a quantitative variable, \code{geom_col()} for a main effect of a qualitative variable, and \code{geom_raster()} or \code{geom_rect()} for an interaction.
+For other methods of \code{'ggmid()'}, see \code{help(ggmid.mid.importance)} or \code{help(ggmid.mid.conditional)}.
 }
 \examples{
 data(diamonds, package = "ggplot2")
-model <- lm(price ~ carat + cut + color + clarity + carat:clarity, diamonds)
-mid <- interpret(price ~ carat + cut + color + clarity + carat:clarity,
-                 data = diamonds, model = model)
+set.seed(42)
+idx <- sample(nrow(diamonds), 1e4)
+mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 ggmid(mid, "carat")
 ggplot2::autoplot(mid, "clarity")
 ggmid(mid, "carat:clarity")

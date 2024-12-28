@@ -18,35 +18,47 @@ factor.encoder(
 factor.frame(levels, catchall = "(others)", tag = "x")
 }
 \arguments{
-\item{x}{a vector to be encoded as a qualitative variable.}
+\item{x}{a vector to encode as a qualitative variable.}
 
-\item{k}{an integer specifying the max number of the levels after the encoding. If not positive, all unique values of x are chosen as sample points.}
+\item{k}{an integer specifying the maximum number of distinct levels. If not positive, all unique values of x are used as levels.}
 
-\item{use.catchall}{logical. If TRUE, less frequent levels are dropped and replaced with the catchall level.}
+\item{use.catchall}{logical. If \code{TRUE}, less frequent levels are dropped and replaced by the catchall level.}
 
-\item{catchall}{a character used as the name of "catchall" level for unused levels.}
+\item{catchall}{a character to use as the catchall level.}
 
-\item{tag}{name of the variable.}
+\item{tag}{a character specifying the name of the variable.}
 
-\item{frame}{a \code{factor.frame} object or a vector, containing the information about the levels of the variable.}
+\item{frame}{a 'factor.frame' object or a character vector that defines the levels of the variable.}
 
-\item{weights}{optional. a numeric vector indicating the weight of each value of 'x'.}
+\item{weights}{optional. A numeric vector of the sample weights for each value of \code{x}.}
 
 \item{levels}{a vector to be used as the levels of the variable.}
 }
 \value{
 \code{factor.encoder()} returns a list containing the following components:
-\item{frame}{a data frame containing the encoding information.}
-\item{encode}{a function to encode new data into a dummy matrix.}
+\item{frame}{a 'factor.frame' object containing the encoding information.}
+\item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
-\item{type}{type of encoding.}
+\item{type}{a character. The type of encoding.}
+\code{factor.frame()} returns a 'factor.frame' object containing the encoding information.
 }
 \description{
-Returns a list consisting of the encoding information of a predictor variable as a qualitative variable.
+\code{factor.encoder()} returns an encoder for a qualitative variable.
+}
+\details{
+\code{factor.encoder()} extracts the unique values (levels) of the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
+If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k}, only the most frequent k - 1 levels are used and the other values are replaced by the \code{catchall}.
 }
 \examples{
 data(iris, package = "datasets")
-enc <- factor.encoder(x = iris$Species, use.catchall = FALSE)
+enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 enc$frame
 enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+
+frm <- factor.frame(c("setosa", "virginica"), "other iris")
+enc <- factor.encoder(x = iris$Species, frame = frm)
+enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+
+enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
+enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 }

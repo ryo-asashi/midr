@@ -50,20 +50,24 @@ term.check <- function(x, terms, stop = TRUE) {
 
 #' Weighted Sample Quantile
 #'
-#' Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
+#' \code{weighted.quantile()} produces weighted sample quantiles corresponding to the given probabilities.
 #'
-#' @param x an object containing the values whose weighted quantiles is to be computed.
-#' @param w a numeric vector of the same length as 'x' giving the weights to use for elements of it.
-#' @param probs a numeric vector of probabilities with values in [0, 1].
-#' @param na.rm logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.
-#' @param names logical. If TRUE, the result has a names attribute.
-#' @param digits used only when \code{names} is TRUE. The precision to use when formatting the percentages.
-#' @param type an integer selecting the quantile algorithms. Only 1 is available for the weighted quantile.
+#' \code{weighted.quantile()} is a wrapper function of \code{stats::quantile()} for weighted quantiles.
+#' For the weighted quantile, only the "type 1" quantile, the inverse of the empirical distribution function, is available.
+#'
+#' @param x a numeric vector whose weighted sample quantiles are wanted.
+#' @param w a numeric vector of the sample weights for each value in \code{x}.
+#' @param probs a numeric vector of probabilities with values in \code{[0, 1]}.
+#' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the quantiles are computed.
+#' @param names logical. If \code{TRUE}, the result has a "names" attribute.
+#' @param digits used only when \code{names} is \code{TRUE}. The precision to use when formatting the percentages.
+#' @param type an integer between \code{1} and \code{9} selecting the quantile algorithms. Only \code{1} is available for the weighted quantile.
 #' @param ... further arguments passed to \code{stats::quantile()} when the weights is not passed.
 #' @examples
+#' stats::quantile(x = 1:10, type = 1L, probs = c(0, .25, .50, .75, 1))
 #' weighted.quantile(x = 1:10, w = 1:10, probs = c(0, .25, .50, .75, 1))
 #' @returns
-#' \code{weighted.quantile()} produces sample weighted quantiles corresponding to the given probabilities.
+#' \code{weighted.quantile()} returns weighted sample quantiles corresponding to the given probabilities.
 #' @export weighted.quantile
 #'
 weighted.quantile <- function(
@@ -125,15 +129,18 @@ weighted.quantile <- function(
 
 #' Weighted Tabulation for Vectors
 #'
-#' Returns the sum of weights for each interger occurs in the integer valued argument \code{bin}.
+#' \code{weighted.tabulate()} returns the sum of weights for each integer in the vector \code{bin}.
 #'
-#' @param bin a numeric vector of positive integers or a factor.
-#' @param w a numeric vector of the same length as 'bin' giving the weights to use for elements of it.
+#' \code{weighted.tabulate()} is a wrapper function of \code{tabulate()} to reflect sample weights.
+#'
+#' @param bin a numeric vector of positive integers, or a factor.
+#' @param w a numeric vector of the sample weights for each value in \code{bin}.
 #' @param nbins the number of bins to be used.
 #' @examples
+#' tabulate(bin = c(2, 2, 3, 5))
 #' weighted.tabulate(bin = c(2, 2, 3, 5), w = 1:4)
 #' @returns
-#' \code{weighted.tabulate()} returns an integer valued vector.
+#' \code{weighted.tabulate()} returns an numeric vector.
 #' @export weighted.tabulate
 #'
 weighted.tabulate <- function(
@@ -161,19 +168,21 @@ weighted.tabulate <- function(
 
 #' Weighted Loss Functions
 #'
-#' Returns a weighted loss calculated for the given vector(s). \code{weighted.rmse} is for the root mean square error, \code{weighted.mae} is for the mean absolute error, and \code{weighted.medae} is for the median absolute error
+#' \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss for a weighted vector of prediction errors.
 #'
-#' @param x a numeric vector of deviations based on which the loss is calculated.
-#' @param y an optional numeric vector. If 'y' is passed, the loss is calculated based on the difference of x minus y.
-#' @param w a numeric vector of the same length as 'x' giving the weights to use for elements of it.
-#' @param ... optional augments passed to other functions and methods.
-#' @param na.rm logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.
+#' \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
+#'
+#' @param x a numeric vector of errors.
+#' @param y an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}.
+#' @param w a numeric vector of the sample weights for each value in \code{x}.
+#' @param ... optional parameters.
+#' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation
 #' @examples
 #' weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' weighted.mae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' @returns
-#' \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a weighted loss between two numeric vectors.
+#' \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 #' @export weighted.rmse
 #'
 weighted.rmse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
@@ -245,6 +254,7 @@ weighted.medae <- function(
 #' Themes for ggplot Objects
 #'
 #' Returns a complete theme for \code{ggplot} objects.
+#'
 #' @param grid_type one of "none", "x", "y" or "both".
 #' @param base_size a positive value for the base font size, given in pts.
 #' @param base_family a character specifying the base font family.
@@ -253,7 +263,7 @@ weighted.medae <- function(
 #' @examples
 #' ggplot2::theme_set(theme_midr())
 #' @returns
-#' \code{theme_midr()} provides a ggplot2 theme customized for the \code{midr} package.
+#' \code{theme_midr()} provides a ggplot2 theme customized for the midr package.
 #' @export
 #'
 theme_midr <- function(

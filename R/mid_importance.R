@@ -1,20 +1,22 @@
-#' Calculate and Visualize MID-based Importance and Breakdown
+#' Calculate MID Importance
 #'
-#' Creates a data frame showing the importance of each functional decomposition term.
-#' \code{mid.importance()} returns a object of class "mid.importance", for which methods for \code{ggplot2::autoplot()} and \code{graphics::barplot()} are defined.
+#' \code{mid.importance()} calculates the MID importance of a fitted MID model.
 #'
-#' @param object a mid object.
-#' @param data data to be used to calculate the importance. If NULL, the fitted matrix is extracted from the mid object. If the number of row equals to one, the mid breakdown will be calculated.
-#' @param weights a numeric vector of weights.
-#' @param sort logical. If TRUE, the data.frame will be sorted by magnitude of importance
-#' @param measure an integer specifying the type of function to evaluate the importance of each effect. Possible values are "1" for the mean absolute effect, "2" for the root mean square effect, and "3" for the median absolute effect.
+#' \code{mid.importance()} returns an object of class 'mid.importance'.
+#' The MID importance is defined for each component function of a MID model as the mean absolute effect in the given \code{data}.
+#'
+#' @param object a 'mid' object.
+#' @param data a data frame to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class 'mid.breakdown'.
+#' @param weights a numeric vector of sample weights.
+#' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID importance.
+#' @param measure an integer specifying the measure of the MID importance. Possible values are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' imp <- mid.importance(mid)
 #' imp
 #' @returns
-#' \code{mid.importance} returns a data frame for the term importance, measured as the average magnitude of the effect.
+#' \code{mid.importance} returns a data frame of the class 'mid.importance'.
 #' @export mid.importance
 #'
 mid.importance <- function(

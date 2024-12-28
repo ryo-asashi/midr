@@ -3,7 +3,7 @@
 \name{ggmid.mid.conditional}
 \alias{ggmid.mid.conditional}
 \alias{autoplot.mid.conditional}
-\title{Plot MID Individual Conditional Expectations with ggplot2 Package}
+\title{Plot ICE of MID Model with ggplot2 Package}
 \usage{
 \method{ggmid}{mid.conditional}(
   object,
@@ -23,35 +23,39 @@
 \method{autoplot}{mid.conditional}(object, ...)
 }
 \arguments{
-\item{object}{a mid.conditional object to visualize.}
+\item{object}{a 'mid.conditional' object to be visualized.}
 
-\item{limits}{NULL or a numeric vector of length two providing limits of the scale. NA is replaced by the minimum or maximum mid value.}
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.}
 
-\item{plot.main}{logical. If TRUE, lines representing the individual conditional expectations are drawn.}
+\item{plot.main}{logical. If \code{FALSE}, the main layer is not drawn.}
 
-\item{centered}{logical.}
+\item{centered}{logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.}
 
-\item{draw.dots}{logical. If TRUE, points representing the predictions at the observed values are}
+\item{draw.dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
 
-\item{sample}{a vector specifying the set of names of the observations to be plotted.}
+\item{sample}{a vector specifying the names of observations to be plotted.}
 
-\item{term}{an optional character specifying one of the relevant terms. If passed, the individual conditional expectations for the specified term are plotted.}
+\item{term}{an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.}
 
-\item{variable.alpha}{a name of the predictor variable to use to set \code{alpha} for each plot.}
+\item{variable.alpha}{a name of the variable to use to set \code{alpha}.}
 
-\item{variable.colour}{a name of the predictor variable to use to set \code{color} for each plot.}
+\item{variable.colour}{a name of the variable to use to set \code{colour}.}
 
-\item{variable.linetype}{a name of the predictor variable to use to set \code{linetype} for each plot.}
+\item{variable.linetype}{a name of the variable to use to set \code{linetype}.}
 
-\item{variable.linewidth}{a name of the predictor variable to use to set \code{linewidth} for each plot.}
+\item{variable.linewidth}{a name of the variable to use to set \code{linewidth}.}
 
-\item{...}{optional parameters to be directly passed to \code{ggplot2::geom_line()}.}
+\item{...}{optional parameters to be passed to the main layer.}
 }
 \value{
-\code{ggmid.mid.conditional()} returns a \code{ggplot} object.
+\code{ggmid.mid.conditional()} returns a 'ggplot' object.
 }
 \description{
-Creates a ggplot object representing the MID-based individual conditional expectations
+For 'mid.conditional' objects, \code{ggmid()} visualizes ICE curves of a MID model.
+}
+\details{
+The S3 method of \code{ggmid()} for 'mid.conditional' objects creates a 'ggplot' object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
+For the details of ICE, see Goldstein et al. (2013).
 }
 \examples{
 data(airquality, package = "datasets")

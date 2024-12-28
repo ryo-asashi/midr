@@ -24,7 +24,7 @@ theme_midr(
 \item{base_rect_size}{a positive value for the base size for rect elements.}
 }
 \value{
-\code{theme_midr()} provides a ggplot2 theme customized for the \code{midr} package.
+\code{theme_midr()} provides a ggplot2 theme customized for the midr package.
 }
 \description{
 Returns a complete theme for \code{ggplot} objects.

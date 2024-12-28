@@ -16,28 +16,33 @@ weighted.quantile(
 )
 }
 \arguments{
-\item{x}{an object containing the values whose weighted quantiles is to be computed.}
+\item{x}{a numeric vector whose weighted sample quantiles are wanted.}
 
-\item{w}{a numeric vector of the same length as 'x' giving the weights to use for elements of it.}
+\item{w}{a numeric vector of the sample weights for each value in \code{x}.}
 
-\item{probs}{a numeric vector of probabilities with values in [0, 1].}
+\item{probs}{a numeric vector of probabilities with values in \code{[0, 1]}.}
 
-\item{na.rm}{logical. If TRUE, any \code{NA} and \code{NaN}s are removed from 'x' before the quantiles are computed.}
+\item{na.rm}{logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the quantiles are computed.}
 
-\item{names}{logical. If TRUE, the result has a names attribute.}
+\item{names}{logical. If \code{TRUE}, the result has a "names" attribute.}
 
-\item{digits}{used only when \code{names} is TRUE. The precision to use when formatting the percentages.}
+\item{digits}{used only when \code{names} is \code{TRUE}. The precision to use when formatting the percentages.}
 
-\item{type}{an integer selecting the quantile algorithms. Only 1 is available for the weighted quantile.}
+\item{type}{an integer between \code{1} and \code{9} selecting the quantile algorithms. Only \code{1} is available for the weighted quantile.}
 
 \item{...}{further arguments passed to \code{stats::quantile()} when the weights is not passed.}
 }
 \value{
-\code{weighted.quantile()} produces sample weighted quantiles corresponding to the given probabilities.
+\code{weighted.quantile()} returns weighted sample quantiles corresponding to the given probabilities.
 }
 \description{
-Returns weighted sample quantiles corresponding to the given probabilities. For the weighted quantiles, only "type 1" quantiles of \code{stats::quantile()} (the inverse of empirical distribution function) is available.
+\code{weighted.quantile()} produces weighted sample quantiles corresponding to the given probabilities.
+}
+\details{
+\code{weighted.quantile()} is a wrapper function of \code{stats::quantile()} for weighted quantiles.
+For the weighted quantile, only the "type 1" quantile, the inverse of the empirical distribution function, is available.
 }
 \examples{
+stats::quantile(x = 1:10, type = 1L, probs = c(0, .25, .50, .75, 1))
 weighted.quantile(x = 1:10, w = 1:10, probs = c(0, .25, .50, .75, 1))
 }

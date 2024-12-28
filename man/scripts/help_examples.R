@@ -1,15 +1,28 @@
 # factor_encoder.R
 data(iris, package = "datasets")
-enc <- factor.encoder(x = iris$Species, use.catchall = FALSE)
+enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 enc$frame
 enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 
+frm <- factor.frame(c("setosa", "ensata"), "other iris", tag = "Species")
+enc <- factor.encoder(x = iris$Species, frame = frm)
+enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+
+enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
+enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+
 # numeric_encoder.R
 data(iris, package = "datasets")
-enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L)
+enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 enc$frame
-enc$encode(new_x = 4:8)
+enc$encode(new_x = c(4:8, NA))
 
+frm <- numeric.frame(breaks = seq(2, 10, 2), type = 0L)
+enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
+enc$encode(new_x = c(4:8, NA))
+
+enc <- numeric.encoder(x = iris$Sepal.Length, frame = seq(2, 10, 2))
+enc$encode(new_x = c(4:8, NA))
 # get_yhat.R
 model <- glm(Volume ~ ., trees, family = Gamma(log))
 predict(model, trees, "response")

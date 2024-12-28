@@ -12,8 +12,9 @@
 \alias{get.yhat.svm}
 \alias{get.yhat.ksvm}
 \alias{get.yhat.AccurateGLM}
+\alias{get.yhat.glmnet}
 \alias{get.yhat.model_fit}
-\title{Get Predicted Values from Fitted Models}
+\title{Wrapper Prediction Function}
 \usage{
 get.yhat(X.model, newdata, ...)
 
@@ -37,24 +38,32 @@ get.yhat(X.model, newdata, ...)
 
 \method{get.yhat}{AccurateGLM}(X.model, newdata, ...)
 
+\method{get.yhat}{glmnet}(X.model, newdata, ...)
+
 \method{get.yhat}{model_fit}(X.model, newdata, ...)
 }
 \arguments{
-\item{X.model}{a model object to be interpreted.}
+\item{X.model}{a fitted model object.}
 
-\item{newdata}{a data.frame or a matrix.}
+\item{newdata}{a data frame or a matrix.}
 
-\item{...}{other parameters that will be passed to the predict function.}
+\item{...}{other parameters that are passed to the prediction method.}
 }
 \value{
-\code{get.yhat()} returns a numeric vector of model predictions.
+\code{get.yhat()} returns a numeric vector of model predictions for the \code{newdata}.
 }
 \description{
-Returns the predicted values or the target class probabilities of a predictive model for the \code{newdata}.
+\code{get.yhat()} works as a proxy prediction function for many classes of fitted models.
+}
+\details{
+\code{get.yhat()} is a wrapper prediction function for many classes of models.
+Although many predictive models have their own method of \code{stats::predict()}, the structure and the type of the output of these methods are not uniform.
+\code{get.yhat()} is designed to always return a simple numeric vector of model predictions.
+The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
 }
 \examples{
 data(trees, package = "datasets")
 model <- glm(Volume ~ ., trees, family = Gamma(log))
-predict(model, trees, "response")
-get.yhat(model, trees)
+predict(model, trees, "response")[1:5]
+get.yhat(model, trees)[1:5]
 }

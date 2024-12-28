@@ -2,16 +2,16 @@
 % Please edit documentation in R/summary_mid.R
 \name{summary.mid}
 \alias{summary.mid}
-\title{Summary Method for MID Objects}
+\title{Summarizing MID Model}
 \usage{
 \method{summary}{mid}(object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...)
 }
 \arguments{
-\item{object}{a mid object to be printed.}
+\item{object}{a 'mid' object to be summarized.}
 
-\item{digits}{number of significant digits.}
+\item{digits}{an integer specifying the number of significant digits.}
 
-\item{top.n}{an integer specifying the maximum number of terms to be displayed with importance values.}
+\item{top.n}{an integer specifying the maximum number of terms to display MID importance.}
 
 \item{...}{not used.}
 }
@@ -19,7 +19,10 @@
 \code{summary.mid()} returns the 'mid' object passed to the function without any modification.
 }
 \description{
-Prints the summary of the fitted mid object.
+For 'mid' objects, \code{summary()} prints information about the fitted MID model.
+}
+\details{
+The S3 method of \code{summary()} for 'mid' objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
 }
 \examples{
 data(cars, package = "datasets")

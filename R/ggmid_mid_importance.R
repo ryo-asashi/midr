@@ -1,13 +1,16 @@
-#' Plot Term Importance with ggplot2 Package
+#' Plot MID Importance with ggplot2 Package
 #'
-#' Creates a ggplot object representing the MID-based term importance
+#' For 'mid.importance' objects, \code{ggmid()} visualizes the importance of MID component functions.
 #'
-#' @param object a mid.importance object to be visualized.
-#' @param type a character or an integer, specifying the type of the plot. Possible alternatives are "barplot" and "heatmap".
-#' @param plot.main logical. If TRUE, lines, bars or rectangles representing mid values are drawn.
-#' @param max.terms an integer, specifying the maximum number of component terms to be plotted in the barplot.
-#' @param scale.palette color palette used to draw the interaction heatmap.
-#' @param ... optional arguments to be passed to graphic functions.
+#' The S3 method of \code{ggmid()} for 'mid.importance' objects creates a 'ggplot' object that visualizes the term importance of a fitted MID model.
+#' The main layer is drawn using \code{geom_col()} or \code{geom_tile()}.
+#'
+#' @param object a 'mid.importance' object to be visualized.
+#' @param type a character, "barplot" or "heatmap", specifying the type of the plot.
+#' @param plot.main logical. If \code{TRUE}, the main layer is not drawn.
+#' @param max.bars an integer specifying the maximum number of bars.
+#' @param scale.palette a character vector of length two. The color palette for the heatmap.
+#' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -22,10 +25,10 @@
 #'
 ggmid.mid.importance <- function(
     object, type = c("barplot", "heatmap"), plot.main = TRUE,
-    max.terms = NA, scale.palette = c("#FFFFFF", "#464646"), ...) {
+    max.bars = NA, scale.palette = c("#FFFFFF", "#464646"), ...) {
   type = match.arg(type)
   if (type == "barplot") {
-    object <- object[1L:min(max.terms, nrow(object), na.rm = TRUE), ]
+    object <- object[1L:min(max.bars, nrow(object), na.rm = TRUE), ]
     var <- ifelse(inherits(object, "mid.breakdown"), "mid", "importance")
     pl <- ggplot2::ggplot(
       object, ggplot2::aes(x = .data[[var]], y = .data[["term"]])

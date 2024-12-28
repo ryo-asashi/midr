@@ -11,7 +11,8 @@ interpreting black-box machine learning models by creating a globally
 interpretable surrogate of the target model.  
 The basic concepts underlying the package were developed as a functional
 decomposition technique called *Maximum Interpretation Decomposition*
-(MID).
+(MID). For the theoretical details of MID, see Iwasawa and Matsumori
+(2024).
 
 ## Installation
 
@@ -34,21 +35,23 @@ devtools::install_github("ryo-asashi/midr")
 
 The main function of the package is `interpret()`, which can be used to
 fit a predictive model consisting of a set of functions, each with up to
-two variables. The prediction function of a fitted model has the
-following structure:
+two variables. The prediction function of a fitted MID model
+$\hat{f}(x)$ has the following structure:
 
 $$
-f^{MID}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{\{j\}}(X_j) + \Sigma_{j,k\ \in D} f_{\{j,\ k\}}(X_j, X_k)
+\hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
 $$
 
 where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias*
-*term*), $f_{\{j\}}(x_j)$ is the *main effect* of the feature $j$, and
-$\Sigma_{\{j,\ k\}}(x_j, x_k)$ is the *second-order interaction*
-*effect* between the two features $j$ and $k$.
+*term*), $f_{j}(x_j)$ is the *main effect* of the feature $j$, and
+$\Sigma_{j,k}(x_j, x_k)$ is the *second-order interaction* *effect*
+between the two features $j$ and $k$. The effects of quantitative
+variables are modeled as piecewise functions of degree 1 (piecewise
+linear function) or 0 (step function).
 
 **Fitting an MID Model to the Data**
 
-In the following example, we construct a model for the `price` of
+In the following example, we construct a MID model for the `price` of
 diamonds whose prediction function is the sum of eleven component
 functions: the *intercept*, four first-order *main effects*
 corresponding to each predictor variable (`carat`, `clarity`, `color`
@@ -160,9 +163,10 @@ grid.arrange(grobs = plots[5:7], nrow = 1)
 
 <img src="man/figures/README-bikeshare_main_effects-2.png" width="100%" />
 
-The importance of each term (or the corresponding component function) of
-a MID model can be measured as the mean absolute effect of it. Drawing a
-heatmap is a useful way to find important two-way interactions.
+The importance of each component function of a MID model can be measured
+by $E[\ |f_j(X_j)|\ ]$ and $E[\ |f_{j,k}(X_j,X_k)|\ ]$, i.e., the mean
+absolute effect of it. Drawing a heat map of MID importance is a useful
+way to find important two-way interactions.
 
 ``` r
 # draw a heatmap of term importance
@@ -235,7 +239,7 @@ rmse(predict(model, valid)$predictions, valid$wage)
 ```
 
 When the target model is passed to the argument `model`, `interpret()`
-replaces the response variable with the predicted values given by the
+replaces the response variable by the predictions obtained from the
 target model. Thus, the fitted MID model can be viewed as *an
 interpretable model of the target model*.
 
@@ -260,7 +264,7 @@ print(mid, omit.values = TRUE)
 ```
 
 ``` r
-# interpretation loss
+# RMSE as the interpretation loss
 rmse(predict(mid, valid), predict(model, valid)$predictions)
 #> RMSE: 2.75629
 ```
@@ -279,13 +283,13 @@ grid.arrange(grobs = mid.plots(mid))
 # important interactions
 imp <- mid.importance(mid)
 terms <- mid.terms(imp, main.effect = FALSE)[1:4]
-grid.arrange(grobs = mid.plots(mid, terms = terms))
+grid.arrange(grobs = mid.plots(mid, terms = terms, limits = NULL))
 ```
 
 <img src="man/figures/README-wage_terms-2.png" width="100%" />
 
-The following plot compares the term importance (TI) of the `midr`
-surrogate with the *permutation feature importance* (PFI) of the target
+The following plot compares the MID importance plot of the fitted `midr`
+model with the *permutation feature importance* (PFI) plot of the target
 `ranger` model.
 
 ``` r
@@ -294,8 +298,8 @@ pfi <- sort(model$variable.importance, decreasing = FALSE)
 pfi <- data.frame(variable = factor(names(pfi), levels = names(pfi)),                   importance = pfi)
 # importance of the component terms
 grid.arrange(nrow = 1,
-  ggmid(imp, max.terms = 12) +
-    labs(subtitle = "Surrogate Model (TI)"),
+  ggmid(imp, max.bars = 12) +
+    labs(subtitle = "MID Model"),
   ggplot(pfi, aes(y = variable, x = importance)) +
     geom_col() +
     labs(subtitle = "Target Model (PFI)", y = NULL)
@@ -304,8 +308,8 @@ grid.arrange(nrow = 1,
 
 <img src="man/figures/README-wage_importance-1.png" width="100%" />
 
-Because the prediction function of the MID model is a sum of the simple
-component terms, the individual conditional effect can be decomposed
+As the prediction function of the MID model is a sum of the simple
+component functions, the individual conditional effect can be decomposed
 into the effects of each term.
 
 ``` r

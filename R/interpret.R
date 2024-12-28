@@ -1,7 +1,16 @@
-#' Create an Interpretable Surrogate of Black-Box ML Models
+#' Fit MID Models
 #'
-#' Construct a predictive model consisting of a set of functions, each with up to two variables.
+#' \code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box ML models.
+#' A fitted MID model consists of a set of component functions, each with up to two variables.
 #'
+#' The prediction function of a fitted MID model \eqn{\hat{f}(x)} has the following structure:
+#' \deqn{\hat{f}(x) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(x_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(x_j, x_k)}
+#' where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of the variable \eqn{j}, and \eqn{f_{j,k}(x_j, x_k)} is the second-order interaction between the two variables \eqn{j} and \eqn{k}.
+#' The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
+#'
+#' The MID values for each sample point are determined using the constrained least squares method.
+#' The loss function is \eqn{\Sigma (f(x)-\hat{f}(x))^2} if a fitted model \eqn{f(x)} is passed, and \eqn{\Sigma (y-\hat{f}(x))^2} if not.
+#' The constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
 #' @param object a fitted model object to be interpreted.
 #' @examples
 #' data(cars, package = "datasets")
@@ -33,22 +42,21 @@
 #' plot(mid, "Temp")
 #' plot(mid, "Wind:Month", include.main.effects = TRUE)
 #' @returns
-#' \code{interpret()} returns an object of class "mid", which is a list containing the following components:
-#' \item{weights}{a numeric vector of the weights.}
+#' \code{interpret()} returns a 'mid' object with the following components:
+#' \item{weights}{a numeric vector of the sample weights.}
 #' \item{call}{the matched call.}
-#' \item{terms}{a character vector of decomposition term names.}
-#' \item{link}{a list of class "mid-link", specifying the link function used.}
-#' \item{intercept}{the fitted zeroth-order effect.}
-#' \item{main.effects}{a list of data frames representing the fitted first-order (main) effects of each variable.}
-#' \item{me.encoders}{a list of encoders for the first-order decomposition.}
-#' \item{interacions}{a list of data frames representing the fitted second-order interactions.}
-#' \item{ie.encoders}{a list of encoders for the second-order decomposition.}
+#' \item{terms}{a character vector of the terms.}
+#' \item{link}{a 'link-glm' object specifying the link function.}
+#' \item{intercept}{the fitted intercept.}
+#' \item{encoders}{a list of encoders.}
+#' \item{main.effects}{a list of data frames representing the fitted main effects.}
+#' \item{interacions}{a list of data frames representing the fitted interactions.}
 #' \item{uninterpreted.rate}{the ratio of the interpretation loss to the original variance of model predictions (yhat).}
-#' \item{fitted.matrix}{a matrix containing the breakdown of the fitted values into the functional decomposition terms.}
+#' \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
 #' \item{residuals}{a numeric vector of the working residuals.}
-#' \item{na.action}{information on the special handlings of NAs.}
+#' \item{na.action}{information about the special handlings of \code{NA}s.}
 #' @export interpret
 #'
 interpret <- function(object, ...)
@@ -56,29 +64,29 @@ UseMethod("interpret")
 
 #'
 #' @rdname interpret
-#' @param x a matrix or a data frame of predictor variables to be used to interpret the model prediction. The response variable should not be included.
-#' @param y an optional numeric vector representing of the model prediction or the response variable.
-#' @param weights optional. a numeric vector indicating weights for each row in the data.
-#' @param pred.fun a function that takes two arguments, 'X.model' and 'newdata' to be used to make a prediction. Default is \code{get.yhat()}, which uses \code{DALEX::yhat()} if the DALEX package is installed.
-#' @param link name of the link function. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse".
-#' @param k an integer or a numeric vector of length two for main effects and interactions, specifying the maximum number of sample points for each numeric predictor variable. If an integer is passed, k is used for main effect terms and the square root of k is used for interaction terms. If not positive, all unique values are used as sample points.
-#' @param type an integer or a vector of length two, specifying the type of piecewise functions to be fit on numeric variables. '0' is for step functions on discretized intervals, and '1' is for piecewise linear functions connecting at representative values.
-#' @param frames a named list of encoding frames, which specifies bins for quantitative features or levels for qualitative features.
-#' @param interaction logical. If TRUE, and if \code{terms} and \code{formula} are not supplied, all second order interaction effects for each pair of features in \code{x} are calculated.
-#' @param terms a character vector of term labels, specifying the set of decomposition terms. If not passed, all main effects (and all second order interactions if \code{interaction} is TRUE) of \code{x} are used.
-#' @param singular.ok logical. If FALSE, a singular fit is an error.
-#' @param mode an integer specifying the general method of calculation. When \code{mode} is set to 1, centralization constraints are treated as penalties for the least squares problem. If \code{mode} is 2, the centralization constraints are used to reduce the number of unknown parameters, making the calculation safer and more robust.
-#' @param method an integer or a vector of length two, specifying the methods to be used to solve the least squares problem. A non-negative value will be passed to RcppEigen::fastLmPure and if a negative value is passed, stats::lm.fit will be used.
-#' @param lambda a numeric parameter for the penalty of weighted ridge regularization.
-#' @param kappa a numeric parameter for the penalty of the centralization constraints. Only used if \code{mode} is 1.
-#' @param na.action a function or a character which indicates what should happen when the data contain missing values (NAs). The default is na.omit.
-#' @param encoding.digits an integer specifying the rounding digits for encoding numeric variables when \code{type} is 1 (piecewise linear functions).
-#' @param use.catchall logical. If TRUE, less frequent levels are dropped and replaced with the catchall level.
-#' @param catchall a character used as the name of "catchall" level for unused levels of each factor variable.
-#' @param max.ncol an integer which indicates the maximum number of columns of the design matrix.
-#' @param nil a threshold for the intercept and coefficients to be treated as zero. Default is 1e-7.
-#' @param tol a tolerance for the singular value decomposition. Default is 1e-7.
-#' @param ... special aliases for some arguments, including 'ie' for 'interaction' and 'ok' for 'singular.ok'.
+#' @param x a matrix or a data frame of predictor variables to be used to interpret the model predictions. The response variable should not be included.
+#' @param y an optional numeric vector of the model predictions or the response variable.
+#' @param weights optional. A numeric vector of sample weights for each observation in \code{x}.
+#' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
+#' @param link a character. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse".
+#' @param k an integer or a numeric vector of length two, specifying the maximum number of sample points for each variable. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.
+#' @param type an integer or a numeric vector of length two, specifying the type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}.
+#' @param frames a named list of encoding frames.
+#' @param interaction logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are calculated.
+#' @param terms a character vector of term labels, specifying the set of component functions to be modeled. If not passed, \code{terms} include all main effects and all interactions if \code{interaction} is \code{TRUE}.
+#' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
+#' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
+#' @param method an integer or a vector of length two, specifying the methods to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.
+#' @param lambda a numeric parameter that controls the strength of the smoothing penalty.
+#' @param kappa a numeric parameter that controls the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}.
+#' @param na.action a function or a character specifying the method of handling \code{NA}s. The default is na.omit.
+#' @param encoding.digits an integer specifying the rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.
+#' @param use.catchall logical. If \code{TRUE}, less frequent levels of factor variables are dropped and replaced by the catchall level.
+#' @param catchall a character specifying the catchall level.
+#' @param max.ncol an integer specifying the maximum number of columns of the design matrix.
+#' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
+#' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
+#' @param ... hidden controlling parameters and special aliases such as \code{ok} for \code{singular.ok} and \code{} for \code{interactions}.
 #' @exportS3Method midr::interpret
 #'
 interpret.default <- function(
@@ -121,7 +129,7 @@ interpret.default <- function(
   if (is.null(y)) {
     if (missing(object))
       stop("either 'object' or 'y' must be supplied")
-    y <- pred.fun(X.model = object, newdata = x)
+    y <- pred.fun(object, x)
   }
   if (is.character(y))
     y <- as.factor(y)
@@ -136,7 +144,6 @@ interpret.default <- function(
     stop("length of 'y' doesn't match the number of rows in 'x'")
   if (!is.null(link)){
     link <- stats::make.link(as.character(substitute(link)))
-    class(link) <- "link-mid"
     yres <- y
     y <- link$linkfun(y)
   }
@@ -498,13 +505,14 @@ interpret.default <- function(
   obj$terms <- terms
   obj$link <- link
   obj$intercept <- intercept
+  obj$encoders <- list()
   if (me) {
     obj$main.effects <- main.effects
-    obj$me.encoders <- mencs
+    obj$encoders[["main.effects"]] <- mencs
   }
   if (ie) {
     obj$interactions <- interactions
-    obj$ie.encoders <- iencs
+    obj$encoders[["interactions"]] <- iencs
   }
   obj$uninterpreted.rate <- uir
   obj$fitted.matrix <- fm
@@ -564,7 +572,7 @@ interpret.formula <- function(
       naai$ids <- naai$ids[-naa.x]
       attr(data, "na.action") <- NULL
     }
-    yhat <- pred.fun(X.model = model, newdata = data)
+    yhat <- pred.fun(model, data)
     attr(yhat, "na.action") <- NULL
     yhat <- do.call(na.action, list(yhat))
     if (anyNA(yhat))

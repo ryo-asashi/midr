@@ -1,17 +1,22 @@
-#' Get Predicted Values from Fitted Models
+#' Wrapper Prediction Function
 #'
-#' Returns the predicted values or the target class probabilities of a predictive model for the \code{newdata}.
+#' \code{get.yhat()} works as a proxy prediction function for many classes of fitted models.
 #'
-#' @param X.model a model object to be interpreted.
-#' @param newdata a data.frame or a matrix.
-#' @param ... other parameters that will be passed to the predict function.
+#' \code{get.yhat()} is a wrapper prediction function for many classes of models.
+#' Although many predictive models have their own method of \code{stats::predict()}, the structure and the type of the output of these methods are not uniform.
+#' \code{get.yhat()} is designed to always return a simple numeric vector of model predictions.
+#' The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
+#'
+#' @param X.model a fitted model object.
+#' @param newdata a data frame or a matrix.
+#' @param ... other parameters that are passed to the prediction method.
 #' @examples
 #' data(trees, package = "datasets")
 #' model <- glm(Volume ~ ., trees, family = Gamma(log))
-#' predict(model, trees, "response")
-#' get.yhat(model, trees)
+#' predict(model, trees, "response")[1:5]
+#' get.yhat(model, trees)[1:5]
 #' @returns
-#' \code{get.yhat()} returns a numeric vector of model predictions.
+#' \code{get.yhat()} returns a numeric vector of model predictions for the \code{newdata}.
 #' @export get.yhat
 #'
 get.yhat <- function(X.model, newdata, ...)
@@ -170,7 +175,7 @@ get.yhat.ksvm <- function(X.model, newdata, ...) {
 #'
 get.yhat.AccurateGLM <- function(X.model, newdata, ...) {
   dots <- list(...)
-  s <- ifnot.null(dots$s, 0L)
+  s <- ifnot.null(dots$s, 0)
   if (na.exists <- anyNA(newdata)) {
     newdata <- stats::na.exclude(newdata)
     naa <- stats::na.action(newdata)
@@ -178,6 +183,26 @@ get.yhat.AccurateGLM <- function(X.model, newdata, ...) {
   predvars <- sapply(X.model@vars_info, function(x) x$name)
   if (length(setdiff(colnames(newdata), predvars)) > 0L)
     newdata <- newdata[, predvars]
+  yhat <- stats::predict(object = X.model, newx = newdata,
+                         s = s, type = "response", exact = FALSE)
+  if (na.exists)
+    yhat <- stats::napredict(naa, yhat)
+  as.numeric(yhat)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.glmnet <- function(X.model, newdata, ...) {
+  dots <- list(...)
+  s <- ifnot.null(dots$s, 0)
+  if (na.exists <- anyNA(newdata)) {
+    newdata <- stats::na.exclude(newdata)
+    naa <- stats::na.action(newdata)
+  }
+  if (!is.matrix(newdata))
+    newdata <- as.matrix(newdata)
   yhat <- stats::predict(object = X.model, newx = newdata,
                          s = s, type = "response", exact = FALSE)
   if (na.exists)

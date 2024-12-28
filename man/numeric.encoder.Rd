@@ -24,37 +24,50 @@ numeric.frame(
 )
 }
 \arguments{
-\item{x}{a numeric vector which is to be encoded.}
+\item{x}{a numeric vector to encode.}
 
-\item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of x are chosen as sample points.}
+\item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of x are used as sample points.}
 
-\item{type}{an integer specifying the shape of the function to be fit. \code{1} is for a piecewise linear function and \code{0} is for a piecewise constant (step) function.}
+\item{type}{an integer specifying the encoding method. \code{1} is for linear interpolation encoding on the knots and \code{0} is for one-hot encoding on the intervals.}
 
-\item{encoding.digits}{an integer specifying the rounding digits for encoding numeric variables when \code{type} is 1 (piecewise linear functions).}
+\item{encoding.digits}{an integer specifying the rounding digits for the encoding in case \code{type} is \code{1}.}
 
-\item{tag}{name of the corresponding predictor variable.}
+\item{tag}{a character specifying the name of the variable.}
 
-\item{frame}{a \code{numeric.frame} object containing the information about the binning of the variable.}
+\item{frame}{a 'numeric.frame' object or a numeric vector that defines the sample points of the binning.}
 
-\item{weights}{optional. a numeric vector indicating the weight of each value of 'x'.}
+\item{weights}{optional. A numeric vector of the sample weights for each value of \code{x}.}
 
-\item{reps}{a numeric vector specifying the representative values of each bin.}
+\item{reps}{a numeric vector to be used as the representative values.}
 
-\item{breaks}{a numeric vector to be used as the breaks of the binning.}
+\item{breaks}{a numeric vector to be used as the binning breaks.}
 }
 \value{
 \code{numeric.encoder()} returns a list containing the following components:
 \item{frame}{a data frame containing the encoding information.}
-\item{encode}{a function to encode new data into a dummy matrix.}
+\item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
-\item{type}{type of encoding: 'linear' (first degree) or 'constant' (zeroth degree).}
+\item{type}{a character. The type of encoding, 'linear' or 'constant'.}
+\code{numeric.frame()} returns a 'numeric.frame' object containing the encoding information.
 }
 \description{
-Returns a list consisting of the encoding information of a predictor variable as a quantitative variable.
+\code{numeric.encoder()} returns an encoder for a quantitative variable.
+}
+\details{
+\code{numeric.encoder()} selects sample points from the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix.
+If \code{type} is \code{1}, \code{k} is considered the maximum number of knots, and the values between two knots are encoded as two decimals, reflecting the relative position to the knots.
+If \code{type} is \code{0}, \code{k} is considered the maximum number of intervals, and the values are converted using one-hot encoding on the intervals.
 }
 \examples{
 data(iris, package = "datasets")
-enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L)
+enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 enc$frame
-enc$encode(new_x = 4:8)
+enc$encode(new_x = c(4:8, NA))
+
+frm <- numeric.frame(breaks = seq(3, 9, 2), type = 0L)
+enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
+enc$encode(new_x = c(4:8, NA))
+
+enc <- numeric.encoder(x = iris$Sepal.Length, frame = seq(3, 9, 2))
+enc$encode(new_x = c(4:8, NA))
 }
