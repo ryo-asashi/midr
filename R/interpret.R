@@ -3,13 +3,13 @@
 #' \code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box ML models.
 #' A fitted MID model consists of a set of component functions, each with up to two variables.
 #'
-#' The prediction function of a fitted MID model \eqn{\hat{f}(x)} has the following structure:
-#' \deqn{\hat{f}(x) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(x_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(x_j, x_k)}
-#' where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of the variable \eqn{j}, and \eqn{f_{j,k}(x_j, x_k)} is the second-order interaction between the two variables \eqn{j} and \eqn{k}.
+#' The prediction function of a fitted MID model \eqn{\hat{f}(X)} has the following structure:
+#' \deqn{\hat{f}(X) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)}
+#' where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(X_j)} is the main effect of the variable \eqn{j}, and \eqn{f_{j,k}(X_j, X_k)} is the second-order interaction between the two variables \eqn{j} and \eqn{k}.
 #' The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
 #'
 #' The MID values for each sample point are determined using the constrained least squares method.
-#' The loss function is \eqn{\Sigma (f(x)-\hat{f}(x))^2} if a fitted model \eqn{f(x)} is passed, and \eqn{\Sigma (y-\hat{f}(x))^2} if not.
+#' The loss function is \eqn{E[(f(X)-\hat{f}(X))^2]} with a fitted model \eqn{f(X)} or \eqn{E[(Y-\hat{f}(X))^2]} without a model.
 #' The constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
 #' @param object a fitted model object to be interpreted.
 #' @examples
@@ -24,11 +24,11 @@
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
 #' plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
 #'   points(x = 1L:100L, y = Nile)
-#' # reduce number of knots by k parameter
+#' # reduce the number of knots by setting the 'k' parameter
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
 #' plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
 #'   points(x = 1L:100L, y = Nile)
-#' # pseudo-smoothing by lambda parameter
+#' # perform a pseudo smoothing by setting the 'lambda' parameter
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
 #' plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
 #'   points(x = 1L:100L, y = Nile)

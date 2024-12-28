@@ -73,21 +73,17 @@ X <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
 Y1 <- weighted(X)
 ggplot2::ggplot(Y1, ggplot2::aes(x1, x2, alpha = weights(Y1))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "weighted") +
-  ggplot2::theme_bw()
+  ggplot2::labs(title = "weighted")
 Y2 <- shuffled(X)
 ggplot2::ggplot(Y2, ggplot2::aes(x1, x2, alpha = weights(Y2))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "shuffled") +
-  ggplot2::theme_bw()
+  ggplot2::labs(title = "shuffled")
 Y3 <- augmented(X)
 ggplot2::ggplot(Y3, ggplot2::aes(x1, x2, alpha = weights(Y3))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "augmented") +
-  ggplot2::theme_bw()
+  ggplot2::labs(title = "augmented")
 Y4 <- latticized(X)
 ggplot2::ggplot(Y4, ggplot2::aes(x1, x2, size = weights(Y4))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "latticized") +
-  ggplot2::theme_bw()
+  ggplot2::labs(title = "latticized")
 }

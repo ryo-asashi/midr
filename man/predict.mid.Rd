@@ -3,7 +3,7 @@
 \name{predict.mid}
 \alias{predict.mid}
 \alias{mid.f}
-\title{Predict Method for MID Model}
+\title{Predict Method for fitted MID Models}
 \usage{
 \method{predict}{mid}(
   object,

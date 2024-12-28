@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc_functions.R
 \name{theme_midr}
 \alias{theme_midr}
-\title{Themes for ggplot Objects}
+\title{Theme for ggplot Objects}
 \usage{
 theme_midr(
   grid_type = c("none", "x", "y", "xy"),
@@ -13,22 +13,31 @@ theme_midr(
 )
 }
 \arguments{
-\item{grid_type}{one of "none", "x", "y" or "both".}
+\item{grid_type}{one of "none", "x", "y" or "xy".}
 
-\item{base_size}{a positive value for the base font size, given in pts.}
+\item{base_size}{base font size, given in pts.}
 
-\item{base_family}{a character specifying the base font family.}
+\item{base_family}{base font family.}
 
-\item{base_line_size}{a positive value for the base size for line elements.}
+\item{base_line_size}{base size for line elements.}
 
-\item{base_rect_size}{a positive value for the base size for rect elements.}
+\item{base_rect_size}{base size for rect elements.}
 }
 \value{
 \code{theme_midr()} provides a ggplot2 theme customized for the midr package.
 }
 \description{
-Returns a complete theme for \code{ggplot} objects.
+\code{theme_midr()} returns a complete theme for \code{ggplot} objects.
 }
 \examples{
-ggplot2::theme_set(theme_midr())
+X <- data.frame(x = 1:10, y = 1:10)
+ggplot2::ggplot(X) +
+  ggplot2::geom_point(ggplot2::aes(x, y)) +
+  theme_midr()
+ggplot2::ggplot(X) +
+  ggplot2::geom_col(ggplot2::aes(x, y)) +
+  theme_midr(grid_type = "y")
+ggplot2::ggplot(X) +
+  ggplot2::geom_line(ggplot2::aes(x, y)) +
+  theme_midr(grid_type = "xy")
 }

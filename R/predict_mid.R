@@ -1,4 +1,4 @@
-#' Predict Method for MID Model
+#' Predict Method for fitted MID Models
 #'
 #' The method of \code{predict()} for 'mid' objects obtains predictions from a fitted MID model.
 #'

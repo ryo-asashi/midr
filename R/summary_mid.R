@@ -1,4 +1,4 @@
-#' Summarizing MID Model
+#' Summarizing MID Models
 #'
 #' For 'mid' objects, \code{summary()} prints information about the fitted MID model.
 #'

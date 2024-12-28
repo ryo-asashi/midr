@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_mid.R
 \name{summary.mid}
 \alias{summary.mid}
-\title{Summarizing MID Model}
+\title{Summarizing MID Models}
 \usage{
 \method{summary}{mid}(object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_mid.R
 \name{print.mid}
 \alias{print.mid}
-\title{Print MID Values}
+\title{Printing MID Models}
 \usage{
 \method{print}{mid}(x, digits = max(3L, getOption("digits") - 2L), omit.values = FALSE, ...)
 }

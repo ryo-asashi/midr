@@ -1,4 +1,4 @@
-#' Print MID Values
+#' Printing MID Models
 #'
 #' For 'mid' objects, \code{print()} prints the MID values and the uninterpreted rate.
 #'
