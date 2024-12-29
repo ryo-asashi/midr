@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/ryo-asashi/midr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ryo-asashi/midr/actions/workflows/R-CMD-check.yaml) [![CRAN status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/package=midr)
+
 <!-- badges: end -->
 
 The `midr` package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model.\

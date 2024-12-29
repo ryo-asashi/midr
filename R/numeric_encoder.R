@@ -30,7 +30,7 @@
 #' \item{frame}{a data frame containing the encoding information.}
 #' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
-#' \item{type}{a character. The type of encoding, 'linear' or 'constant'.}
+#' \item{type}{a character. The type of encoding, "linear" or "constant".}
 #' \code{numeric.frame()} returns a 'numeric.frame' object containing the encoding information.
 #' @export numeric.encoder
 #'

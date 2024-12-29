@@ -11,7 +11,7 @@
 
 \item{digits}{an integer specifying the number of significant digits.}
 
-\item{omit.values}{logical. If \code{TRUE}, MID values of main effect are not printed.}
+\item{omit.values}{logical. If \code{TRUE}, MID values of the main effects are not printed.}
 
 \item{...}{not used.}
 }

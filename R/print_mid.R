@@ -6,7 +6,7 @@
 #'
 #' @param x a 'mid' object to be printed.
 #' @param digits an integer specifying the number of significant digits.
-#' @param omit.values logical. If \code{TRUE}, MID values of main effect are not printed.
+#' @param omit.values logical. If \code{TRUE}, MID values of the main effects are not printed.
 #' @param ... not used.
 #' @examples
 #' data(cars, package = "datasets")

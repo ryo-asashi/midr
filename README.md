@@ -4,6 +4,11 @@
 # midr <img src="man/figures/logo.png" align="right" height="114"/>
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/ryo-asashi/midr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ryo-asashi/midr/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/package=midr)
+
 <!-- badges: end -->
 
 The `midr` package is designed to provide a model-agnostic method for
