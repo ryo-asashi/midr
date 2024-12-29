@@ -38,7 +38,7 @@ grid.arrange(
     geom_point(data = na.omit(train))
 ) |> suppressWarnings()
 
-mid <- interpret(Ozone ~ .^2, train, model, lambda = 1)
+mid <- interpret(Ozone ~ .^2, train, model, lambda = 1, encoding.digits = NULL)
 weighted.rmse(get.yhat(mid, valid), get.yhat(model, valid), na.rm = TRUE)
 #> mid vs model : RMSE 8,516788
 weighted.rmse(get.yhat(mid, valid), valid$Ozone, na.rm = TRUE)

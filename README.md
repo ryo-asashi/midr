@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# midr <img src="man/figures/logo.png" align="right" height="114"/>
+# midr <img src="man/figures/logo.png" data-align="right" height="114" />
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -36,15 +36,15 @@ devtools::install_github("ryo-asashi/midr")
 The main function of the package is `interpret()`, which can be used to
 fit a predictive model consisting of a set of functions, each with up to
 two variables. The prediction function of a fitted MID model
-$\hat{f}(x)$ has the following structure:
+$\hat{f}(X)$ has the following structure:
 
 $$
 \hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
 $$
 
 where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias*
-*term*), $f_{j}(x_j)$ is the *main effect* of the feature $j$, and
-$\Sigma_{j,k}(x_j, x_k)$ is the *second-order interaction* *effect*
+*term*), $f_{j}(X_j)$ is the *main effect* of the feature $j$, and
+$\Sigma_{j,k}(X_j, X_k)$ is the *second-order interaction* *effect*
 between the two features $j$ and $k$. The effects of quantitative
 variables are modeled as piecewise functions of degree 1 (piecewise
 linear function) or 0 (step function).

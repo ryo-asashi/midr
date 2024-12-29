@@ -20,7 +20,7 @@
 #' ggmid(imp)
 #' ggmid(imp, type = "heatmap")
 #' @returns
-#' \code{ggmid.mid.importance()} returns a \code{ggplot} object.
+#' \code{ggmid.mid.importance()} returns a 'ggplot' object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.importance <- function(

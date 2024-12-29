@@ -27,7 +27,7 @@ theme_midr(
 \code{theme_midr()} provides a ggplot2 theme customized for the midr package.
 }
 \description{
-\code{theme_midr()} returns a complete theme for \code{ggplot} objects.
+\code{theme_midr()} returns a complete theme for 'ggplot' objects.
 }
 \examples{
 X <- data.frame(x = 1:10, y = 1:10)

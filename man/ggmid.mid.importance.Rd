@@ -30,7 +30,7 @@
 \item{...}{optional parameters to be passed to the main layer.}
 }
 \value{
-\code{ggmid.mid.importance()} returns a \code{ggplot} object.
+\code{ggmid.mid.importance()} returns a 'ggplot' object.
 }
 \description{
 For 'mid.importance' objects, \code{ggmid()} visualizes the importance of MID component functions.

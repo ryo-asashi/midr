@@ -253,7 +253,7 @@ weighted.medae <- function(
 
 #' Theme for ggplot Objects
 #'
-#' \code{theme_midr()} returns a complete theme for \code{ggplot} objects.
+#' \code{theme_midr()} returns a complete theme for 'ggplot' objects.
 #'
 #' @param grid_type one of "none", "x", "y" or "xy".
 #' @param base_size base font size, given in pts.

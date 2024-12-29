@@ -17,7 +17,7 @@
 #' mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds[idx, ])
 #' mid.plots(mid, c("carat", "color", "carat:color", "clarity:color"), limits = NULL)
 #' @returns
-#' If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of ggplot objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
+#' If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of 'ggplot' objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
 #' @export mid.plots
 #'
 mid.plots <- function(

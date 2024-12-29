@@ -33,7 +33,7 @@ mid.plots(
 \item{...}{optional parameters to be passed to graphing functions.}
 }
 \value{
-If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of ggplot objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
+If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of 'ggplot' objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
 }
 \description{
 \code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a 'mid' object.
