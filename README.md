@@ -16,8 +16,11 @@ interpreting black-box machine learning models by creating a globally
 interpretable surrogate of the target model.  
 The basic concepts underlying the package were developed as a functional
 decomposition technique called *Maximum Interpretation Decomposition*
-(MID). For the theoretical details of MID, see Iwasawa and Matsumori
-(2024).
+(MID).
+
+For the theoretical details of MID, see Iwasawa and Matsumori (2025)
+\[Forthcoming\], and for the technical details of the `midr` package,
+see Asashiba, Kozuma and Iwasawa (2025) \[Forthcoming\].
 
 ## Installation
 

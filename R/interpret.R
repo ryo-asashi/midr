@@ -591,10 +591,10 @@ interpret.formula <- function(
     mf$weights <- weights
   } else {
     message("'model' is not passed: the response variable in the data is used")
-    if (is.matrix(eval(mf$data)))
-      mf$data <- as.data.frame(eval(mf$data))
-    if (is.null(eval(mf$weights)))
-      mf$weights <- attr(eval(mf$data), "weights")
+    if (is.matrix(data))
+      mf$data <- as.data.frame(data)
+    if (is.null(weights))
+      mf$weights <- attr(data, "weights")
   }
   mf[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf, parent.frame())
