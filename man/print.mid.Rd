@@ -2,12 +2,12 @@
 % Please edit documentation in R/print_mid.R
 \name{print.mid}
 \alias{print.mid}
-\title{Printing MID Models}
+\title{Print MID Models}
 \usage{
 \method{print}{mid}(x, digits = max(3L, getOption("digits") - 2L), omit.values = FALSE, ...)
 }
 \arguments{
-\item{x}{a 'mid' object to be printed.}
+\item{x}{a "mid" object to be printed.}
 
 \item{digits}{an integer specifying the number of significant digits.}
 
@@ -16,13 +16,13 @@
 \item{...}{not used.}
 }
 \value{
-\code{print.mid()} returns the 'mid' object passed to the function without any modification.
+\code{print.mid()} returns the "mid" object passed to the function without any modification.
 }
 \description{
-For 'mid' objects, \code{print()} prints the MID values and the uninterpreted rate.
+For "mid" objects, \code{print()} prints the MID values and the uninterpreted rate.
 }
 \details{
-The S3 method of \code{print()} for 'mid' objects prints the MID values of a fitted MID model and its uninterpreted rate.
+The S3 method of \code{print()} for "mid" objects prints the MID values of a fitted MID model and its uninterpreted rate.
 }
 \examples{
 data(cars, package = "datasets")

@@ -1,21 +1,20 @@
 #' Plot ICE of MID Model with ggplot2 Package
 #'
-#' For 'mid.conditional' objects, \code{ggmid()} visualizes ICE curves of a MID model.
+#' For "mid.conditional" objects, \code{ggmid()} visualizes ICE curves of a MID model.
 #'
-#' The S3 method of \code{ggmid()} for 'mid.conditional' objects creates a 'ggplot' object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
-#' For the details of ICE, see Goldstein et al. (2013).
+#' The S3 method of \code{ggmid()} for "mid.conditional" objects creates a "ggplot" object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
 #'
-#' @param object a 'mid.conditional' object to be visualized.
-#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.
+#' @param object a "mid.conditional" object to be visualized.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param plot.main logical. If \code{FALSE}, the main layer is not drawn.
-#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.
+#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the variable.
 #' @param draw.dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
-#' @param sample a vector specifying the names of observations to be plotted.
-#' @param term an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.
-#' @param variable.alpha a name of the variable to use to set \code{alpha}.
-#' @param variable.colour a name of the variable to use to set \code{colour}.
-#' @param variable.linetype a name of the variable to use to set \code{linetype}.
-#' @param variable.linewidth a name of the variable to use to set \code{linewidth}.
+#' @param sample an optional vector specifying the names of observations to be plotted.
+#' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
+#' @param variable.alpha a name of the variable to be used to set \code{alpha}.
+#' @param variable.colour a name of the variable to be used to set \code{colour}.
+#' @param variable.linetype a name of the variable to be used to set \code{linetype}.
+#' @param variable.linewidth a name of the variable to be used to set \code{linewidth}.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(airquality, package = "datasets")
@@ -23,7 +22,7 @@
 #' mc <- mid.conditional(mid, "Wind", airquality)
 #' ggmid(mc, variable.colour = "Solar.R", centered = TRUE)
 #' @returns
-#' \code{ggmid.mid.conditional()} returns a 'ggplot' object.
+#' \code{ggmid.mid.conditional()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(

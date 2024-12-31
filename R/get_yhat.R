@@ -9,7 +9,7 @@
 #'
 #' @param X.model a fitted model object.
 #' @param newdata a data frame or a matrix.
-#' @param ... other parameters that are passed to the prediction method.
+#' @param ... other parameters that are passed to the prediction method for the model.
 #' @examples
 #' data(trees, package = "datasets")
 #' model <- glm(Volume ~ ., trees, family = Gamma(log))

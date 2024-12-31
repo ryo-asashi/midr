@@ -7,7 +7,7 @@
 \alias{mid.terms}
 \alias{terms.mid}
 \alias{terms.mid.importance}
-\title{Extract Components from a MID Model}
+\title{Extract Components from MID Models}
 \usage{
 mid.extract(object, component, ...)
 
@@ -29,7 +29,7 @@ mid.terms(
 \method{terms}{mid.importance}(x, ...)
 }
 \arguments{
-\item{object}{a 'mid' object.}
+\item{object}{a "mid" object.}
 
 \item{component}{a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".}
 
@@ -43,16 +43,16 @@ mid.terms(
 
 \item{remove}{a character vector of variable names. The terms that are related to at least one of the specified names are excluded.}
 
-\item{x}{a 'mid' or 'mid.importance' object to extract the terms.}
+\item{x}{a "mid" or "mid.importance" object.}
 }
 \value{
 \code{mid.extract()} returns the \code{component} extracted from the \code{object}.
-\code{mid.encoding.scheme()} returns a data frame of the encoding schemes.
+\code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes.
 \code{mid.frames()} returns a list of the encoding frames.
-\code{mid.terms()} returns a character vector of the terms.
+\code{mid.terms()} returns a character vector of the term labels.
 }
 \description{
-\code{mid.extract()} returns a component of a 'mid' object.
+\code{mid.extract()} returns a component of a MID model.
 }
 \examples{
 data(trees, package = "datasets")

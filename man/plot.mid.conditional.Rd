@@ -19,23 +19,23 @@
 )
 }
 \arguments{
-\item{x}{a 'mid.conditional' object to be visualized.}
+\item{x}{a "mid.conditional" object to be visualized.}
 
-\item{centered}{logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.}
+\item{centered}{logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the variable.}
 
 \item{draw.dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
 
-\item{sample}{a vector specifying the names of observations to be plotted.}
+\item{sample}{an optional vector specifying the names of observations to be plotted.}
 
 \item{term}{an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.}
 
-\item{variable.alpha}{a name of the variable to use to set \code{alpha}.}
+\item{variable.alpha}{a name of the variable to be used to set \code{alpha}.}
 
-\item{variable.colour}{a name of the variable to use to set \code{colour}.}
+\item{variable.colour}{a name of the variable to be used to set \code{colour}.}
 
-\item{variable.linetype}{a name of the variable to use to set \code{linetype}.}
+\item{variable.linetype}{a name of the variable to be used to set \code{linetype}.}
 
-\item{variable.linewidth}{a name of the variable to use to set \code{linewidth}.}
+\item{variable.linewidth}{a name of the variable to be used to set \code{linewidth}.}
 
 \item{scale.palette}{a character vector of color names, specifying the colors to be used.}
 
@@ -45,11 +45,10 @@
 \code{plot.mid.conditional()} produces an ICE plot and invisibly returns the ICE matrix used for the plot.
 }
 \description{
-For 'mid.conditional' objects, \code{plot()} visualizes ICE curves of a MID model.
+For "mid.conditional" objects, \code{plot()} visualizes ICE curves of a MID model.
 }
 \details{
-The S3 method of \code{plot()} for 'mid.conditional' objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
-For the details of ICE, see Goldstein et al. (2013).
+The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
 }
 \examples{
 data(airquality, package = "datasets")

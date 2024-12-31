@@ -1,15 +1,15 @@
 #' Plot MID Importance with ggplot2 Package
 #'
-#' For 'mid.importance' objects, \code{ggmid()} visualizes the importance of MID component functions.
+#' For "mid.importance" objects, \code{ggmid()} visualizes the importance of MID component functions.
 #'
-#' The S3 method of \code{ggmid()} for 'mid.importance' objects creates a 'ggplot' object that visualizes the term importance of a fitted MID model.
+#' The S3 method of \code{ggmid()} for "mid.importance" objects creates a "ggplot" object that visualizes the term importance of a fitted MID model.
 #' The main layer is drawn using \code{geom_col()} or \code{geom_tile()}.
 #'
-#' @param object a 'mid.importance' object to be visualized.
-#' @param type a character, "barplot" or "heatmap", specifying the type of the plot.
+#' @param object a "mid.importance" object to be visualized.
+#' @param type a character string specifying the type of the plot. One of "barplot" or "heatmap".
 #' @param plot.main logical. If \code{TRUE}, the main layer is not drawn.
-#' @param max.bars an integer specifying the maximum number of bars.
-#' @param scale.palette a character vector of length two. The color palette for the heatmap.
+#' @param max.bars an integer specifying the maximum number of bars in the barplot.
+#' @param scale.palette a character vector of length two to be used as the color palette for the heatmap.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -20,7 +20,7 @@
 #' ggmid(imp)
 #' ggmid(imp, type = "heatmap")
 #' @returns
-#' \code{ggmid.mid.importance()} returns a 'ggplot' object.
+#' \code{ggmid.mid.importance()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.importance <- function(

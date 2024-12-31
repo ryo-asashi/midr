@@ -13,24 +13,24 @@
 )
 }
 \arguments{
-\item{x}{a 'mid.importance' object to be visualized.}
+\item{x}{a "mid.importance" object to be visualized.}
 
-\item{type}{a character, "barplot" or "heatmap", specifying the type of the plot.}
+\item{type}{a character string specifying the type of the plot. One of "barplot" or "heatmap".}
 
-\item{max.bars}{an integer specifying the maximum number of bars.}
+\item{max.bars}{an integer specifying the maximum number of bars in the barplot.}
 
-\item{scale.palette}{a character vector of length two. The color palette for the heatmap.}
+\item{scale.palette}{a character vector of length two to be used as the color palette for the heatmap.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
 \value{
-\code{plot.mid.importance()} produces a bar plot or heat map and returns \code{NULL}.
+\code{plot.mid.importance()} produces a barplot or heatmap and returns \code{NULL}.
 }
 \description{
-For 'mid.importance' objects, \code{plot()} visualizes the importance of MID component functions.
+For "mid.importance" objects, \code{plot()} visualizes the importance of MID component functions.
 }
 \details{
-The S3 method of \code{plot()} for 'mid.importance' objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
+The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
 }
 \examples{
 data(diamonds, package = "ggplot2")

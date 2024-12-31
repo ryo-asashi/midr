@@ -1,10 +1,10 @@
-#' Printing MID Models
+#' Print MID Models
 #'
-#' For 'mid' objects, \code{print()} prints the MID values and the uninterpreted rate.
+#' For "mid" objects, \code{print()} prints the MID values and the uninterpreted rate.
 #'
-#' The S3 method of \code{print()} for 'mid' objects prints the MID values of a fitted MID model and its uninterpreted rate.
+#' The S3 method of \code{print()} for "mid" objects prints the MID values of a fitted MID model and its uninterpreted rate.
 #'
-#' @param x a 'mid' object to be printed.
+#' @param x a "mid" object to be printed.
 #' @param digits an integer specifying the number of significant digits.
 #' @param omit.values logical. If \code{TRUE}, MID values of the main effects are not printed.
 #' @param ... not used.
@@ -12,7 +12,7 @@
 #' data(cars, package = "datasets")
 #' print(interpret(dist ~ speed, cars))
 #' @returns
-#' \code{print.mid()} returns the 'mid' object passed to the function without any modification.
+#' \code{print.mid()} returns the "mid" object passed to the function without any modification.
 #' @exportS3Method base::print
 #'
 print.mid <- function(

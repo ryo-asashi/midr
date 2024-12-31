@@ -1,16 +1,16 @@
 #' Plot MID with Basic Functions
 #'
-#' For 'mid' objects, \code{plot()} visualizes a MID component function.
+#' For "mid" objects, \code{plot()} visualizes a MID component function.
 #'
-#' The S3 method of \code{plot()} for 'mid' objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
+#' The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
 #'
-#' @param x a 'mid' object to be visualized.
-#' @param term a character specifying the component function to plot.
-#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plot scale is shifted.
-#' @param include.main.effects logical. If \code{TRUE}, the main effects are added to the interaction effect.
-#' @param scale.type a character specifying the color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aesthetics like \code{ggplot2::scale_fill_viridis_c()}.
-#' @param scale.palette a character vector of color names, specifying the colors to be used in the interaction plot.
-#' @param cells.count an integer or numeric vector of length two, specifying the number of cells for the raster interaction plot.
+#' @param x a "mid" object to be visualized.
+#' @param term a character string specifying the component function to be plotted.
+#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
+#' @param include.main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
+#' @param scale.type character string. The color type of the interaction plot. One of "default", "viridis", "gradient".
+#' @param scale.palette a character vector of color names specifying the colors to be used in the interaction plot.
+#' @param cells.count an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.
 #' @param ... optional parameters to be passed to the graphing function.
 #' @examples
 #' data(airquality, package = "datasets")
@@ -99,7 +99,7 @@ plot.mid <- function(
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
     }
     if (is.function(scale.type)) {
-      stop("function is not allowed for 'scale.type'")
+      stop("function is not allowed for 'scale.type' of this function.")
     } else if (scale.type == "default") {
       zmax <- max(abs(zlim - zmid))
       zlim <- c(-zmax, zmax) + zmid

@@ -16,27 +16,27 @@ mid.plots(
 )
 }
 \arguments{
-\item{object}{a 'mid' object.}
+\item{object}{a "mid" object.}
 
 \item{terms}{a character vector. The names of the terms to be visualized.}
 
-\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.}
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
 
-\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the scale range for the plot is shifted.}
+\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
 
-\item{include.main.effects}{logical. If \code{TRUE}, the main effects MID values are added to the interaction MID values.}
+\item{include.main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
 
 \item{max.plots}{an integer specifying the number of maximum number of plots.}
 
-\item{engine}{a character string. One of "ggplot2" or "graphics".}
+\item{engine}{character string. One of "ggplot2" or "graphics".}
 
-\item{...}{optional parameters to be passed to graphing functions.}
+\item{...}{optional parameters to be passed to \code{ggmid()} or \code{plot()}.}
 }
 \value{
-If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of 'ggplot' objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}s.
+If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of "ggplot" objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}.
 }
 \description{
-\code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a 'mid' object.
+\code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a "mid" object.
 }
 \examples{
 data(diamonds, package = "ggplot2")

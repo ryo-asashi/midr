@@ -1,12 +1,12 @@
 #' Plot MID with ggplot2 Package
 #'
-#' For 'mid' objects, \code{ggmid()} visualizes a MID component function using the ggplot2 package.
+#' For "mid" objects, \code{ggmid()} visualizes a MID component function using the ggplot2 package.
 #'
-#' The S3 method of \code{ggmid()} for 'mid' objects creates a 'ggplot' object that visualizes a MID component function.
-#' The main layer is drawn using \code{geom_line()} or \code{geom_path()} for a main effect of a quantitative variable, \code{geom_col()} for a main effect of a qualitative variable, and \code{geom_raster()} or \code{geom_rect()} for an interaction.
-#' For other methods of \code{'ggmid()'}, see \code{help(ggmid.mid.importance)} or \code{help(ggmid.mid.conditional)}.
+#' The S3 method of \code{ggmid()} for "mid" objects creates a "ggplot" object that visualizes a MID component function.
+#' The main layer is drawn using \code{geom_line()} or \code{geom_path()} for a main effect of a quantitative variable, \code{geom_col()} for a main effect of a qualitative variable, and \code{geom_raster()} or \code{geom_rect()} for an interaction effect.
+#' For other methods of \code{ggmid()}, see \code{help(ggmid.mid.importance)} or \code{help(ggmid.mid.conditional)}.
 #'
-#' @param object a 'mid' object to be visualized.
+#' @param object a "mid" object to be visualized.
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -18,7 +18,7 @@
 #' ggmid(mid, "carat:clarity", add.intercept = TRUE,
 #'       include.main.effects = TRUE, scale.type = "viridis")
 #' @returns
-#' \code{ggmid.mid()} returns a 'ggplot' object.
+#' \code{ggmid.mid()} returns a "ggplot" object.
 #' @export ggmid
 #'
 ggmid <- function(object, ...)
@@ -27,15 +27,15 @@ UseMethod("ggmid")
 
 #' @rdname ggmid
 #'
-#' @param term a character specifying the component function to plot.
-#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and maximum MID values.
+#' @param term a character string specifying the component function to be plotted.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param plot.main logical. If \code{FALSE}, the main layer is not drawn.
-#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plot scale is shifted.
-#' @param include.main.effects logical. If \code{TRUE}, the main effects are added to the interaction effect.
-#' @param interaction.type a character specifying the method for plotting the interaction effect.
-#' @param scale.type a character specifying the color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aesthetics like \code{ggplot2::scale_fill_viridis_c()}.
-#' @param scale.palette a character vector of color names, specifying the colors to be used in the interaction plot.
-#' @param cells.count an integer or numeric vector of length two, specifying the number of cells for the raster interaction plot.
+#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values.
+#' @param include.main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
+#' @param interaction.type character string. The method for plotting the interaction effects.
+#' @param scale.type a character string or function specifying the color type of interaction plot. One of "default", "viridis", "gradient" or a function that returns a continuous color scale for \code{fill} aesthetics.
+#' @param scale.palette a character vector of color names. The colors are used for the interaction plot when \code{scale.type} is "default".
+#' @param cells.count an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.
 #' @param ... optional parameters to be passed to the main layer.
 #'
 #' @importFrom rlang .data

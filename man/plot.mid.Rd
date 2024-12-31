@@ -16,19 +16,19 @@
 )
 }
 \arguments{
-\item{x}{a 'mid' object to be visualized.}
+\item{x}{a "mid" object to be visualized.}
 
-\item{term}{a character specifying the component function to plot.}
+\item{term}{a character string specifying the component function to be plotted.}
 
-\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plot scale is shifted.}
+\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
 
-\item{include.main.effects}{logical. If \code{TRUE}, the main effects are added to the interaction effect.}
+\item{include.main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
 
-\item{scale.type}{a character specifying the color type of interaction plots. One of "default", "viridis", "gradient" or a function that returns a continuous colour scale for \code{fill} aesthetics like \code{ggplot2::scale_fill_viridis_c()}.}
+\item{scale.type}{character string. The color type of the interaction plot. One of "default", "viridis", "gradient".}
 
-\item{scale.palette}{a character vector of color names, specifying the colors to be used in the interaction plot.}
+\item{scale.palette}{a character vector of color names specifying the colors to be used in the interaction plot.}
 
-\item{cells.count}{an integer or numeric vector of length two, specifying the number of cells for the raster interaction plot.}
+\item{cells.count}{an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
@@ -36,10 +36,10 @@
 \code{plot.mid()} produces a line plot or bar plot for a main effect and a filled contour plot for an interaction and returns \code{NULL}.
 }
 \description{
-For 'mid' objects, \code{plot()} visualizes a MID component function.
+For "mid" objects, \code{plot()} visualizes a MID component function.
 }
 \details{
-The S3 method of \code{plot()} for 'mid' objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
+The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
 }
 \examples{
 data(airquality, package = "datasets")

@@ -18,7 +18,7 @@ latticized(
   data,
   weights = NULL,
   k = 10L,
-  type = 1L,
+  type = 0L,
   use.catchall = TRUE,
   catchall = "(others)",
   frames = list(),
@@ -30,30 +30,30 @@ latticized(
 \arguments{
 \item{data}{a data frame.}
 
-\item{weights}{a numeric vector specifying the sample weights for each observation.}
+\item{weights}{a numeric vector of sample weights for each observation in \code{data}.}
 
 \item{...}{not used.}
 
-\item{size}{an integer specifying the number of random observations to add to the data frame.}
+\item{size}{integer. The number of random observations whose values are sampled from the marginal distribution of each variable.}
 
-\item{r}{a double. The weight for the random observations is calculated as \code{sum(attr(data, "weights")) * r / size}.}
+\item{r}{a numeric value specifying the ratio of the total weights for the random observations to the sum of sample weights. The weight for the random observations is calculated as \code{sum(attr(data, "weights")) * r / size}.}
 
-\item{k}{an integer or a numeric vector of length two, specifying the maximum number of sample points for each variable. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.}
+\item{k}{integer. The maximum number of sample points for each variable. If not positive, all unique values are used as sample points.}
 
-\item{type}{an integer or a numeric vector of length two, specifying the type of encoding.}
+\item{type}{integer. The type of encoding of quantitative variables to be passed to \code{numeric.encoder()}.}
 
 \item{use.catchall}{logical. If \code{TRUE}, less frequent levels of factor variables are dropped and replaced by the catchall level.}
 
-\item{catchall}{a character specifying the catchall level.}
+\item{catchall}{a character string to be used as the catchall level.}
 
-\item{frames}{a named list of encoding frames.}
+\item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects).}
 
-\item{keep.mean}{logical. If \code{TRUE}, the representative values of each group is the mean of the corresponding group.}
+\item{keep.mean}{logical. If \code{TRUE}, the representative values of each group is the average of the corresponding group.}
 
-\item{object}{a weighted data frame.}
+\item{object}{a data frame with the attribute "weights".}
 }
 \value{
-\code{weighted()} returns a data frame with the attribute 'weights'.
+\code{weighted()} returns a data frame with the attribute "weights".
 \code{augmented()} returns a weighted data frame of the original data and the shuffled data with relatively small weights.
 \code{shuffled()} returns a weighted data frame of the shuffled data.
 \code{latticized()} returns a weighted data frame of latticized data, whose values are grouped and replaced by the representative value of the corresponding group.
@@ -62,9 +62,10 @@ latticized(
 \code{weighted()} returns a data frame with sample weights.
 }
 \details{
-\code{weighted()} returns a data frame with the 'weights' attribute that can be extracted using \code{stats::weights()}, and three derivative functions, \code{augmented()}, \code{shuffled()} and \code{latticized()}, return a modified data frame with sample weights.
+\code{weighted()} returns a data frame with the "weights" attribute that can be extracted using \code{stats::weights()}.
+\code{augmented()}, \code{shuffled()} and \code{latticized()} return a weighted data frame with some data modifications.
 These functions are designed for use with \code{interpret()}.
-Since the modified data frames do not preserve the original correlation structure between the variables, the values of the objective variable (y) should always be replaced by the model predictions (yhat).
+As the modified data frames do not preserve the original correlation structure of the variables, the response variable (y) should always be replaced by the model predictions (yhat).
 }
 \examples{
 x1 <- runif(1000L, -1, 1)

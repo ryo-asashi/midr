@@ -17,17 +17,17 @@ weighted.medae(x, y = NULL, w = NULL, ..., na.rm = FALSE)
 
 \item{y}{an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}.}
 
-\item{w}{a numeric vector of the sample weights for each value in \code{x}.}
+\item{w}{a numeric vector of sample weights for each value in \code{x}.}
 
 \item{...}{optional parameters.}
 
-\item{na.rm}{logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation}
+\item{na.rm}{logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation.}
 }
 \value{
 \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 }
 \description{
-\code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss for a weighted vector of prediction errors.
+\code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss from a weighted vector of prediction errors.
 }
 \details{
 \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.

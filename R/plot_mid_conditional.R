@@ -1,19 +1,18 @@
 #' Plot ICE of MID Model with Basic Functions
 #'
-#' For 'mid.conditional' objects, \code{plot()} visualizes ICE curves of a MID model.
+#' For "mid.conditional" objects, \code{plot()} visualizes ICE curves of a MID model.
 #'
-#' The S3 method of \code{plot()} for 'mid.conditional' objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
-#' For the details of ICE, see Goldstein et al. (2013).
+#' The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
 #'
-#' @param x a 'mid.conditional' object to be visualized.
-#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point.
+#' @param x a "mid.conditional" object to be visualized.
+#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the variable.
 #' @param draw.dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
-#' @param sample a vector specifying the names of observations to be plotted.
+#' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param term an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.
-#' @param variable.alpha a name of the variable to use to set \code{alpha}.
-#' @param variable.colour a name of the variable to use to set \code{colour}.
-#' @param variable.linetype a name of the variable to use to set \code{linetype}.
-#' @param variable.linewidth a name of the variable to use to set \code{linewidth}.
+#' @param variable.alpha a name of the variable to be used to set \code{alpha}.
+#' @param variable.colour a name of the variable to be used to set \code{colour}.
+#' @param variable.linetype a name of the variable to be used to set \code{linetype}.
+#' @param variable.linewidth a name of the variable to be used to set \code{linewidth}.
 #' @param scale.palette a character vector of color names, specifying the colors to be used.
 #' @param ... optional parameters to be passed to \code{base::plot()}.
 #' @examples

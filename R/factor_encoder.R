@@ -2,16 +2,16 @@
 #'
 #' \code{factor.encoder()} returns an encoder for a qualitative variable.
 #'
-#' \code{factor.encoder()} extracts the unique values (levels) of the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
+#' \code{factor.encoder()} extracts the unique values (levels) from the vector \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
 #' If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k}, only the most frequent k - 1 levels are used and the other values are replaced by the \code{catchall}.
 #'
-#' @param x a vector to encode as a qualitative variable.
-#' @param k an integer specifying the maximum number of distinct levels. If not positive, all unique values of x are used as levels.
+#' @param x a vector to be encoded as a qualitative variable.
+#' @param k an integer specifying the maximum number of distinct levels. If not positive, all unique values of \code{x} are used as levels.
 #' @param use.catchall logical. If \code{TRUE}, less frequent levels are dropped and replaced by the catchall level.
-#' @param catchall a character to use as the catchall level.
-#' @param tag a character specifying the name of the variable.
-#' @param frame a 'factor.frame' object or a character vector that defines the levels of the variable.
-#' @param weights optional. A numeric vector of the sample weights for each value of \code{x}.
+#' @param catchall a character string to be used as the catchall level.
+#' @param tag character string. The name of the variable.
+#' @param frame a "factor.frame" object or a character vector that defines the levels of the variable.
+#' @param weights optional. A numeric vector of sample weights for each value of \code{x}.
 #' @examples
 #' data(iris, package = "datasets")
 #' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
@@ -26,11 +26,11 @@
 #' enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 #' @returns
 #' \code{factor.encoder()} returns a list containing the following components:
-#' \item{frame}{a 'factor.frame' object containing the encoding information.}
+#' \item{frame}{an object of class "factor.frame".}
 #' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
-#' \item{type}{a character. The type of encoding.}
-#' \code{factor.frame()} returns a 'factor.frame' object containing the encoding information.
+#' \item{type}{the type of encoding.}
+#' \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 #' @export factor.encoder
 #'
 factor.encoder <- function(

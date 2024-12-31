@@ -1,13 +1,13 @@
 #' Plot MID Importance with Basic Functions
 #'
-#' For 'mid.importance' objects, \code{plot()} visualizes the importance of MID component functions.
+#' For "mid.importance" objects, \code{plot()} visualizes the importance of MID component functions.
 #'
-#' The S3 method of \code{plot()} for 'mid.importance' objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
+#' The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
 #'
-#' @param x a 'mid.importance' object to be visualized.
-#' @param type a character, "barplot" or "heatmap", specifying the type of the plot.
-#' @param max.bars an integer specifying the maximum number of bars.
-#' @param scale.palette a character vector of length two. The color palette for the heatmap.
+#' @param x a "mid.importance" object to be visualized.
+#' @param type a character string specifying the type of the plot. One of "barplot" or "heatmap".
+#' @param max.bars an integer specifying the maximum number of bars in the barplot.
+#' @param scale.palette a character vector of length two to be used as the color palette for the heatmap.
 #' @param ... optional parameters to be passed to the graphing function.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -18,7 +18,7 @@
 #' plot(imp)
 #' plot(imp, type = "heatmap")
 #' @returns
-#' \code{plot.mid.importance()} produces a bar plot or heat map and returns \code{NULL}.
+#' \code{plot.mid.importance()} produces a barplot or heatmap and returns \code{NULL}.
 #' @exportS3Method base::plot
 #'
 plot.mid.importance <- function(

@@ -168,15 +168,15 @@ weighted.tabulate <- function(
 
 #' Weighted Loss Functions
 #'
-#' \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss for a weighted vector of prediction errors.
+#' \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss from a weighted vector of prediction errors.
 #'
 #' \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
 #'
 #' @param x a numeric vector of errors.
 #' @param y an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}.
-#' @param w a numeric vector of the sample weights for each value in \code{x}.
+#' @param w a numeric vector of sample weights for each value in \code{x}.
 #' @param ... optional parameters.
-#' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation
+#' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation.
 #' @examples
 #' weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' weighted.mae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
@@ -253,7 +253,7 @@ weighted.medae <- function(
 
 #' Theme for ggplot Objects
 #'
-#' \code{theme_midr()} returns a complete theme for 'ggplot' objects.
+#' \code{theme_midr()} returns a complete theme for "ggplot" objects.
 #'
 #' @param grid_type one of "none", "x", "y" or "xy".
 #' @param base_size base font size, given in pts.

@@ -1,18 +1,18 @@
-#' Summarizing MID Models
+#' Summarize MID Models
 #'
-#' For 'mid' objects, \code{summary()} prints information about the fitted MID model.
+#' For "mid" objects, \code{summary()} prints information about the fitted MID model.
 #'
-#' The S3 method of \code{summary()} for 'mid' objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
+#' The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
 #'
-#' @param object a 'mid' object to be summarized.
+#' @param object a "mid" object to be summarized.
 #' @param digits an integer specifying the number of significant digits.
-#' @param top.n an integer specifying the maximum number of terms to display MID importance.
+#' @param top.n an integer specifying the maximum number of terms to be printed with the MID importance values.
 #' @param ... not used.
 #' @examples
 #' data(cars, package = "datasets")
 #' summary(interpret(dist ~ speed, cars))
 #' @returns
-#' \code{summary.mid()} returns the 'mid' object passed to the function without any modification.
+#' \code{summary.mid()} returns the "mid" object passed to the function without any modification.
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(

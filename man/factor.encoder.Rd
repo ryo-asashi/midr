@@ -18,35 +18,35 @@ factor.encoder(
 factor.frame(levels, catchall = "(others)", tag = "x")
 }
 \arguments{
-\item{x}{a vector to encode as a qualitative variable.}
+\item{x}{a vector to be encoded as a qualitative variable.}
 
-\item{k}{an integer specifying the maximum number of distinct levels. If not positive, all unique values of x are used as levels.}
+\item{k}{an integer specifying the maximum number of distinct levels. If not positive, all unique values of \code{x} are used as levels.}
 
 \item{use.catchall}{logical. If \code{TRUE}, less frequent levels are dropped and replaced by the catchall level.}
 
-\item{catchall}{a character to use as the catchall level.}
+\item{catchall}{a character string to be used as the catchall level.}
 
-\item{tag}{a character specifying the name of the variable.}
+\item{tag}{character string. The name of the variable.}
 
-\item{frame}{a 'factor.frame' object or a character vector that defines the levels of the variable.}
+\item{frame}{a "factor.frame" object or a character vector that defines the levels of the variable.}
 
-\item{weights}{optional. A numeric vector of the sample weights for each value of \code{x}.}
+\item{weights}{optional. A numeric vector of sample weights for each value of \code{x}.}
 
 \item{levels}{a vector to be used as the levels of the variable.}
 }
 \value{
 \code{factor.encoder()} returns a list containing the following components:
-\item{frame}{a 'factor.frame' object containing the encoding information.}
+\item{frame}{an object of class "factor.frame".}
 \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
-\item{type}{a character. The type of encoding.}
-\code{factor.frame()} returns a 'factor.frame' object containing the encoding information.
+\item{type}{the type of encoding.}
+\code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 }
 \description{
 \code{factor.encoder()} returns an encoder for a qualitative variable.
 }
 \details{
-\code{factor.encoder()} extracts the unique values (levels) of the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
+\code{factor.encoder()} extracts the unique values (levels) from the vector \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
 If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k}, only the most frequent k - 1 levels are used and the other values are replaced by the \code{catchall}.
 }
 \examples{

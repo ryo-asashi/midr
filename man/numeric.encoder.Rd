@@ -24,31 +24,31 @@ numeric.frame(
 )
 }
 \arguments{
-\item{x}{a numeric vector to encode.}
+\item{x}{a numeric vector to be encoded.}
 
 \item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of x are used as sample points.}
 
-\item{type}{an integer specifying the encoding method. \code{1} is for linear interpolation encoding on the knots and \code{0} is for one-hot encoding on the intervals.}
+\item{type}{an integer specifying the encoding method. If \code{1}, values are encoded to a \code{[0, 1]} scale based on linear interpolation of the knots. If \code{0}, values are encoded to \code{0} or \code{1} using ont-hot encoding on the intervals.}
 
 \item{encoding.digits}{an integer specifying the rounding digits for the encoding in case \code{type} is \code{1}.}
 
-\item{tag}{a character specifying the name of the variable.}
+\item{tag}{character string. The name of the variable.}
 
-\item{frame}{a 'numeric.frame' object or a numeric vector that defines the sample points of the binning.}
+\item{frame}{a "numeric.frame" object or a numeric vector that defines the sample points of the binning.}
 
-\item{weights}{optional. A numeric vector of the sample weights for each value of \code{x}.}
+\item{weights}{optional. A numeric vector of sample weights for each value of \code{x}.}
 
-\item{reps}{a numeric vector to be used as the representative values.}
+\item{reps}{a numeric vector to be used as the representative values (knots).}
 
 \item{breaks}{a numeric vector to be used as the binning breaks.}
 }
 \value{
 \code{numeric.encoder()} returns a list containing the following components:
-\item{frame}{a data frame containing the encoding information.}
+\item{frame}{an object of class "numeric.frame".}
 \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
-\item{type}{a character. The type of encoding, "linear" or "constant".}
-\code{numeric.frame()} returns a 'numeric.frame' object containing the encoding information.
+\item{type}{the type of encoding, "linear" or "constant".}
+\code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 }
 \description{
 \code{numeric.encoder()} returns an encoder for a quantitative variable.

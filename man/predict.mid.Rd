@@ -17,21 +17,21 @@
 mid.f(object, term, x, y = NULL)
 }
 \arguments{
-\item{object}{a 'mid' object to be used to make predictions.}
+\item{object}{a "mid" object to be used to make predictions.}
 
 \item{newdata}{a data frame of the new observations.}
 
-\item{na.action}{a function which indicates what should happen when the data contain \code{NA}s.}
+\item{na.action}{a function or character string specifying what should happen when the data contain \code{NA}s.}
 
 \item{type}{the type of prediction required. The default is on the scale of the response varialbe. The alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.}
 
-\item{terms}{a character vector specifying the subset of component functions to be used for prediction.}
+\item{terms}{a character vector of term labels, specifying a subset of component functions to be used to make predictions.}
 
 \item{...}{not used.}
 
-\item{term}{a character specifying the component function of a fitted MID model.}
+\item{term}{a character string specifying the component function of a fitted MID model.}
 
-\item{x}{a vector to be used as the input to the first argument of the component function. If a matrix or data frame is passed, inputs are extracted from the matrix or data frame.}
+\item{x}{a matrix, data frame or vector to be used as the input to the first argument of the component function. If a matrix or data frame is passed, inputs for both \code{x} and \code{y} are extracted from it.}
 
 \item{y}{a vector to be used as the input to the second argument of the component function.}
 }
@@ -39,16 +39,20 @@ mid.f(object, term, x, y = NULL)
 \code{predict.mid()} returns a numeric vector of MID model predictions.
 }
 \description{
-The method of \code{predict()} for 'mid' objects obtains predictions from a fitted MID model.
+The method of \code{predict()} for "mid" objects obtains predictions from a fitted MID model.
 }
 \details{
 The S3 method of \code{predict()} for MID models returns the model predictions.
 \code{mid.f()} works as a component function of a MID model.
 }
 \examples{
-data(cars, package = "datasets")
-mid <- interpret(dist ~ speed, cars, lambda = 1)
-predict(mid, newdata = data.frame(speed = 5:25))
-mid.f(mid, "speed", 5:25)
-mid.f(mid, "speed", 5:25) + mid$intercept
+data(trees, package = "datasets")
+idx <- c(5L, 10L, 15L, 20L, 25L, 30L)
+mid <- interpret(Volume ~ .^2, trees[-idx,], lambda = 1)
+trees[idx, "Volume"]
+predict(mid, trees[idx,])
+predict(mid, trees[idx,], type = "terms")
+mid.f(mid, "Girth", trees[idx,])
+mid.f(mid, "Girth:Height", trees[idx,])
+predict(mid, trees[idx,], terms = c("Girth", "Height"))
 }

@@ -2,27 +2,27 @@
 #'
 #' \code{mid.conditional()} creates an object to draw ICE curves of a MID model.
 #'
-#' \code{mid.conditional()} obtains predictions for hypothetical observations from a 'mid' object and returns a 'mid.conditional' object.
+#' \code{mid.conditional()} obtains predictions for hypothetical observations from a MID model and returns a "mid.conditional" object.
 #' The graphing functions \code{ggmid()} and \code{plot()} can be used to generate the ICE curve plots.
 #'
-#' @param object a 'mid' object.
-#' @param variable a character or expression specifying the variable for the ICE calculation.
-#' @param data a data frame of observations.
+#' @param object a "mid" object.
+#' @param variable a character string or expression specifying the variable for the ICE calculation.
+#' @param data a data frame containing observations for which ICE values are calculated.
 #' @param keep.effects logical. If \code{TRUE}, the effects of component functions are stored in the output object.
-#' @param n.samples an integer specifying the number of the sample points.
-#' @param max.nrow an integer specifying the maximum number of rows of the output data frame.
-#' @param type the type of the prediction. The default is "response". "link" is possible if the MID model uses a link function.
+#' @param n.samples integer. The number of sample points for the calculation.
+#' @param max.nrow an integer specifying the maximum number of rows of the output data frames.
+#' @param type the type of prediction required. The default is "response". "link" is possible if the MID model uses a link function.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' mc <- mid.conditional(mid, "Wind", airquality)
 #' mc
 #' @returns
-#' \code{mid.conditional()} returns a 'mid.conditional' object with the following components:
-#' \item{terms}{a character vector of relevant terms.}
-#' \item{observed}{a data frame of the actual observations and the corresponding predictions.}
-#' \item{conditional}{a data frame of the hypothetical observations and the corresponding predictions.}
-#' \item{values}{a numeric vector of the sample points for the target variable.}
+#' \code{mid.conditional()} returns an object of class "mid.conditional" with the following components:
+#' \item{terms}{the character vector of relevant terms.}
+#' \item{observed}{the data frame of the actual observations and the corresponding predictions.}
+#' \item{conditional}{the data frame of the hypothetical observations and the corresponding predictions.}
+#' \item{values}{the sample points of the variable.}
 #' @export mid.conditional
 #'
 mid.conditional <- function(
@@ -110,8 +110,8 @@ mid.conditional <- function(
 
 
 #' @rdname mid.conditional
-#' @param x a 'mid.conditional' object to print.
-#' @param ... additional parameters to be passed to \code{print.default()} to print sample points.
+#' @param x a "mid.conditional" object to be printed.
+#' @param ... additional parameters to be passed to \code{print.default()} to print the sample point vector.
 #' @exportS3Method base::print
 #'
 print.mid.conditional <- function(x, ...) {

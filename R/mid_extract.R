@@ -1,8 +1,8 @@
-#' Extract Components from a MID Model
+#' Extract Components from MID Models
 #'
-#' \code{mid.extract()} returns a component of a 'mid' object.
+#' \code{mid.extract()} returns a component of a MID model.
 #'
-#' @param object a 'mid' object.
+#' @param object a "mid" object.
 #' @param component a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".
 #' @param ... optional parameters to be passed to the function used to extract the component.
 #' @examples
@@ -15,9 +15,9 @@
 #' mid.extract(mid, intercept)
 #' @returns
 #' \code{mid.extract()} returns the \code{component} extracted from the \code{object}.
-#' \code{mid.encoding.scheme()} returns a data frame of the encoding schemes.
+#' \code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes.
 #' \code{mid.frames()} returns a list of the encoding frames.
-#' \code{mid.terms()} returns a character vector of the terms.
+#' \code{mid.terms()} returns a character vector of the term labels.
 #' @export mid.extract
 #'
 mid.extract <- function(object, component, ...) {
@@ -113,7 +113,7 @@ mid.terms <- function(
 }
 
 #' @rdname mid.extract
-#' @param x a 'mid' or 'mid.importance' object to extract the terms.
+#' @param x a "mid" or "mid.importance" object.
 #' @exportS3Method stats::terms
 #'
 terms.mid <- function(x, ...) {

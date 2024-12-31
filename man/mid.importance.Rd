@@ -7,24 +7,24 @@
 mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 }
 \arguments{
-\item{object}{a 'mid' object.}
+\item{object}{a "mid" object.}
 
-\item{data}{a data frame to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class 'mid.breakdown'.}
+\item{data}{a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".}
 
-\item{weights}{a numeric vector of sample weights.}
+\item{weights}{an optional numeric vector of sample weights.}
 
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID importance.}
 
-\item{measure}{an integer specifying the measure of the MID importance. Possible values are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
+\item{measure}{an integer specifying the measure of the MID importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
 }
 \value{
-\code{mid.importance} returns a data frame of the class 'mid.importance'.
+\code{mid.importance} returns a data frame of the class "mid.importance".
 }
 \description{
 \code{mid.importance()} calculates the MID importance of a fitted MID model.
 }
 \details{
-\code{mid.importance()} returns an object of class 'mid.importance'.
+\code{mid.importance()} returns an object of class "mid.importance".
 The MID importance is defined for each component function of a MID model as the mean absolute effect in the given \code{data}.
 }
 \examples{

@@ -2,21 +2,21 @@
 #'
 #' \code{mid.importance()} calculates the MID importance of a fitted MID model.
 #'
-#' \code{mid.importance()} returns an object of class 'mid.importance'.
+#' \code{mid.importance()} returns an object of class "mid.importance".
 #' The MID importance is defined for each component function of a MID model as the mean absolute effect in the given \code{data}.
 #'
-#' @param object a 'mid' object.
-#' @param data a data frame to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class 'mid.breakdown'.
-#' @param weights a numeric vector of sample weights.
+#' @param object a "mid" object.
+#' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".
+#' @param weights an optional numeric vector of sample weights.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID importance.
-#' @param measure an integer specifying the measure of the MID importance. Possible values are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
+#' @param measure an integer specifying the measure of the MID importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' imp <- mid.importance(mid)
 #' imp
 #' @returns
-#' \code{mid.importance} returns a data frame of the class 'mid.importance'.
+#' \code{mid.importance} returns a data frame of the class "mid.importance".
 #' @export mid.importance
 #'
 mid.importance <- function(

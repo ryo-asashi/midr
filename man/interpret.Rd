@@ -51,73 +51,73 @@ interpret(object, ...)
 \arguments{
 \item{object}{a fitted model object to be interpreted.}
 
-\item{...}{hidden controlling parameters and special aliases such as \code{ok} for \code{singular.ok} and \code{} for \code{interactions}.}
+\item{...}{for \code{interpret.default()}, optional arguments including special aliases such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, optional parameters to be passed to \code{interpret.default()}.}
 
-\item{x}{a matrix or a data frame of predictor variables to be used to interpret the model predictions. The response variable should not be included.}
+\item{x}{a matrix or data frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
 \item{y}{an optional numeric vector of the model predictions or the response variable.}
 
-\item{weights}{optional. A numeric vector of sample weights for each observation in \code{x}.}
+\item{weights}{a numeric vector of sample weights for each observation in \code{x}.}
 
 \item{pred.fun}{a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.}
 
-\item{link}{a character. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse".}
+\item{link}{a character string specifying the link function. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse".}
 
-\item{k}{an integer or a numeric vector of length two, specifying the maximum number of sample points for each variable. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.}
+\item{k}{an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.}
 
-\item{type}{an integer or a numeric vector of length two, specifying the type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}.}
+\item{type}{an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.}
 
-\item{frames}{a named list of encoding frames.}
+\item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.}
 
-\item{interaction}{logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are calculated.}
+\item{interaction}{logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.}
 
-\item{terms}{a character vector of term labels, specifying the set of component functions to be modeled. If not passed, \code{terms} include all main effects and all interactions if \code{interaction} is \code{TRUE}.}
+\item{terms}{a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all interactions if \code{interaction} is \code{TRUE}.}
 
 \item{singular.ok}{logical. If \code{FALSE}, a singular fit is an error.}
 
 \item{mode}{an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.}
 
-\item{method}{an integer or a vector of length two, specifying the methods to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.}
+\item{method}{an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.}
 
-\item{lambda}{a numeric parameter that controls the strength of the smoothing penalty.}
+\item{lambda}{the strength of the smoothing penalty. The default is \code{0}.}
 
-\item{kappa}{a numeric parameter that controls the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}.}
+\item{kappa}{the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.}
 
-\item{na.action}{a function or a character specifying the method of handling \code{NA}s. The default is na.omit.}
+\item{na.action}{a function or character string specifying the method of \code{NA} handling. The default is "na.omit".}
 
-\item{encoding.digits}{an integer specifying the rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.}
+\item{encoding.digits}{an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.}
 
-\item{use.catchall}{logical. If \code{TRUE}, less frequent levels of factor variables are dropped and replaced by the catchall level.}
+\item{use.catchall}{logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.}
 
-\item{catchall}{a character specifying the catchall level.}
+\item{catchall}{a character string specifying the catchall level.}
 
-\item{max.ncol}{an integer specifying the maximum number of columns of the design matrix.}
+\item{max.ncol}{integer. The maximum number of columns of the design matrix.}
 
 \item{nil}{a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.}
 
 \item{tol}{a tolerance for the singular value decomposition. The default is \code{1e-7}.}
 
-\item{formula}{a symbolic description of the decomposition model to be fit.}
+\item{formula}{a symbolic description of the MID model to be fit.}
 
 \item{data}{a data frame containing the variables in the formula. If not found in data, the variables are taken from environment(formula).}
 
-\item{model}{a model object to be interpreted.}
+\item{model}{a fitted model object to be interpreted.}
 
-\item{subset}{an index vector specifying the rows to be used in the training sample.}
+\item{subset}{an optional vector specifying a subset of observations to be used in the fitting process.}
 
-\item{drop.unused.levels}{logical. If TRUE, unused levels of factors will be dropped.}
+\item{drop.unused.levels}{logical. If \code{TRUE}, unused levels of factors will be dropped.}
 }
 \value{
-\code{interpret()} returns a 'mid' object with the following components:
+\code{interpret()} returns a "mid" object with the following components:
 \item{weights}{a numeric vector of the sample weights.}
 \item{call}{the matched call.}
-\item{terms}{a character vector of the terms.}
-\item{link}{a 'link-glm' object specifying the link function.}
-\item{intercept}{the fitted intercept.}
-\item{encoders}{a list of encoders.}
-\item{main.effects}{a list of data frames representing the fitted main effects.}
-\item{interacions}{a list of data frames representing the fitted interactions.}
-\item{uninterpreted.rate}{the ratio of the interpretation loss to the original variance of model predictions (yhat).}
+\item{terms}{the term labels.}
+\item{link}{a "link-glm" object containing the link function.}
+\item{intercept}{the intercept.}
+\item{encoders}{a list of variable encoders.}
+\item{main.effects}{a list of data frames representing the main effects.}
+\item{interacions}{a list of data frames representing the interactions.}
+\item{uninterpreted.rate}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 \item{linear.predictors}{a numeric vector of the linear predictors.}
 \item{fitted.values}{a numeric vector of the fitted values.}
@@ -135,8 +135,7 @@ where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(X_j)} is the main effect of the
 The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
 
 The MID values for each sample point are determined using the constrained least squares method.
-The loss function is \eqn{E[(f(X)-\hat{f}(X))^2]} with a fitted model \eqn{f(X)} or \eqn{E[(Y-\hat{f}(X))^2]} without a model.
-The constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
+The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
 }
 \examples{
 data(cars, package = "datasets")

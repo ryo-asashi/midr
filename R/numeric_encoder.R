@@ -6,13 +6,13 @@
 #' If \code{type} is \code{1}, \code{k} is considered the maximum number of knots, and the values between two knots are encoded as two decimals, reflecting the relative position to the knots.
 #' If \code{type} is \code{0}, \code{k} is considered the maximum number of intervals, and the values are converted using one-hot encoding on the intervals.
 #'
-#' @param x a numeric vector to encode.
+#' @param x a numeric vector to be encoded.
 #' @param k an integer specifying the coarseness of the encoding. If not positive, all unique values of x are used as sample points.
-#' @param type an integer specifying the encoding method. \code{1} is for linear interpolation encoding on the knots and \code{0} is for one-hot encoding on the intervals.
+#' @param type an integer specifying the encoding method. If \code{1}, values are encoded to a \code{[0, 1]} scale based on linear interpolation of the knots. If \code{0}, values are encoded to \code{0} or \code{1} using ont-hot encoding on the intervals.
 #' @param encoding.digits an integer specifying the rounding digits for the encoding in case \code{type} is \code{1}.
-#' @param tag a character specifying the name of the variable.
-#' @param frame a 'numeric.frame' object or a numeric vector that defines the sample points of the binning.
-#' @param weights optional. A numeric vector of the sample weights for each value of \code{x}.
+#' @param tag character string. The name of the variable.
+#' @param frame a "numeric.frame" object or a numeric vector that defines the sample points of the binning.
+#' @param weights optional. A numeric vector of sample weights for each value of \code{x}.
 #' @examples
 #' data(iris, package = "datasets")
 #' enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
@@ -27,11 +27,11 @@
 #' enc$encode(new_x = c(4:8, NA))
 #' @returns
 #' \code{numeric.encoder()} returns a list containing the following components:
-#' \item{frame}{a data frame containing the encoding information.}
+#' \item{frame}{an object of class "numeric.frame".}
 #' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
-#' \item{type}{a character. The type of encoding, "linear" or "constant".}
-#' \code{numeric.frame()} returns a 'numeric.frame' object containing the encoding information.
+#' \item{type}{the type of encoding, "linear" or "constant".}
+#' \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 #' @export numeric.encoder
 #'
 numeric.encoder <- function(
@@ -145,7 +145,7 @@ numeric.encoder <- function(
 
 
 #' @rdname numeric.encoder
-#' @param reps a numeric vector to be used as the representative values.
+#' @param reps a numeric vector to be used as the representative values (knots).
 #' @param breaks a numeric vector to be used as the binning breaks.
 #'
 #' @export numeric.frame
