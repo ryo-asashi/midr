@@ -14,6 +14,7 @@ Construct a globally interpretable surrogate of a black-box ML model by decompos
 Useful links:
 \itemize{
   \item \url{https://github.com/ryo-asashi/midr}
+  \item \url{https://ryo-asashi.github.io/midr/}
   \item Report bugs at \url{https://github.com/ryo-asashi/midr/issues}
 }
 

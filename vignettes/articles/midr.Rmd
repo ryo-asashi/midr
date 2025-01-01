@@ -1,0 +1,117 @@
+---
+title: "midr"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+------------------------------------------------------------------------
+
+<img src="../../man/figures/logo.png" align="right" height="138" style="margin-left: 20px; margin-bottom: 10px;"/>
+
+## Introduction
+
+The `midr` package is designed to provide a model-agnostic method for interpreting black-box machine learning models. The basic concepts underlying the package were developed as a functional decomposition technique named *Maximum Interpretation Decomposition*, or MID (Iwasawa and Matsumori, 2025) [Forthcoming].
+
+The development version of the package is located on GitHub: <https://github.com/ryo-asashi/midr>. Bug reports and suggestions are appreciated and should be submitted to <https://github.com/ryo-asashi/midr/issues>.
+
+The strategy of the package is, in short, to construct an interpretable surrogate of the black-box model. To do this, `midr` fits a model that predicts predictions of the target model. The fitted model has the following structure:$$
+\hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
+$$where, $f_\phi$ is the *intercept* (or *zeroth-order* *effect*), $f_{j}(X_j)$ is the *first-order main effect* of the variable $j$, and $\Sigma_{j,k}(X_j, X_k)$ is the *second-order interaction* *effect* between the two variables $j$ and $k$.
+
+To enhance the flexibility of the model, the effects of quantitative variables are modeled as piecewise functions of degree one (i.e., piecewise linear functions) with an arbitrary number of knots.
+
+The fitting algorithm is constrained least squares method. The objective function is mean square error between the predictions of the target model and the MID model, i.e., $E[{(f(X)-\hat{f}(X))}^2]$ where $f(X)$ is the predictions obtained from the target model. The constraints are $E[f_j(X_j)]=0$ for each variable $j$ and $E[f_{j,k}(X_j,X_k)]=E[f_{j,k}(X_j,X_k)|X_j]=E[f_{j,k}(X_j,X_k)|X_k]=0$ for each pair of variables $(j,k)$. These constraints are called *Centralization Constraints* and entails $f_{\phi}=E[f(X)]$.
+
+## Data and Model
+
+In this tutorial, we use `ISLR::Boston` dataset and fit a ranger model to predict `medv` (median value of the housing prices) as the black-box model to be interpreted.
+
+```{r data_and_model}
+# required packages
+library(midr)
+library(ggplot2)
+theme_set(theme_midr())
+library(gridExtra)
+library(ranger)
+# initial split
+set.seed(42)
+data(Boston, package = "ISLR2")
+idx <- sample(nrow(Boston), nrow(Boston) * .75)
+train <- Boston[ idx, ]
+valid <- Boston[-idx, ]
+# ranger model
+model_rf <- ranger(medv ~ ., train, mtry = 5)
+preds_rf <- get.yhat(model_rf, valid)
+weighted.rmse(valid$medv, preds_rf)
+```
+
+## Fitting a MID Model
+
+The `interpret()` function can be used to fit a MID surrogate of the ranger model.
+
+```{r interpret}
+mid <- interpret(medv ~ .^2, data = train,
+                 model = model_rf, lambda = .1)
+print(mid, omit.values = TRUE)
+```
+
+The fitted MID model has 78 component functions, of which 12 are main effects and 66 are interactions. Here, the *Uninterpreted Rate* of the model is defined as ${E[{(f(X)-\hat{f}(X))}^2]}/{E[{(f(X)-E[f(X)])}^2]}$.
+
+## Importance of Component Functions
+
+The importance of each component function can be measured by $E[|f_j(X_j)|]$ and $E[|f_{j,k}(X_j,X_k)|]$, i.e., the mean absolute effect of it.
+
+The `mid.importance()` function can be used to calculate the MID importance.
+
+```{r mid_importance}
+imp <- mid.importance(mid)
+head(imp, 10L)
+```
+
+The importance can be visualized using the `ggmid()` function. Drawing a heat map of MID importance is a useful way to find important two-way interactions.
+
+```{r ggmid_mid_importance}
+grid.arrange(
+  nrow = 1L,
+  ggmid(imp, max.bars = 20L),
+  ggmid(imp, type = "heatmap") +
+    theme(legend.position = "top")
+)
+```
+
+## Main Effects
+
+```{r main_effects}
+grid.arrange(nrow = 3L, grobs = mid.plots(mid))
+```
+
+## Interactions
+
+```{r interactions}
+terms <- c("dis:lstat", "rm:ptratio", "age:lstat", "rm:rad")
+plots <- mid.plots(mid, terms = terms, limits = NULL)
+grid.arrange(nrow = 2L, grobs = plots)
+```
+
+## ICE Plots
+
+```{r mid_conditional}
+mc <- mid.conditional(mid, "lstat", train)
+grid.arrange(
+  nrow = 1L,
+  ggmid(mc, variable.colour = "dis") +
+    theme(legend.position = "bottom"),
+  ggmid(mc, variable.colour = "dis", centered = TRUE) +
+    theme(legend.position = "bottom") +
+    scale_colour_viridis_c()
+)
+```

@@ -52,10 +52,10 @@ $$
 
 where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias*
 *term*), $f_{j}(X_j)$ is the *main effect* of the feature $j$, and
-$\Sigma_{j,k}(X_j, X_k)$ is the *second-order interaction* *effect*
-between the two features $j$ and $k$. The effects of quantitative
-variables are modeled as piecewise functions of degree 1 (piecewise
-linear function) or 0 (step function).
+$f_{j,k}(X_j, X_k)$ is the *second-order interaction* *effect* between
+the two features $j$ and $k$. The effects of quantitative variables are
+modeled as piecewise functions of degree 1 (piecewise linear function)
+or 0 (step function).
 
 **Fitting an MID Model to the Data**
 
