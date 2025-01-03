@@ -11,16 +11,15 @@ status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/p
 
 <!-- badges: end -->
 
-The `midr` package is designed to provide a model-agnostic method for
+The **midr** package is designed to provide a model-agnostic method for
 interpreting black-box machine learning models by creating a globally
-interpretable surrogate of the target model.  
-The basic concepts underlying the package were developed as a functional
+interpretable surrogate of the target model using a functional
 decomposition technique called *Maximum Interpretation Decomposition*
 (MID).
 
-For the theoretical details of MID, see Iwasawa and Matsumori (2025)
-\[Forthcoming\], and for the technical details of the `midr` package,
-see Asashiba, Kozuma and Iwasawa (2025) \[Forthcoming\].
+For the theoretical details of MID, see Iwasawa & Matsumori (2025)
+\[Forthcoming\], and for the technical details of the package, see
+Asashiba et al. (2025) \[Forthcoming\].
 
 ## Installation
 
@@ -41,300 +40,140 @@ devtools::install_github("ryo-asashi/midr")
 
 ## Examples
 
-The main function of the package is `interpret()`, which can be used to
-fit a predictive model consisting of a set of functions, each with up to
-two variables. The prediction function of a fitted MID model
-$\hat{f}(X)$ has the following structure:
-
-$$
-\hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
-$$
-
-where, $f_\phi$ is the *intercept* (*zeroth-order* *effect*, *bias*
-*term*), $f_{j}(X_j)$ is the *main effect* of the feature $j$, and
-$f_{j,k}(X_j, X_k)$ is the *second-order interaction* *effect* between
-the two features $j$ and $k$. The effects of quantitative variables are
-modeled as piecewise functions of degree 1 (piecewise linear function)
-or 0 (step function).
-
-**Fitting an MID Model to the Data**
-
-In the following example, we construct a MID model for the `price` of
-diamonds whose prediction function is the sum of eleven component
-functions: the *intercept*, four first-order *main effects*
-corresponding to each predictor variable (`carat`, `clarity`, `color`
-and `cut`), and six second-order *interactions* corresponding to each
-pair of the variables.
+In the following example, we fit a random forest model of `Boston`
+dataset included in the ISLR2 package.
 
 ``` r
-# required packages
+# load required packages
 library(midr)
 library(ggplot2)
 library(gridExtra)
-library(ranger)
 library(ISLR2)
+library(ranger)
 theme_set(theme_midr())
-# fit a two-dimensional MID model to the 'diamonds' data
-data("diamonds", package = "ggplot2")
-mid <- interpret(price ~ (carat + clarity + color + cut)^2, diamonds)
-print(mid, omit.values = TRUE)
+# split the Boston dataset
+data("Boston", package = "ISLR2")
+set.seed(42)
+idx <- sample(nrow(Boston), nrow(Boston) * .75)
+train <- Boston[ idx, ]
+valid <- Boston[-idx, ]
+# fit a random forest model
+model_rf <- ranger(medv ~ ., train, mtry = 5)
+preds_rf <- predict(model_rf, valid)$predictions
+cat("RMSE: ", weighted.rmse(valid$medv, preds_rf))
+#> RMSE:  3.351362
+```
+
+The main function of the package is `interpret()`, which can be used to
+create a global surrogate of the random forest model using MID.
+
+``` r
+# fit a two-dimensional MID model
+mid_rf <- interpret(medv ~ .^2, train, model_rf, lambda = .1)
+print(mid_rf, omit.values = TRUE)
 #> 
 #> Call:
-#> interpret(formula = price ~ (carat + clarity + color + cut)^2,
-#>  data = diamonds)
+#> interpret(formula = yhat ~ .^2, data = train, model = model_rf,
+#>  lambda = 0.1)
 #> 
-#> Intercept: 3932.8
-#> 
-#> Main Effects:
-#> 4 main effect terms
-#> 
-#> Interactions:
-#> 6 interaction terms
-#> 
-#> Uninterpreted Rate: 0.025954
-```
-
-It is easy to visualize each component function of the fitted MID model.
-
-``` r
-# main effects
-grid.arrange(grobs = mid.plots(mid, limits = NULL))
-```
-
-<img src="man/figures/README-diamonds_terms-1.png" width="100%" />
-
-``` r
-# interactions
-interactions <- mid.terms(mid, main.effect = FALSE)
-grid.arrange(grobs = mid.plots(mid, interactions, limits = NULL))
-```
-
-<img src="man/figures/README-diamonds_terms-2.png" width="100%" />
-
-As another example, we fit a two-dimensional MID model of the
-`Bikeshare` dataset included in `ISLR2`.
-
-``` r
-# Bikeshare dataset
-data(Bikeshare, package = "ISLR2")
-set.seed(42)
-train_rows <- sample(nrow(Bikeshare), nrow(Bikeshare) * .75)
-train <- Bikeshare[ train_rows, ]
-valid <- Bikeshare[-train_rows, ]
-# fit a two-dimensional model
-mid <- interpret(bikers ~ (mnth + factor(workingday) + hr +
-                 weathersit + temp + hum + windspeed)^2,
-                 data = train, lambda = .1, link = "log")
-```
-
-The fitted MID model can be used to predict the number of bike rentals.
-
-``` r
-# predict the number of bike rentals
-preds <- predict(mid, valid)
-data.frame(actual = valid$bikers[1:12], predicted = preds[1:12])
-#>    actual predicted
-#> 1       1  1.778831
-#> 2      56 69.567642
-#> 3      84 97.746876
-#> 4      93 72.959132
-#> 5      37 52.256667
-#> 6      36 37.462328
-#> 7       6  7.501908
-#> 8       3  1.816990
-#> 9      53 68.014476
-#> 10     93 94.935711
-#> 11     31 33.325104
-#> 12      3  4.518049
-```
-
-``` r
-# rmse loss
-rmse <- function(x, y) {
-  cat("RMSE:", format(sqrt(mean((x - y) ^ 2)), digits = 6), "\n")
-}
-rmse(valid$bikers, preds)
-#> RMSE: 40.0972
-```
-
-``` r
-# main effects
-plots <- mid.plots(mid)
-grid.arrange(grobs = plots[1:4], nrow = 2)
-```
-
-<img src="man/figures/README-bikeshare_main_effects-1.png" width="100%" />
-
-``` r
-grid.arrange(grobs = plots[5:7], nrow = 1)
-```
-
-<img src="man/figures/README-bikeshare_main_effects-2.png" width="100%" />
-
-The importance of each component function of a MID model can be measured
-by $E[\ |f_j(X_j)|\ ]$ and $E[\ |f_{j,k}(X_j,X_k)|\ ]$, i.e., the mean
-absolute effect of it. Drawing a heat map of MID importance is a useful
-way to find important two-way interactions.
-
-``` r
-# draw a heatmap of term importance
-grid.arrange(nrow = 1L,
-  ggmid(mid.importance(mid), plot.main = FALSE, max.terms = 30L) +
-    geom_point(aes(shape = degree)) +
-    scale_shape_manual(values = c(16L, 1L)) +
-    theme_midr(grid = "y") +
-    theme(legend.position = "top"),
-  ggmid(mid.importance(mid), type = "heatmap") +
-    theme(legend.position = "top")
-)
-```
-
-<img src="man/figures/README-bikeshare_importance-1.png" width="100%" />
-
-And in the visualization of the most important two-way interaction
-between `hr` and `workingday`, we can see the difference in the hourly
-pattern of bike rentals on weekdays and holidays due to the effect of
-commuting.
-
-``` r
-# visualize the most important interaction effect
-grid.arrange(
-  ggmid(mid, "hr:factor(workingday)") +
-    labs(title = "interaction"),
-  ggmid(mid, "hr:factor(workingday)", include.main.effects = TRUE) +
-    labs(title = "interaction + main effects")
-)
-```
-
-<img src="man/figures/README-bikeshare_interaction-1.png" width="100%" />
-
-It is easy to generate *individual conditional expectation* (ICE) plots
-for the fitted MID surrogate model.
-
-``` r
-# create a mid conditional object
-ice_rows <- sample(nrow(valid), 200L)
-mc <- mid.conditional(mid, "hr", data = valid[ice_rows,])
-# visualize the individual conditional expectation
-grid.arrange(
-  ggmid(mc, variable.colour = factor(workingday), alpha = .2),
-  ggmid(mc, variable.colour = temp, centered = TRUE, alpha = .1)
-)
-```
-
-<img src="man/figures/README-bikeshare_conditional-1.png" width="100%" />
-
-**Fitting a MID Model as a Global Surrogate of the Target Model**
-
-In the next example, we construct a ranger model of `wage` based on the
-`Wage` dataset in `ISLR2` and a MID surrogate of it.
-
-``` r
-# Wage dataset
-data(Wage, package = "ISLR2")
-set.seed(42)
-train_rows <- sample(nrow(Wage), 2000)
-train <- Wage[ train_rows, -10] # removing "logwage"
-valid <- Wage[-train_rows, -10]
-# construct ranger model with tuned parameters
-set.seed(42)
-model <- ranger(wage ~ ., train, importance = "permutation",
-                num.trees = 1000, mtry = 3, min.node.size = 13,
-                sample.fraction = .2281)
-# RMSE loss
-rmse(predict(model, valid)$predictions, valid$wage)
-#> RMSE: 32.9839
-```
-
-When the target model is passed to the argument `model`, `interpret()`
-replaces the response variable by the predictions obtained from the
-target model. Thus, the fitted MID model can be viewed as *an
-interpretable model of the target model*.
-
-``` r
-# MID surrogae or the ranger model
-mid <- interpret(wage ~ .^2, train, model = model, ok = TRUE)
-print(mid, omit.values = TRUE)
-#> 
-#> Call:
-#> interpret(formula = yhat ~ .^2, data = train, model = model,
-#>  ok = TRUE)
-#> 
-#> Intercept: 112.54
+#> Intercept: 22.446
 #> 
 #> Main Effects:
-#> 9 main effect terms
+#> 12 main effect terms
 #> 
 #> Interactions:
-#> 36 interaction terms
+#> 66 interaction terms
 #> 
-#> Uninterpreted Rate: 0.012007
+#> Uninterpreted Rate: 0.016249
 ```
 
 ``` r
-# RMSE as the interpretation loss
-rmse(predict(mid, valid), predict(model, valid)$predictions)
-#> RMSE: 2.75629
+preds_mid <- predict(mid_rf, valid)
+cat("\nRMSE: ", weighted.rmse(preds_rf, preds_mid))
+#> 
+#> RMSE:  1.106746
 ```
 
-To the extent that the MID model is acceptable as a surrogate for the
-target model, we can use the former to understand the latter.
-
 ``` r
-# main effects
-grid.arrange(grobs = mid.plots(mid))
+cat("\nRMSE: ", weighted.rmse(valid$medv, preds_mid))
+#> 
+#> RMSE:  3.306111
 ```
 
-<img src="man/figures/README-wage_terms-1.png" width="100%" />
+The graphing functions `ggmid()` and `plot()` can be used to visualize
+the main effects and the interactions of the variables.
 
 ``` r
-# important interactions
-imp <- mid.importance(mid)
-terms <- mid.terms(imp, main.effect = FALSE)[1:4]
-grid.arrange(grobs = mid.plots(mid, terms = terms, limits = NULL))
-```
-
-<img src="man/figures/README-wage_terms-2.png" width="100%" />
-
-The following plot compares the MID importance plot of the fitted `midr`
-model with the *permutation feature importance* (PFI) plot of the target
-`ranger` model.
-
-``` r
-# permutation feature importance of variables
-pfi <- sort(model$variable.importance, decreasing = FALSE)
-pfi <- data.frame(variable = factor(names(pfi), levels = names(pfi)),                   importance = pfi)
-# importance of the component terms
-grid.arrange(nrow = 1,
-  ggmid(imp, max.bars = 12) +
-    labs(subtitle = "MID Model"),
-  ggplot(pfi, aes(y = variable, x = importance)) +
-    geom_col() +
-    labs(subtitle = "Target Model (PFI)", y = NULL)
-)
-```
-
-<img src="man/figures/README-wage_importance-1.png" width="100%" />
-
-As the prediction function of the MID model is a sum of the simple
-component functions, the individual conditional effect can be decomposed
-into the effects of each term.
-
-``` r
-# create a mid conditional object
-mc <- mid.conditional(mid, "education", train)
-# visualize the effects of each component function
-mc$conditional$education <- as.numeric(mc$conditional$education)
+# visualize the main effects and interactions of the MID model
 grid.arrange(
-  ggmid(mc, term = "age:education",
-        variable.colour = age, draw.dots = FALSE),
-  ggmid(mc, term = "maritl:education",
-        variable.linetype = maritl, draw.dots = FALSE),
-  ggmid(mc, term = "race:education",
-        variable.linetype = race, draw.dots = FALSE),
-  ggmid(mc, term = "education:health",
-        variable.linetype = health, draw.dots = FALSE)
+  ggmid(mid_rf, "lstat") +
+    ggtitle("main effect of lstat"),
+  ggmid(mid_rf, "dis") +
+    ggtitle("main effect of dis"),
+  ggmid(mid_rf, "lstat:dis") +
+    ggtitle("interaction of lstat:dis"),
+  ggmid(mid_rf, "lstat:dis", include.main.effects = TRUE) +
+    ggtitle("interaction + main effects")
 )
 ```
 
-<img src="man/figures/README-wage_conditional-1.png" width="100%" />
+<img src="man/figures/README-ggmid-1.png" width="100%" />
+
+The `mid.importance()` function helps to compute and compare the
+importance of main effects and interactions of the variables in the
+whole data or for an instance.
+
+``` r
+# visualize the MID importance of the component functions
+imp <- mid.importance(mid_rf)
+ibd <- mid.importance(mid_rf, data = train[1L, ])
+grid.arrange(
+  nrow = 1L,
+  ggmid(imp, max.bars = 16L, plot.main = FALSE) +
+    geom_point(aes(shape = degree), size = 2L) +
+    theme_midr(grid_type = "y") +
+    theme(legend.position = "bottom") +
+    scale_shape_manual(values = c(1, 16)) +
+    ggtitle("importance of variable effects"),
+  ggmid(ibd, max.bars = 16L) +
+    aes(fill = mid > 0) +
+    theme(legend.position = "bottom") +
+    scale_fill_manual(values = c("#7e1952", "#2f7a9a")) +
+    ggtitle("breakdown of a prediction")
+)
+```
+
+<img src="man/figures/README-mid_importance-1.png" width="100%" />
+
+The `mid.conditional()` function can be used to compute the ICE curves
+(Goldstein et al. 2015) of the fitted MID model and the breakdown of the
+ICE curves by main effects and interactions.
+
+``` r
+# visualize the ICE curves of the MID model
+ice <- mid.conditional(mid_rf, "lstat", data = train)
+grid.arrange(
+  ggmid(ice, centered = TRUE, alpha = .1) +
+    ggtitle("c-ICE of lstat"),
+  ggmid(ice, term = "lstat", centered = TRUE) +
+    ggtitle("c-ICE of main effect"),
+  ggmid(ice, term = "lstat:dis", centered = TRUE, variable.colour = "dis", alpha = .1) +
+    ggtitle("c-ICE of interaction with dis"),
+  ggmid(ice, term = "lstat:age", centered = TRUE, variable.colour = "age", alpha = .1) +
+    ggtitle("c-ICE of interaction with age")
+)
+```
+
+<img src="man/figures/README-mid_conditional-1.png" width="100%" />
+
+## References
+
+\[1\] Iwasawa, H. & Matsumori, Y. (2025). \[Forthcoming\]
+
+\[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). \[Forthcoming\]
+
+\[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
+“Peeking Inside the Black Box: Visualizing Statistical Learning With
+Plots of Individual Conditional Expectation”. *Journal of Computational
+and Graphical Statistics*, *24*(1), 44–65.
+<https://doi.org/10.1080/10618600.2014.907095>

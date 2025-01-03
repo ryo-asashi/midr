@@ -1,4 +1,6 @@
 url: https://ryo-asashi.github.io/midr/
+
 template:
   bootstrap: 5
-
+  math-rendering: mathjax
+  light-switch: true    
