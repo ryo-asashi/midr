@@ -6,11 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Create an Interpretable Surrogate of Black-Box ML Models • midr</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Create an Interpretable Surrogate of Black-Box ML Models">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><script src="deps/MathJax-3.2.2/tex-chtml.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Create an Interpretable Surrogate of Black-Box ML Models">
 <meta name="description" content="Construct a globally interpretable surrogate of a black-box ML model by decomposing the prediction function of the target model into a set of component functions including the intercept, the main effects and the second-order interactions.">
 <meta property="og:description" content="Construct a globally interpretable surrogate of a black-box ML model by decomposing the prediction function of the target model into a set of component functions including the intercept, the main effects and the second-order interactions.">
 <meta property="og:image" content="https://ryo-asashi.github.io/midr/logo.png">
@@ -19,11 +19,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,6 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="articles/midr.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
@@ -41,6 +40,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/ryo-asashi/midr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -56,9 +63,8 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The <code>midr</code> package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model.<br>
-The basic concepts underlying the package were developed as a functional decomposition technique called <em>Maximum Interpretation Decomposition</em> (MID).</p>
-<p>For the theoretical details of MID, see Iwasawa and Matsumori (2025) [Forthcoming], and for the technical details of the <code>midr</code> package, see Asashiba, Kozuma and Iwasawa (2025) [Forthcoming].</p>
+<p>The <strong>midr</strong> package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called <em>Maximum Interpretation Decomposition</em> (MID).</p>
+<p>For the theoretical details of MID, see Iwasawa &amp; Matsumori (2025) [Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -73,210 +79,110 @@ The basic concepts underlying the package were developed as a functional decompo
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<p>The main function of the package is <code><a href="reference/interpret.html">interpret()</a></code>, which can be used to fit a predictive model consisting of a set of functions, each with up to two variables. The prediction function of a fitted MID model <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{f}(X)</annotation></semantics></math> has the following structure:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="bold">𝐗</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>f</mi><mi>ϕ</mi></msub><mo>+</mo><msub><mi>Σ</mi><mrow><mi>j</mi><mspace width="0.222em"></mspace><mo>∈</mo><mi>D</mi></mrow></msub><mspace width="0.222em"></mspace><msub><mi>f</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>Σ</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi><mspace width="0.222em"></mspace><mo>∈</mo><mi>D</mi></mrow></msub><mspace width="0.222em"></mspace><msub><mi>f</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-\hat{f}(\textbf{X}) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)
-</annotation></semantics></math></p>
-<p>where, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>ϕ</mi></msub><annotation encoding="application/x-tex">f_\phi</annotation></semantics></math> is the <em>intercept</em> (<em>zeroth-order</em> <em>effect</em>, <em>bias</em> <em>term</em>), <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_{j}(X_j)</annotation></semantics></math> is the <em>main effect</em> of the feature <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_{j,k}(X_j, X_k)</annotation></semantics></math> is the <em>second-order interaction</em> <em>effect</em> between the two features <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>. The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).</p>
-<p><strong>Fitting an MID Model to the Data</strong></p>
-<p>In the following example, we construct a MID model for the <code>price</code> of diamonds whose prediction function is the sum of eleven component functions: the <em>intercept</em>, four first-order <em>main effects</em> corresponding to each predictor variable (<code>carat</code>, <code>clarity</code>, <code>color</code> and <code>cut</code>), and six second-order <em>interactions</em> corresponding to each pair of the variables.</p>
+<p>In the following example, we fit a random forest model of <code>Boston</code> dataset included in the ISLR2 package.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># required packages</span></span>
+<code class="sourceCode R"><span><span class="co"># load required packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ryo-asashi/midr" class="external-link">midr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://imbs-hl.github.io/ranger/" class="external-link">ranger</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.statlearning.com" class="external-link">ISLR2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://imbs-hl.github.io/ranger/" class="external-link">ranger</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="reference/theme_midr.html">theme_midr</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># fit a two-dimensional MID model to the 'diamonds' data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"diamonds"</span>, package <span class="op">=</span> <span class="st">"ggplot2"</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="op">(</span><span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">color</span> <span class="op">+</span> <span class="va">cut</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">diamonds</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = price ~ (carat + clarity + color + cut)^2,</span></span>
-<span><span class="co">#&gt;  data = diamonds)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 3932.8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Main Effects:</span></span>
-<span><span class="co">#&gt; 4 main effect terms</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Interactions:</span></span>
-<span><span class="co">#&gt; 6 interaction terms</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Rate: 0.025954</span></span></code></pre></div>
-<p>It is easy to visualize each component function of the fitted MID model.</p>
+<span><span class="co"># split the Boston dataset</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Boston"</span>, package <span class="op">=</span> <span class="st">"ISLR2"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span> <span class="op">*</span> <span class="fl">.75</span><span class="op">)</span></span>
+<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span> <span class="va">idx</span>, <span class="op">]</span></span>
+<span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span><span class="co"># fit a random forest model</span></span>
+<span><span class="va">model_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_rf</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; RMSE:  3.351362</span></span></code></pre></div>
+<p>The main function of the package is <code><a href="reference/interpret.html">interpret()</a></code>, which can be used to create a global surrogate of the random forest model using MID.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># main effects</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span>, limits <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-diamonds_terms-1.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># interactions</span></span>
-<span><span class="va">interactions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.extract.html">mid.terms</a></span><span class="op">(</span><span class="va">mid</span>, main.effect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">interactions</span>, limits <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-diamonds_terms-2.png" width="100%"></p>
-<p>As another example, we fit a two-dimensional MID model of the <code>Bikeshare</code> dataset included in <code>ISLR2</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Bikeshare dataset</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Bikeshare</span>, package <span class="op">=</span> <span class="st">"ISLR2"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">train_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Bikeshare</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Bikeshare</span><span class="op">)</span> <span class="op">*</span> <span class="fl">.75</span><span class="op">)</span></span>
-<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Bikeshare</span><span class="op">[</span> <span class="va">train_rows</span>, <span class="op">]</span></span>
-<span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Bikeshare</span><span class="op">[</span><span class="op">-</span><span class="va">train_rows</span>, <span class="op">]</span></span>
-<span><span class="co"># fit a two-dimensional model</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">bikers</span> <span class="op">~</span> <span class="op">(</span><span class="va">mnth</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">workingday</span><span class="op">)</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span></span>
-<span>                 <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span> <span class="op">+</span> <span class="va">windspeed</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>,</span>
-<span>                 data <span class="op">=</span> <span class="va">train</span>, lambda <span class="op">=</span> <span class="fl">.1</span>, link <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span></span></code></pre></div>
-<p>The fitted MID model can be used to predict the number of bike rentals.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># predict the number of bike rentals</span></span>
-<span><span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">valid</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>actual <span class="op">=</span> <span class="va">valid</span><span class="op">$</span><span class="va">bikers</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, predicted <span class="op">=</span> <span class="va">preds</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    actual predicted</span></span>
-<span><span class="co">#&gt; 1       1  1.778831</span></span>
-<span><span class="co">#&gt; 2      56 69.567642</span></span>
-<span><span class="co">#&gt; 3      84 97.746876</span></span>
-<span><span class="co">#&gt; 4      93 72.959132</span></span>
-<span><span class="co">#&gt; 5      37 52.256667</span></span>
-<span><span class="co">#&gt; 6      36 37.462328</span></span>
-<span><span class="co">#&gt; 7       6  7.501908</span></span>
-<span><span class="co">#&gt; 8       3  1.816990</span></span>
-<span><span class="co">#&gt; 9      53 68.014476</span></span>
-<span><span class="co">#&gt; 10     93 94.935711</span></span>
-<span><span class="co">#&gt; 11     31 33.325104</span></span>
-<span><span class="co">#&gt; 12      3  4.518049</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># rmse loss</span></span>
-<span><span class="va">rmse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="fu">rmse</span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">bikers</span>, <span class="va">preds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; RMSE: 40.0972</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># main effects</span></span>
-<span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="va">plots</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-bikeshare_main_effects-1.png" width="100%"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="va">plots</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-bikeshare_main_effects-2.png" width="100%"></p>
-<p>The importance of each component function of a MID model can be measured by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>f</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.222em"></mspace><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">E[\ |f_j(X_j)|\ ]</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>f</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>j</mi></msub><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.222em"></mspace><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">E[\ |f_{j,k}(X_j,X_k)|\ ]</annotation></semantics></math>, i.e., the mean absolute effect of it. Drawing a heat map of MID importance is a useful way to find important two-way interactions.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># draw a heatmap of term importance</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, plot.main <span class="op">=</span> <span class="cn">FALSE</span>, max.terms <span class="op">=</span> <span class="fl">30L</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">degree</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_shape_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">16L</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="reference/theme_midr.html">theme_midr</a></span><span class="op">(</span>grid <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-bikeshare_importance-1.png" width="100%"></p>
-<p>And in the visualization of the most important two-way interaction between <code>hr</code> and <code>workingday</code>, we can see the difference in the hourly pattern of bike rentals on weekdays and holidays due to the effect of commuting.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># visualize the most important interaction effect</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"hr:factor(workingday)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"interaction"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"hr:factor(workingday)"</span>, include.main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"interaction + main effects"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-bikeshare_interaction-1.png" width="100%"></p>
-<p>It is easy to generate <em>individual conditional expectation</em> (ICE) plots for the fitted MID surrogate model.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># create a mid conditional object</span></span>
-<span><span class="va">ice_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">valid</span><span class="op">)</span>, <span class="fl">200L</span><span class="op">)</span></span>
-<span><span class="va">mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"hr"</span>, data <span class="op">=</span> <span class="va">valid</span><span class="op">[</span><span class="va">ice_rows</span>,<span class="op">]</span><span class="op">)</span></span>
-<span><span class="co"># visualize the individual conditional expectation</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, variable.colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">workingday</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, variable.colour <span class="op">=</span> <span class="va">temp</span>, centered <span class="op">=</span> <span class="cn">TRUE</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-bikeshare_conditional-1.png" width="100%"></p>
-<p><strong>Fitting a MID Model as a Global Surrogate of the Target Model</strong></p>
-<p>In the next example, we construct a ranger model of <code>wage</code> based on the <code>Wage</code> dataset in <code>ISLR2</code> and a MID surrogate of it.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Wage dataset</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Wage</span>, package <span class="op">=</span> <span class="st">"ISLR2"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">train_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Wage</span><span class="op">)</span>, <span class="fl">2000</span><span class="op">)</span></span>
-<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Wage</span><span class="op">[</span> <span class="va">train_rows</span>, <span class="op">-</span><span class="fl">10</span><span class="op">]</span> <span class="co"># removing "logwage"</span></span>
-<span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Wage</span><span class="op">[</span><span class="op">-</span><span class="va">train_rows</span>, <span class="op">-</span><span class="fl">10</span><span class="op">]</span></span>
-<span><span class="co"># construct ranger model with tuned parameters</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">wage</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, importance <span class="op">=</span> <span class="st">"permutation"</span>,</span>
-<span>                num.trees <span class="op">=</span> <span class="fl">1000</span>, mtry <span class="op">=</span> <span class="fl">3</span>, min.node.size <span class="op">=</span> <span class="fl">13</span>,</span>
-<span>                sample.fraction <span class="op">=</span> <span class="fl">.2281</span><span class="op">)</span></span>
-<span><span class="co"># RMSE loss</span></span>
-<span><span class="fu">rmse</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span>, <span class="va">valid</span><span class="op">$</span><span class="va">wage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; RMSE: 32.9839</span></span></code></pre></div>
-<p>When the target model is passed to the argument <code>model</code>, <code><a href="reference/interpret.html">interpret()</a></code> replaces the response variable by the predictions obtained from the target model. Thus, the fitted MID model can be viewed as <em>an interpretable model of the target model</em>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># MID surrogae or the ranger model</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">wage</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, model <span class="op">=</span> <span class="va">model</span>, ok <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># fit a two-dimensional MID model</span></span>
+<span><span class="va">mid_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model_rf</span>, lambda <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid_rf</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  ok = TRUE)</span></span>
+<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = model_rf,</span></span>
+<span><span class="co">#&gt;  lambda = 0.1)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 112.54</span></span>
+<span><span class="co">#&gt; Intercept: 22.446</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
-<span><span class="co">#&gt; 9 main effect terms</span></span>
+<span><span class="co">#&gt; 12 main effect terms</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Interactions:</span></span>
-<span><span class="co">#&gt; 36 interaction terms</span></span>
+<span><span class="co">#&gt; 66 interaction terms</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Rate: 0.012007</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># RMSE as the interpretation loss</span></span>
-<span><span class="fu">rmse</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">valid</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span><span class="op">)</span></span>
-<span><span class="co">#&gt; RMSE: 2.75629</span></span></code></pre></div>
-<p>To the extent that the MID model is acceptable as a surrogate for the target model, we can use the former to understand the latter.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># main effects</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-wage_terms-1.png" width="100%"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># important interactions</span></span>
-<span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
-<span><span class="va">terms</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.extract.html">mid.terms</a></span><span class="op">(</span><span class="va">imp</span>, main.effect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span>, terms <span class="op">=</span> <span class="va">terms</span>, limits <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-wage_terms-2.png" width="100%"></p>
-<p>The following plot compares the MID importance plot of the fitted <code>midr</code> model with the <em>permutation feature importance</em> (PFI) plot of the target <code>ranger</code> model.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># permutation feature importance of variables</span></span>
-<span><span class="va">pfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">variable.importance</span>, decreasing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">pfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pfi</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pfi</span><span class="op">)</span><span class="op">)</span>,                   importance <span class="op">=</span> <span class="va">pfi</span><span class="op">)</span></span>
-<span><span class="co"># importance of the component terms</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, max.bars <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"MID Model"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pfi</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">variable</span>, x <span class="op">=</span> <span class="va">importance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Target Model (PFI)"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-wage_importance-1.png" width="100%"></p>
-<p>As the prediction function of the MID model is a sum of the simple component functions, the individual conditional effect can be decomposed into the effects of each term.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># create a mid conditional object</span></span>
-<span><span class="va">mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"education"</span>, <span class="va">train</span><span class="op">)</span></span>
-<span><span class="co"># visualize the effects of each component function</span></span>
-<span><span class="va">mc</span><span class="op">$</span><span class="va">conditional</span><span class="op">$</span><span class="va">education</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">mc</span><span class="op">$</span><span class="va">conditional</span><span class="op">$</span><span class="va">education</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Uninterpreted Rate: 0.016249</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">preds_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="va">valid</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nRMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">preds_rf</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; RMSE:  1.106746</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nRMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; RMSE:  3.306111</span></span></code></pre></div>
+<p>The graphing functions <code><a href="reference/ggmid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> can be used to visualize the main effects and the interactions of the variables.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize the main effects and interactions of the MID model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, term <span class="op">=</span> <span class="st">"age:education"</span>,</span>
-<span>        variable.colour <span class="op">=</span> <span class="va">age</span>, draw.dots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, term <span class="op">=</span> <span class="st">"maritl:education"</span>,</span>
-<span>        variable.linetype <span class="op">=</span> <span class="va">maritl</span>, draw.dots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, term <span class="op">=</span> <span class="st">"race:education"</span>,</span>
-<span>        variable.linetype <span class="op">=</span> <span class="va">race</span>, draw.dots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mc</span>, term <span class="op">=</span> <span class="st">"education:health"</span>,</span>
-<span>        variable.linetype <span class="op">=</span> <span class="va">health</span>, draw.dots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"main effect of lstat"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"dis"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"main effect of dis"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat:dis"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"interaction of lstat:dis"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat:dis"</span>, include.main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"interaction + main effects"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-wage_conditional-1.png" width="100%"></p>
+<p><img src="reference/figures/README-ggmid-1.png" width="100%"></p>
+<p>The <code><a href="reference/mid.importance.html">mid.importance()</a></code> function helps to compute and compare the importance of main effects and interactions of the variables in the whole data or for an instance.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize the MID importance of the component functions</span></span>
+<span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid_rf</span><span class="op">)</span></span>
+<span><span class="va">ibd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid_rf</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">[</span><span class="fl">1L</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
+<span>  nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, max.bars <span class="op">=</span> <span class="fl">16L</span>, plot.main <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">degree</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="reference/theme_midr.html">theme_midr</a></span><span class="op">(</span>grid_type <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_shape_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"importance of variable effects"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ibd</span>, max.bars <span class="op">=</span> <span class="fl">16L</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">mid</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#7e1952"</span>, <span class="st">"#2f7a9a"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"breakdown of a prediction"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-mid_importance-1.png" width="100%"></p>
+<p>The <code><a href="reference/mid.conditional.html">mid.conditional()</a></code> function can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model and the breakdown of the ICE curves by main effects and interactions.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize the ICE curves of the MID model</span></span>
+<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat"</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, centered <span class="op">=</span> <span class="cn">TRUE</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of lstat"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"lstat"</span>, centered <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of main effect"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"lstat:dis"</span>, centered <span class="op">=</span> <span class="cn">TRUE</span>, variable.colour <span class="op">=</span> <span class="st">"dis"</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of interaction with dis"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"lstat:age"</span>, centered <span class="op">=</span> <span class="cn">TRUE</span>, variable.colour <span class="op">=</span> <span class="st">"age"</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of interaction with age"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-mid_conditional-1.png" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>[1] Iwasawa, H. &amp; Matsumori, Y. (2025). [Forthcoming]</p>
+<p>[2] Asashiba, R., Kozuma, R. &amp; Iwasawa, H. (2025). [Forthcoming]</p>
+<p>[3] Goldstein, A., Kapelner, A., Bleich, J., &amp; Pitkin, E. (2015). “Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation”. <em>Journal of Computational and Graphical Statistics</em>, <em>24</em>(1), 44–65. <a href="https://doi.org/10.1080/10618600.2014.907095" class="external-link uri">https://doi.org/10.1080/10618600.2014.907095</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
