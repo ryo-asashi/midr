@@ -8,7 +8,7 @@ template:
 reference:
 - title: MID Models
 - contents:
-  - imterpret
+  - interpret
 - subtitle: Methods
 - contents:
   - ggmid
