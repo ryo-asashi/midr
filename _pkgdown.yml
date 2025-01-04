@@ -3,14 +3,14 @@ url: https://ryo-asashi.github.io/midr/
 template:
   bootstrap: 5
   math-rendering: mathjax
-  light-switch: true    
+  light-switch: true
 
 reference:
 - title: MID Models
-  contents:
+- contents:
   - imterpret
 - subtitle: Methods
-  contents:
+- contents:
   - ggmid
   - mid.extract
   - mid.plots
@@ -19,22 +19,22 @@ reference:
   - print.mid
   - summary.mid
 - title: MID Importance
-  contents:
+- contents:
   - mid.importance
 - subtitle: Methods
-  contents:
+- contents:
   - ggmid.mid.importance
   - plot.mid.importance
 - title: MID Conditional
-  contents:
+- contents:
   - mid.conditional
 - subtitle: Methods
-  contents:
+- contents:
   - ggmid.mid.conditional
   - plot.mid.conditional
 - title: Other Functions
 - subtitle: Variable Encoders
-  contents:
+- contents:
   - factor.encoder
   - numeric.encoder
 - subtitle: Weighted Data Frames
