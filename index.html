@@ -63,15 +63,14 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The <strong>midr</strong> package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called <em>Maximum Interpretation Decomposition</em> (MID).</p>
-<p>For the theoretical details of MID, see Iwasawa &amp; Matsumori (2025) [Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].</p>
+<p>midr is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called <em>Maximum Interpretation Decomposition</em> (MID). For the theoretical details of MID, see Iwasawa &amp; Matsumori (2025) [Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the released version of <code>midr</code> from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> with:</p>
+<p>You can install the released version of midr from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"midr"</span><span class="op">)</span> <span class="co"># not yet available</span></span></code></pre></div>
-<p>And the development version of <code>midr</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>and the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ryo-asashi/midr"</span><span class="op">)</span></span></code></pre></div>
@@ -79,7 +78,7 @@
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<p>In the following example, we fit a random forest model of <code>Boston</code> dataset included in the ISLR2 package.</p>
+<p>In the following example, we fit a random forest model to the <code>Boston</code> dataset included in ISLR2, and then attempt to interpret it using the functions of midr.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load required packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ryo-asashi/midr" class="external-link">midr</a></span><span class="op">)</span></span>
@@ -95,19 +94,18 @@
 <span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span> <span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="co"># fit a random forest model</span></span>
-<span><span class="va">model_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
+<span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_rf</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; RMSE:  3.351362</span></span></code></pre></div>
-<p>The main function of the package is <code><a href="reference/interpret.html">interpret()</a></code>, which can be used to create a global surrogate of the random forest model using MID.</p>
+<p>The first step is to create a MID model as a global surrogate of the target model using <code><a href="reference/interpret.html">interpret()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit a two-dimensional MID model</span></span>
-<span><span class="va">mid_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model_rf</span>, lambda <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid_rf</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">rf</span>, lambda <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = model_rf,</span></span>
-<span><span class="co">#&gt;  lambda = 0.1)</span></span>
+<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = rf, lambda = 0.1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Intercept: 22.446</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -119,33 +117,31 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Uninterpreted Rate: 0.016249</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">preds_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="va">valid</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nRMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">preds_rf</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
+<code class="sourceCode R"><span><span class="va">preds_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">valid</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">preds_rf</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; RMSE:  1.106746</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nRMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.rmse.html">weighted.rmse</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; RMSE:  3.306111</span></span></code></pre></div>
-<p>The graphing functions <code><a href="reference/ggmid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> can be used to visualize the main effects and the interactions of the variables.</p>
+<p>To visualize the main and interaction effects of the variables, apply <code><a href="reference/ggmid.html">ggmid()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> to the fitted MID model.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the main effects and interactions of the MID model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"main effect of lstat"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"dis"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"dis"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"main effect of dis"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat:dis"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat:dis"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"interaction of lstat:dis"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat:dis"</span>, include.main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat:dis"</span>, include.main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"interaction + main effects"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-ggmid-1.png" width="100%"></p>
-<p>The <code><a href="reference/mid.importance.html">mid.importance()</a></code> function helps to compute and compare the importance of main effects and interactions of the variables in the whole data or for an instance.</p>
+<p><code><a href="reference/mid.importance.html">mid.importance()</a></code> helps to compute and compare the importance of main and interaction effects.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the MID importance of the component functions</span></span>
-<span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid_rf</span><span class="op">)</span></span>
-<span><span class="va">ibd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid_rf</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">[</span><span class="fl">1L</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
+<span><span class="va">ibd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">[</span><span class="fl">1L</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
 <span>  nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, max.bars <span class="op">=</span> <span class="fl">16L</span>, plot.main <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -161,10 +157,10 @@
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"breakdown of a prediction"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mid_importance-1.png" width="100%"></p>
-<p>The <code><a href="reference/mid.conditional.html">mid.conditional()</a></code> function can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model and the breakdown of the ICE curves by main effects and interactions.</p>
+<p><code><a href="reference/mid.conditional.html">mid.conditional()</a></code> can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model, as well as the breakdown of the ICE curves by main and interaction effects.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the ICE curves of the MID model</span></span>
-<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid_rf</span>, <span class="st">"lstat"</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span>
+<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, centered <span class="op">=</span> <span class="cn">TRUE</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of lstat"</span><span class="op">)</span>,</span>
