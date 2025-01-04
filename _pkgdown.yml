@@ -38,8 +38,10 @@ reference:
   - factor.encoder
   - numeric.encoder
 - subtitle: Weighted Data Frames
+- contents:
   - weighted
 - subtitle: Other Functions
+- contents:
   - get.yhat
   - theme_midr
   - weighted.tabulate
