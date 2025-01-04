@@ -70,21 +70,21 @@ As the modified data frames do not preserve the original correlation structure o
 \examples{
 x1 <- runif(1000L, -1, 1)
 x2 <- x1 + runif(1000L, -1, 1)
-X <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-Y1 <- weighted(X)
-ggplot2::ggplot(Y1, ggplot2::aes(x1, x2, alpha = weights(Y1))) +
+x <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+wx <- weighted(x)
+ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
   ggplot2::geom_point() +
   ggplot2::labs(title = "weighted")
-Y2 <- shuffled(X)
-ggplot2::ggplot(Y2, ggplot2::aes(x1, x2, alpha = weights(Y2))) +
+wx <- shuffled(x)
+ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
   ggplot2::geom_point() +
   ggplot2::labs(title = "shuffled")
-Y3 <- augmented(X)
-ggplot2::ggplot(Y3, ggplot2::aes(x1, x2, alpha = weights(Y3))) +
+wx <- augmented(x)
+ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
   ggplot2::geom_point() +
   ggplot2::labs(title = "augmented")
-Y4 <- latticized(X)
-ggplot2::ggplot(Y4, ggplot2::aes(x1, x2, size = weights(Y4))) +
+wx <- latticized(x)
+ggplot2::ggplot(wx, ggplot2::aes(x1, x2, size = weights(wx))) +
   ggplot2::geom_point() +
   ggplot2::labs(title = "latticized")
 }

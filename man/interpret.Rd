@@ -138,13 +138,14 @@ The MID values for each sample point are determined using the constrained least 
 The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
 }
 \examples{
+# fit a MID model as a surrogate model
 data(cars, package = "datasets")
 model <- lm(dist ~ I(speed^2) + speed, cars)
 mid <- interpret(dist ~ speed, cars, model)
 plot(mid, "speed", add.intercept = TRUE) +
   points(cars)
-summary(mid)
 
+# customize the flexibility of a MID model
 data(Nile, package = "datasets")
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
 plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
@@ -158,12 +159,12 @@ mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
 plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
   points(x = 1L:100L, y = Nile)
 
+# fit a MID model as a predictive model
 data(airquality, package = "datasets")
 airquality$Month <- factor(airquality$Month)
 model <- glm(Ozone ~ .^2, Gamma(log), airquality)
 mid <- interpret(Ozone ~ .^2, na.omit(airquality), model, lambda = .1)
-summary(mid)
 plot(mid, "Wind")
 plot(mid, "Temp")
-plot(mid, "Wind:Month", include.main.effects = TRUE)
+plot(mid, "Wind:Temp", include.main.effects = TRUE)
 }

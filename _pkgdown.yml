@@ -4,3 +4,44 @@ template:
   bootstrap: 5
   math-rendering: mathjax
   light-switch: true    
+
+reference:
+- title: MID Models
+  contents:
+  - imterpret
+- subtitle: Methods
+  contents:
+  - ggmid
+  - mid.extract
+  - mid.plots
+  - plot.mid
+  - predict.mid
+  - print.mid
+  - summary.mid
+- title: MID Importance
+  contents:
+  - mid.importance
+- subtitle: Methods
+  contents:
+  - ggmid.mid.importance
+  - plot.mid.importance
+- title: MID Conditional
+  contents:
+  - mid.conditional
+- subtitle: Methods
+  contents:
+  - ggmid.mid.conditional
+  - plot.mid.conditional
+- title: Other Functions
+- subtitle: Variable Encoders
+  contents:
+  - factor.encoder
+  - numeric.encoder
+- subtitle: Weighted Data Frames
+  - weighted
+- subtitle: Other Functions
+  - get.yhat
+  - theme_midr
+  - weighted.tabulate
+  - weighted.quantile
+  - weighted.rmse

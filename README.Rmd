@@ -23,19 +23,17 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The **midr** package is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called *Maximum Interpretation Decomposition* (MID).
-
-For the theoretical details of MID, see Iwasawa & Matsumori (2025) [Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].
+midr is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called *Maximum Interpretation Decomposition* (MID). For the theoretical details of MID, see Iwasawa & Matsumori (2025) [Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].
 
 ## Installation
 
-You can install the released version of `midr` from [CRAN](https://cran.r-project.org/) with:
+You can install the released version of midr from [CRAN](https://cran.r-project.org/) with:
 
 ``` r
 install.packages("midr") # not yet available
 ```
 
-And the development version of `midr` from [GitHub](https://github.com/) with:
+and the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -44,7 +42,7 @@ devtools::install_github("ryo-asashi/midr")
 
 ## Examples
 
-In the following example, we fit a random forest model of `Boston` dataset included in the ISLR2 package.
+In the following example, we fit a random forest model to the `Boston` dataset included in ISLR2, and then attempt to interpret it using the functions of midr.
 
 ```{r data_and_model}
 # load required packages
@@ -61,44 +59,44 @@ idx <- sample(nrow(Boston), nrow(Boston) * .75)
 train <- Boston[ idx, ]
 valid <- Boston[-idx, ]
 # fit a random forest model
-model_rf <- ranger(medv ~ ., train, mtry = 5)
-preds_rf <- predict(model_rf, valid)$predictions
+rf <- ranger(medv ~ ., train, mtry = 5)
+preds_rf <- predict(rf, valid)$predictions
 cat("RMSE: ", weighted.rmse(valid$medv, preds_rf))
 ```
 
-The main function of the package is `interpret()`, which can be used to create a global surrogate of the random forest model using MID.
+The first step is to create a MID model as a global surrogate of the target model using `interpret()`.
 
 ```{r interpret}
 # fit a two-dimensional MID model
-mid_rf <- interpret(medv ~ .^2, train, model_rf, lambda = .1)
-print(mid_rf, omit.values = TRUE)
-preds_mid <- predict(mid_rf, valid)
-cat("\nRMSE: ", weighted.rmse(preds_rf, preds_mid))
-cat("\nRMSE: ", weighted.rmse(valid$medv, preds_mid))
+mid <- interpret(medv ~ .^2, train, rf, lambda = .1)
+print(mid, omit.values = TRUE)
+preds_mid <- predict(mid, valid)
+cat("RMSE: ", weighted.rmse(preds_rf, preds_mid))
+cat("RMSE: ", weighted.rmse(valid$medv, preds_mid))
 ```
 
-The graphing functions `ggmid()` and `plot()` can be used to visualize the main effects and the interactions of the variables.
+To visualize the main and interaction effects of the variables, apply `ggmid()` or `plot()` to the fitted MID model.
 
 ```{r ggmid}
 # visualize the main effects and interactions of the MID model
 grid.arrange(
-  ggmid(mid_rf, "lstat") +
+  ggmid(mid, "lstat") +
     ggtitle("main effect of lstat"),
-  ggmid(mid_rf, "dis") +
+  ggmid(mid, "dis") +
     ggtitle("main effect of dis"),
-  ggmid(mid_rf, "lstat:dis") +
+  ggmid(mid, "lstat:dis") +
     ggtitle("interaction of lstat:dis"),
-  ggmid(mid_rf, "lstat:dis", include.main.effects = TRUE) +
+  ggmid(mid, "lstat:dis", include.main.effects = TRUE) +
     ggtitle("interaction + main effects")
 )
 ```
 
-The `mid.importance()` function helps to compute and compare the importance of main effects and interactions of the variables in the whole data or for an instance.
+`mid.importance()` helps to compute and compare the importance of main and interaction effects.
 
 ```{r mid_importance}
 # visualize the MID importance of the component functions
-imp <- mid.importance(mid_rf)
-ibd <- mid.importance(mid_rf, data = train[1L, ])
+imp <- mid.importance(mid)
+ibd <- mid.importance(mid, data = train[1L, ])
 grid.arrange(
   nrow = 1L,
   ggmid(imp, max.bars = 16L, plot.main = FALSE) +
@@ -115,11 +113,11 @@ grid.arrange(
 )
 ```
 
-The `mid.conditional()` function can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model and the breakdown of the ICE curves by main effects and interactions.
+`mid.conditional()` can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model, as well as the breakdown of the ICE curves by main and interaction effects.
 
 ```{r mid_conditional}
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid_rf, "lstat", data = train)
+ice <- mid.conditional(mid, "lstat", data = train)
 grid.arrange(
   ggmid(ice, centered = TRUE, alpha = .1) +
     ggtitle("c-ICE of lstat"),
@@ -138,4 +136,4 @@ grid.arrange(
 
 [2] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). [Forthcoming]
 
-[3] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015). "Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation". *Journal of Computational and Graphical Statistics*, *24*(1), 44–65. https://doi.org/10.1080/10618600.2014.907095
+[3] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015). "Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation". *Journal of Computational and Graphical Statistics*, *24*(1), 44–65. <https://doi.org/10.1080/10618600.2014.907095>
