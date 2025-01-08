@@ -8,7 +8,7 @@
 \alias{weights.weighted}
 \title{Weighted Data Frames}
 \usage{
-weighted(data, weights = NULL, ...)
+weighted(data, weights = NULL)
 
 augmented(data, weights = NULL, size = nrow(data), r = 0.01)
 
@@ -32,8 +32,6 @@ latticized(
 
 \item{weights}{a numeric vector of sample weights for each observation in \code{data}.}
 
-\item{...}{not used.}
-
 \item{size}{integer. The number of random observations whose values are sampled from the marginal distribution of each variable.}
 
 \item{r}{a numeric value specifying the ratio of the total weights for the random observations to the sum of sample weights. The weight for the random observations is calculated as \code{sum(attr(data, "weights")) * r / size}.}
@@ -51,6 +49,8 @@ latticized(
 \item{keep.mean}{logical. If \code{TRUE}, the representative values of each group is the average of the corresponding group.}
 
 \item{object}{a data frame with the attribute "weights".}
+
+\item{...}{not used.}
 }
 \value{
 \code{weighted()} returns a data frame with the attribute "weights".
@@ -71,20 +71,22 @@ As the modified data frames do not preserve the original correlation structure o
 set.seed(42)
 x1 <- runif(1000L, -1, 1)
 x2 <- x1 + runif(1000L, -1, 1)
-wx <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-sx <- shuffled(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-ax <- augmented(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-lx <- latticized(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
+weights <- (abs(x1) + abs(x2)) / 2
+x <- data.frame(x1, x2)
+xw <- weighted(x, weights)
+ggplot2::ggplot(xw, ggplot2::aes(x1, x2, alpha = weights(xw))) +
   ggplot2::geom_point() +
   ggplot2::ggtitle("weighted")
-ggplot2::ggplot(sx, ggplot2::aes(x1, x2, alpha = weights(sx))) +
+xs <- shuffled(xw)
+ggplot2::ggplot(xs, ggplot2::aes(x1, x2, alpha = weights(xs))) +
   ggplot2::geom_point() +
   ggplot2::ggtitle("shuffled")
-ggplot2::ggplot(ax, ggplot2::aes(x1, x2, alpha = weights(ax))) +
+xa <- augmented(xw)
+ggplot2::ggplot(xa, ggplot2::aes(x1, x2, alpha = weights(xa))) +
   ggplot2::geom_point() +
   ggplot2::ggtitle("augmented")
-ggplot2::ggplot(lx, ggplot2::aes(x1, x2, size = weights(lx))) +
+xl <- latticized(xw)
+ggplot2::ggplot(xl, ggplot2::aes(x1, x2, size = weights(xl))) +
   ggplot2::geom_point() +
   ggplot2::ggtitle("latticized")
 }

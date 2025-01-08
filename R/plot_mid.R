@@ -99,7 +99,7 @@ plot.mid <- function(
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
     }
     if (is.function(scale.type)) {
-      stop("function is not allowed for 'scale.type' of this function.")
+      stop("function is not allowed for 'scale.type' of this function")
     } else if (scale.type == "default") {
       zmax <- max(abs(zlim - zmid))
       zlim <- c(-zmax, zmax) + zmid

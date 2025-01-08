@@ -110,7 +110,7 @@ ggmid.mid <- function(
         limits = limits, midpoint = mpt,
         low = spl[1L], mid = spl[2L], high = spl[3L])
     } else {
-      stop("invalid 'scale.type' is passed.")
+      stop("invalid 'scale.type' is passed")
     }
     if (plot.main) {
       encs <- list(object$encoders[["interactions"]][[tags[1L]]],
