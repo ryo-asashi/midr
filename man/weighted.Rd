@@ -68,22 +68,23 @@ These functions are designed for use with \code{interpret()}.
 As the modified data frames do not preserve the original correlation structure of the variables, the response variable (y) should always be replaced by the model predictions (yhat).
 }
 \examples{
+set.seed(42)
 x1 <- runif(1000L, -1, 1)
 x2 <- x1 + runif(1000L, -1, 1)
 wx <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+sx <- shuffled(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+ax <- augmented(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+lx <- latticized(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
 ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "weighted")
-sx <- shuffled(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+  ggplot2::ggtitle("weighted")
 ggplot2::ggplot(sx, ggplot2::aes(x1, x2, alpha = weights(sx))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "shuffled")
-ax <- augmented(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+  ggplot2::ggtitle("shuffled")
 ggplot2::ggplot(ax, ggplot2::aes(x1, x2, alpha = weights(ax))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "augmented")
-lx <- latticized(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+  ggplot2::ggtitle("augmented")
 ggplot2::ggplot(lx, ggplot2::aes(x1, x2, size = weights(lx))) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "latticized")
+  ggplot2::ggtitle("latticized")
 }
