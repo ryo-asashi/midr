@@ -13,21 +13,20 @@
 #' @examples
 #' x1 <- runif(1000L, -1, 1)
 #' x2 <- x1 + runif(1000L, -1, 1)
-#' x <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
-#' wx <- weighted(x)
+#' wx <- weighted(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
 #' ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
 #'   ggplot2::geom_point() +
 #'   ggplot2::labs(title = "weighted")
-#' wx <- shuffled(x)
-#' ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
+#' sx <- shuffled(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+#' ggplot2::ggplot(sx, ggplot2::aes(x1, x2, alpha = weights(sx))) +
 #'   ggplot2::geom_point() +
 #'   ggplot2::labs(title = "shuffled")
-#' wx <- augmented(x)
-#' ggplot2::ggplot(wx, ggplot2::aes(x1, x2, alpha = weights(wx))) +
+#' ax <- augmented(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+#' ggplot2::ggplot(ax, ggplot2::aes(x1, x2, alpha = weights(ax))) +
 #'   ggplot2::geom_point() +
 #'   ggplot2::labs(title = "augmented")
-#' wx <- latticized(x)
-#' ggplot2::ggplot(wx, ggplot2::aes(x1, x2, size = weights(wx))) +
+#' lx <- latticized(cbind(x1, x2), (abs(x1) + abs(x2)) / 2)
+#' ggplot2::ggplot(lx, ggplot2::aes(x1, x2, size = weights(lx))) +
 #'   ggplot2::geom_point() +
 #'   ggplot2::labs(title = "latticized")
 #' @returns

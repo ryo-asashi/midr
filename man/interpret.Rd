@@ -135,7 +135,7 @@ where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(X_j)} is the main effect of the
 The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
 
 The MID values for each sample point are determined using the constrained least squares method.
-The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraint functions are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
+The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraints are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
 }
 \examples{
 # fit a MID model as a surrogate model
