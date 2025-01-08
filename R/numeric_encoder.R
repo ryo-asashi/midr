@@ -177,7 +177,7 @@ numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
   if (any(ng))
     stop("representative values must be included in (min, max] of each bin")
   colnames(frame) <- paste0(tag, c("", "_min", "_max"))
-  class(frame) <- c("data.frame", "numeric.frame")
+  class(frame) <- c("numeric.frame", "data.frame")
   structure(frame, reps = reps, breaks = breaks,
             type = type, encoding.digits = encoding.digits)
 }

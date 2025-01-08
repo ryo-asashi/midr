@@ -92,6 +92,6 @@ factor.frame <- function(levels, catchall = "(others)", tag = "x") {
   frame <- data.frame(factor(levels, levels = levels))
   frame[, 2L] <- as.integer(frame[, 1L])
   colnames(frame) <- paste0(tag, c("", "_level"))
-  class(frame) <- c("data.frame", "factor.frame")
+  class(frame) <- c("factor.frame", "data.frame")
   structure(frame, levels = levels, catchall = catchall)
 }

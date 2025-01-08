@@ -29,10 +29,7 @@ UseMethod("get.yhat")
 get.yhat.default <- function(X.model, newdata, ...) {
   dots <- list(...)
   target <- ifnot.null(dots$target, 1L)
-  yhat <- try(DALEX::yhat(X.model, newdata, ...), silent = TRUE)
-  if (inherits(yhat, "try-error")) {
-    yhat <- stats::predict(X.model, newdata, ...)
-  }
+  yhat <- stats::predict(X.model, newdata, ...)
   if (is.matrix(yhat) || is.data.frame(yhat))
     yhat <- yhat[, target]
   as.numeric(yhat)
@@ -158,11 +155,11 @@ get.yhat.ksvm <- function(X.model, newdata, ...) {
   dots <- list(...)
   target <- ifnot.null(dots$target, 1L)
   if (any(X.model@type == c("eps-svr", "eps-bsvr", "nu-svr"))) {
-    yhat <- kernlab::predict(object = X.model, newdata = newdata,
-                             type = "response")
+    args <- list(object = X.model, newdata = newdata, type = "response")
+    yhat <- do.call("predict", args = args)
   } else if (any(X.model@type == c("C-svc", "nu-svc", "C-bsvm", "spoc-svc"))) {
-    yhat <- kernlab::predict(object = X.model, newdata = newdata,
-                             type = "probabilities")
+    args <- list(object = X.model, newdata = newdata, type = "probabilities")
+    yhat <- do.call("predict", args = args)
     if (is.matrix(yhat))
       yhat <- yhat[, target]
   }

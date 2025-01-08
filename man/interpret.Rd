@@ -161,9 +161,7 @@ plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
 
 # fit a MID model as a predictive model
 data(airquality, package = "datasets")
-airquality$Month <- factor(airquality$Month)
-model <- glm(Ozone ~ .^2, Gamma(log), airquality)
-mid <- interpret(Ozone ~ .^2, na.omit(airquality), model, lambda = .1)
+mid <- interpret(Ozone ~ .^2, na.omit(airquality), lambda = .1)
 plot(mid, "Wind")
 plot(mid, "Temp")
 plot(mid, "Wind:Temp", include.main.effects = TRUE)

@@ -1,7 +1,7 @@
-# midr 0.4.3
+# midr 0.4.3-0.4.4
 
-midr is currently in the release process.
+midr is in the release process. We will submit the package to CRAN by mid-January 2025 .
 
--   We are writing some vignettes.
+-   Finalizing code and documentation.
 
--   By mid-January 2025 we will submit the package to CRAN.
+-   Writing some vignettes.

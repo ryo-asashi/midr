@@ -1,7 +1,7 @@
 Package: midr
 Type: Package
 Title: Create an Interpretable Surrogate of Black-Box ML Models
-Version: 0.4.3
+Version: 0.4.4
 Authors@R: c(
     person("Ryoichi", "Asasihba", email = "ryoichi.asashiba@gmail.com",
            role = c("aut", "cre")),
@@ -16,7 +16,7 @@ LazyData: true
 Imports:
   ggplot2, graphics, grDevices, RcppEigen, rlang, stats, utils
 Suggests:
-  datasets, DALEX, gridExtra, ISLR2, kernlab, knitr, nnet, ranger, rmarkdown, testthat
+  datasets, knitr, rmarkdown, testthat
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
 URL: https://github.com/ryo-asashi/midr, https://ryo-asashi.github.io/midr/
