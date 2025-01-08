@@ -21,4 +21,3 @@ Config/testthat/edition: 3
 RoxygenNote: 7.3.1
 URL: https://github.com/ryo-asashi/midr, https://ryo-asashi.github.io/midr/
 BugReports: https://github.com/ryo-asashi/midr/issues
-VignetteBuilder: knitr
