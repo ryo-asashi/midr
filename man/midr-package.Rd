@@ -4,11 +4,11 @@
 \name{midr-package}
 \alias{midr}
 \alias{midr-package}
-\title{midr: Create an Interpretable Surrogate of Black-Box ML Models}
+\title{midr: Create an Interpretable Surrogate of Black-Box Predictive Models}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Construct a globally interpretable surrogate of a black-box ML model by decomposing the prediction function of the target model into a set of component functions including the intercept, the main effects and the second-order interactions.
+midr is designed to provide a model-agnostic method for interpreting black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called Maximum Interpretation Decomposition (MID). For the theoretical details of MID, see Iwasawa & Matsumori (2025) <d>[Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].
 }
 \seealso{
 Useful links:

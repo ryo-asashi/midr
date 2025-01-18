@@ -2,9 +2,12 @@
 % Please edit documentation in R/mid_importance.R
 \name{mid.importance}
 \alias{mid.importance}
+\alias{print.mid.importance}
 \title{Calculate MID Importance}
 \usage{
 mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
+
+\method{print}{mid.importance}(x, ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -16,9 +19,16 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID importance.}
 
 \item{measure}{an integer specifying the measure of the MID importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
+
+\item{x}{a "mid.importance" object to be printed.}
+
+\item{...}{additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.}
 }
 \value{
-\code{mid.importance} returns a data frame of the class "mid.importance".
+\code{mid.importance} returns an object of the class "mid.importance" containing the following components.
+\item{importance}{the data frame of calculated importances.}
+\item{predictions}{the matrix of the fitted or predicted MID values.}
+\item{measure}{the type of the importance measure.}
 }
 \description{
 \code{mid.importance()} calculates the MID importance of a fitted MID model.

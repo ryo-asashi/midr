@@ -36,6 +36,8 @@ UseMethod("ggmid")
 #' @param scale.type a character string or function specifying the color type of interaction plot. One of "default", "viridis", "gradient" or a function that returns a continuous color scale for \code{fill} aesthetics.
 #' @param scale.palette a character vector of color names. The colors are used for the interaction plot when \code{scale.type} is "default".
 #' @param cells.count an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.
+#' @param data a data frame to be plotted with the corresponding MID values.
+#' @param shape an integer specifying the shape of the plotted data points.
 #' @param ... optional parameters to be passed to the main layer.
 #'
 #' @importFrom rlang .data
@@ -46,7 +48,7 @@ ggmid.mid <- function(
     add.intercept = FALSE, include.main.effects = FALSE,
     interaction.type = c("default", "raster", "rectangle"),
     scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-    cells.count = c(100L, 100L), ...) {
+    cells.count = c(100L, 100L), data = NULL, shape = 16L, ...) {
   interaction.type = match.arg(interaction.type)
   tags <- term.split(term)
   term <- term.check(term, object$terms, stop = TRUE)
@@ -58,21 +60,27 @@ ggmid.mid <- function(
       df$mid <- df$mid + object$intercept
     pl <- ggplot2::ggplot(data = df,
                           ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
+    enc <- object$encoders[["main.effects"]][[term]]
     if (plot.main) {
-      enc <- object$encoders[["main.effects"]][[term]]
-      if (enc$type != "factor") {
-        if (enc$type == "constant") {
-          cns <- paste0(term, c("_min", "_max"))
-          rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
-                            y = rep(df$mid, each = 2L))
-          pl <- pl + ggplot2::geom_path(
-            ggplot2::aes(x = .data[["x"]], y = .data[["y"]]), data = rdf, ...)
-        } else {
-          pl <- pl + ggplot2::geom_line(...)
-        }
-      } else {
+      if (enc$type == "constant") {
+        cns <- paste0(term, c("_min", "_max"))
+        rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
+                          y = rep(df$mid, each = 2L))
+        colnames(rdf) <- c(term, "mid")
+        pl <- pl + ggplot2::geom_path(
+          ggplot2::aes(x = .data[[term]], y = .data[["mid"]]), data = rdf, ...)
+      } else if (enc$type == "linear") {
+        pl <- pl + ggplot2::geom_line(...)
+      } else if (enc$type == "factor") {
         pl <- pl + ggplot2::geom_col(...)
       }
+    }
+    if (!is.null(data)) {
+      data$mid <- predict.mid(object, data, terms = term, na.action = "na.pass")
+      if (!add.intercept) data$mid <- data$mid - object$intercept
+      position <- if (enc$type == "factor") "jitter" else "identity"
+      pl <- pl + ggplot2::geom_point(ggplot2::aes(y = .data[["mid"]]), data,
+                                     position = position, shape = shape)
     }
     if (!is.null(limits))
       pl <- pl + ggplot2::scale_y_continuous(limits = limits)
@@ -112,9 +120,9 @@ ggmid.mid <- function(
     } else {
       stop("invalid 'scale.type' is passed")
     }
+    encs <- list(object$encoders[["interactions"]][[tags[1L]]],
+                 object$encoders[["interactions"]][[tags[2L]]])
     if (plot.main) {
-      encs <- list(object$encoders[["interactions"]][[tags[1L]]],
-                   object$encoders[["interactions"]][[tags[2L]]])
       if (interaction.type == "default") {
         if (encs[[1L]]$type == "linear" || encs[[2L]]$type == "linear" ||
             include.main.effects) {
@@ -154,6 +162,15 @@ ggmid.mid <- function(
                             ymin = .data[[cns[3L]]], ymax = .data[[cns[4L]]])
         pl <- pl + ggplot2::geom_rect(mapping = mpg, ...)
       }
+    }
+    if (!is.null(data)) {
+      data$mid <- predict.mid(object, data, na.action = "na.pass",
+                              terms = c(term, if (include.main.effects) tags))
+      if (!add.intercept) data$mid <- data$mid - object$intercept
+      position <- if (encs[[1L]]$type == "factor" || encs[[2L]]$type == "factor")
+        "jitter" else "identity"
+      pl <- pl + ggplot2::geom_point(ggplot2::aes(colour = .data[["mid"]]),
+                                     data, position = position, shape = shape)
     }
   }
   pl

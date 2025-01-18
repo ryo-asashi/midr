@@ -16,7 +16,10 @@
 #' imp <- mid.importance(mid)
 #' imp
 #' @returns
-#' \code{mid.importance} returns a data frame of the class "mid.importance".
+#' \code{mid.importance} returns an object of the class "mid.importance" containing the following components.
+#' \item{importance}{the data frame of calculated importances.}
+#' \item{predictions}{the matrix of the fitted or predicted MID values.}
+#' \item{measure}{the type of the importance measure.}
 #' @export mid.importance
 #'
 mid.importance <- function(
@@ -27,7 +30,7 @@ mid.importance <- function(
     preds <- object$fitted.matrix
     weights <- object$weights
   } else {
-    preds <- predict.mid(object, data, type = "terms")
+    preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")
   }
   if (!is.null(weights) && diff(range(weights, na.rm = TRUE)) == 0)
     weights <- NULL
@@ -38,15 +41,30 @@ mid.importance <- function(
     imp <- sort(imp, decreasing = TRUE)
   df <- data.frame(term = factor(names(imp), levels = rev(names(imp))),
                    importance = imp)
-  attr(df, "terms") <- as.character(df$term)
   rownames(df) <- NULL
-  if (n == 1L) {
-    df$mid <- preds[1L, names(imp)]
-    class(df) <- c("mid.importance", "mid.breakdown", "data.frame")
-  } else {
-    class(df) <- c("mid.importance", "data.frame")
-  }
   df$degree <-
     as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
-  df
+  out <- list()
+  out$importance <- df
+  out$predictions <- preds
+  out$measure <- switch(measure, "MAE", "RMSE", "MedAE")
+  attr(out, "terms") <- as.character(df$term)
+  class(out) <- c("mid.importance")
+  out
 }
+
+
+#' @rdname mid.importance
+#' @param x a "mid.importance" object to be printed.
+#' @param ... additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.
+#' @exportS3Method base::print
+#'
+print.mid.importance <- function(x, ...) {
+  n <- nrow(x$predictions)
+  cat(paste0("\nMID Importance based on ",
+             n, " Observation", if (n > 1L) "s", "\n"))
+  cat(paste0("\nMeasure: ", x$measure, "\n"))
+  cat("\nImportance:\n")
+  print.data.frame(x$importance, ...)
+}
+

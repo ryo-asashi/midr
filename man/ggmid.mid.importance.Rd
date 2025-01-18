@@ -7,7 +7,7 @@
 \usage{
 \method{ggmid}{mid.importance}(
   object,
-  type = c("barplot", "heatmap"),
+  type = c("barplot", "heatmap", "dotchart", "boxplot"),
   plot.main = TRUE,
   max.bars = NA,
   scale.palette = c("#FFFFFF", "#464646"),
@@ -19,11 +19,11 @@
 \arguments{
 \item{object}{a "mid.importance" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot" or "heatmap".}
+\item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
 
 \item{plot.main}{logical. If \code{TRUE}, the main layer is not drawn.}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot.}
+\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
 
 \item{scale.palette}{a character vector of length two to be used as the color palette for the heatmap.}
 
@@ -37,7 +37,7 @@ For "mid.importance" objects, \code{ggmid()} visualizes the importance of MID co
 }
 \details{
 The S3 method of \code{ggmid()} for "mid.importance" objects creates a "ggplot" object that visualizes the term importance of a fitted MID model.
-The main layer is drawn using \code{geom_col()} or \code{geom_tile()}.
+The main layer is drawn using \code{geom_col()}, \code{geom_tile()}, \code{geom_point()} or \code{geom_boxplot()}.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -47,4 +47,5 @@ mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
 ggmid(imp)
 ggmid(imp, type = "heatmap")
+ggmid(imp, type = "dotchart")
 }

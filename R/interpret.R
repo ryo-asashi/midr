@@ -112,7 +112,7 @@ interpret.default <- function(
   if (is.null(colnames(x)))
     colnames(x) <- paste0("x", 1L:ncol(x))
   if (any("mid" == colnames(x)))
-    colnames(x)[colnames(x) == "mid"] <- ".mid"
+    stop("'mid' can't be used as a column name")
   tags <- colnames(x)
   if(missing(weights))
     weights <- attr(x, "weights")

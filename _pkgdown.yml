@@ -47,3 +47,4 @@ reference:
   - weighted.tabulate
   - weighted.quantile
   - weighted.rmse
+  - shapviz.mid

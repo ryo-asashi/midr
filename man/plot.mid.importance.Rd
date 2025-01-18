@@ -6,31 +6,31 @@
 \usage{
 \method{plot}{mid.importance}(
   x,
-  type = c("barplot", "heatmap"),
+  type = c("barplot", "heatmap", "dotchart", "boxplot"),
   max.bars = NA,
-  scale.palette = c("#FFFFFF", "#464646"),
+  scale.palette = c("#FFFFFF", "#151515"),
   ...
 )
 }
 \arguments{
 \item{x}{a "mid.importance" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot" or "heatmap".}
+\item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot.}
+\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
 
 \item{scale.palette}{a character vector of length two to be used as the color palette for the heatmap.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
 \value{
-\code{plot.mid.importance()} produces a barplot or heatmap and returns \code{NULL}.
+\code{plot.mid.importance()} produces a plot and returns \code{NULL}.
 }
 \description{
 For "mid.importance" objects, \code{plot()} visualizes the importance of MID component functions.
 }
 \details{
-The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using \code{graphics::barplot()} or \code{graphics::image()}.
+The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using \code{graphics::barplot()}, \code{graphics::image()} or \code{graphics::dotchart()}.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -40,4 +40,5 @@ mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
 plot(imp)
 plot(imp, type = "heatmap")
+plot(imp, type = "dotchart")
 }

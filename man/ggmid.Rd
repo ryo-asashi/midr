@@ -19,6 +19,8 @@ ggmid(object, ...)
   scale.type = "default",
   scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
   cells.count = c(100L, 100L),
+  data = NULL,
+  shape = 16L,
   ...
 )
 
@@ -46,6 +48,10 @@ ggmid(object, ...)
 \item{scale.palette}{a character vector of color names. The colors are used for the interaction plot when \code{scale.type} is "default".}
 
 \item{cells.count}{an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.}
+
+\item{data}{a data frame to be plotted with the corresponding MID values.}
+
+\item{shape}{an integer specifying the shape of the plotted data points.}
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.
