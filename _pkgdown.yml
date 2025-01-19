@@ -25,6 +25,12 @@ reference:
 - contents:
   - ggmid.mid.importance
   - plot.mid.importance
+- title: MID Breakdown
+- contents:
+  - mid.breakdown
+- subtitle: Methods
+- contents:
+  - ggmid.mid.breakdown
 - title: MID Conditional
 - contents:
   - mid.conditional

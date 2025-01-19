@@ -120,8 +120,7 @@ and interaction effects.
 ``` r
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
-grid.arrange(
-  nrow = 1L,
+grid.arrange(nrow = 1L,
   ggmid(imp, max.bars = 16L, type = "dotchart", size = 2) +
     ggtitle("importance of variable effects"),
   ggmid(imp, max.bars = 16L, type = "heatmap") +
@@ -140,11 +139,10 @@ value into variable effects.
 # visualize the MID breakdown of the model predictions
 bd1 <- mid.breakdown(mid, data = train[1L, ])
 bd2 <- mid.breakdown(mid, data = train[2L, ])
-grid.arrange(
-  nrow = 1L,
-  ggmid(bd1, max.bars = 8L, type = "waterfall") +
+grid.arrange(nrow = 1L,
+  ggmid(bd1, max.bars = 11L, type = "waterfall") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd2, max.bars = 8L, type = "waterfall") +
+  ggmid(bd2, max.bars = 11L, type = "waterfall") +
     ggtitle("breakdown of prediction 2")
 )
 ```
