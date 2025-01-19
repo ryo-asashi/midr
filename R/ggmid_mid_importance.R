@@ -20,6 +20,7 @@
 #' ggmid(imp)
 #' ggmid(imp, type = "heatmap")
 #' ggmid(imp, type = "dotchart")
+#' ggmid(imp, type = "boxplot")
 #' @returns
 #' \code{ggmid.mid.importance()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid

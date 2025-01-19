@@ -120,24 +120,36 @@ and interaction effects.
 ``` r
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
-ibd <- mid.importance(mid, data = train[1L, ])
 grid.arrange(
   nrow = 1L,
-  ggmid(imp, max.bars = 16L, plot.main = FALSE) +
-    geom_point(aes(shape = degree), size = 2L) +
-    theme_midr(grid_type = "y") +
-    theme(legend.position = "bottom") +
-    scale_shape_manual(values = c(1, 16)) +
+  ggmid(imp, max.bars = 16L, type = "dotchart", size = 2) +
     ggtitle("importance of variable effects"),
-  ggmid(ibd, max.bars = 16L) +
-    aes(fill = mid > 0) +
+  ggmid(imp, max.bars = 16L, type = "heatmap") +
     theme(legend.position = "bottom") +
-    scale_fill_manual(values = c("#7e1952", "#2f7a9a")) +
-    ggtitle("breakdown of a prediction")
+    ggtitle("heatmap of variable importance")
 )
 ```
 
 <img src="man/figures/README-mid_importance-1.png" width="100%" />
+
+`mid.breakdown()` provides a way to analyze individual predictions by
+decomposing the differences between the intercept and the predicted
+value into variable effects.
+
+``` r
+# visualize the MID breakdown of the model predictions
+bd1 <- mid.breakdown(mid, data = train[1L, ])
+bd2 <- mid.breakdown(mid, data = train[2L, ])
+grid.arrange(
+  nrow = 1L,
+  ggmid(bd1, max.bars = 8L, type = "waterfall") +
+    ggtitle("breakdown of prediction 1"),
+  ggmid(bd2, max.bars = 8L, type = "waterfall") +
+    ggtitle("breakdown of prediction 2")
+)
+```
+
+<img src="man/figures/README-mid_breakdown-1.png" width="100%" />
 
 `mid.conditional()` can be used to compute the ICE curves (Goldstein et
 al. 2015) of the fitted MID model, as well as the breakdown of the ICE
@@ -151,9 +163,11 @@ grid.arrange(
     ggtitle("c-ICE of lstat"),
   ggmid(ice, term = "lstat", centered = TRUE) +
     ggtitle("c-ICE of main effect"),
-  ggmid(ice, term = "lstat:dis", centered = TRUE, variable.colour = "dis", alpha = .1) +
+  ggmid(ice, term = "lstat:dis", centered = TRUE,
+        variable.colour = "dis", alpha = .1) +
     ggtitle("c-ICE of interaction with dis"),
-  ggmid(ice, term = "lstat:age", centered = TRUE, variable.colour = "age", alpha = .1) +
+  ggmid(ice, term = "lstat:age", centered = TRUE,
+        variable.colour = "age", alpha = .1) +
     ggtitle("c-ICE of interaction with age")
 )
 ```

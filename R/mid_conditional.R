@@ -111,14 +111,17 @@ mid.conditional <- function(
 
 #' @rdname mid.conditional
 #' @param x a "mid.conditional" object to be printed.
+#' @param digits an integer specifying the minimum number of significant digits to be printed.
 #' @param ... additional parameters to be passed to \code{print.default()} to print the sample point vector.
 #' @exportS3Method base::print
 #'
-print.mid.conditional <- function(x, ...) {
+print.mid.conditional <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+  ) {
   n <- attr(x, "n")
   cat(paste0("\nIndividual Conditional Expectation for ",
              n, " Observation", if (n > 1L) "s", "\n"))
   cat(paste0("\nVariable: ", attr(x, "variable"), "\n"))
   cat("\nSample Points:\n")
-  print.default(x$values, ...)
+  print.default(x$values, digits = digits, ...)
 }

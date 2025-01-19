@@ -1,4 +1,4 @@
-#' Calculate SHAP of MID Model Predictions
+#' Calculate SHAP of MID Predictions
 #'
 #' \code{shapviz.mid()} is a S3 method of \code{shapviz::shapviz()} for the fitted MID models.
 #'

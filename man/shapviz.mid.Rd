@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapviz_mid.R
 \name{shapviz.mid}
 \alias{shapviz.mid}
-\title{Calculate SHAP of MID Model Predictions}
+\title{Calculate SHAP of MID Predictions}
 \usage{
 \method{shapviz}{mid}(object, data = NULL)
 }

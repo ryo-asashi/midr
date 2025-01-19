@@ -48,4 +48,5 @@ imp <- mid.importance(mid)
 ggmid(imp)
 ggmid(imp, type = "heatmap")
 ggmid(imp, type = "dotchart")
+ggmid(imp, type = "boxplot")
 }

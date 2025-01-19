@@ -24,7 +24,7 @@
 #'
 plot.mid.importance <- function(
     x, type = c("barplot", "heatmap", "dotchart", "boxplot"),
-    max.bars = NA, scale.palette = c("#FFFFFF", "#151515"), ...) {
+    max.bars = NA, scale.palette = c("#FFFFFF", "gray10"), ...) {
   type = match.arg(type)
   if (type == "dotchart") {
     imp <- x$importance

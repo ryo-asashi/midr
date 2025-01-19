@@ -38,7 +38,7 @@ mid.importance <- function(
   fun <- switch(measure, weighted.mae, weighted.rmse, weighted.medae)
   imp <- apply(preds, MARGIN = 2L, FUN = fun, w = weights)
   if (sort)
-    imp <- sort(imp, decreasing = TRUE)
+    imp <- base::sort(imp, decreasing = TRUE)
   df <- data.frame(term = factor(names(imp), levels = rev(names(imp))),
                    importance = imp)
   rownames(df) <- NULL
@@ -56,15 +56,18 @@ mid.importance <- function(
 
 #' @rdname mid.importance
 #' @param x a "mid.importance" object to be printed.
+#' @param digits an integer specifying the minimum number of significant digits to be printed.
 #' @param ... additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.
 #' @exportS3Method base::print
 #'
-print.mid.importance <- function(x, ...) {
+print.mid.importance <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+  ) {
   n <- nrow(x$predictions)
   cat(paste0("\nMID Importance based on ",
              n, " Observation", if (n > 1L) "s", "\n"))
   cat(paste0("\nMeasure: ", x$measure, "\n"))
   cat("\nImportance:\n")
-  print.data.frame(x$importance, ...)
+  print.data.frame(x$importance, digits = digits, ...)
 }
 

@@ -7,7 +7,7 @@
 \usage{
 mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 
-\method{print}{mid.importance}(x, ...)
+\method{print}{mid.importance}(x, digits = max(3L, getOption("digits") - 2L), ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -21,6 +21,8 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \item{measure}{an integer specifying the measure of the MID importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
 
 \item{x}{a "mid.importance" object to be printed.}
+
+\item{digits}{an integer specifying the minimum number of significant digits to be printed.}
 
 \item{...}{additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.}
 }

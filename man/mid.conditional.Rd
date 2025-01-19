@@ -15,7 +15,7 @@ mid.conditional(
   type = c("response", "link")
 )
 
-\method{print}{mid.conditional}(x, ...)
+\method{print}{mid.conditional}(x, digits = max(3L, getOption("digits") - 2L), ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -33,6 +33,8 @@ mid.conditional(
 \item{type}{the type of prediction required. The default is "response". "link" is possible if the MID model uses a link function.}
 
 \item{x}{a "mid.conditional" object to be printed.}
+
+\item{digits}{an integer specifying the minimum number of significant digits to be printed.}
 
 \item{...}{additional parameters to be passed to \code{print.default()} to print the sample point vector.}
 }

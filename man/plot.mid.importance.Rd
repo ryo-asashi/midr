@@ -8,7 +8,7 @@
   x,
   type = c("barplot", "heatmap", "dotchart", "boxplot"),
   max.bars = NA,
-  scale.palette = c("#FFFFFF", "#151515"),
+  scale.palette = c("#FFFFFF", "gray10"),
   ...
 )
 }
