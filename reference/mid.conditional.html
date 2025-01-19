@@ -55,7 +55,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'mid.conditional'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +92,10 @@
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>a "mid.conditional" object to be printed.</p></dd>
+
+
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>an integer specifying the minimum number of significant digits to be printed.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -133,21 +137,18 @@ The graphing functions <code><a href="ggmid.html">ggmid()</a></code> and <code><
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variable: Wind</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Points:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  2.300000  2.485859  2.671717  2.857576  3.043434  3.229293  3.415152</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [8]  3.601010  3.786869  3.972727  4.158586  4.344444  4.530303  4.716162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [15]  4.902020  5.087879  5.273737  5.459596  5.645455  5.831313  6.017172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [22]  6.203030  6.388889  6.574747  6.760606  6.946465  7.132323  7.318182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [29]  7.504040  7.689899  7.875758  8.061616  8.247475  8.433333  8.619192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [36]  8.805051  8.990909  9.176768  9.362626  9.548485  9.734343  9.920202</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 10.106061 10.291919 10.477778 10.663636 10.849495 11.035354 11.221212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [50] 11.407071 11.592929 11.778788 11.964646 12.150505 12.336364 12.522222</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 12.708081 12.893939 13.079798 13.265657 13.451515 13.637374 13.823232</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] 14.009091 14.194949 14.380808 14.566667 14.752525 14.938384 15.124242</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] 15.310101 15.495960 15.681818 15.867677 16.053535 16.239394 16.425253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [78] 16.611111 16.796970 16.982828 17.168687 17.354545 17.540404 17.726263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 17.912121 18.097980 18.283838 18.469697 18.655556 18.841414 19.027273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [92] 19.213131 19.398990 19.584848 19.770707 19.956566 20.142424 20.328283</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] 20.514141 20.700000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  2.3000  2.4859  2.6717  2.8576  3.0434  3.2293  3.4152  3.6010  3.7869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10]  3.9727  4.1586  4.3444  4.5303  4.7162  4.9020  5.0879  5.2737  5.4596</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19]  5.6455  5.8313  6.0172  6.2030  6.3889  6.5747  6.7606  6.9465  7.1323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28]  7.3182  7.5040  7.6899  7.8758  8.0616  8.2475  8.4333  8.6192  8.8051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  8.9909  9.1768  9.3626  9.5485  9.7343  9.9202 10.1061 10.2919 10.4778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] 10.6636 10.8495 11.0354 11.2212 11.4071 11.5929 11.7788 11.9646 12.1505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 12.3364 12.5222 12.7081 12.8939 13.0798 13.2657 13.4515 13.6374 13.8232</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] 14.0091 14.1949 14.3808 14.5667 14.7525 14.9384 15.1242 15.3101 15.4960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 15.6818 15.8677 16.0535 16.2394 16.4253 16.6111 16.7970 16.9828 17.1687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] 17.3545 17.5404 17.7263 17.9121 18.0980 18.2838 18.4697 18.6556 18.8414</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 19.0273 19.2131 19.3990 19.5848 19.7707 19.9566 20.1424 20.3283 20.5141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] 20.7000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
