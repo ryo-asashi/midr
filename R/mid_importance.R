@@ -16,7 +16,7 @@
 #' imp <- mid.importance(mid)
 #' imp
 #' @returns
-#' \code{mid.importance} returns an object of the class "mid.importance" containing the following components.
+#' \code{mid.importance()} returns an object of the class "mid.importance" containing the following components.
 #' \item{importance}{the data frame of calculated importances.}
 #' \item{predictions}{the matrix of the fitted or predicted MID values.}
 #' \item{measure}{the type of the importance measure.}

@@ -17,10 +17,11 @@
 #' mbd <- mid.breakdown(mid, airquality[1L, ])
 #' mbd
 #' @returns
-#' \code{mid.importance} returns an object of the class "mid.importance" containing the following components.
-#' \item{importance}{the data frame of calculated importances.}
-#' \item{predictions}{the matrix of the fitted or predicted MID values.}
-#' \item{measure}{the type of the importance measure.}
+#' \code{mid.breakdown()} returns an object of the class "mid.breakdown" containing the following components.
+#' \item{breakdown}{the data frame containing the breakdown of the prediction.}
+#' \item{data}{the data frame containing the values of predictor variables used for the prediction.}
+#' \item{intercept}{the intercept of the MID model.}
+#' \item{prediction}{the predicted value.}
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(

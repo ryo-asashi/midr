@@ -121,9 +121,10 @@ and interaction effects.
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, max.bars = 16L, type = "dotchart", size = 2) +
+  ggmid(imp, max.bars = 16L, type = "dot", size = 3) +
     ggtitle("importance of variable effects"),
-  ggmid(imp, max.bars = 16L, type = "heatmap") +
+  ggmid(imp, max.bars = 16L, type = "heatmap",
+        scale.palette = c("#2f7a9a")) +
     theme(legend.position = "bottom") +
     ggtitle("heatmap of variable importance")
 )
@@ -138,12 +139,12 @@ value into variable effects.
 ``` r
 # visualize the MID breakdown of the model predictions
 bd1 <- mid.breakdown(mid, data = train[1L, ])
-bd2 <- mid.breakdown(mid, data = train[2L, ])
+bd2 <- mid.breakdown(mid, data = train[9L, ])
 grid.arrange(nrow = 1L,
-  ggmid(bd1, max.bars = 11L, type = "waterfall") +
+  ggmid(bd1, max.bars = 12L, type = "waterfall") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd2, max.bars = 11L, type = "waterfall") +
-    ggtitle("breakdown of prediction 2")
+  ggmid(bd2, max.bars = 12L, "waterfall") +
+    ggtitle("breakdown of prediction 9")
 )
 ```
 
@@ -157,7 +158,7 @@ curves by main and interaction effects.
 # visualize the ICE curves of the MID model
 ice <- mid.conditional(mid, "lstat", data = train)
 grid.arrange(
-  ggmid(ice, centered = TRUE, alpha = .1) +
+  ggmid(ice, centered = TRUE, alpha = .05) +
     ggtitle("c-ICE of lstat"),
   ggmid(ice, term = "lstat", centered = TRUE) +
     ggtitle("c-ICE of main effect"),
@@ -166,6 +167,7 @@ grid.arrange(
     ggtitle("c-ICE of interaction with dis"),
   ggmid(ice, term = "lstat:age", centered = TRUE,
         variable.colour = "age", alpha = .1) +
+    scale_colour_viridis_c(option = "G") +
     ggtitle("c-ICE of interaction with age")
 )
 ```

@@ -27,7 +27,7 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \item{...}{additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.}
 }
 \value{
-\code{mid.importance} returns an object of the class "mid.importance" containing the following components.
+\code{mid.importance()} returns an object of the class "mid.importance" containing the following components.
 \item{importance}{the data frame of calculated importances.}
 \item{predictions}{the matrix of the fitted or predicted MID values.}
 \item{measure}{the type of the importance measure.}

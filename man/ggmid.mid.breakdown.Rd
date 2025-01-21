@@ -9,9 +9,12 @@
   object,
   type = c("barplot", "dotchart", "waterfall"),
   plot.main = TRUE,
-  max.bars = NA,
+  max.bars = 15L,
+  vline = TRUE,
   sep = "\\n",
-  width = 0.8,
+  width = NULL,
+  terms = NULL,
+  catchall = "others",
   ...
 )
 
@@ -26,9 +29,15 @@
 
 \item{max.bars}{an integer specifying the maximum number of bars in the plot.}
 
+\item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
+
 \item{sep}{a character string to separate terms and values. Default is the return.}
 
 \item{width}{a numeric value specifying the width of the bars.}
+
+\item{terms}{an optional character vector specifying the terms to be displayed.}
+
+\item{catchall}{a character string to be used as the catchall label.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }
@@ -49,6 +58,6 @@ idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 mbd <- mid.breakdown(mid, diamonds[1L, ])
 ggmid(mbd)
-ggmid(mbd, type = "dotchart")
+ggmid(mbd, type = "dotchart", size = 2, colour = "gold")
 ggmid(mbd, type = "waterfall")
 }

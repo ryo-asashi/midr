@@ -93,8 +93,9 @@ ggmid.mid.conditional <- function(
     pl <- pl + ggplot2::geom_line(data = con,
       mapping = ggplot2::aes(group = .data[["id"]]), ...)
   }
-  if (draw.dots)
+  if (draw.dots) {
     pl <- pl + ggplot2::geom_point()
+  }
   if (!is.null(limits))
     pl <- pl + ggplot2::scale_y_continuous(limits = limits)
   pl
