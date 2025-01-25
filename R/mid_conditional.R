@@ -37,13 +37,7 @@ mid.conditional <- function(
     data <- as.data.frame(data)
   if ("mid" %in% colnames(data))
     colnames(data)[colnames(data) == "mid"] <- ".mid"
-  if (!is.null(formula <- eval(object$call$formula))) {
-    yvar <- deparse(formula[[2L]])
-    data[, yvar] <- 0L
-    data <- stats::model.frame(formula = formula,
-                               data = data, na.action = "na.pass")
-    data <- data[, -which(colnames(data) == yvar)]
-  }
+  data <- model.reframe(object, data)
   mf <- object$encoders[["main.effects"]][[variable]]$frame
   if (is.null(mf))
     mf <- object$encoders[["interactions"]][[variable]]$frame

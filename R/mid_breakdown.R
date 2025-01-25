@@ -8,8 +8,7 @@
 #' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID importance.
 #' @param digits an integer specifying the minimum number of significant digits to be printed.
-#' @param left a character string to be used as the left bracket of the value.
-#' @param right a character string to be used as the right bracket of the value.
+#' @param bracket a character of length two to be used as the left and right bracket for the value of the predictor variable.
 #' @param sep a character string to separate the two values of interaction terms.
 #' @examples
 #' data(airquality, package = "datasets")
@@ -26,7 +25,7 @@
 #'
 mid.breakdown <- function(
     object, data, sort = TRUE, digits = max(3L, getOption("digits") - 2L),
-    left = "(", right = ")", sep = ", "
+    bracket = c("", ""), sep = ", "
   ) {
   if (!is.data.frame(data))
     data <- data.frame(data)
@@ -36,17 +35,13 @@ mid.breakdown <- function(
   }
   preds <- predict.mid(object, data,
                        type = "terms", na.action = "na.pass")[1L, ]
-  if (!is.null(formula <- eval(object$call$formula))) {
-    yvar <- deparse(formula[[2L]])
-    data[, yvar] <- 0L
-    data <- stats::model.frame(formula = formula,
-                               data = data, na.action = "na.pass")
-    data <- data[, -which(colnames(data) == yvar)]
-  }
+  data <- model.reframe(object, data)
   terms <- names(if (sort) base::sort(abs(preds), decreasing = TRUE) else preds)
   m <- length(terms)
   degrees <- as.factor(sapply(strsplit(terms, split = ":"), length))
   values <- character(m)
+  left <- bracket[1L]
+  right <- bracket[max(2L, length(bracket))]
   for (i in seq_len(m)) {
     term <- terms[i]
     tags <- term.split(term)

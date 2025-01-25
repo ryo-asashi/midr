@@ -10,8 +10,7 @@ mid.breakdown(
   data,
   sort = TRUE,
   digits = max(3L, getOption("digits") - 2L),
-  left = "(",
-  right = ")",
+  bracket = c("", ""),
   sep = ", "
 )
 
@@ -26,9 +25,7 @@ mid.breakdown(
 
 \item{digits}{an integer specifying the minimum number of significant digits to be printed.}
 
-\item{left}{a character string to be used as the left bracket of the value.}
-
-\item{right}{a character string to be used as the right bracket of the value.}
+\item{bracket}{a character of length two to be used as the left and right bracket for the value of the predictor variable.}
 
 \item{sep}{a character string to separate the two values of interaction terms.}
 

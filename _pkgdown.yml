@@ -31,6 +31,7 @@ reference:
 - subtitle: Methods
 - contents:
   - ggmid.mid.breakdown
+  - plot.mid.breakdown
 - title: MID Conditional
 - contents:
   - mid.conditional
@@ -46,6 +47,10 @@ reference:
 - subtitle: Weighted Data Frames
 - contents:
   - weighted
+- subtitle: Color Themes
+- contents:
+  - color.theme
+  - scale_color_theme
 - subtitle: Other Functions
 - contents:
   - get.yhat

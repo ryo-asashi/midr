@@ -15,8 +15,8 @@
 #' ggmid(mid, "carat")
 #' ggplot2::autoplot(mid, "clarity")
 #' ggmid(mid, "carat:clarity")
-#' ggmid(mid, "carat:clarity", add.intercept = TRUE,
-#'       include.main.effects = TRUE, scale.type = "viridis")
+#' ggmid(mid, "carat:clarity", intercept = TRUE,
+#'       main.effects = TRUE, color.type = "viridis")
 #' @returns
 #' \code{ggmid.mid()} returns a "ggplot" object.
 #' @export ggmid
@@ -26,45 +26,47 @@ UseMethod("ggmid")
 
 
 #' @rdname ggmid
-#'
 #' @param term a character string specifying the component function to be plotted.
-#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
-#' @param plot.main logical. If \code{FALSE}, the main layer is not drawn.
-#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values.
-#' @param include.main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
-#' @param interaction.type character string. The method for plotting the interaction effects.
-#' @param scale.type a character string or function specifying the color type of interaction plot. One of "default", "viridis", "gradient" or a function that returns a continuous color scale for \code{fill} aesthetics.
-#' @param scale.palette a character vector of color names. The colors are used for the interaction plot when \code{scale.type} is "default".
+#' @param type character string. The method for plotting the interaction effects.
+#' @param theme a character vector of color names or a character string specifying the color theme.
+#' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
+#' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
 #' @param cells.count an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.
 #' @param data a data frame to be plotted with the corresponding MID values.
-#' @param shape an integer specifying the shape of the plotted data points.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param ... optional parameters to be passed to the main layer.
-#'
 #' @importFrom rlang .data
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid <- function(
-    object, term, limits = c(NA, NA), plot.main = TRUE,
-    add.intercept = FALSE, include.main.effects = FALSE,
-    interaction.type = c("default", "raster", "rectangle"),
-    scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-    cells.count = c(100L, 100L), data = NULL, shape = 16L, ...) {
-  interaction.type = match.arg(interaction.type)
+    object, term, type = c("effect", "data", "compound"), theme = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL,
+    cells.count = c(100L, 100L), limits = c(NA, NA), ...) {
   tags <- term.split(term)
   term <- term.check(term, object$terms, stop = TRUE)
+  type <- match.arg(type)
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
+  if (type != "effect") {
+    if (is.null(data))
+      stop(paste0("'data' must be supplied for the '", type, "' plot"))
+    preds <- predict.mid(object, data, terms = unique(c(tags, term)),
+                         type = "terms", na.action = "na.pass")
+    data <- model.reframe(model = object, data = data)
+  }
+  # main effect
   if ((len <- length(tags)) == 1L) {
-    # main effect
-    df <- object$main.effects[[term]]
-    df <- stats::na.omit(df)
-    if (add.intercept)
+    df <- stats::na.omit(object$main.effects[[term]])
+    if (intercept)
       df$mid <- df$mid + object$intercept
-    pl <- ggplot2::ggplot(data = df,
-                          ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
     enc <- object$encoders[["main.effects"]][[term]]
-    if (plot.main) {
+    pl <- ggplot2::ggplot(
+      data = df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
+    # main.layer
+    if (type != "data") {
       if (enc$type == "constant") {
-        cns <- paste0(term, c("_min", "_max"))
-        rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
+        cols <- paste0(term, c("_min", "_max"))
+        rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cols]))),
                           y = rep(df$mid, each = 2L))
         colnames(rdf) <- c(term, "mid")
         pl <- pl + ggplot2::geom_path(
@@ -75,63 +77,53 @@ ggmid.mid <- function(
         pl <- pl + ggplot2::geom_col(...)
       }
     }
-    if (!is.null(data)) {
-      data$mid <- predict.mid(object, data, terms = term, na.action = "na.pass")
-      if (!add.intercept) data$mid <- data$mid - object$intercept
-      position <- if (enc$type == "factor") "jitter" else "identity"
-      pl <- pl + ggplot2::geom_point(ggplot2::aes(y = .data[["mid"]]), data,
-                                     position = position, shape = shape)
+    if (type != "effect") {
+      data$mid <- as.numeric(preds[, term])
+      if (intercept)
+        data$mid <- data$mid + object$intercept
+      pos <- if (enc$type == "factor") "jitter" else "identity"
+      pl <- pl + if (type == "data") {
+        ggplot2::geom_point(
+          ggplot2::aes(y = .data[["mid"]]), data, position = pos, ...)
+      } else {
+        ggplot2::geom_point(
+          ggplot2::aes(y = .data[["mid"]]), data, position = pos, shape = 1L)
+      }
+      if (use.theme) {
+        pl <- pl + ggplot2::aes(color = .data[["mid"]]) +
+          scale_color_theme(theme = theme, limits = limits)
+      }
     }
     if (!is.null(limits))
       pl <- pl + ggplot2::scale_y_continuous(limits = limits)
+  # interaction
   } else if (len == 2L) {
-    # interaction
     df <- object$interactions[[term]]
     df <- stats::na.omit(df)
-    if (add.intercept)
+    if (intercept)
       df$mid <- df$mid + object$intercept
-    if (include.main.effects) {
+    if (main.effects) {
       df$mid <- df$mid +
         mid.f(object, tags[1L], df) + mid.f(object, tags[2L], df)
     }
     for (tag in tags) {
       tagl <- paste0(tag, "_level")
-      if (tagl %in% colnames(df)) {
+      if (any(tagl == colnames(df))) {
         df[[paste0(tag, "_min")]] = df[[tagl]] - .5
         df[[paste0(tag, "_max")]] = df[[tagl]] + .5
       }
     }
-    cns <- paste0(rep(tags, each = 2L), c("_min", "_max"))
-    mpt <- if (add.intercept) object$intercept else 0
-    pl <- ggplot2::ggplot(data = df,
-      ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
-    if (is.function(scale.type) || scale.type %in% c("viridis", "gradient")) {
-      pl <- pl + ggplot2::scale_fill_continuous(
-        type = scale.type, limits = limits)
-    } else if (scale.type == "default") {
-      spl <- scale.palette
-      if (is.function(spl))
-        spl <- spl(3L)
-      if (length(spl != 3L))
-        spl <- grDevices::colorRampPalette(spl)(3L)
-      pl <- pl + ggplot2::scale_fill_gradient2(
-        limits = limits, midpoint = mpt,
-        low = spl[1L], mid = spl[2L], high = spl[3L])
-    } else {
-      stop("invalid 'scale.type' is passed")
-    }
+    cols <- paste0(rep(tags, each = 2L), c("_min", "_max"))
     encs <- list(object$encoders[["interactions"]][[tags[1L]]],
                  object$encoders[["interactions"]][[tags[2L]]])
-    if (plot.main) {
-      if (interaction.type == "default") {
-        if (encs[[1L]]$type == "linear" || encs[[2L]]$type == "linear" ||
-            include.main.effects) {
-          interaction.type <- "raster"
-        } else {
-          interaction.type <- "rectangle"
-        }
-      }
-      if (interaction.type == "raster") {
+    pl <- ggplot2::ggplot(
+      data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
+    middle <- if (intercept) object$intercept else 0
+    # main.layer
+    if (type != "data") {
+      use.raster <- encs[[1L]]$type == "linear" ||
+        encs[[2L]]$type == "linear" || main.effects
+      if (use.raster) {
         ms <- cells.count
         if (length(ms) == 1L)
           ms <- c(ms, ms)
@@ -141,36 +133,55 @@ ggmid.mid <- function(
             xy[[i]] <- encs[[i]]$frame[[1L]]
             ms[i] <- encs[[i]]$n
           } else {
-            xy[[i]] <- seq(min(df[[cns[i * 2L - 1L]]]), max(df[[cns[i * 2L]]]),
-                           length.out = ms[i])
+            xy[[i]] <- seq(min(df[[cols[i * 2L - 1L]]]),
+                           max(df[[cols[i * 2L]]]), length.out = ms[i])
           }
         }
         rdf <- data.frame(rep(xy[[1L]], times = ms[2L]),
                           rep(xy[[2L]], each = ms[1L]))
         colnames(rdf) <- tags
         rdf$mid <- mid.f(object, term, rdf)
-        if (add.intercept)
+        if (intercept)
           rdf$mid <- rdf$mid + object$intercept
-        if (include.main.effects)
-          rdf$mid <- rdf$mid + mid.f(object, tags[1L], rdf) + mid.f(object, tags[2L], rdf)
+        if (main.effects)
+          rdf$mid <- rdf$mid +
+          mid.f(object, tags[1L], rdf) +
+          mid.f(object, tags[2L], rdf)
         mpg <- ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]],
                             fill = .data[["mid"]])
         pl <- pl + ggplot2::geom_raster(mapping = mpg, data = rdf, ...)
       } else {
         mpg <- ggplot2::aes(fill = .data[["mid"]],
-                            xmin = .data[[cns[1L]]], xmax = .data[[cns[2L]]],
-                            ymin = .data[[cns[3L]]], ymax = .data[[cns[4L]]])
+                            xmin = .data[[cols[1L]]], xmax = .data[[cols[2L]]],
+                            ymin = .data[[cols[3L]]], ymax = .data[[cols[4L]]])
         pl <- pl + ggplot2::geom_rect(mapping = mpg, ...)
       }
+      if (use.theme) {
+        pl <- pl + scale_fill_theme(theme = theme, limits = limits,
+                                    middle = middle)
+      } else {
+        pl <- pl + ggplot2::scale_fill_continuous(limits = limits)
+      }
     }
-    if (!is.null(data)) {
-      data$mid <- predict.mid(object, data, na.action = "na.pass",
-                              terms = c(term, if (include.main.effects) tags))
-      if (!add.intercept) data$mid <- data$mid - object$intercept
-      position <- if (encs[[1L]]$type == "factor" || encs[[2L]]$type == "factor")
+    if (type != "effect") {
+      pos <- if (encs[[1L]]$type == "factor" || encs[[2L]]$type == "factor")
         "jitter" else "identity"
-      pl <- pl + ggplot2::geom_point(ggplot2::aes(colour = .data[["mid"]]),
-                                     data, position = position, shape = shape)
+      if (type == "compound") {
+        pl <- pl + ggplot2::geom_point(data = data, position = pos, shape = 1L)
+      } else if (type == "data") {
+        data$mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
+        if (intercept)
+          data$mid <- data$mid + object$intercept
+        pl <- pl + ggplot2::geom_point(
+          ggplot2::aes(colour = .data[["mid"]]), data = data,
+          position = pos, ...)
+        if (use.theme) {
+          pl <- pl + scale_color_theme(theme = theme, limits = limits,
+                                       middle = middle)
+        } else {
+          pl <- pl + ggplot2::scale_colour_continuous(limits = limits)
+        }
+      }
     }
   }
   pl

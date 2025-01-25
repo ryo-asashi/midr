@@ -11,16 +11,13 @@ ggmid(object, ...)
 \method{ggmid}{mid}(
   object,
   term,
-  limits = c(NA, NA),
-  plot.main = TRUE,
-  add.intercept = FALSE,
-  include.main.effects = FALSE,
-  interaction.type = c("default", "raster", "rectangle"),
-  scale.type = "default",
-  scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-  cells.count = c(100L, 100L),
+  type = c("effect", "data", "compound"),
+  theme = NULL,
+  intercept = FALSE,
+  main.effects = FALSE,
   data = NULL,
-  shape = 16L,
+  cells.count = c(100L, 100L),
+  limits = c(NA, NA),
   ...
 )
 
@@ -33,25 +30,19 @@ ggmid(object, ...)
 
 \item{term}{a character string specifying the component function to be plotted.}
 
-\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
+\item{type}{character string. The method for plotting the interaction effects.}
 
-\item{plot.main}{logical. If \code{FALSE}, the main layer is not drawn.}
+\item{theme}{a character vector of color names or a character string specifying the color theme.}
 
-\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values.}
+\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values.}
 
-\item{include.main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
-
-\item{interaction.type}{character string. The method for plotting the interaction effects.}
-
-\item{scale.type}{a character string or function specifying the color type of interaction plot. One of "default", "viridis", "gradient" or a function that returns a continuous color scale for \code{fill} aesthetics.}
-
-\item{scale.palette}{a character vector of color names. The colors are used for the interaction plot when \code{scale.type} is "default".}
-
-\item{cells.count}{an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.}
+\item{main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
 
 \item{data}{a data frame to be plotted with the corresponding MID values.}
 
-\item{shape}{an integer specifying the shape of the plotted data points.}
+\item{cells.count}{an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.}
+
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.
@@ -72,6 +63,6 @@ mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 ggmid(mid, "carat")
 ggplot2::autoplot(mid, "clarity")
 ggmid(mid, "carat:clarity")
-ggmid(mid, "carat:clarity", add.intercept = TRUE,
-      include.main.effects = TRUE, scale.type = "viridis")
+ggmid(mid, "carat:clarity", intercept = TRUE,
+      main.effects = TRUE, color.type = "viridis")
 }

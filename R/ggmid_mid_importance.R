@@ -7,9 +7,8 @@
 #'
 #' @param object a "mid.importance" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".
-#' @param plot.main logical. If \code{TRUE}, the main layer is not drawn.
+#' @param theme a character vector of length two to be used as the color palette for the heatmap.
 #' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
-#' @param scale.palette a character vector of length two to be used as the color palette for the heatmap.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -26,26 +25,35 @@
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.importance <- function(
-    object, type = c("barplot", "heatmap", "dotchart", "boxplot"),
-    plot.main = TRUE, max.bars = NA, scale.palette = c("#FFFFFF", "#464646"),
-    ...) {
-  type = match.arg(type)
+    object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
+    theme = NULL, max.bars = 30L, ...) {
+  type <- match.arg(type)
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
+  # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     imp <- object$importance
     imp <- imp[1L:min(max.bars, nrow(imp), na.rm = TRUE), ]
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(x = .data[["importance"]], y = .data[["term"]])
       ) + ggplot2::labs(y = NULL)
-    if (plot.main) {
-      if (type == "barplot") {
-        pl <- pl + ggplot2::geom_col(...)
-      } else if (type == "dotchart") {
-        pl <- pl + ggplot2::geom_linerange(
-          ggplot2::aes(xmin = 0, xmax = .data[["importance"]]), lty = 3L) +
-          ggplot2::geom_point(...)
+    if (type == "barplot") {
+      pl <- pl + ggplot2::geom_col(...)
+      if (use.theme) {
+        pl <- pl + ggplot2::aes(fill = .data[["importance"]]) +
+          scale_fill_theme(theme = theme)
+      }
+    } else if (type == "dotchart") {
+      pl <- pl + ggplot2::geom_linerange(
+        ggplot2::aes(xmin = 0, xmax = .data[["importance"]]), lty = 3L) +
+        ggplot2::geom_point(...)
+      if (use.theme) {
+        pl <- pl + ggplot2::aes(color = .data[["importance"]]) +
+          scale_color_theme(theme = theme)
       }
     }
     return(pl)
+  # heatmap
   } else if (type == "heatmap") {
     imp <- object$importance
     terms <- as.character(imp$term)
@@ -56,17 +64,13 @@ ggmid.mid.importance <- function(
     fr <- data.frame(x = c(stag, ftag), y = c(ftag, stag),
                      importance = rep.int(imp$importance, 2L))
     fr <- unique(fr)
-    spl <- ifnot.null(scale.palette, c("#FFFFFF", "#464646"))
-    if (is.function(spl))
-      spl <- spl(2L)
-    if (length(spl) < 2L)
-      spl <- c("#FFFFFF", spl)
     pl <- ggplot2::ggplot(data = fr,
       ggplot2::aes(.data[["x"]], .data[["y"]], fill = .data[["importance"]])) +
       ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::scale_fill_gradient(low = spl[1L], high = spl[2L])
-    if (plot.main)
-      pl <- pl + ggplot2::geom_tile(...)
+      ggplot2::geom_tile(...)
+    if (use.theme) {
+      pl <- pl + scale_fill_theme(theme = theme)
+    }
     return(pl)
   } else if (type == "boxplot") {
     terms <- as.character(attr(object, "terms"))
@@ -75,10 +79,20 @@ ggmid.mid.importance <- function(
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = as.numeric(preds),
                          term = rep(terms, each = nrow(preds)))
-    ggplot2::ggplot(box) +
-      ggplot2::geom_boxplot(ggplot2::aes(x = .data[["mid"]],
-                                         y = .data[["term"]]), ...) +
-      ggplot2::labs(y = NULL)
+    pl <- ggplot2::ggplot(box)
+    if (use.theme) {
+      imp <- object$importance$importance
+      imp <- imp[1L:min(max.bars, length(terms), na.rm = TRUE)]
+      colors <- theme$palette(length(imp))
+      pl <- pl + ggplot2::geom_boxplot(
+        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]),
+        fill = colors, ...)
+    } else {
+      pl <- pl + ggplot2::geom_boxplot(
+        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...)
+    }
+    pl <- pl + ggplot2::labs(y = NULL)
+    return(pl)
   }
 }
 

@@ -30,12 +30,8 @@ shapviz.mid <- function(object, data = NULL) {
     data <- matrix(nrow = nrow(shaps), ncol = ncol(shaps))
     colnames(data) <- xvars
     data <- as.data.frame(data)
-  } else if (!is.null(formula <- eval(object$call$formula))) {
-    yvar <- deparse(formula[[2L]])
-    data[, yvar] <- 0L
-    data <- stats::model.frame(formula = formula, data = data,
-                               na.action = "na.pass")
-    data <- data[, -which(colnames(data) == yvar)]
+  } else {
+    data <- model.reframe(object, data)
   }
   shapviz::shapviz(object = shaps, X = data, baseline = object$intercept)
 }

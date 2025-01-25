@@ -15,13 +15,24 @@ characterize <- function(expr) {
   if (is.character(expr)) expr else deparse(expr)
 }
 
-rescale <- function(x) {
-  if (!is.numeric(x))
-    x <- as.numeric(as.factor(x))
-  rng <- range(x, na.rm = TRUE)
-  if (rng[1L] == rng[2L])
-    return(x - rng[1L])
-  (x - rng[1L]) / (rng[2L]- rng[1L])
+rescale <- function(x, middle = NULL) {
+  if (is.character(x))
+    x <- as.factor(x)
+  if (is.factor(x) || is.logical(x))
+    x <- as.numeric(x)
+  from <- range(x, na.rm = TRUE, finite = TRUE)
+  if (is.null(middle)) {
+    d <- from[2L] - from[1L]
+    if (d == 0)
+      return(ifelse(is.na(x), NA, 0.5))
+    res <- (x - from[1L]) / d
+  } else {
+    d <- 2 * max(abs(from - middle))
+    if (d == 0)
+      return(ifelse(is.na(x), NA, 0.5))
+    res <- (x - middle) / d + 0.5
+  }
+  pmax(0, pmin(1, res))
 }
 
 term.split <- function(x) {
@@ -46,6 +57,18 @@ term.check <- function(x, terms, stop = TRUE) {
   }
   return(x)
 }
+
+model.reframe <- function(model, data) {
+  if (!is.null(formula <- eval(model$call$formula))) {
+    yvar <- deparse(formula[[2L]])
+    data[, yvar] <- 0L
+    data <- stats::model.frame(formula = formula, data = data,
+                               na.action = "na.pass")
+    data <- data[, -which(colnames(data) == yvar)]
+  }
+  data
+}
+
 
 
 #' Weighted Sample Quantile

@@ -5,32 +5,34 @@
 #' The S3 method of \code{ggmid()} for "mid.conditional" objects creates a "ggplot" object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
 #'
 #' @param object a "mid.conditional" object to be visualized.
-#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
-#' @param plot.main logical. If \code{FALSE}, the main layer is not drawn.
-#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the variable.
+#' @param type a character string specifying the type of the plot.
+#' @param theme a character vector of color names or a character string specifying the color theme.
+#' @param centered logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the var.
 #' @param draw.dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
-#' @param variable.alpha a name of the variable to be used to set \code{alpha}.
-#' @param variable.colour a name of the variable to be used to set \code{colour}.
-#' @param variable.linetype a name of the variable to be used to set \code{linetype}.
-#' @param variable.linewidth a name of the variable to be used to set \code{linewidth}.
+#' @param var.alpha a name of the variable to be used to set \code{alpha}.
+#' @param var.color a name of the variable to be used to set \code{colour}.
+#' @param var.linetype a name of the variable to be used to set \code{linetype}.
+#' @param var.linewidth a name of the variable to be used to set \code{linewidth}.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #' mc <- mid.conditional(mid, "Wind", airquality)
-#' ggmid(mc, variable.colour = "Solar.R", centered = TRUE)
+#' ggmid(mc, var.color = "Solar.R", centered = TRUE)
 #' @returns
 #' \code{ggmid.mid.conditional()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(
-    object, limits = c(NA, NA), plot.main = TRUE, centered = FALSE,
-    draw.dots = TRUE, sample = NULL, term = NULL,
-    variable.alpha = NULL, variable.colour = NULL,
-    variable.linetype = NULL, variable.linewidth = NULL, ...) {
+    object, type = c("lineplot"), theme = NULL, centered = FALSE,
+    draw.dots = TRUE, sample = NULL, term = NULL, var.alpha = NULL,
+    var.color = NULL, var.linetype = NULL, var.linewidth = NULL, ...) {
   cl <- match.call(expand.dots = TRUE)
+  type <- match.arg(type)
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
   variable <- attr(object, "variable")
   n <- attr(object, "n")
   obs <- object$observed
@@ -56,48 +58,48 @@ ggmid.mid.conditional <- function(
     con <- con[con$id %in% sample, ]
     n <- nrow(obs)
   }
-  pl <- ggplot2::ggplot(data = obs,
-                        ggplot2::aes(x = .data[[variable]], y = .data[[yvar]]))
-  if (plot.main) {
-    if (!is.null(cl$variable.alpha)) {
-      alp <- characterize(cl$variable.alpha)
-      pl <- pl +
-        ggplot2::aes(alpha = .data[[alp]]) +
-        ggplot2::labs(alpha = alp)
-    }
-    if (!is.null(cl$variable.colour)) {
-      col <- characterize(cl$variable.colour)
-      pl <- pl +
-        ggplot2::aes(colour = .data[[col]]) +
-        ggplot2::labs(colour = col)
-    }
-    if (!is.null(cl$variable.linetype)) {
-      lty <- characterize(cl$variable.linetype)
-      pl <- pl +
-        ggplot2::aes(linetype = .data[[lty]]) +
-        ggplot2::labs(linetype = lty)
-      if (!is.discrete(obs[, lty]))
-        pl <- pl + ggplot2::scale_linetype_binned()
-    }
-    if (!is.null(cl$variable.linewidth)) {
-      lwd <- characterize(cl$variable.linewidth)
-      pl <- pl +
-        ggplot2::aes(linewidth = .data[[lwd]]) +
-        ggplot2::labs(linewidth = lwd)
-      if (is.discrete(obs[, lwd])) {
-        pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))
-      } else {
-        pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))
-      }
-    }
-    pl <- pl + ggplot2::geom_line(data = con,
-      mapping = ggplot2::aes(group = .data[["id"]]), ...)
+  pl <- ggplot2::ggplot(
+    data = obs, ggplot2::aes(x = .data[[variable]], y = .data[[yvar]])
+  )
+  if (!is.null(cl$var.alpha)) {
+    alp <- characterize(cl$var.alpha)
+    pl <- pl +
+      ggplot2::aes(alpha = .data[[alp]]) +
+      ggplot2::labs(alpha = alp)
   }
+  if (!is.null(cl$var.color)) {
+    col <- characterize(cl$var.color)
+    pl <- pl +
+      ggplot2::aes(colour = .data[[col]]) +
+      ggplot2::labs(colour = col)
+  }
+  if (!is.null(cl$var.linetype)) {
+    lty <- characterize(cl$var.linetype)
+    pl <- pl +
+      ggplot2::aes(linetype = .data[[lty]]) +
+      ggplot2::labs(linetype = lty)
+    if (!is.discrete(obs[, lty]))
+      pl <- pl + ggplot2::scale_linetype_binned()
+  }
+  if (!is.null(cl$var.linewidth)) {
+    lwd <- characterize(cl$var.linewidth)
+    pl <- pl +
+      ggplot2::aes(linewidth = .data[[lwd]]) +
+      ggplot2::labs(linewidth = lwd)
+    if (is.discrete(obs[, lwd])) {
+      pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))
+    } else {
+      pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))
+    }
+  }
+  pl <- pl + ggplot2::geom_line(
+    data = con, mapping = ggplot2::aes(group = .data[["id"]]), ...)
   if (draw.dots) {
     pl <- pl + ggplot2::geom_point()
   }
-  if (!is.null(limits))
-    pl <- pl + ggplot2::scale_y_continuous(limits = limits)
+  if (use.theme) {
+    pl <- pl + scale_color_theme(theme = theme)
+  }
   pl
 }
 

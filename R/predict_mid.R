@@ -40,11 +40,7 @@ predict.mid <- function(
   } else {
     if (any("mid" == colnames(newdata)))
       colnames(newdata)[colnames(newdata) == "mid"] <- ".mid"
-    if (!is.null(formula <- eval(object$call$formula))) {
-      newdata[, deparse(formula[[2L]])] <- 0L
-      newdata <- stats::model.frame(formula = formula,
-                                    data = newdata, na.action = NULL)
-    }
+    newdata <- model.reframe(object, newdata)
     attr(newdata, "na.action") <- NULL
     newdata <- do.call(na.action, list(newdata))
     naa <- stats::na.action(newdata)

@@ -8,12 +8,12 @@
 \method{ggmid}{mid.breakdown}(
   object,
   type = c("barplot", "dotchart", "waterfall"),
-  plot.main = TRUE,
+  theme = NULL,
+  terms = NULL,
   max.bars = 15L,
+  width = NULL,
   vline = TRUE,
   sep = "\\n",
-  width = NULL,
-  terms = NULL,
   catchall = "others",
   ...
 )
@@ -25,17 +25,17 @@
 
 \item{type}{a character string specifying the type of the plot. One of "barplot", "dotchart" or "waterfall".}
 
-\item{plot.main}{logical. If \code{TRUE}, the main layer is not drawn.}
+\item{theme}{a character vector of color names or a character string specifying the color theme: For gradient color type, "midr" and "ggplot2" is available. For viridis color type, the value of this argument is passed to 'option' of \code{viridisLite::viridis()}.}
+
+\item{terms}{an optional character vector specifying the terms to be displayed.}
 
 \item{max.bars}{an integer specifying the maximum number of bars in the plot.}
+
+\item{width}{a numeric value specifying the width of the bars.}
 
 \item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
 
 \item{sep}{a character string to separate terms and values. Default is the return.}
-
-\item{width}{a numeric value specifying the width of the bars.}
-
-\item{terms}{an optional character vector specifying the terms to be displayed.}
 
 \item{catchall}{a character string to be used as the catchall label.}
 

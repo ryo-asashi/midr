@@ -7,12 +7,12 @@
 #'
 #' @param object a "mid.breakdown" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot", "dotchart" or "waterfall".
-#' @param plot.main logical. If \code{TRUE}, the main layer is not drawn.
+#' @param theme a character vector of color names or a character string specifying the color theme: For gradient color type, "midr" and "ggplot2" is available. For viridis color type, the value of this argument is passed to 'option' of \code{viridisLite::viridis()}.
+#' @param terms an optional character vector specifying the terms to be displayed.
 #' @param max.bars an integer specifying the maximum number of bars in the plot.
+#' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
 #' @param sep a character string to separate terms and values. Default is the return.
-#' @param width a numeric value specifying the width of the bars.
-#' @param terms an optional character vector specifying the terms to be displayed.
 #' @param catchall a character string to be used as the catchall label.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
@@ -30,10 +30,12 @@
 #'
 ggmid.mid.breakdown <- function(
     object, type = c("barplot", "dotchart", "waterfall"),
-    plot.main = TRUE, max.bars = 15L, vline = TRUE, sep = "\n", width = NULL,
-    terms = NULL, catchall = "others", ...) {
+    theme = NULL, terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
+    sep = "\n", catchall = "others", ...) {
   dots <- list(...)
   type <- match.arg(type)
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown
   use.catchall <- FALSE
   if (!is.null(terms)) {
@@ -51,26 +53,44 @@ ggmid.mid.breakdown <- function(
     use.catchall <- TRUE
   }
   bd$term <- paste0(bd$term, sep, bd$value)
-  if (use.catchall) bd[nrow(bd), "term"] <- catchall
+  if (use.catchall)
+    bd[nrow(bd), "term"] <- catchall
   bd$term <- factor(bd$term, levels = rev(bd$term))
+  # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     pl <- ggplot2::ggplot(
       bd, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
     ) + ggplot2::labs(y = NULL)
-    if (plot.main) {
-      if (type == "barplot") {
-        pl <- pl + ggplot2::geom_col(width = width, ...)
-      } else if (type == "dotchart") {
-        pl <- pl + ggplot2::geom_linerange(
-          ggplot2::aes(xmin = 0, xmax = .data[["mid"]]), lty = 3L) +
-          ggplot2::geom_point(...)
+    if (type == "barplot") {
+      pl <- pl + ggplot2::geom_col(width = width, ...)
+      if (use.theme) {
+        pl <- pl + if (theme$type == "qualitative") {
+          ggplot2::aes(fill = .data[["mid"]] > 0)
+        } else {
+          ggplot2::aes(fill = .data[["mid"]])
+        }
+        pl <- pl + scale_fill_theme(theme = theme)
       }
-      if (vline) {
-        tli <- ggplot2::theme_get()$line
-        pl <- pl + ggplot2::geom_vline(xintercept = 0,
-                                       lwd = ifnot.null(tli$linewidth, .5) * .5)
+    } else if (type == "dotchart") {
+      pl <- pl + ggplot2::geom_linerange(
+        ggplot2::aes(xmin = 0, xmax = .data[["mid"]]), lty = 3L) +
+        ggplot2::geom_point(...)
+      if (use.theme) {
+        pl <- pl + if (theme$type == "qualitative") {
+          ggplot2::aes(color = .data[["mid"]] > 0)
+        } else {
+          ggplot2::aes(color = .data[["mid"]])
+        }
+        pl <- pl + scale_color_theme(theme = theme)
       }
     }
+    if (vline) {
+      tli <- ggplot2::theme_get()$line
+      pl <- pl + ggplot2::geom_vline(
+        xintercept = 0, lwd = ifnot.null(tli$linewidth, .5) * .5)
+    }
+    return(pl)
+  # waterfall
   } else if (type == "waterfall") {
     width <- ifnot.null(width, .6)
     hw <- width / 2
@@ -80,31 +100,37 @@ ggmid.mid.breakdown <- function(
     bd$xmin <- cs[1L:nrow(bd)]
     bd$xmax <- cs[2L:(nrow(bd) + 1L)]
     pl <- ggplot2::ggplot(
-      bd, ggplot2::aes(y = .data[["term"]])
-    ) + ggplot2::labs(y = NULL, x = "yhat")
-    if (plot.main) {
-      tli <- ggplot2::theme_get()$line
-      col <- ifnot.null(c(dots$colour, dots$color, dots$col)[1L],
-                        ifnot.null(tli$colour, "black"))
-      lty <- ifnot.null(c(dots$linetype, dots$lty)[1L],
-                        ifnot.null(tli$linetype, 1L))
-      lwd <- ifnot.null(c(dots$linewidth, dots$lwd)[1L],
-                        ifnot.null(tli$linewidth, 0.5))
-      if (vline) {
-        pl <- pl + ggplot2::geom_vline(xintercept = object$intercept,
-                                       lwd = ifnot.null(tli$linewidth, .5) * .5)
-      }
-      pl <- pl +
-        ggplot2::geom_rect(
-          ggplot2::aes(xmin = .data[["xmin"]], xmax = .data[["xmax"]],
-                       ymin = .data[["ymin"]], ymax = .data[["ymax"]]), ...) +
-        ggplot2::geom_linerange(
-          ggplot2::aes(x = .data[["xmax"]], ymax = .data[["ymax"]],
-                       ymin = pmax(.data[["ymin"]] - 1, 1 - hw)),
-          col = col, lty = lty, lwd = lwd)
+      bd, ggplot2::aes(y = .data[["term"]])) +
+      ggplot2::labs(y = NULL, x = "yhat")
+    tli <- ggplot2::theme_get()$line
+    col <- ifnot.null(c(dots$colour, dots$color, dots$col)[1L],
+                      ifnot.null(tli$colour, "black"))
+    lty <- ifnot.null(c(dots$linetype, dots$lty)[1L],
+                      ifnot.null(tli$linetype, 1L))
+    lwd <- ifnot.null(c(dots$linewidth, dots$lwd)[1L],
+                      ifnot.null(tli$linewidth, 0.5))
+    if (vline) {
+      pl <- pl + ggplot2::geom_vline(
+        xintercept = object$intercept, lwd = ifnot.null(tli$linewidth, .5) * .5)
     }
+    pl <- pl +
+      ggplot2::geom_rect(
+        ggplot2::aes(xmin = .data[["xmin"]], xmax = .data[["xmax"]],
+                     ymin = .data[["ymin"]], ymax = .data[["ymax"]]), ...) +
+      ggplot2::geom_linerange(
+        ggplot2::aes(x = .data[["xmax"]], ymax = .data[["ymax"]],
+                     ymin = pmax(.data[["ymin"]] - 1, 1 - hw)),
+        col = col, lty = lty, lwd = lwd)
+    if (use.theme) {
+      pl <- pl + if (theme$type == "qualitative") {
+        ggplot2::aes(fill = .data[["mid"]] > 0)
+      } else {
+        ggplot2::aes(fill = .data[["mid"]])
+      }
+      pl <- pl + scale_fill_theme(theme = theme)
+    }
+    return(pl)
   }
-  return(pl)
 }
 
 

@@ -7,10 +7,9 @@
 \usage{
 \method{ggmid}{mid.importance}(
   object,
-  type = c("barplot", "heatmap", "dotchart", "boxplot"),
-  plot.main = TRUE,
-  max.bars = NA,
-  scale.palette = c("#FFFFFF", "#464646"),
+  type = c("barplot", "dotchart", "heatmap", "boxplot"),
+  theme = NULL,
+  max.bars = 30L,
   ...
 )
 
@@ -21,11 +20,9 @@
 
 \item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
 
-\item{plot.main}{logical. If \code{TRUE}, the main layer is not drawn.}
+\item{theme}{a character vector of length two to be used as the color palette for the heatmap.}
 
 \item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
-
-\item{scale.palette}{a character vector of length two to be used as the color palette for the heatmap.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }
