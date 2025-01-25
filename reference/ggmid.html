@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,16 +50,13 @@
 <span><span class="fu">ggmid</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">term</span>,</span>
-<span>  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  plot.main <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  add.intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  include.main.effects <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  interaction.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"raster"</span>, <span class="st">"rectangle"</span><span class="op">)</span>,</span>
-<span>  scale.type <span class="op">=</span> <span class="st">"default"</span>,</span>
-<span>  scale.palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#2f7a9a"</span>, <span class="st">"#FFFFFF"</span>, <span class="st">"#7e1952"</span><span class="op">)</span>,</span>
-<span>  cells.count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">100L</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"effect"</span>, <span class="st">"data"</span>, <span class="st">"compound"</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  main.effects <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  shape <span class="op">=</span> <span class="fl">16L</span>,</span>
+<span>  cells.count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">100L</span><span class="op">)</span>,</span>
+<span>  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -83,44 +80,32 @@
 <dd><p>a character string specifying the component function to be plotted.</p></dd>
 
 
-<dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
-<dd><p><code>NULL</code> or a numeric vector of length two specifying the limits of the plotting scale. <code>NA</code>s are replaced by the minimum and/or maximum MID values.</p></dd>
-
-
-<dt id="arg-plot-main">plot.main<a class="anchor" aria-label="anchor" href="#arg-plot-main"></a></dt>
-<dd><p>logical. If <code>FALSE</code>, the main layer is not drawn.</p></dd>
-
-
-<dt id="arg-add-intercept">add.intercept<a class="anchor" aria-label="anchor" href="#arg-add-intercept"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the intercept is added to the MID values.</p></dd>
-
-
-<dt id="arg-include-main-effects">include.main.effects<a class="anchor" aria-label="anchor" href="#arg-include-main-effects"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the main effects are included in the interaction plot.</p></dd>
-
-
-<dt id="arg-interaction-type">interaction.type<a class="anchor" aria-label="anchor" href="#arg-interaction-type"></a></dt>
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>character string. The method for plotting the interaction effects.</p></dd>
 
 
-<dt id="arg-scale-type">scale.type<a class="anchor" aria-label="anchor" href="#arg-scale-type"></a></dt>
-<dd><p>a character string or function specifying the color type of interaction plot. One of "default", "viridis", "gradient" or a function that returns a continuous color scale for <code>fill</code> aesthetics.</p></dd>
+<dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
+<dd><p>a character vector of color names or a character string specifying the color theme.</p></dd>
 
 
-<dt id="arg-scale-palette">scale.palette<a class="anchor" aria-label="anchor" href="#arg-scale-palette"></a></dt>
-<dd><p>a character vector of color names. The colors are used for the interaction plot when <code>scale.type</code> is "default".</p></dd>
+<dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, the intercept is added to the MID values.</p></dd>
 
 
-<dt id="arg-cells-count">cells.count<a class="anchor" aria-label="anchor" href="#arg-cells-count"></a></dt>
-<dd><p>an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.</p></dd>
+<dt id="arg-main-effects">main.effects<a class="anchor" aria-label="anchor" href="#arg-main-effects"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, the main effects are included in the interaction plot.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>a data frame to be plotted with the corresponding MID values.</p></dd>
 
 
-<dt id="arg-shape">shape<a class="anchor" aria-label="anchor" href="#arg-shape"></a></dt>
-<dd><p>an integer specifying the shape of the plotted data points.</p></dd>
+<dt id="arg-cells-count">cells.count<a class="anchor" aria-label="anchor" href="#arg-cells-count"></a></dt>
+<dd><p>an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.</p></dd>
+
+
+<dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
+<dd><p><code>NULL</code> or a numeric vector of length two specifying the limits of the plotting scale. <code>NA</code>s are replaced by the minimum and/or maximum MID values.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -147,8 +132,9 @@ For other methods of <code>ggmid()</code>, see <code><a href="ggmid.mid.importan
 <span class="r-plt img"><img src="ggmid-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">ggmid</span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat:clarity"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggmid-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">ggmid</span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat:clarity"</span>, add.intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>      include.main.effects <span class="op">=</span> <span class="cn">TRUE</span>, scale.type <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ggmid</span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat:clarity"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      main.effects <span class="op">=</span> <span class="cn">TRUE</span>, color.type <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Ignoring unknown parameters: `colour.type`</span>
 <span class="r-plt img"><img src="ggmid-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
