@@ -1,7 +1,7 @@
 Package: midr
 Type: Package
 Title: Create an Interpretable Surrogate of Black-Box Predictive Models
-Version: 0.4.7.900
+Version: 0.4.7.901
 Authors@R: c(
     person("Ryoichi", "Asasihba", email = "ryoichi.asashiba@gmail.com",
            role = c("aut", "cre")),

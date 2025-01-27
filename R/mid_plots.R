@@ -5,8 +5,8 @@
 #' @param object a "mid" object.
 #' @param terms a character vector. The names of the terms to be visualized.
 #' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
-#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
-#' @param include.main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
+#' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
+#' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
 #' @param max.plots an integer specifying the number of maximum number of plots.
 #' @param engine character string. One of "ggplot2" or "graphics".
 #' @param ... optional parameters to be passed to \code{ggmid()} or \code{plot()}.
@@ -22,7 +22,7 @@
 #'
 mid.plots <- function(
     object, terms = mid.terms(object, interaction = FALSE),
-    limits = c(NA, NA), add.intercept = FALSE, include.main.effects = FALSE,
+    limits = c(NA, NA), intercept = FALSE, main.effects = FALSE,
     max.plots = NULL, engine = c("ggplot2", "base", "graphics"), ...) {
   engine <- match.arg(engine)
   if (length(terms) == 0L)
@@ -37,7 +37,7 @@ mid.plots <- function(
   }
   terms <- terms[!is.na(true_terms)]
   true_terms <- true_terms[!is.na(true_terms)]
-  if (include.main.effects && !is.null(limits)) {
+  if (main.effects && !is.null(limits)) {
     limits <- NULL
   }
   if (!is.null(limits) && (is.na(limits[1L]) || is.na(limits[2L]))) {
@@ -45,26 +45,26 @@ mid.plots <- function(
     if (is.na(limits[1L])) {
       limits[1L] <-
         min(sapply(dfs, function(x) min(x$mid, na.rm = TRUE))) +
-        if (add.intercept) object$intercept else 0
+        if (intercept) object$intercept else 0
     }
     if (is.na(limits[2L])) {
       limits[2L] <-
         max(sapply(dfs, function(x) max(x$mid, na.rm = TRUE))) +
-        if (add.intercept) object$intercept else 0
+        if (intercept) object$intercept else 0
     }
   }
   if (engine == "ggplot2") {
     plots <- list()
     for (term in terms) {
       plots[[term]] <- ggmid(
-        object, term, limits = limits, add.intercept = add.intercept,
-        include.main.effects = include.main.effects, ...
+        object, term, limits = limits, intercept = intercept,
+        main.effects = main.effects, ...
       )
     }
     return(plots)
   } else {
     for (term in terms)
-      plot.mid(object, term, add.intercept = add.intercept,
-               include.main.effects = include.main.effects, ...)
+      plot.mid(object, term, intercept = intercept,
+               main.effects = main.effects, ...)
   }
 }

@@ -7,7 +7,7 @@
 #'
 #' @param object a "mid.importance" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".
-#' @param theme a character vector of length two to be used as the color palette for the heatmap.
+#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
@@ -16,10 +16,10 @@
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' imp <- mid.importance(mid)
-#' ggmid(imp)
-#' ggmid(imp, type = "heatmap")
-#' ggmid(imp, type = "dotchart")
-#' ggmid(imp, type = "boxplot")
+#' ggmid(imp, theme = "Tableau 10")
+#' ggmid(imp, type = "dotchart", theme = "Okabe-Ito")
+#' ggmid(imp, type = "heatmap", theme = "Blues")
+#' ggmid(imp, type = "boxplot", theme = "Accent")
 #' @returns
 #' \code{ggmid.mid.importance()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
@@ -40,15 +40,19 @@ ggmid.mid.importance <- function(
     if (type == "barplot") {
       pl <- pl + ggplot2::geom_col(...)
       if (use.theme) {
-        pl <- pl + ggplot2::aes(fill = .data[["importance"]]) +
+        var <- if (theme$type == "qualitative") "degree" else "importance"
+        pl <- pl + ggplot2::aes(fill = .data[[var]]) +
           scale_fill_theme(theme = theme)
       }
     } else if (type == "dotchart") {
-      pl <- pl + ggplot2::geom_linerange(
-        ggplot2::aes(xmin = 0, xmax = .data[["importance"]]), lty = 3L) +
+      tli <- ggplot2::theme_get()$line
+      pl <- pl + ggplot2::geom_linerange(color = ifnot.null(tli$colour, "black"),
+        linewidth = ifnot.null(tli$linewidth, 0.5), linetype = 3L,
+        ggplot2::aes(xmin = 0, xmax = .data[["importance"]])) +
         ggplot2::geom_point(...)
       if (use.theme) {
-        pl <- pl + ggplot2::aes(color = .data[["importance"]]) +
+        var <- if (theme$type == "qualitative") "degree" else "importance"
+        pl <- pl + ggplot2::aes(color = .data[[var]]) +
           scale_color_theme(theme = theme)
       }
     }

@@ -6,14 +6,14 @@
 #' The main layer is drawn using \code{geom_col()}.
 #'
 #' @param object a "mid.breakdown" object to be visualized.
-#' @param type a character string specifying the type of the plot. One of "barplot", "dotchart" or "waterfall".
-#' @param theme a character vector of color names or a character string specifying the color theme: For gradient color type, "midr" and "ggplot2" is available. For viridis color type, the value of this argument is passed to 'option' of \code{viridisLite::viridis()}.
+#' @param type a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".
+#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param terms an optional character vector specifying the terms to be displayed.
 #' @param max.bars an integer specifying the maximum number of bars in the plot.
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
-#' @param sep a character string to separate terms and values. Default is the return.
 #' @param catchall a character string to be used as the catchall label.
+#' @param format a character string to be used as the format of the \code{sprintf()} function for each component.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -21,22 +21,24 @@
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' mbd <- mid.breakdown(mid, diamonds[1L, ])
-#' ggmid(mbd)
-#' ggmid(mbd, type = "dotchart", size = 2, colour = "gold")
 #' ggmid(mbd, type = "waterfall")
+#' ggmid(mbd, type = "waterfall", theme = "midr")
+#' ggmid(mbd, type = "barplot", theme = "Set 1")
+#' ggmid(mbd, type = "dotchart", size = 3, theme = "Cividis")
 #' @returns
 #' \code{ggmid.mid.breakdown()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.breakdown <- function(
-    object, type = c("barplot", "dotchart", "waterfall"),
-    theme = NULL, terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
-    sep = "\n", catchall = "others", ...) {
+    object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
+    terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
+    catchall = "others", format = "%s=%s", ...) {
   dots <- list(...)
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown
+  bd$term <- as.character(bd$term)
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
@@ -52,7 +54,10 @@ ggmid.mid.breakdown <- function(
     bd[nmax, "mid"] <- resid
     use.catchall <- TRUE
   }
-  bd$term <- paste0(bd$term, sep, bd$value)
+  for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
+    term <- bd[i, "term"]
+    bd[i, "term"] <- sprintf(format, bd[i, "term"], bd[i, "value"])
+  }
   if (use.catchall)
     bd[nrow(bd), "term"] <- catchall
   bd$term <- factor(bd$term, levels = rev(bd$term))

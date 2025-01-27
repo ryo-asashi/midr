@@ -9,9 +9,8 @@ mid.breakdown(
   object,
   data,
   sort = TRUE,
-  digits = max(3L, getOption("digits") - 2L),
-  bracket = c("", ""),
-  sep = ", "
+  digits = 6L,
+  format = c("\%s", "\%s, \%s")
 )
 
 \method{print}{mid.breakdown}(x, digits = max(3L, getOption("digits") - 2L), ...)
@@ -21,13 +20,11 @@ mid.breakdown(
 
 \item{data}{a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".}
 
-\item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID importance.}
+\item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID .}
 
-\item{digits}{an integer specifying the minimum number of significant digits to be printed.}
+\item{digits}{an integer specifying the minimum number of significant digits.}
 
-\item{bracket}{a character of length two to be used as the left and right bracket for the value of the predictor variable.}
-
-\item{sep}{a character string to separate the two values of interaction terms.}
+\item{format}{a character vector of length two to be used as the formats of the \code{sprintf()} function for each value or pair of values of predictor variables.}
 
 \item{x}{a "mid.importance" object to be printed.}
 

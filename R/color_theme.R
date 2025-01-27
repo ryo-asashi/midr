@@ -111,7 +111,7 @@ to.palette <- function(colors = NULL, ramp = NULL, type = NULL) {
 }
 
 wrap.theme <- function(
-    type, palette = NULL, ramp = NULL, colors = NULL) {
+    type, palette = NULL, ramp = NULL, colors = NULL, name = NULL) {
   if (is.null(type))
     stop("'type' can not be NULL")
   if (sum(is.null(palette), is.null(ramp), is.null(colors)) != 2L)
@@ -140,6 +140,7 @@ wrap.theme <- function(
   theme <- list(type = type)
   theme$palette <- palette
   theme$ramp <- ramp
+  theme$name <- name
   structure(theme, colors = colors, class = "color.theme")
 }
 
@@ -152,23 +153,30 @@ wrap.theme <- function(
 #'
 #' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
 #' @param type a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".
+#' @param name an optional character string, specifying the name of the color theme.
 #' @param ... optional arguments to be passed to palette or ramp functions.
 #' @examples
-#' color.theme("Zissou 1")$palette(5L)
-#' color.theme("Zissou 1")$ramp(seq.int(0, 1, 1/4))
-#' color.theme("Zissou 1_r")$ramp(seq.int(1, 0, -1/4))
-#' color.theme("Viridis", alpha = .5)$palette(5L)
-#' color.theme("Viridis_r", alpha = .2)$palette(5L)
-#' color.theme("midr")$palette(5L)
+#' ct <- color.theme("Zissou 1")
+#' ct
+#' ct$palette(5L)
+#' ct$ramp(seq.int(0, 1, 1/4))
+#' ct <- color.theme("Zissou 1_r")
+#' ct
+#' ct$ramp(seq.int(1, 0, -1/4))
+#' ct <- color.theme("Mako", alpha = .5)
+#' ct$palette(5L)
+#' color.theme("midr")
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
 #' \item{ramp}{the function that takes a numeric vector \code{x} of the values within [0, 1] and returns a color name vector.}
 #' \item{palette}{the function that takes an integer \code{n} and returns a color name vector of length \code{n}.}
 #' \item{type}{the type of the color theme; "sequential", "diverging" or "qualitative".}
+#' \item{name}{the name of the color theme.}
 #' @export color.theme
 #'
 color.theme <- function(
-    colors, type = c("sequential", "qualitative", "diverging"), ...) {
+    colors, type = c("sequential", "qualitative", "diverging"),
+    name = NULL, ...) {
   if (is.null(colors))
     return(NULL)
   if (inherits(colors, "color.theme"))
@@ -178,15 +186,15 @@ color.theme <- function(
     stop("'colors' must be a character vector or palette/ramp function")
   if (length(colors) > 1L) {
     type <- ifnot.null(type, "sequential")
-    return(wrap.theme(type, colors = colors))
+    return(wrap.theme(type, colors = colors, name = name))
   }
   if (is.palette(colors)) {
     type <- ifnot.null(type, ifnot.null(attr(colors, "type"), "sequential"))
-    return(wrap.theme(type, palette = colors))
+    return(wrap.theme(type, palette = colors, name = name))
   }
   if (is.ramp(colors)) {
     type <- ifnot.null(type, ifnot.null(attr(colors, "type"), "sequential"))
-    return(wrap.theme(type, ramp = colors))
+    return(wrap.theme(type, ramp = colors, name = name))
   }
   if (grepl("_r", colors)) {
     name <- sub("_r", "", colors)
@@ -198,22 +206,21 @@ color.theme <- function(
   # diverging themes
   f <- switch(
     name,
-    "midr" = directed(c("#2f7a9a", "#FFFFFF", "#7e1952"), d),
-    "grayscale2" = directed(c("white", "gray50", "black"), d),
+    "midr" = directed(c("#005587", "#6B8AAE", "#B5C2D6", "#FFFFFF", "#DCB1C4", "#B6658C", "#8B0058"), d),
     NA
   )
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), colors = f))
+    return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
   }
   # sequential themes
   f <- switch(
     name,
-    "bluescale" = directed(c("#132B43", "#56B1F7"), d),
-    "grayscale" = directed(c("white", "black"), d),
+    "bluescale" = directed(c("#132B43", "#1B3C5A", "#244D72", "#2E608B", "#3773A4", "#4187BF", "#4B9CDA", "#56B1F7"), d),
+    "grayscale" = directed(c("white", "gray86", "gray72", "gray58", "gray43", "gray28", "gray14", "black"), d),
     NA
   )
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), colors = f))
+    return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
   }
   # sequential themes from viridisLite package
   f <- switch(
@@ -228,7 +235,7 @@ color.theme <- function(
     "viridis" = function(n) viridisLite::viridis(n, direction = d, ...),
     NA)
   if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f))
+    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
   }
   # diverging themes from RColorBrewer package
   names <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu",
@@ -237,7 +244,7 @@ color.theme <- function(
     directed(RColorBrewer::brewer.pal(11L, name), d)
   } else NA
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), colors = f))
+    return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
   }
   # sequential themes from RColorBrewer package
   names <- c("Blues", "BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges",
@@ -247,7 +254,7 @@ color.theme <- function(
     directed(RColorBrewer::brewer.pal(9L, name), d)
   } else NA
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), colors = f))
+    return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
   }
   # qualitative themes from RColorBrewer package
   f <- switch(
@@ -262,35 +269,35 @@ color.theme <- function(
     "Set3" = directed(RColorBrewer::brewer.pal(12L, name), d),
     NA)
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f))
+    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
   }
   # diverging themes from grDevices package
   f <- if (any(name == grDevices::hcl.pals("diverging"))) {
     function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
   } else NA
   if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), palette = f))
+    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+  }
+  # diverging themes from grDevices package
+  f <- if (any(name == grDevices::hcl.pals("divergingx"))) {
+    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
+  } else NA
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
   }
   # sequential themes from grDevices package
   f <- if (any(name == grDevices::hcl.pals("sequential"))) {
     function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
   } else NA
   if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f))
-  }
-  # sequential themes from grDevices package (divergingx)
-  f <- if (any(name == grDevices::hcl.pals("divergingx"))) {
-    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
-  } else NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f))
+    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
   }
   # qualitative themes from grDevices package (hcl.pals)
   f <- if (any(name == grDevices::hcl.pals("qualitative"))) {
     function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
   } else NA
   if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), palette = f))
+    return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
   }
   # qualitative themes from grDevices package (palette.pals)
   f <- switch(
@@ -313,10 +320,47 @@ color.theme <- function(
     "Alphabet" = directed(grDevices::palette.colors(26L, name), d),
     NA)
   if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f))
+    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
   }
   stop(paste0("not implemented palette/ramp name: '", colors, "'"))
 }
+
+#' @rdname color.theme
+#' @param x a "color.theme" object to be displayed.
+#' @param n integer. the number of colors.
+#' @param text a character string to be displayed.
+#' @exportS3Method base::plot
+#'
+plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
+  if (is.null(n))
+    n <- if (x$type == "qualitative") {
+      ifnot.null(attr(x$palette, "n"), 8L)
+    } else 100L
+  opar <- graphics::par("mai", "mar")
+  on.exit(graphics::par(opar))
+  graphics::par(mar = c(1, 1, 1, 1))
+  graphics::plot(NULL, xlim = c(0, 1), ylim = c(0, 1),
+                 axes = FALSE, xlab = "", ylab = "")
+  graphics::text(0.5, 0.7, text, pos = 3L)
+  graphics::rect((seq_len(n) - 1) / n, 0.3, seq_len(n) / n, 0.7,
+                 col = x$palette(n), border = NA)
+}
+
+#' @rdname color.theme
+#' @param x a "color.theme" object to be displayed.
+#' @param display logical. If \code{TRUE}, colors are displayed in the plot area.
+#' @exportS3Method base::print
+#'
+print.color.theme <- function(x, display = TRUE, ...) {
+  type <- switch(x$type, qualitative = "Qualitative",
+                 diverging = "Diverging", sequential = "Sequential")
+  text <- paste0(type, " Color Theme")
+  if (!is.null(x$name)) text <- paste0(text, ' : "', x$name, '" ')
+  cat(text)
+  if (display)
+    plot.color.theme(x, text = text)
+}
+
 
 
 #' Color Scales for ggplot2 Graphics based on Color Themes

@@ -6,10 +6,9 @@
 #'
 #' @param object a "mid" object.
 #' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".
-#' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID importance.
-#' @param digits an integer specifying the minimum number of significant digits to be printed.
-#' @param bracket a character of length two to be used as the left and right bracket for the value of the predictor variable.
-#' @param sep a character string to separate the two values of interaction terms.
+#' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID .
+#' @param digits an integer specifying the minimum number of significant digits.
+#' @param format a character vector of length two to be used as the formats of the \code{sprintf()} function for each value or pair of values of predictor variables.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
@@ -24,9 +23,7 @@
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(
-    object, data, sort = TRUE, digits = max(3L, getOption("digits") - 2L),
-    bracket = c("", ""), sep = ", "
-  ) {
+    object, data, sort = TRUE, digits = 6L, format = c("%s", "%s, %s")) {
   if (!is.data.frame(data))
     data <- data.frame(data)
   if (nrow(data) != 1L) {
@@ -40,16 +37,16 @@ mid.breakdown <- function(
   m <- length(terms)
   degrees <- as.factor(sapply(strsplit(terms, split = ":"), length))
   values <- character(m)
-  left <- bracket[1L]
-  right <- bracket[max(2L, length(bracket))]
   for (i in seq_len(m)) {
     term <- terms[i]
     tags <- term.split(term)
     if (length(tags) == 1L) {
-      values[i] <- paste0(left, format(data[1L, term], digits = digits), right)
+      u <- base::format(data[1L, tags[1L]], digits = digits)
+      values[i] <- sprintf(format[1L], u)
     } else {
-      values[i] <- paste0(left, format(data[1L, tags[1L]], digits = digits), sep,
-                          format(data[1L, tags[2L]], digits = digits), right)
+      u <- base::format(data[1L, tags[1L]], digits = digits)
+      v <- base::format(data[1L, tags[2L]], digits = digits)
+      values[i] <- sprintf(format[2L], u, v)
     }
   }
   df <- data.frame(term = factor(terms, levels = rev(terms)),

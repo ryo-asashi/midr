@@ -7,14 +7,14 @@
 \usage{
 \method{ggmid}{mid.breakdown}(
   object,
-  type = c("barplot", "dotchart", "waterfall"),
+  type = c("waterfall", "barplot", "dotchart"),
   theme = NULL,
   terms = NULL,
   max.bars = 15L,
   width = NULL,
   vline = TRUE,
-  sep = "\\n",
   catchall = "others",
+  format = "\%s=\%s",
   ...
 )
 
@@ -23,9 +23,9 @@
 \arguments{
 \item{object}{a "mid.breakdown" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot", "dotchart" or "waterfall".}
+\item{type}{a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".}
 
-\item{theme}{a character vector of color names or a character string specifying the color theme: For gradient color type, "midr" and "ggplot2" is available. For viridis color type, the value of this argument is passed to 'option' of \code{viridisLite::viridis()}.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
 \item{terms}{an optional character vector specifying the terms to be displayed.}
 
@@ -35,9 +35,9 @@
 
 \item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
 
-\item{sep}{a character string to separate terms and values. Default is the return.}
-
 \item{catchall}{a character string to be used as the catchall label.}
+
+\item{format}{a character string to be used as the format of the \code{sprintf()} function for each component.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }
@@ -57,7 +57,8 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 mbd <- mid.breakdown(mid, diamonds[1L, ])
-ggmid(mbd)
-ggmid(mbd, type = "dotchart", size = 2, colour = "gold")
 ggmid(mbd, type = "waterfall")
+ggmid(mbd, type = "waterfall", theme = "midr")
+ggmid(mbd, type = "barplot", theme = "Set 1")
+ggmid(mbd, type = "dotchart", size = 3, theme = "Cividis")
 }

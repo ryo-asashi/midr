@@ -2,22 +2,44 @@
 % Please edit documentation in R/color_theme.R
 \name{color.theme}
 \alias{color.theme}
+\alias{plot.color.theme}
+\alias{print.color.theme}
 \title{Color Theme for Graphics}
 \usage{
-color.theme(colors, type = c("sequential", "qualitative", "diverging"), ...)
+color.theme(
+  colors,
+  type = c("sequential", "qualitative", "diverging"),
+  name = NULL,
+  ...
+)
+
+\method{plot}{color.theme}(x, n = NULL, text = x$name, ...)
+
+\method{print}{color.theme}(x, display = TRUE, ...)
 }
 \arguments{
 \item{colors}{one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
 
 \item{type}{a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".}
 
+\item{name}{an optional character string, specifying the name of the color theme.}
+
 \item{...}{optional arguments to be passed to palette or ramp functions.}
+
+\item{x}{a "color.theme" object to be displayed.}
+
+\item{n}{integer. the number of colors.}
+
+\item{text}{a character string to be displayed.}
+
+\item{display}{logical. If \code{TRUE}, colors are displayed in the plot area.}
 }
 \value{
 \code{color.theme()} returns a "color.theme" object containing following components:
 \item{ramp}{the function that takes a numeric vector \code{x} of the values within [0, 1] and returns a color name vector.}
 \item{palette}{the function that takes an integer \code{n} and returns a color name vector of length \code{n}.}
 \item{type}{the type of the color theme; "sequential", "diverging" or "qualitative".}
+\item{name}{the name of the color theme.}
 }
 \description{
 \code{color.theme()} returns an object of class "color.theme" that provides two types of color functions.
@@ -27,10 +49,14 @@ color.theme(colors, type = c("sequential", "qualitative", "diverging"), ...)
 Some color themes are "qualitative" and do not contain \code{ramp()} function.
 }
 \examples{
-color.theme("Zissou 1")$palette(5L)
-color.theme("Zissou 1")$ramp(seq.int(0, 1, 1/4))
-color.theme("Zissou 1_r")$ramp(seq.int(1, 0, -1/4))
-color.theme("Viridis", alpha = .5)$palette(5L)
-color.theme("Viridis_r", alpha = .2)$palette(5L)
-color.theme("midr")$palette(5L)
+ct <- color.theme("Zissou 1")
+ct
+ct$palette(5L)
+ct$ramp(seq.int(0, 1, 1/4))
+ct <- color.theme("Zissou 1_r")
+ct
+ct$ramp(seq.int(1, 0, -1/4))
+ct <- color.theme("Mako", alpha = .5)
+ct$palette(5L)
+color.theme("midr")
 }

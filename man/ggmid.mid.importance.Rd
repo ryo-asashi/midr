@@ -20,7 +20,7 @@
 
 \item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
 
-\item{theme}{a character vector of length two to be used as the color palette for the heatmap.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
 \item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
 
@@ -42,8 +42,8 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
-ggmid(imp)
-ggmid(imp, type = "heatmap")
-ggmid(imp, type = "dotchart")
-ggmid(imp, type = "boxplot")
+ggmid(imp, theme = "Tableau 10")
+ggmid(imp, type = "dotchart", theme = "Okabe-Ito")
+ggmid(imp, type = "heatmap", theme = "Blues")
+ggmid(imp, type = "boxplot", theme = "Accent")
 }

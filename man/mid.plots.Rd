@@ -8,8 +8,8 @@ mid.plots(
   object,
   terms = mid.terms(object, interaction = FALSE),
   limits = c(NA, NA),
-  add.intercept = FALSE,
-  include.main.effects = FALSE,
+  intercept = FALSE,
+  main.effects = FALSE,
   max.plots = NULL,
   engine = c("ggplot2", "base", "graphics"),
   ...
@@ -22,9 +22,9 @@ mid.plots(
 
 \item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
 
-\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
+\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
 
-\item{include.main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
+\item{main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
 
 \item{max.plots}{an integer specifying the number of maximum number of plots.}
 

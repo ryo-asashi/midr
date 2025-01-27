@@ -7,16 +7,15 @@
 \usage{
 \method{ggmid}{mid.conditional}(
   object,
-  type = c("lineplot"),
+  type = c("iceplot", "centered"),
   theme = NULL,
-  centered = FALSE,
-  draw.dots = TRUE,
-  sample = NULL,
   term = NULL,
   var.alpha = NULL,
   var.color = NULL,
   var.linetype = NULL,
   var.linewidth = NULL,
+  dots = TRUE,
+  sample = NULL,
   ...
 )
 
@@ -25,15 +24,9 @@
 \arguments{
 \item{object}{a "mid.conditional" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot.}
+\item{type}{a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.}
 
-\item{theme}{a character vector of color names or a character string specifying the color theme.}
-
-\item{centered}{logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the var.}
-
-\item{draw.dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
-
-\item{sample}{an optional vector specifying the names of observations to be plotted.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
 \item{term}{an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.}
 
@@ -44,6 +37,10 @@
 \item{var.linetype}{a name of the variable to be used to set \code{linetype}.}
 
 \item{var.linewidth}{a name of the variable to be used to set \code{linewidth}.}
+
+\item{dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
+
+\item{sample}{an optional vector specifying the names of observations to be plotted.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }
@@ -58,7 +55,8 @@ The S3 method of \code{ggmid()} for "mid.conditional" objects creates a "ggplot"
 }
 \examples{
 data(airquality, package = "datasets")
-mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-mc <- mid.conditional(mid, "Wind", airquality)
-ggmid(mc, var.color = "Solar.R", centered = TRUE)
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.5)
+ice <- mid.conditional(mid, "Wind", airquality)
+ggmid(ice, theme = "Mako", var.color = "Temp")
+ggmid(ice, type = "centered", theme = "Cividis", var.color = "Temp")
 }

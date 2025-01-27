@@ -12,11 +12,10 @@
 #' set.seed(42)
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-#' ggmid(mid, "carat")
-#' ggplot2::autoplot(mid, "clarity")
 #' ggmid(mid, "carat:clarity")
-#' ggmid(mid, "carat:clarity", intercept = TRUE,
-#'       main.effects = TRUE, color.type = "viridis")
+#' ggmid(mid, "carat:clarity", theme = "Spectral", main.effects = TRUE)
+#' ggmid(mid, "clarity:color", type = "data", theme = "Mako", data = diamonds[idx, ])
+#' ggmid(mid, "carat:color", type = "compound", data = diamonds[idx, ])
 #' @returns
 #' \code{ggmid.mid()} returns a "ggplot" object.
 #' @export ggmid
@@ -28,7 +27,7 @@ UseMethod("ggmid")
 #' @rdname ggmid
 #' @param term a character string specifying the component function to be plotted.
 #' @param type character string. The method for plotting the interaction effects.
-#' @param theme a character vector of color names or a character string specifying the color theme.
+#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
 #' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
 #' @param cells.count an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.
@@ -45,6 +44,7 @@ ggmid.mid <- function(
   tags <- term.split(term)
   term <- term.check(term, object$terms, stop = TRUE)
   type <- match.arg(type)
+  if (missing(theme) && length(tags) == 2L) theme <- "midr"
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type != "effect") {
