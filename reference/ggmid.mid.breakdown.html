@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7.900</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7.901</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,14 +47,14 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'mid.breakdown'</span></span>
 <span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barplot"</span>, <span class="st">"dotchart"</span>, <span class="st">"waterfall"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"waterfall"</span>, <span class="st">"barplot"</span>, <span class="st">"dotchart"</span><span class="op">)</span>,</span>
 <span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max.bars <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>  width <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  vline <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  sep <span class="op">=</span> <span class="st">"\n"</span>,</span>
 <span>  catchall <span class="op">=</span> <span class="st">"others"</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"%s=%s"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -71,11 +71,11 @@
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>a character string specifying the type of the plot. One of "barplot", "dotchart" or "waterfall".</p></dd>
+<dd><p>a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".</p></dd>
 
 
 <dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
-<dd><p>a character vector of color names or a character string specifying the color theme: For gradient color type, "midr" and "ggplot2" is available. For viridis color type, the value of this argument is passed to 'option' of <code><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridisLite::viridis()</a></code>.</p></dd>
+<dd><p>a character string specifying the color theme or any item that can be used to define "color.theme" object.</p></dd>
 
 
 <dt id="arg-terms">terms<a class="anchor" aria-label="anchor" href="#arg-terms"></a></dt>
@@ -94,12 +94,12 @@
 <dd><p>logical. If <code>TRUE</code>, the vertical line is drawn at zero or the intercept.</p></dd>
 
 
-<dt id="arg-sep">sep<a class="anchor" aria-label="anchor" href="#arg-sep"></a></dt>
-<dd><p>a character string to separate terms and values. Default is the return.</p></dd>
-
-
 <dt id="arg-catchall">catchall<a class="anchor" aria-label="anchor" href="#arg-catchall"></a></dt>
 <dd><p>a character string to be used as the catchall label.</p></dd>
+
+
+<dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
+<dd><p>a character string to be used as the format of the <code><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf()</a></code> function for each component.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -124,12 +124,14 @@ The main layer is drawn using <code><a href="https://ggplot2.tidyverse.org/refer
 <span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="op">(</span><span class="va">carat</span> <span class="op">+</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">color</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">diamonds</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' is not passed: the response variable in the data is used</span>
 <span class="r-in"><span><span class="va">mbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="mid.breakdown.html">mid.breakdown</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">diamonds</span><span class="op">[</span><span class="fl">1L</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggmid.mid.breakdown-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, size <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"gold"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggmid.mid.breakdown-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span>, type <span class="op">=</span> <span class="st">"waterfall"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.mid.breakdown-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span>, type <span class="op">=</span> <span class="st">"waterfall"</span>, theme <span class="op">=</span> <span class="st">"midr"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.mid.breakdown-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span>, type <span class="op">=</span> <span class="st">"barplot"</span>, theme <span class="op">=</span> <span class="st">"Set 1"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggmid.mid.breakdown-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mbd</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, size <span class="op">=</span> <span class="fl">3</span>, theme <span class="op">=</span> <span class="st">"Cividis"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.mid.breakdown-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
