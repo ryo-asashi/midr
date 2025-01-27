@@ -107,7 +107,7 @@ grid.arrange(
     ggtitle("main effect of dis"),
   ggmid(mid, "lstat:dis") +
     ggtitle("interaction of lstat:dis"),
-  ggmid(mid, "lstat:dis", include.main.effects = TRUE) +
+  ggmid(mid, "lstat:dis", main.effects = TRUE) +
     ggtitle("interaction + main effects")
 )
 ```
@@ -121,10 +121,10 @@ and interaction effects.
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, max.bars = 16L, type = "dot", size = 3) +
+  ggmid(imp, theme = "Dark 2_r", max.bars = 20L) +
+    theme(legend.position = "bottom") +
     ggtitle("importance of variable effects"),
-  ggmid(imp, max.bars = 16L, type = "heatmap",
-        scale.palette = c("#2f7a9a")) +
+  ggmid(imp, "heatmap", theme = "grayscale") +
     theme(legend.position = "bottom") +
     ggtitle("heatmap of variable importance")
 )
@@ -139,11 +139,13 @@ value into variable effects.
 ``` r
 # visualize the MID breakdown of the model predictions
 bd1 <- mid.breakdown(mid, data = train[1L, ])
-bd2 <- mid.breakdown(mid, data = train[9L, ])
+bd9 <- mid.breakdown(mid, data = train[9L, ])
 grid.arrange(nrow = 1L,
-  ggmid(bd1, max.bars = 12L, type = "waterfall") +
+  ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 12L) +
+    theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd2, max.bars = 12L, "waterfall") +
+  ggmid(bd9, "waterfall", theme = "Tableau 10", max.bars = 12L) +
+    theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )
 ```
@@ -158,17 +160,13 @@ curves by main and interaction effects.
 # visualize the ICE curves of the MID model
 ice <- mid.conditional(mid, "lstat", data = train)
 grid.arrange(
-  ggmid(ice, centered = TRUE, alpha = .05) +
+  ggmid(ice, alpha = .1) + ggtitle("ICE of lstat"),
+  ggmid(ice, "centered", theme = "mako_r", var.color = dis) +
     ggtitle("c-ICE of lstat"),
-  ggmid(ice, term = "lstat", centered = TRUE) +
-    ggtitle("c-ICE of main effect"),
-  ggmid(ice, term = "lstat:dis", centered = TRUE,
-        variable.colour = "dis", alpha = .1) +
-    ggtitle("c-ICE of interaction with dis"),
-  ggmid(ice, term = "lstat:age", centered = TRUE,
-        variable.colour = "age", alpha = .1) +
-    scale_colour_viridis_c(option = "G") +
-    ggtitle("c-ICE of interaction with age")
+  ggmid(ice, theme = "mako_r", term = "lstat:dis", var.color = dis) +
+    ggtitle("ICE of interaction with dis"),
+  ggmid(ice, theme = "mako_r", term = "lstat:age", var.color = age) +
+    ggtitle("ICE of interaction with age")
 )
 ```
 
