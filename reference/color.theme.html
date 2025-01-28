@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,26 +118,26 @@ Some color themes are "qualitative" and do not contain <code>ramp()</code> funct
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Zissou 1"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ct</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Diverging Color Theme : "Zissou 1" </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Mako"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sequential Color Theme : "Mako" </span>
 <span class="r-plt img"><img src="color.theme-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#3B99B1" "#7CBA96" "#EACB2B" "#E78F0A" "#F5191C"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#070707" "#423460" "#007FA8" "#48C2B4" "#E0F7E1"</span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#3A99B1" "#7CB997" "#D3BC5E" "#E78D08" "#F4191B"</span>
-<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Zissou 1_r"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ct</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Diverging Color Theme : "Zissou 1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#060606" "#3E365D" "#267EA1" "#5FC1B6" "#DFF7E0"</span>
+<span class="r-in"><span><span class="op">(</span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"RdBu"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Diverging Color Theme : "RdBu" </span>
 <span class="r-plt img"><img src="color.theme-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#3A99B1" "#7CB997" "#D3BC5E" "#E78D08" "#F4191B"</span>
-<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Mako"</span>, alpha <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#07070780" "#42346080" "#007FA880" "#48C2B480" "#E0F7E180"</span>
-<span class="r-in"><span><span class="fu">color.theme</span><span class="op">(</span><span class="st">"midr"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Diverging Color Theme : "midr" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#66001F" "#E58366" "#F7F7F7" "#6DABD0" "#053060"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#66001F" "#E58366" "#F7F7F7" "#6DABD0" "#053060"</span>
+<span class="r-in"><span><span class="op">(</span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Tableau 10"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Qualitative Color Theme : "Tableau 10" </span>
 <span class="r-plt img"><img src="color.theme-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#4E79A7" "#F28E2B" "#E15759" "#76B7B2" "#59A14F" "#EDC948" "#B07AA1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#FF9DA7" "#9C755F" "#BAB0AC"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
