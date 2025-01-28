@@ -49,14 +49,12 @@ color.theme(
 Some color themes are "qualitative" and do not contain \code{ramp()} function.
 }
 \examples{
-ct <- color.theme("Zissou 1")
-ct
+(ct <- color.theme("Mako"))
 ct$palette(5L)
 ct$ramp(seq.int(0, 1, 1/4))
-ct <- color.theme("Zissou 1_r")
-ct
-ct$ramp(seq.int(1, 0, -1/4))
-ct <- color.theme("Mako", alpha = .5)
+(ct <- color.theme("RdBu"))
 ct$palette(5L)
-color.theme("midr")
+ct$ramp(seq.int(0, 1, 1/4))
+(ct <- color.theme("Tableau 10"))
+ct$palette(10L)
 }

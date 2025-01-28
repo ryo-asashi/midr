@@ -156,16 +156,14 @@ wrap.theme <- function(
 #' @param name an optional character string, specifying the name of the color theme.
 #' @param ... optional arguments to be passed to palette or ramp functions.
 #' @examples
-#' ct <- color.theme("Zissou 1")
-#' ct
+#' (ct <- color.theme("Mako"))
 #' ct$palette(5L)
 #' ct$ramp(seq.int(0, 1, 1/4))
-#' ct <- color.theme("Zissou 1_r")
-#' ct
-#' ct$ramp(seq.int(1, 0, -1/4))
-#' ct <- color.theme("Mako", alpha = .5)
+#' (ct <- color.theme("RdBu"))
 #' ct$palette(5L)
-#' color.theme("midr")
+#' ct$ramp(seq.int(0, 1, 1/4))
+#' (ct <- color.theme("Tableau 10"))
+#' ct$palette(10L)
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
 #' \item{ramp}{the function that takes a numeric vector \code{x} of the values within [0, 1] and returns a color name vector.}
@@ -238,10 +236,9 @@ color.theme <- function(
     return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
   }
   # diverging themes from RColorBrewer package
-  names <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu",
-            "RdGy", "RdYlBu", "RdYlGn", "Spectral")
+  names <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu", "RdGy", "RdYlBu", "RdYlGn", "Spectral")
   f <- if (any(name == names)) {
-    directed(RColorBrewer::brewer.pal(11L, name), d)
+    try(directed(RColorBrewer::brewer.pal(11L, name), d), silent = TRUE)
   } else NA
   if (is.color(f)) {
     return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
@@ -251,23 +248,19 @@ color.theme <- function(
              "OrRd", "PuBu", "PuBuGn", "PuRd", "Purples", "RdPu", "Reds",
              "YlGn", "YlGnBu", "YlOrBr", "YlOrRd")
   f <- if (any(name == names)) {
-    directed(RColorBrewer::brewer.pal(9L, name), d)
+    try(directed(RColorBrewer::brewer.pal(9L, name), d), silent = TRUE)
   } else NA
   if (is.color(f)) {
     return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
   }
   # qualitative themes from RColorBrewer package
-  f <- switch(
-    name,
-    "Accent" = directed(RColorBrewer::brewer.pal(8L, name), d),
-    "Dark2" = directed(RColorBrewer::brewer.pal(8L, name), d),
-    "Paird" = directed(RColorBrewer::brewer.pal(12L, name), d),
-    "Pastel1" = directed(RColorBrewer::brewer.pal(9L, name), d),
-    "Pastel2" = directed(RColorBrewer::brewer.pal(8L, name), d),
-    "Set1" = directed(RColorBrewer::brewer.pal(9L, name), d),
-    "Set2" = directed(RColorBrewer::brewer.pal(8L, name), d),
-    "Set3" = directed(RColorBrewer::brewer.pal(12L, name), d),
-    NA)
+  names <- c("Accent", "Dark2", "Paird", "Pastel1", "Pastel2", "Set1", "Set2", "Set3")
+  if (any(name == names)) {
+    npal <- switch(name, Paird = 12L, Pastel1 = 9L, Pastel2 = 8L, Set1 = 9L, 8L)
+    f <- try(directed(RColorBrewer::brewer.pal(npal, name), d), silent = TRUE)
+  } else {
+    f <- NA
+  }
   if (is.color(f)) {
     return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
   }
@@ -342,7 +335,7 @@ plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
   graphics::plot(NULL, xlim = c(0, 1), ylim = c(0, 1),
                  axes = FALSE, xlab = "", ylab = "")
   graphics::text(0.5, 0.7, text, pos = 3L)
-  graphics::rect((seq_len(n) - 1) / n, 0.3, seq_len(n) / n, 0.7,
+  graphics::rect((seq_len(n) - 1L) / n, 0.3, seq_len(n) / n, 0.7,
                  col = x$palette(n), border = NA)
 }
 

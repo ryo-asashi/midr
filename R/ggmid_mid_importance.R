@@ -17,7 +17,7 @@
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' imp <- mid.importance(mid)
 #' ggmid(imp, theme = "Tableau 10")
-#' ggmid(imp, type = "dotchart", theme = "Okabe-Ito")
+#' ggmid(imp, type = "dotchart", theme = "Okabe-Ito", size = 3)
 #' ggmid(imp, type = "heatmap", theme = "Blues")
 #' ggmid(imp, type = "boxplot", theme = "Accent")
 #' @returns

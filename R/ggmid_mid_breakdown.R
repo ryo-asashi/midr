@@ -69,22 +69,24 @@ ggmid.mid.breakdown <- function(
     if (type == "barplot") {
       pl <- pl + ggplot2::geom_col(width = width, ...)
       if (use.theme) {
-        pl <- pl + if (theme$type == "qualitative") {
-          ggplot2::aes(fill = .data[["mid"]] > 0)
+        pl <- if (theme$type == "qualitative") {
+          pl + ggplot2::aes(fill = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
+            ggplot2::labs(fill = "mid")
         } else {
-          ggplot2::aes(fill = .data[["mid"]])
+          pl + ggplot2::aes(fill = .data[["mid"]])
         }
-        pl <- pl + scale_fill_theme(theme = theme)
+      pl <- pl + scale_fill_theme(theme = theme)
       }
     } else if (type == "dotchart") {
       pl <- pl + ggplot2::geom_linerange(
         ggplot2::aes(xmin = 0, xmax = .data[["mid"]]), lty = 3L) +
         ggplot2::geom_point(...)
       if (use.theme) {
-        pl <- pl + if (theme$type == "qualitative") {
-          ggplot2::aes(color = .data[["mid"]] > 0)
+        pl <- if (theme$type == "qualitative") {
+          pl + ggplot2::aes(color = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
+            ggplot2::labs(color = "mid")
         } else {
-          ggplot2::aes(color = .data[["mid"]])
+          pl + ggplot2::aes(color = .data[["mid"]])
         }
         pl <- pl + scale_color_theme(theme = theme)
       }
@@ -127,10 +129,11 @@ ggmid.mid.breakdown <- function(
                      ymin = pmax(.data[["ymin"]] - 1, 1 - hw)),
         col = col, lty = lty, lwd = lwd)
     if (use.theme) {
-      pl <- pl + if (theme$type == "qualitative") {
-        ggplot2::aes(fill = .data[["mid"]] > 0)
+      pl <- if (theme$type == "qualitative") {
+        pl + ggplot2::aes(fill = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
+          ggplot2::labs(fill = "mid")
       } else {
-        ggplot2::aes(fill = .data[["mid"]])
+        pl + ggplot2::aes(fill = .data[["mid"]])
       }
       pl <- pl + scale_fill_theme(theme = theme)
     }

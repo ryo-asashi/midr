@@ -47,7 +47,7 @@ summary.mid <- function(
   cat("\nEncoding:\n")
   print.data.frame(mid.encoding.scheme(object))
   cat("\nImportance:\n")
-  imp <- utils::head(mid.importance(object), top.n)
+  imp <- utils::head(mid.importance(object)$importance, top.n)
   imp$importance <- format(imp$importance, digits = digits)
   if ((tot.n <- length(object$terms)) - top.n > 0L)
     cat(paste0("(Top ", top.n, " out of ", tot.n, ")\n"))
