@@ -34,7 +34,7 @@ plot.mid.importance <- function(
     imp <- imp[1L:min(max.bars, nrow(imp), na.rm = TRUE), ]
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
-        to.colors(imp$importance > 0, theme)
+        to.colors(imp$degree, theme)
       else
         to.colors(imp$importance, theme)
     } else "gray35"
