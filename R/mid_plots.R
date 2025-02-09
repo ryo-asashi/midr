@@ -64,7 +64,7 @@ mid.plots <- function(
     return(plots)
   } else {
     for (term in terms)
-      plot.mid(object, term, intercept = intercept,
+      plot.mid(object, term, limits = limits, intercept = intercept,
                main.effects = main.effects, ...)
   }
 }

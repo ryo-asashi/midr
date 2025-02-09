@@ -35,10 +35,11 @@
 #'
 #' # fit a MID model as a predictive model
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, na.omit(airquality), lambda = .1)
+#' mid <- interpret(Ozone ~ .^2, na.omit(airquality), lambda = .4)
 #' plot(mid, "Wind")
 #' plot(mid, "Temp")
-#' plot(mid, "Wind:Temp", include.main.effects = TRUE)
+#' plot(mid, "Wind:Temp", theme = "RdBu")
+#' plot(mid, "Wind:Temp", main.effects = TRUE)
 #' @returns
 #' \code{interpret()} returns a "mid" object with the following components:
 #' \item{weights}{a numeric vector of the sample weights.}

@@ -61,20 +61,20 @@ plot.mid <- function(
         cols <- if (use.theme) to.colors(rdf$y, theme, middle = middle) else 1L
         args <- list(x = rdf$x, y = rdf$y, type = "l", col = cols,
                      ylab = "mid", xlab = term, ylim = limits)
-        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        args <- override(args, dots)
         do.call(graphics::plot.default, args)
       } else if (enc$type == "linear") {
         cols <- if (use.theme) to.colors(df$mid, theme, middle = middle) else 1L
         args <- list(x = df[[term]], y = df$mid, type = "l", col = cols,
                      ylab = "mid", xlab = term, ylim = limits)
-        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        args <- override(args, dots)
         do.call(graphics::plot.default, args)
       } else if (enc$type == "factor") {
         cols <- if (use.theme)
           to.colors(df$mid, theme, middle = middle) else "gray35"
-        args <- list(to = df$mid, labels = df[[term]],
+        args <- list(to = df$mid, labels = df[[term]], limits = limits,
                      ylab = "mid", xlab = term, col = cols)
-        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        args <- override(args, dots)
         do.call(barplot2, args)
       }
     }
@@ -87,21 +87,21 @@ plot.mid <- function(
         xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
-                       ylab = "mid", xlab = term)
-          for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+                       ylab = "mid", xlab = term, limits = limits)
+          args <- override(args, dots)
           do.call(barplot2, args)
-          graphics::points(x = xval, y = mids, pch = 16L, col = cols)
+          graphics::points.default(x = xval, y = mids, pch = 16L, col = cols)
         } else if (type == "compound") {
-          graphics::points(x = xval, y = mids, pch = 16L)
+          graphics::points.default(x = xval, y = mids, pch = 16L)
         }
       } else if (enc$type != "factor") {
         if (type == "data") {
             args <- list(x = xval, y = mids, xlab = term, ylab = "mid",
                          ylim = limits, type = "p", col = cols, pch = 16L)
-            for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+            args <- override(args, dots)
             do.call(graphics::plot.default, args)
         } else if (type == "compound") {
-          graphics::points(x = xval, y = mids, pch = 16L, col = cols)
+          graphics::points.default(x = xval, y = mids, pch = 16L, col = cols)
         }
       }
     }
@@ -138,7 +138,7 @@ plot.mid <- function(
     if (main.effects)
       z <- z + mid.f(x, tags[1L], rdf) + mid.f(x, tags[2L], rdf)
     zmat <- matrix(z, nrow = ms[1L], ncol = ms[2L])
-    zlim <- range(z)
+    zlim <- ifnot.null(limits, range(z))
     for (i in 1L:2L) {
       if (encs[[i]]$type == "factor")
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
@@ -171,9 +171,9 @@ plot.mid <- function(
       )
       args <- list(x = xy[[1L]], y = xy[[2L]], z = zmat, zlim = zlim,
                    xlab = tags[1L], ylab = tags[2L], color.palette = pal,
-                   plot.axes = plot.axes, axes = TRUE)
-      for (arg in names(dots))
-        args[[arg]] <- dots[[arg]]
+                   plot.axes = plot.axes, las = graphics::par("las"),
+                   axes = TRUE)
+      args <- override(args, dots)
       do.call(graphics::filled.contour, args)
     } else if (type == "data") {
       mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
@@ -183,8 +183,7 @@ plot.mid <- function(
       cols <- to.colors(mid, theme, middle = middle)
       args <- list(x = xval, y = yval, type = "n",
                    xlab = tags[1L], ylab = tags[2L], axes = FALSE)
-      for (arg in names(dots))
-        args[[arg]] <- dots[[arg]]
+      args <- override(args, dots)
       do.call(graphics::plot.default, args)
       graphics::box()
       for (i in 1L:2L) {

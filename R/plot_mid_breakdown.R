@@ -71,6 +71,7 @@ plot.mid.breakdown <- function(
     args$type <- if (type == "dotchart") "d" else "b"
     if (type == "barplot")
       args$width <- ifnot.null(width, .8)
+    args <- override(args, dots)
     do.call(barplot2, args)
     if (vline)
       graphics::abline(v = 0)
@@ -83,6 +84,7 @@ plot.mid.breakdown <- function(
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
                  col = cols, horizontal = TRUE, xlab = "mid", width = width)
+    args <- override(args, dots)
     do.call(barplot2, args)
     for (i in seq_len(n)) {
       graphics::lines.default(x = rep.int(bd[i, "xmax"], 2L),

@@ -92,12 +92,10 @@ plot.mid.conditional <- function(
   }
   args <- list(x = values, ylim = range(mat), xlab = variable,
                ylab = yvar, type = "l", xaxt = if (fv) "n")
-  for (arg in names(dt)) {
-    if (arg %in% c("col", "lty", "lwd", "alpha")) {
+  args <- override(args, dt)
+  for (arg in c("col", "lty", "lwd", "alpha")) {
+    if (!is.null(dt[[arg]]))
       aes[[arg]] <- rep_len(dt[[arg]], length.out = n)
-    } else {
-      args[[arg]] <- dt[[arg]]
-    }
   }
   aes$dotcol <- aes$col
   if (!is.null(aes$alpha)) {
@@ -106,14 +104,16 @@ plot.mid.conditional <- function(
                               round(aes$alpha * 255), maxColorValue = 255L)
   }
   args$y = mat[1L,]
-  for (p in c("col", "lty", "lwd")) args[[p]] <- aes[[p]][1L]
-  do.call("plot", args)
+  for (p in c("col", "lty", "lwd"))
+    args[[p]] <- aes[[p]][1L]
+  do.call(graphics::plot.default, args)
   if (fv)
     graphics::axis(side = 1L, at = seq_len(length(values)), labels = flvs)
   for (i in seq_len(n - 1L)) {
     args$y <- mat[i + 1L,]
-    for (p in c("col", "lty", "lwd")) args[[p]] <- aes[[p]][i + 1L]
-    do.call("points", args)
+    for (p in c("col", "lty", "lwd"))
+      args[[p]] <- aes[[p]][i + 1L]
+    do.call(graphics::points.default, args)
   }
   if (dots) {
     if (fv) {

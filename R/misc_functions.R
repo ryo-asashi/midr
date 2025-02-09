@@ -356,7 +356,7 @@ barplot2 <- function(
   col <- rep(col, length.out = n)
   rng <- range(c(to, from), na.rm = TRUE)
   mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
-  limits <- c(rng[1L] - mgn, rng[2L] + mgn)
+  limits <- ifnot.null(limits, c(rng[1L] - mgn, rng[2L] + mgn))
   at <- (if (horizontal) (n:1L) else (1L:n))
   graphics::plot.new()
   graphics::plot.window(xlim = if (horizontal) limits else c(0, n) + 0.5,
@@ -367,15 +367,13 @@ barplot2 <- function(
   graphics::axis(side = if (horizontal) 2L else 1L, at = at, labels = labels)
   if (type == "b") {
     hw <- width / 2
-    args <- as.list(numeric(4L))
+    args <- as.list(numeric(6L))
     border <- rep(border, length.out = n)
     names(args) <- if (horizontal) {
-      c("xleft", "xright", "ybottom", "ytop")
+      c("xleft", "xright", "ybottom", "ytop", "col", "border")
     } else {
-      c("ybottom", "ytop", "xleft", "xright")
+      c("ybottom", "ytop", "xleft", "xright", "col", "border")
     }
-    args$col <- 0
-    args$border <- 0
     for (i in seq_len(n)) {
       args[[1L]] <- from[i]
       args[[2L]] <- to[i]
@@ -402,3 +400,17 @@ barplot2 <- function(
   invisible(NULL)
 }
 
+override <- function(args, dots,
+    params = c("color", "colour", "col", "size", "cex",
+               "linetype", "lty", "linewidth", "lwd",
+               "title", "main", "subtitle", "sub", "xlab", "ylab"),
+    read.as = list(color = "col", colour = "col", size = "cex",
+                   linetype = "lty", linewidth = "lwd",
+                   title = "main", subtitle = "sub")
+  ) {
+  for (param in params) {
+    arg <- ifnot.null(read.as[[param]], param)
+    args[[arg]] <- ifnot.null(dots[[param]], args[[arg]])
+  }
+  args
+}

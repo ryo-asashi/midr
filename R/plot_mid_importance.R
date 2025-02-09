@@ -26,7 +26,8 @@
 plot.mid.importance <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
     theme = NULL, max.bars = 30L, ...) {
-  type = match.arg(type)
+  dots <- list(...)
+  type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "dotchart" || type == "barplot") {
@@ -41,6 +42,7 @@ plot.mid.importance <- function(
     args <- list(to = imp$importance, labels = as.character(imp$term),
                  col = cols, horizontal = TRUE, xlab = "importance")
     args$type <- if (type == "dotchart") "d" else "b"
+    args <- override(args, dots)
     do.call(barplot2, args)
   } else if (type == "heatmap") {
     imp <- x$importance
@@ -68,6 +70,7 @@ plot.mid.importance <- function(
     graphics::par(mai = adjusted.mai(tags), las = 1L)
     args <- list(x = seq_len(m), y = seq_len(m), z = mat,
                  axes = FALSE, col = cols, xlab = "", ylab = "")
+    args <- override(args, dots)
     do.call(graphics::image.default, args)
     at <- seq_len(m + 2) - 1
     graphics::axis(1L, at = at, labels = c("", tags, ""))
@@ -83,8 +86,10 @@ plot.mid.importance <- function(
     plist <- lapply(rev(terms), function(term) x$predictions[, term])
     names(plist) <- rev(terms)
     cols <- if (use.theme) theme$palette(length(terms)) else NULL
-    graphics::boxplot(plist, col = cols,
-                      xlab = "mid", ylab = NULL, horizontal = TRUE)
+    args <- list(x = plist, col = cols, xlab = "mid", ylab = NULL,
+                 horizontal = TRUE)
+    args <- override(args, dots)
+    do.call(graphics::boxplot.default, args)
   }
   invisible(NULL)
 }
