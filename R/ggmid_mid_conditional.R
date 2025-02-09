@@ -54,8 +54,8 @@ ggmid.mid.conditional <- function(
     yvar <- ynew
   }
   if (!is.null(sample)) {
-    obs <- obs[obs$id %in% sample, ]
-    con <- con[con$id %in% sample, ]
+    obs <- obs[obs$.id %in% sample, ]
+    con <- con[con$.id %in% sample, ]
     n <- nrow(obs)
   }
   pl <- ggplot2::ggplot(
@@ -93,7 +93,7 @@ ggmid.mid.conditional <- function(
     }
   }
   pl <- pl + ggplot2::geom_line(
-    data = con, mapping = ggplot2::aes(group = .data[["id"]]), ...)
+    data = con, mapping = ggplot2::aes(group = .data[[".id"]]), ...)
   if (dots) {
     pl <- pl + ggplot2::geom_point()
   }

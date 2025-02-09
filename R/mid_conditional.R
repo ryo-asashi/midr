@@ -70,7 +70,7 @@ mid.conditional <- function(
     yhat <- object$link$linkinv(yhat)
   res <- list()
   res$terms <- tv
-  res$observed <- cbind(id = ids, yhat = yhat, data)
+  res$observed <- cbind(.id = ids, yhat = yhat, data)
   if (keep.effects)
     res$observed.effects <- pm
   ldata <- list()
@@ -91,7 +91,7 @@ mid.conditional <- function(
   lyhat <- pf + pv + object$intercept
   if (type == "response" && !is.null(object$link))
     lyhat <- object$link$linkinv(lyhat)
-  res$conditional <- cbind(id = rep.int(ids, m), yhat = lyhat, ldata)
+  res$conditional <- cbind(.id = rep.int(ids, m), yhat = lyhat, ldata)
   if (keep.effects)
     res$conditional.effects <- pm
   res$values <- values
