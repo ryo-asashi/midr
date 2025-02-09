@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,9 +47,9 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'mid.importance'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barplot"</span>, <span class="st">"heatmap"</span>, <span class="st">"dotchart"</span>, <span class="st">"boxplot"</span><span class="op">)</span>,</span>
-<span>  max.bars <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  scale.palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FFFFFF"</span>, <span class="st">"gray10"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barplot"</span>, <span class="st">"dotchart"</span>, <span class="st">"heatmap"</span>, <span class="st">"boxplot"</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max.bars <span class="op">=</span> <span class="fl">30L</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -66,12 +66,12 @@
 <dd><p>a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".</p></dd>
 
 
+<dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
+<dd><p>a character string specifying the color theme or any item that can be used to define "color.theme" object.</p></dd>
+
+
 <dt id="arg-max-bars">max.bars<a class="anchor" aria-label="anchor" href="#arg-max-bars"></a></dt>
 <dd><p>an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.</p></dd>
-
-
-<dt id="arg-scale-palette">scale.palette<a class="anchor" aria-label="anchor" href="#arg-scale-palette"></a></dt>
-<dd><p>a character vector of length two to be used as the color palette for the heatmap.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -95,12 +95,14 @@
 <span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="op">(</span><span class="va">carat</span> <span class="op">+</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">color</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">diamonds</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' is not passed: the response variable in the data is used</span>
 <span class="r-in"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, theme <span class="op">=</span> <span class="st">"Tableau 10"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid.importance-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"Okabe-Ito"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid.importance-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, theme <span class="op">=</span> <span class="st">"Blues"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid.importance-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span>, theme <span class="op">=</span> <span class="st">"Accent"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.mid.importance-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

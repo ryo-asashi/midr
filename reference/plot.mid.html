@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,11 +48,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">term</span>,</span>
-<span>  add.intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  include.main.effects <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  scale.type <span class="op">=</span> <span class="st">"default"</span>,</span>
-<span>  scale.palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#2f7a9a"</span>, <span class="st">"#FFFFFF"</span>, <span class="st">"#7e1952"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"effect"</span>, <span class="st">"data"</span>, <span class="st">"compound"</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  main.effects <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cells.count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">100L</span><span class="op">)</span>,</span>
+<span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -69,24 +71,32 @@
 <dd><p>a character string specifying the component function to be plotted.</p></dd>
 
 
-<dt id="arg-add-intercept">add.intercept<a class="anchor" aria-label="anchor" href="#arg-add-intercept"></a></dt>
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p>character string.</p></dd>
+
+
+<dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
+<dd><p>a character vector of color names or a character string specifying the color theme.</p></dd>
+
+
+<dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the intercept is added to the MID values and the plotting scale is shifted.</p></dd>
 
 
-<dt id="arg-include-main-effects">include.main.effects<a class="anchor" aria-label="anchor" href="#arg-include-main-effects"></a></dt>
+<dt id="arg-main-effects">main.effects<a class="anchor" aria-label="anchor" href="#arg-main-effects"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the main effects are included in the interaction plot.</p></dd>
 
 
-<dt id="arg-scale-type">scale.type<a class="anchor" aria-label="anchor" href="#arg-scale-type"></a></dt>
-<dd><p>character string. The color type of the interaction plot. One of "default", "viridis", "gradient".</p></dd>
-
-
-<dt id="arg-scale-palette">scale.palette<a class="anchor" aria-label="anchor" href="#arg-scale-palette"></a></dt>
-<dd><p>a character vector of color names specifying the colors to be used in the interaction plot.</p></dd>
+<dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
+<dd><p>a data frame to be plotted.</p></dd>
 
 
 <dt id="arg-cells-count">cells.count<a class="anchor" aria-label="anchor" href="#arg-cells-count"></a></dt>
 <dd><p>an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.</p></dd>
+
+
+<dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
+<dd><p><code>NULL</code> or a numeric vector of length two specifying the limits of the plotting scale. <code>NA</code>s are replaced by the minimum and/or maximum MID values.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -104,19 +114,21 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">airquality</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">airquality</span><span class="op">$</span><span class="va">Month</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">airquality</span><span class="op">$</span><span class="va">Month</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">airquality</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">diamonds</span>, package <span class="op">=</span> <span class="st">"ggplot2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">diamonds</span><span class="op">)</span>, <span class="fl">1e4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="op">(</span><span class="va">carat</span> <span class="op">+</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">color</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">diamonds</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' is not passed: the response variable in the data is used</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"Temp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"Month"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"clarity"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"Wind:Temp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat:clarity"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"Solar.R:Month"</span>, scale.type <span class="op">=</span> <span class="st">"viridis"</span>,</span></span>
-<span class="r-in"><span>     add.intercept <span class="op">=</span> <span class="cn">TRUE</span>, include.main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"clarity:color"</span>, type <span class="op">=</span> <span class="st">"data"</span>, theme <span class="op">=</span> <span class="st">"Mako"</span>, data <span class="op">=</span> <span class="va">diamonds</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"carat:color"</span>, type <span class="op">=</span> <span class="st">"compound"</span>, data <span class="op">=</span> <span class="va">diamonds</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.mid-5.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
