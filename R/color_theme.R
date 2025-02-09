@@ -28,7 +28,7 @@ directed <- function(x, direction) {
 }
 
 to.ramp <- function(colors = NULL, palette = NULL, type = NULL) {
-  if (!is.null(type) && type == "qualitative")
+  if (isTRUE(type == "qualitative"))
     return(NULL)
   if (is.null(colors)) {
     if (is.null(palette))
@@ -36,11 +36,11 @@ to.ramp <- function(colors = NULL, palette = NULL, type = NULL) {
     if (!is.palette(palette))
       stop("invalid 'palette' supplied")
     ptype <- attr(palette, "type")
-    if (!is.null(ptype) && ptype == "qualitative") {
+    if (isTRUE(ptype == "qualitative")) {
       message("converting qualitative palette to sequential color ramp")
       attr(palette, "type") <- "sequential"
     }
-    colors <- palette(ifnot.null(attr(palette, "n.colors"), 6L))
+    colors <- palette(ifnot.null(attr(palette, "n"), 7L))
   } else {
     if (!is.color(colors))
       stop("invalid 'colors' supplied")
@@ -76,7 +76,7 @@ to.ramp <- function(colors = NULL, palette = NULL, type = NULL) {
 }
 
 to.palette <- function(colors = NULL, ramp = NULL, type = NULL) {
-  if (!is.null(type) && type == "qualitative" && !is.null(colors)) {
+  if (isTRUE(type == "qualitative") && !is.null(colors)) {
     if (!is.color(colors))
       stop("invalid 'colors' supplied")
     names(colors) <- NULL
@@ -204,21 +204,21 @@ color.theme <- function(
   # diverging themes
   f <- switch(
     name,
-    "midr" = directed(c("#005587", "#6B8AAE", "#B5C2D6", "#FFFFFF", "#DCB1C4", "#B6658C", "#8B0058"), d),
+    "midr" = to.palette(directed(c("#005587", "#FFFFFF", "#8B0058"), d)),
     NA
   )
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
   }
   # sequential themes
   f <- switch(
     name,
-    "bluescale" = directed(c("#132B43", "#1B3C5A", "#244D72", "#2E608B", "#3773A4", "#4187BF", "#4B9CDA", "#56B1F7"), d),
-    "grayscale" = directed(c("white", "gray86", "gray72", "gray58", "gray43", "gray28", "gray14", "black"), d),
+    "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
+    "grayscale" = to.palette(directed(c("white", "black"), d)),
     NA
   )
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
   }
   # sequential themes from viridisLite package
   f <- switch(
@@ -425,4 +425,45 @@ scale_fill_theme <- function(
     theme, ..., discrete = NULL, middle = 0, aesthetics = "fill") {
   scale_color_theme(theme = theme, ..., discrete = discrete,
                     middle = middle, aesthetics = aesthetics)
+}
+
+
+rescale <- function(x, middle = NULL) {
+  if (is.character(x))
+    x <- as.factor(x)
+  if (is.factor(x) || is.logical(x))
+    x <- as.numeric(x)
+  from <- range(x, na.rm = TRUE, finite = TRUE)
+  if (is.null(middle)) {
+    d <- from[2L] - from[1L]
+    if (d == 0)
+      return(ifelse(is.na(x), NA, 0.5))
+    res <- (x - from[1L]) / d
+  } else {
+    d <- 2 * max(abs(from - middle))
+    if (d == 0)
+      return(ifelse(is.na(x), NA, 0.5))
+    res <- (x - middle) / d + 0.5
+  }
+  pmax(0, pmin(1, res))
+}
+
+
+to.colors <- function(x, theme, middle = 0, na.value = "gray50") {
+  theme <- color.theme(theme)
+  if (is.discrete(x)) {
+    x <- as.integer(as.factor(x))
+    cols <- theme$palette(max(x, na.rm = TRUE))[x]
+  } else {
+    if (theme$type == "qualitative") {
+      stop("qualitative color theme can't be used for discrete variable")
+    } else if (theme$type == "sequential") {
+      cols <- theme$ramp(rescale(x))
+    } else if (theme$type == "diverging") {
+      cols <- theme$ramp(rescale(x, middle = middle))
+    } else
+      cols <- rep.int(1L, length(x))
+  }
+  cols[is.na(cols)] <- na.value
+  cols
 }

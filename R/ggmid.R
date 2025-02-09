@@ -4,7 +4,7 @@
 #'
 #' The S3 method of \code{ggmid()} for "mid" objects creates a "ggplot" object that visualizes a MID component function.
 #' The main layer is drawn using \code{geom_line()} or \code{geom_path()} for a main effect of a quantitative variable, \code{geom_col()} for a main effect of a qualitative variable, and \code{geom_raster()} or \code{geom_rect()} for an interaction effect.
-#' For other methods of \code{ggmid()}, see \code{help(ggmid.mid.importance)} or \code{help(ggmid.mid.conditional)}.
+#' For other methods of \code{ggmid()}, see \code{help(ggmid.mid.importance)}, \code{help(ggmid.mid.breakdown)} or \code{help(ggmid.mid.conditional)}.
 #'
 #' @param object a "mid" object to be visualized.
 #' @examples
@@ -12,8 +12,9 @@
 #' set.seed(42)
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-#' ggmid(mid, "carat:clarity")
-#' ggmid(mid, "carat:clarity", theme = "Spectral", main.effects = TRUE)
+#' ggmid(mid, "carat")
+#' ggmid(mid, "clarity")
+#' ggmid(mid, "carat:clarity", main.effects = TRUE)
 #' ggmid(mid, "clarity:color", type = "data", theme = "Mako", data = diamonds[idx, ])
 #' ggmid(mid, "carat:color", type = "compound", data = diamonds[idx, ])
 #' @returns
@@ -59,10 +60,10 @@ ggmid.mid <- function(
     df <- stats::na.omit(object$main.effects[[term]])
     if (intercept)
       df$mid <- df$mid + object$intercept
-    enc <- object$encoders[["main.effects"]][[term]]
     pl <- ggplot2::ggplot(
       data = df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
-    # main.layer
+    # main layer
+    enc <- object$encoders[["main.effects"]][[term]]
     if (type != "data") {
       if (enc$type == "constant") {
         cols <- paste0(term, c("_min", "_max"))
@@ -87,11 +88,18 @@ ggmid.mid <- function(
           ggplot2::aes(y = .data[["mid"]]), data, position = pos, ...)
       } else {
         ggplot2::geom_point(
-          ggplot2::aes(y = .data[["mid"]]), data, position = pos, shape = 1L)
+          ggplot2::aes(y = .data[["mid"]]), data, position = pos)
       }
-      if (use.theme) {
+    }
+    if (use.theme) {
+      middle <- if (intercept) object$intercept else 0
+      if (enc$type == "factor") {
+        pl <- pl + ggplot2::aes(fill = .data[["mid"]]) +
+          scale_fill_theme(theme = theme, limits = limits, middle = middle)
+      }
+      if (enc$type != "factor" || type == "data") {
         pl <- pl + ggplot2::aes(color = .data[["mid"]]) +
-          scale_color_theme(theme = theme, limits = limits)
+          scale_color_theme(theme = theme, limits = limits, middle = middle)
       }
     }
     if (!is.null(limits))
@@ -118,7 +126,6 @@ ggmid.mid <- function(
                  object$encoders[["interactions"]][[tags[2L]]])
     pl <- ggplot2::ggplot(
       data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
-    middle <- if (intercept) object$intercept else 0
     # main.layer
     if (type != "data") {
       use.raster <- encs[[1L]]$type == "linear" ||
@@ -157,6 +164,7 @@ ggmid.mid <- function(
         pl <- pl + ggplot2::geom_rect(mapping = mpg, ...)
       }
       if (use.theme) {
+        middle <- if (intercept) object$intercept else 0
         pl <- pl + scale_fill_theme(theme = theme, limits = limits,
                                     middle = middle)
       } else {
@@ -167,7 +175,7 @@ ggmid.mid <- function(
       pos <- if (encs[[1L]]$type == "factor" || encs[[2L]]$type == "factor")
         "jitter" else "identity"
       if (type == "compound") {
-        pl <- pl + ggplot2::geom_point(data = data, position = pos, shape = 1L)
+        pl <- pl + ggplot2::geom_point(data = data, position = pos)
       } else if (type == "data") {
         data$mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
         if (intercept)
@@ -176,6 +184,7 @@ ggmid.mid <- function(
           ggplot2::aes(colour = .data[["mid"]]), data = data,
           position = pos, ...)
         if (use.theme) {
+          middle <- if (intercept) object$intercept else 0
           pl <- pl + scale_color_theme(theme = theme, limits = limits,
                                        middle = middle)
         } else {

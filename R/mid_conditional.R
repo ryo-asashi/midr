@@ -95,8 +95,7 @@ mid.conditional <- function(
   if (keep.effects)
     res$conditional.effects <- pm
   res$values <- values
-  class(res) <- c("mid.conditional",
-                  if (keep.effects) "mid.conditional.effects")
+  class(res) <- c("mid.conditional")
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res

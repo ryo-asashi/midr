@@ -6,8 +6,8 @@
 #'
 #' @param x a "mid.importance" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".
+#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
-#' @param scale.palette a character vector of length two to be used as the color palette for the heatmap.
 #' @param ... optional parameters to be passed to the graphing function.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -15,34 +15,33 @@
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' imp <- mid.importance(mid)
-#' plot(imp)
-#' plot(imp, type = "heatmap")
-#' plot(imp, type = "dotchart")
+#' plot(imp, theme = "Tableau 10")
+#' plot(imp, type = "dotchart", theme = "Okabe-Ito")
+#' plot(imp, type = "heatmap", theme = "Blues")
+#' plot(imp, type = "boxplot", theme = "Accent")
 #' @returns
 #' \code{plot.mid.importance()} produces a plot and returns \code{NULL}.
 #' @exportS3Method base::plot
 #'
 plot.mid.importance <- function(
-    x, type = c("barplot", "heatmap", "dotchart", "boxplot"),
-    max.bars = NA, scale.palette = c("#FFFFFF", "gray10"), ...) {
+    x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
+    theme = NULL, max.bars = 30L, ...) {
   type = match.arg(type)
-  if (type == "dotchart") {
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
+  if (type == "dotchart" || type == "barplot") {
     imp <- x$importance
     imp <- imp[1L:min(max.bars, nrow(imp), na.rm = TRUE), ]
-    graphics::dotchart(x = rev(imp$importance), labels = rev(imp$term),
-                       xlab = "importance", ...)
-  } else if (type == "barplot") {
-    imp <- x$importance
-    imp <- imp[1L:min(max.bars, nrow(imp), na.rm = TRUE), ]
-    opar <- graphics::par("mai", "mar", "las")
-    on.exit(graphics::par(opar))
-    tmai <- max(graphics::strwidth(imp$term, "inch"), na.rm = TRUE)
-    nmai <- opar[["mai"]]
-    nm.2 <- nmai[4L] + tmai + 1/16
-    if (nmai[2L] < nm.2) nmai[2L] <- nm.2
-    graphics::par(mai = nmai, las = 1L)
-    graphics::barplot.default(height = rev(imp$importance), xlab = "importance",
-                              names.arg = rev(imp$term), horiz = TRUE, ...)
+    cols <- if (use.theme) {
+      if (theme$type == "qualitative")
+        to.colors(imp$importance > 0, theme)
+      else
+        to.colors(imp$importance, theme)
+    } else "gray35"
+    args <- list(to = imp$importance, labels = as.character(imp$term),
+                 col = cols, horizontal = TRUE, xlab = "importance")
+    args$type <- if (type == "dotchart") "d" else "b"
+    do.call(barplot2, args)
   } else if (type == "heatmap") {
     imp <- x$importance
     rownames(imp) <- terms <- as.character(imp$term)
@@ -61,46 +60,30 @@ plot.mid.importance <- function(
         mat[i, j] <- imp[term, "importance"]
       }
     }
-    spl <- scale.palette
-    if (is.function(spl)) {
-      spl <- spl(12L)
-    } else {
-      if (length(spl) < 2L)
-        spl <- c("#FFFFFF", spl)
-      spl <- grDevices::colorRampPalette(spl)(12L)
-    }
+    if (!use.theme)
+      theme <- color.theme("grayscale")
+    cols <- theme$palette(12L)
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
-    tmai <- max(graphics::strwidth(tags, "inch"), na.rm = TRUE)
-    nmai <- opar[["mai"]]
-    nm.1 <- nmai[3L] + tmai + 1/16
-    nm.2 <- nmai[4L] + tmai + 1/16
-    if (nmai[1L] < nm.1) nmai[1L] <- nm.1
-    if (nmai[2L] < nm.2) nmai[2L] <- nm.2
-    graphics::par(mai = nmai, las = 2L)
-    graphics::image.default(x = seq_len(m), y = seq_len(m), z = mat,
-                            axes = FALSE, col = spl,
-                            xlab = "", ylab = "", ...)
+    graphics::par(mai = adjusted.mai(tags), las = 1L)
+    args <- list(x = seq_len(m), y = seq_len(m), z = mat,
+                 axes = FALSE, col = cols, xlab = "", ylab = "")
+    do.call(graphics::image.default, args)
     at <- seq_len(m + 2) - 1
-    graphics::axis(side = 1L, at = at, labels = c("", tags, ""))
-    graphics::axis(side = 2L, at = at, labels = c("", tags, ""))
+    graphics::axis(1L, at = at, labels = c("", tags, ""))
+    graphics::axis(2L, at = at, labels = c("", tags, ""))
     graphics::axis(3L, labels = FALSE, tick = TRUE, at = at, lwd.ticks = 0)
     graphics::axis(4L, labels = FALSE, tick = TRUE, at = at, lwd.ticks = 0)
   } else if (type == "boxplot") {
     terms <- as.character(attr(x, "terms"))
     terms <- terms[1L:min(max.bars, length(terms), na.rm = TRUE)]
-    preds <- x$predictions[, terms]
-    terms <- factor(terms, levels = rev(terms))
-    box <- data.frame(mid = as.numeric(preds),
-                      term = rep(terms, each = nrow(preds)))
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
-    tmai <- max(graphics::strwidth(terms, "inch"), na.rm = TRUE)
-    nmai <- opar[["mai"]]
-    nm.2 <- nmai[4L] + tmai + 1/16
-    if (nmai[2L] < nm.2) nmai[2L] <- nm.2
-    graphics::par(mai = nmai, las = 1L)
-    graphics::boxplot(mid ~ term, data = box,
+    graphics::par(mai = adjusted.mai(terms), las = 1L)
+    plist <- lapply(rev(terms), function(term) x$predictions[, term])
+    names(plist) <- rev(terms)
+    cols <- if (use.theme) theme$palette(length(terms)) else NULL
+    graphics::boxplot(plist, col = cols,
                       xlab = "mid", ylab = NULL, horizontal = TRUE)
   }
   invisible(NULL)

@@ -15,26 +15,6 @@ characterize <- function(expr) {
   if (is.character(expr)) expr else deparse(expr)
 }
 
-rescale <- function(x, middle = NULL) {
-  if (is.character(x))
-    x <- as.factor(x)
-  if (is.factor(x) || is.logical(x))
-    x <- as.numeric(x)
-  from <- range(x, na.rm = TRUE, finite = TRUE)
-  if (is.null(middle)) {
-    d <- from[2L] - from[1L]
-    if (d == 0)
-      return(ifelse(is.na(x), NA, 0.5))
-    res <- (x - from[1L]) / d
-  } else {
-    d <- 2 * max(abs(from - middle))
-    if (d == 0)
-      return(ifelse(is.na(x), NA, 0.5))
-    res <- (x - middle) / d + 0.5
-  }
-  pmax(0, pmin(1, res))
-}
-
 term.split <- function(x) {
   unlist(strsplit(x, split = ":"), use.names = FALSE)
 }
@@ -296,7 +276,7 @@ weighted.medae <- function(
 #'   theme_midr(grid_type = "xy")
 #' @returns
 #' \code{theme_midr()} provides a ggplot2 theme customized for the midr package.
-#' @export
+#' @export theme_midr
 #'
 theme_midr <- function(
     grid_type = c("none", "x", "y", "xy"),
@@ -327,3 +307,98 @@ theme_midr <- function(
   e1[names(e2)] <- e2
   e1
 }
+
+
+#' @rdname theme_midr
+#' @export par.midr
+#'
+par.midr <- function() {
+  pars <- c("mar", "mai",
+            "font.main", "font.sub", "font.lab",
+            "col")
+  prev.par <- graphics::par(pars)
+  graphics::par(
+    mar = c(4.1, 4.1, 2.1, 1.1),
+    font.main = 6L, font.sub = 6L, font.lab = 6L, font.axis = 6L,
+    cex.main = 1.2, cex.sub = 1, cex.lab = 1, cex.axis = .9,
+    las = 0L,
+    col = "black"
+  )
+  invisible(prev.par)
+}
+
+
+adjusted.mai <- function(labels, margin = 1/16) {
+  mai <- graphics::par("mai")
+  cex <- graphics::par("cex.lab")
+  req <- max(graphics::strwidth(labels, "inch", cex = cex), na.rm = TRUE)
+  req <- mai[4L] + req + margin
+  if (mai[2L] < req)
+    mai[2L] <- req
+  mai
+}
+
+
+barplot2 <- function(
+    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL,
+    type = c("b", "d", "n"), col = "gray65", border = NA, width = .9,
+    main = NULL, sub = NULL, xlab = NULL, ylab = NULL, cex = 1, ...
+) {
+  type <- match.arg(type)
+  if (horizontal) {
+    opar <- graphics::par("mai", "mar", "las")
+    on.exit(graphics::par(opar))
+    graphics::par(mai = adjusted.mai(labels = labels), las = 1L)
+  }
+  n <- max(length(to), length(from))
+  to <- rep(to, length.out = n)
+  from <- rep(from, length.out = n)
+  col <- rep(col, length.out = n)
+  rng <- range(c(to, from), na.rm = TRUE)
+  mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
+  limits <- c(rng[1L] - mgn, rng[2L] + mgn)
+  at <- (if (horizontal) (n:1L) else (1L:n))
+  graphics::plot.new()
+  graphics::plot.window(xlim = if (horizontal) limits else c(0, n) + 0.5,
+                        ylim = if (horizontal) c(0, n) + 0.5 else limits)
+  graphics::box()
+  graphics::title(main = main, sub = sub, xlab = xlab, ylab = ylab)
+  graphics::axis(side = if (horizontal) 1L else 2L)
+  graphics::axis(side = if (horizontal) 2L else 1L, at = at, labels = labels)
+  if (type == "b") {
+    hw <- width / 2
+    args <- as.list(numeric(4L))
+    border <- rep(border, length.out = n)
+    names(args) <- if (horizontal) {
+      c("xleft", "xright", "ybottom", "ytop")
+    } else {
+      c("ybottom", "ytop", "xleft", "xright")
+    }
+    args$col <- 0
+    args$border <- 0
+    for (i in seq_len(n)) {
+      args[[1L]] <- from[i]
+      args[[2L]] <- to[i]
+      args[[3L]] <- at[i] - hw
+      args[[4L]] <- at[i] + hw
+      args[[5L]] <- col[i]
+      args[[6L]] <- border[i]
+      do.call(graphics::rect, args)
+    }
+  } else if (type == "d") {
+    for (i in seq_len(n)) {
+      graphics::lines.default(
+        x = if (horizontal) c(from[i], to[i]) else c(at[i], at[i]),
+        y = if (horizontal) c(at[i], at[i]) else c(from[i], to[i]),
+        col = "black", lty = 3L
+      )
+      graphics::points.default(
+        x = if (horizontal) to[i] else at[i],
+        y = if (horizontal) at[i] else to[i],
+        col = col[i], pch =16L, cex = cex
+      )
+    }
+  }
+  invisible(NULL)
+}
+

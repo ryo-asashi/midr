@@ -6,11 +6,13 @@
 #'
 #' @param x a "mid.breakdown" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot" or "dotchart".
-#' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
-#' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
-#' @param sep a character string to separate terms and values. Default is the return.
+#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param terms an optional character vector specifying the terms to be displayed.
+#' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
+#' @param width a numeric value specifying the width of the bars.
+#' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
 #' @param catchall a character string to be used as the catchall label.
+#' @param format a character string to be used as the format of the \code{sprintf()} function for each component.
 #' @param ... optional parameters to be passed to the graphing function.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -18,18 +20,24 @@
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' mbd <- mid.breakdown(mid, diamonds[1L, ])
-#' plot(mbd)
-#' plot(mbd, type = "dotchart")
+#' plot(mbd, type = "waterfall")
+#' plot(mbd, type = "waterfall", theme = "midr")
+#' plot(mbd, type = "barplot", theme = "Set 1")
+#' plot(mbd, type = "dotchart", theme = "Cividis")
 #' @returns
 #' \code{plot.mid.breakdown()} produces a plot and returns \code{NULL}.
 #' @exportS3Method base::plot
 #'
 plot.mid.breakdown <- function(
-    x, type = c("barplot", "heatmap", "dotchart", "boxplot"),
-    max.bars = 15L, vline = TRUE, sep = " = ",
-    terms = NULL, catchall = "others", ...) {
+    x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
+    terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
+    catchall = "others", format = "%s=%s", ...) {
+  dots <- list(...)
   type <- match.arg(type)
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
   bd <- x$breakdown
+  bd$term <- as.character(bd$term)
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
@@ -45,24 +53,43 @@ plot.mid.breakdown <- function(
     bd[nmax, "mid"] <- resid
     use.catchall <- TRUE
   }
-  bd$term <- paste0(bd$term, sep, bd$value)
-  if (use.catchall) bd[nrow(bd), "term"] <- catchall
-  if (type == "dotchart") {
-    graphics::dotchart(x = rev(bd$mid), labels = rev(bd$term),
-                       xlab = "mid", ...)
-  } else if (type == "barplot") {
-    opar <- graphics::par("mai", "mar", "las", "yaxs")
-    on.exit(graphics::par(opar))
-    tmai <- max(graphics::strwidth(bd$term, "inch"), na.rm = TRUE)
-    nmai <- opar[["mai"]]
-    nm.2 <- nmai[4L] + tmai + 1/16
-    if (nmai[2L] < nm.2) nmai[2L] <- nm.2
-    graphics::par(mai = nmai, las = 1L)
-    graphics::barplot.default(height = rev(bd$mid), xlab = "mid",
-                              names.arg = rev(bd$term), horiz = TRUE, ...)
-    graphics::box()
+  for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
+    term <- bd[i, "term"]
+    bd[i, "term"] <- sprintf(format, bd[i, "term"], bd[i, "value"])
   }
-  if (vline)
-    graphics::abline(v = 0)
+  if (use.catchall)
+    bd[nrow(bd), "term"] <- catchall
+  cols <- if (use.theme) {
+    if (theme$type == "qualitative")
+      to.colors(bd$mid > 0, theme)
+    else
+      to.colors(bd$mid, theme)
+  } else "gray35"
+  if (type == "barplot" || type == "dotchart") {
+    args <- list(to = bd$mid, labels = bd$term,
+                 col = cols, horizontal = TRUE, xlab = "mid")
+    args$type <- if (type == "dotchart") "d" else "b"
+    if (type == "barplot")
+      args$width <- ifnot.null(width, .8)
+    do.call(barplot2, args)
+    if (vline)
+      graphics::abline(v = 0)
+  } else if (type == "waterfall") {
+    width <- ifnot.null(width, .6)
+    hw <- width / 2
+    n <- nrow(bd)
+    cs <- cumsum(c(x$intercept, bd$mid))
+    bd$xmin <- cs[1L:n]
+    bd$xmax <- cs[2L:(n + 1L)]
+    args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
+                 col = cols, horizontal = TRUE, xlab = "mid", width = width)
+    do.call(barplot2, args)
+    for (i in seq_len(n)) {
+      graphics::lines.default(x = rep.int(bd[i, "xmax"], 2L),
+                              y = c(n + 1 - i + hw, max(n - i - hw, 1 - hw)))
+    }
+    if (vline)
+      graphics::abline(v = x$intercept, lty = 3L)
+  }
   invisible(NULL)
 }

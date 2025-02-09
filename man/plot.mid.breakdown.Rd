@@ -6,12 +6,14 @@
 \usage{
 \method{plot}{mid.breakdown}(
   x,
-  type = c("barplot", "heatmap", "dotchart", "boxplot"),
-  max.bars = 15L,
-  vline = TRUE,
-  sep = " = ",
+  type = c("waterfall", "barplot", "dotchart"),
+  theme = NULL,
   terms = NULL,
+  max.bars = 15L,
+  width = NULL,
+  vline = TRUE,
   catchall = "others",
+  format = "\%s=\%s",
   ...
 )
 }
@@ -20,15 +22,19 @@
 
 \item{type}{a character string specifying the type of the plot. One of "barplot" or "dotchart".}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
-
-\item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
-
-\item{sep}{a character string to separate terms and values. Default is the return.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
 \item{terms}{an optional character vector specifying the terms to be displayed.}
 
+\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
+
+\item{width}{a numeric value specifying the width of the bars.}
+
+\item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
+
 \item{catchall}{a character string to be used as the catchall label.}
+
+\item{format}{a character string to be used as the format of the \code{sprintf()} function for each component.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
@@ -47,6 +53,8 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 mbd <- mid.breakdown(mid, diamonds[1L, ])
-plot(mbd)
-plot(mbd, type = "dotchart")
+plot(mbd, type = "waterfall")
+plot(mbd, type = "waterfall", theme = "midr")
+plot(mbd, type = "barplot", theme = "Set 1")
+plot(mbd, type = "dotchart", theme = "Cividis")
 }

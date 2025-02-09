@@ -6,38 +6,38 @@
 \usage{
 \method{plot}{mid.conditional}(
   x,
-  centered = FALSE,
-  draw.dots = TRUE,
-  sample = NULL,
+  type = c("iceplot", "centered"),
+  theme = NULL,
   term = NULL,
-  variable.alpha = NULL,
-  variable.colour = NULL,
-  variable.linetype = NULL,
-  variable.linewidth = NULL,
-  scale.palette = NULL,
+  var.alpha = NULL,
+  var.color = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  dots = TRUE,
+  sample = NULL,
   ...
 )
 }
 \arguments{
 \item{x}{a "mid.conditional" object to be visualized.}
 
-\item{centered}{logical. If \code{TRUE}, the ICE values of each observation are set to zero at the leftmost point of the variable.}
+\item{type}{a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.}
 
-\item{draw.dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
-
-\item{sample}{an optional vector specifying the names of observations to be plotted.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
 \item{term}{an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.}
 
-\item{variable.alpha}{a name of the variable to be used to set \code{alpha}.}
+\item{var.alpha}{a name of the variable to be used to set \code{alpha}.}
 
-\item{variable.colour}{a name of the variable to be used to set \code{colour}.}
+\item{var.color}{a name of the variable to be used to set \code{colour}.}
 
-\item{variable.linetype}{a name of the variable to be used to set \code{linetype}.}
+\item{var.linetype}{a name of the variable to be used to set \code{linetype}.}
 
-\item{variable.linewidth}{a name of the variable to be used to set \code{linewidth}.}
+\item{var.linewidth}{a name of the variable to be used to set \code{linewidth}.}
 
-\item{scale.palette}{a character vector of color names, specifying the colors to be used.}
+\item{dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
+
+\item{sample}{an optional vector specifying the names of observations to be plotted.}
 
 \item{...}{optional parameters to be passed to \code{base::plot()}.}
 }
@@ -53,6 +53,7 @@ The S3 method of \code{plot()} for "mid.conditional" objects creates an visualiz
 \examples{
 data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-mc <- mid.conditional(mid, "Wind", na.omit(airquality))
-plot(mc, variable.colour = "Solar.R", centered = TRUE)
+ice <- mid.conditional(mid, "Wind", na.omit(airquality))
+plot(ice, theme = "Mako", var.color = "Temp")
+plot(ice, type = "centered", theme = "Cividis", var.color = "Temp")
 }

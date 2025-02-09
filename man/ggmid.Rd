@@ -53,15 +53,16 @@ For "mid" objects, \code{ggmid()} visualizes a MID component function using the 
 \details{
 The S3 method of \code{ggmid()} for "mid" objects creates a "ggplot" object that visualizes a MID component function.
 The main layer is drawn using \code{geom_line()} or \code{geom_path()} for a main effect of a quantitative variable, \code{geom_col()} for a main effect of a qualitative variable, and \code{geom_raster()} or \code{geom_rect()} for an interaction effect.
-For other methods of \code{ggmid()}, see \code{help(ggmid.mid.importance)} or \code{help(ggmid.mid.conditional)}.
+For other methods of \code{ggmid()}, see \code{help(ggmid.mid.importance)}, \code{help(ggmid.mid.breakdown)} or \code{help(ggmid.mid.conditional)}.
 }
 \examples{
 data(diamonds, package = "ggplot2")
 set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-ggmid(mid, "carat:clarity")
-ggmid(mid, "carat:clarity", theme = "Spectral", main.effects = TRUE)
+ggmid(mid, "carat")
+ggmid(mid, "clarity")
+ggmid(mid, "carat:clarity", main.effects = TRUE)
 ggmid(mid, "clarity:color", type = "data", theme = "Mako", data = diamonds[idx, ])
 ggmid(mid, "carat:color", type = "compound", data = diamonds[idx, ])
 }

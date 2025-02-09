@@ -11,7 +11,7 @@ mid.plots(
   intercept = FALSE,
   main.effects = FALSE,
   max.plots = NULL,
-  engine = c("ggplot2", "base", "graphics"),
+  engine = c("ggplot2", "graphics"),
   ...
 )
 }

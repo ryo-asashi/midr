@@ -39,7 +39,7 @@ ggmid.mid.conditional <- function(
   con <- object$conditional
   yvar <- "yhat"
   if (!is.null(term)) {
-    if (!inherits(object, "mid.conditional.effects"))
+    if (is.null(object$conditional.effects))
       stop("the term effects are not stored in the object")
     term <- term.check(term, object$terms, stop = TRUE)
     yvar <- paste0("mid(", term, ")")
@@ -67,13 +67,12 @@ ggmid.mid.conditional <- function(
       ggplot2::aes(alpha = .data[[alp]]) +
       ggplot2::labs(alpha = alp)
   }
-  if (!is.null(cl$var.color)) {
+  if (set.color <- !is.null(cl$var.color)) {
     col <- characterize(cl$var.color)
-    middle <- mean(obs[[col]], na.rm = TRUE)
     pl <- pl +
       ggplot2::aes(colour = .data[[col]]) +
       ggplot2::labs(colour = col)
-  } else middle <- 0
+  }
   if (!is.null(cl$var.linetype)) {
     lty <- characterize(cl$var.linetype)
     pl <- pl +
@@ -98,8 +97,11 @@ ggmid.mid.conditional <- function(
   if (dots) {
     pl <- pl + ggplot2::geom_point()
   }
-  if (use.theme) {
-    pl <- pl + scale_color_theme(theme = theme, middle = middle)
+  if (set.color) {
+    if (!use.theme)
+      theme <- "bluescale"
+    pl <- pl + scale_color_theme(theme = theme,
+                                 discrete = is.discrete(obs[[col]]))
   }
   pl
 }

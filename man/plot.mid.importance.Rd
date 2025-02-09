@@ -6,9 +6,9 @@
 \usage{
 \method{plot}{mid.importance}(
   x,
-  type = c("barplot", "heatmap", "dotchart", "boxplot"),
-  max.bars = NA,
-  scale.palette = c("#FFFFFF", "gray10"),
+  type = c("barplot", "dotchart", "heatmap", "boxplot"),
+  theme = NULL,
+  max.bars = 30L,
   ...
 )
 }
@@ -17,9 +17,9 @@
 
 \item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
+\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
-\item{scale.palette}{a character vector of length two to be used as the color palette for the heatmap.}
+\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
@@ -38,7 +38,8 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
-plot(imp)
-plot(imp, type = "heatmap")
-plot(imp, type = "dotchart")
+plot(imp, theme = "Tableau 10")
+plot(imp, type = "dotchart", theme = "Okabe-Ito")
+plot(imp, type = "heatmap", theme = "Blues")
+plot(imp, type = "boxplot", theme = "Accent")
 }

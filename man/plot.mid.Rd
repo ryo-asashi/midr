@@ -7,11 +7,13 @@
 \method{plot}{mid}(
   x,
   term,
-  add.intercept = FALSE,
-  include.main.effects = FALSE,
-  scale.type = "default",
-  scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
+  type = c("effect", "data", "compound"),
+  theme = NULL,
+  intercept = FALSE,
+  main.effects = FALSE,
+  data = NULL,
   cells.count = c(100L, 100L),
+  limits = NULL,
   ...
 )
 }
@@ -20,15 +22,19 @@
 
 \item{term}{a character string specifying the component function to be plotted.}
 
-\item{add.intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
+\item{type}{character string.}
 
-\item{include.main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
+\item{theme}{a character vector of color names or a character string specifying the color theme.}
 
-\item{scale.type}{character string. The color type of the interaction plot. One of "default", "viridis", "gradient".}
+\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
 
-\item{scale.palette}{a character vector of color names specifying the colors to be used in the interaction plot.}
+\item{main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
+
+\item{data}{a data frame to be plotted.}
 
 \item{cells.count}{an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.}
+
+\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
 
 \item{...}{optional parameters to be passed to the graphing function.}
 }
@@ -42,12 +48,13 @@ For "mid" objects, \code{plot()} visualizes a MID component function.
 The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
 }
 \examples{
-data(airquality, package = "datasets")
-airquality$Month <- factor(airquality$Month)
-mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-plot(mid, "Temp")
-plot(mid, "Month")
-plot(mid, "Wind:Temp")
-plot(mid, "Solar.R:Month", scale.type = "viridis",
-     add.intercept = TRUE, include.main.effects = TRUE)
+data(diamonds, package = "ggplot2")
+set.seed(42)
+idx <- sample(nrow(diamonds), 1e4)
+mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
+plot(mid, "carat")
+plot(mid, "clarity")
+plot(mid, "carat:clarity", main.effects = TRUE)
+plot(mid, "clarity:color", type = "data", theme = "Mako", data = diamonds[idx, ])
+plot(mid, "carat:color", type = "compound", data = diamonds[idx, ])
 }

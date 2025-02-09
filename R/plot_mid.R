@@ -6,62 +6,107 @@
 #'
 #' @param x a "mid" object to be visualized.
 #' @param term a character string specifying the component function to be plotted.
-#' @param add.intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
-#' @param include.main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
-#' @param scale.type character string. The color type of the interaction plot. One of "default", "viridis", "gradient".
-#' @param scale.palette a character vector of color names specifying the colors to be used in the interaction plot.
+#' @param type character string.
+#' @param theme a character vector of color names or a character string specifying the color theme.
+#' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
+#' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
 #' @param cells.count an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.
+#' @param data a data frame to be plotted.
+#' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param ... optional parameters to be passed to the graphing function.
 #' @examples
-#' data(airquality, package = "datasets")
-#' airquality$Month <- factor(airquality$Month)
-#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-#' plot(mid, "Temp")
-#' plot(mid, "Month")
-#' plot(mid, "Wind:Temp")
-#' plot(mid, "Solar.R:Month", scale.type = "viridis",
-#'      add.intercept = TRUE, include.main.effects = TRUE)
+#' data(diamonds, package = "ggplot2")
+#' set.seed(42)
+#' idx <- sample(nrow(diamonds), 1e4)
+#' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
+#' plot(mid, "carat")
+#' plot(mid, "clarity")
+#' plot(mid, "carat:clarity", main.effects = TRUE)
+#' plot(mid, "clarity:color", type = "data", theme = "Mako", data = diamonds[idx, ])
+#' plot(mid, "carat:color", type = "compound", data = diamonds[idx, ])
 #' @returns
 #' \code{plot.mid()} produces a line plot or bar plot for a main effect and a filled contour plot for an interaction and returns \code{NULL}.
 #' @exportS3Method base::plot
 #'
 plot.mid <- function(
-    x, term, add.intercept = FALSE, include.main.effects = FALSE,
-    scale.type = "default", scale.palette = c("#2f7a9a", "#FFFFFF", "#7e1952"),
-    cells.count = c(100L, 100L), ...) {
+    x, term, type = c("effect", "data", "compound"), theme = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL,
+    cells.count = c(100L, 100L), limits = NULL, ...) {
   dots <- list(...)
   tags <- term.split(term)
   term <- term.check(term, x$terms, stop = TRUE)
+  type <- match.arg(type)
+  if (missing(theme) && length(tags) == 2L) theme <- "midr"
+  theme <- color.theme(theme)
+  use.theme <- inherits(theme, "color.theme")
+  if (type == "data" || type == "compound") {
+    if (is.null(data))
+      stop(paste0("'data' must be supplied for the '", type, "' plot"))
+    preds <- predict.mid(x, data, terms = unique(c(tags, term)),
+                         type = "terms", na.action = "na.pass")
+    data <- model.reframe(model = x, data = data)
+  }
+  # main effect
   if ((len <- length(tags)) == 1L) {
-    # main effect
-    df <- x$main.effects[[term]]
-    df <- stats::na.omit(df)
-    if (add.intercept)
+    df <- stats::na.omit(x$main.effects[[term]])
+    enc <- x$encoders[["main.effects"]][[term]]
+    if (intercept)
       df$mid <- df$mid + x$intercept
-    if (is.numeric(df[, 1L])) {
-      if (x$encoders[["main.effects"]][[term]]$type == "constant") {
+    middle <- if (intercept) x$intercept else 0
+    if (type == "effect" || type == "compound") {
+      if (enc$type == "constant") {
         cns <- paste0(term, c("_min", "_max"))
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
                           y = rep(df$mid, each = 2L))
-        args <- list(x = rdf$x, y = rdf$y, type = "l",
-                     ylab = "mid", xlab = term)
-      } else {
-        args <- list(x = df[[term]], y = df$mid, type = "l",
-                     ylab = "mid", xlab = term)
+        cols <- if (use.theme) to.colors(rdf$y, theme, middle = middle) else 1L
+        args <- list(x = rdf$x, y = rdf$y, type = "l", col = cols,
+                     ylab = "mid", xlab = term, ylim = limits)
+        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        do.call(graphics::plot.default, args)
+      } else if (enc$type == "linear") {
+        cols <- if (use.theme) to.colors(df$mid, theme, middle = middle) else 1L
+        args <- list(x = df[[term]], y = df$mid, type = "l", col = cols,
+                     ylab = "mid", xlab = term, ylim = limits)
+        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        do.call(graphics::plot.default, args)
+      } else if (enc$type == "factor") {
+        cols <- if (use.theme)
+          to.colors(df$mid, theme, middle = middle) else "gray35"
+        args <- list(to = df$mid, labels = df[[term]],
+                     ylab = "mid", xlab = term, col = cols)
+        for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+        do.call(barplot2, args)
       }
-      for (arg in names(dots))
-        args[[arg]] <- dots[[arg]]
-      do.call("plot", args)
-    } else {
-      ht <- df$mid
-      names(ht) <- df[[term]]
-      args <- list(height = ht, ylab = "mid", xlab = term)
-      for (arg in names(dots))
-        args[[arg]] <- dots[[arg]]
-      do.call("barplot", args)
     }
-  } else if (len == 2L) {
+    if (type == "data" || type == "compound") {
+      xval <- data[, term]
+      mids <- as.numeric(preds[, term])
+      if (intercept) mids <- mids + x$intercept
+      cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
+      if (enc$type == "factor") {
+        xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
+        if (type == "data") {
+          args <- list(to = df$mid, labels = df[[term]], type = "n",
+                       ylab = "mid", xlab = term)
+          for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+          do.call(barplot2, args)
+          graphics::points(x = xval, y = mids, pch = 16L, col = cols)
+        } else if (type == "compound") {
+          graphics::points(x = xval, y = mids, pch = 16L)
+        }
+      } else if (enc$type != "factor") {
+        if (type == "data") {
+            args <- list(x = xval, y = mids, xlab = term, ylab = "mid",
+                         ylim = limits, type = "p", col = cols, pch = 16L)
+            for (arg in names(dots)) args[[arg]] <- dots[[arg]]
+            do.call(graphics::plot.default, args)
+        } else if (type == "compound") {
+          graphics::points(x = xval, y = mids, pch = 16L, col = cols)
+        }
+      }
+    }
     # interaction
+  } else if (len == 2L) {
     ms <- cells.count
     if (length(ms) == 1L)
       ms <- c(ms, ms)
@@ -88,9 +133,9 @@ plot.mid <- function(
     colnames(rdf) <- tags
     z <- mid.f(x, term, rdf)
     zmid <- 0
-    if (add.intercept)
+    if (intercept)
       z <- z + (zmid <- x$intercept)
-    if (include.main.effects)
+    if (main.effects)
       z <- z + mid.f(x, tags[1L], rdf) + mid.f(x, tags[2L], rdf)
     zmat <- matrix(z, nrow = ms[1L], ncol = ms[2L])
     zlim <- range(z)
@@ -98,38 +143,60 @@ plot.mid <- function(
       if (encs[[i]]$type == "factor")
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
     }
-    if (is.function(scale.type)) {
-      stop("function is not allowed for 'scale.type' of this function")
-    } else if (scale.type == "default") {
+    if (!use.theme)
+      theme <- color.theme("midr")
+    if (theme$type == "diverging") {
       zmax <- max(abs(zlim - zmid))
       zlim <- c(-zmax, zmax) + zmid
-    } else if (scale.type == "viridis") {
-      scale.palette <-
-        c("#440154FF", "#482878FF", "#3E4A89FF", "#31688EFF", "#26828EFF",
-          "#1F9E89FF", "#35B779FF", "#6DCD59FF", "#B4DE2CFF", "#FDE725FF")
-    } else if (scale.type == "gradient") {
-      scale.palette <- c("#132B43", "#56B1F7")
-    } else if (scale.type != "uncentralized") {
-      stop("invalid 'scale.type' is passed")
     }
-    if (is.function(scale.palette)) {
-      pal <- scale.palette
-    } else {
-      pal <- grDevices::colorRampPalette(scale.palette)
+    pal <- theme$palette
+    if (type == "data" || type == "compound") {
+      xval <- data[[tags[1L]]]
+      if (encs[[1L]]$type == "factor")
+        xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
+      yval <- data[[tags[2L]]]
+      if (encs[[2L]]$type == "factor")
+        yval <- as.integer(yval) - stats::runif(length(yval), -0.4, 0.4)
     }
-    plot.axes <- substitute(
-      if (args$axes) {
-        graphics::title(main = "", xlab = "", ylab = "")
-        graphics::axis(side = 1L, at = lat[[1L]], labels = lab[[1L]])
-        graphics::axis(side = 2L, at = lat[[2L]], labels = lab[[2L]])
+    if (type == "effect" || type == "compound") {
+      plot.axes <- substitute(
+        if (args$axes) {
+          graphics::title(main = "", xlab = "", ylab = "")
+          graphics::axis(side = 1L, at = lat[[1L]], labels = lab[[1L]])
+          graphics::axis(side = 2L, at = lat[[2L]], labels = lab[[2L]])
+          if (type == "compound") {
+            points(x = xval, y = yval, pch = 16L)
+          }
+        }
+      )
+      args <- list(x = xy[[1L]], y = xy[[2L]], z = zmat, zlim = zlim,
+                   xlab = tags[1L], ylab = tags[2L], color.palette = pal,
+                   plot.axes = plot.axes, axes = TRUE)
+      for (arg in names(dots))
+        args[[arg]] <- dots[[arg]]
+      do.call(graphics::filled.contour, args)
+    } else if (type == "data") {
+      mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
+      if (intercept)
+        mid <- mid + x$intercept
+      middle <- if (intercept) x$intercept else 0
+      cols <- to.colors(mid, theme, middle = middle)
+      args <- list(x = xval, y = yval, type = "n",
+                   xlab = tags[1L], ylab = tags[2L], axes = FALSE)
+      for (arg in names(dots))
+        args[[arg]] <- dots[[arg]]
+      do.call(graphics::plot.default, args)
+      graphics::box()
+      for (i in 1L:2L) {
+        if (encs[[i]]$type == "factor") {
+          lvs <- levels(encs[[i]]$frame[[1L]])
+          graphics::axis(side = i, at = seq_len(encs[[i]]$n), labels = lvs)
+        } else {
+          graphics::axis(side = i)
+        }
       }
-    )
-    args <- list(x = xy[[1L]], y = xy[[2L]], z = zmat, zlim = zlim,
-                 xlab = tags[1L], ylab = tags[2L], color.palette = pal,
-                 plot.axes = plot.axes, axes = TRUE)
-    for (arg in names(dots))
-      args[[arg]] <- dots[[arg]]
-    do.call("filled.contour", args)
+      graphics::points(x = xval, y = yval, col = cols, pch = 16L)
+    }
   }
   invisible(NULL)
 }

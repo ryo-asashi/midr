@@ -72,9 +72,7 @@ ggmid.mid.importance <- function(
       ggplot2::aes(.data[["x"]], .data[["y"]], fill = .data[["importance"]])) +
       ggplot2::labs(x = NULL, y = NULL) +
       ggplot2::geom_tile(...)
-    if (use.theme) {
-      pl <- pl + scale_fill_theme(theme = theme)
-    }
+    pl <- pl + scale_fill_theme(theme = if (use.theme) theme else "grayscale")
     return(pl)
   } else if (type == "boxplot") {
     terms <- as.character(attr(object, "terms"))

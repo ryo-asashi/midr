@@ -2,6 +2,7 @@
 % Please edit documentation in R/misc_functions.R
 \name{theme_midr}
 \alias{theme_midr}
+\alias{par.midr}
 \title{Theme for ggplot Objects}
 \usage{
 theme_midr(
@@ -11,6 +12,8 @@ theme_midr(
   base_line_size = base_size/22,
   base_rect_size = base_size/22
 )
+
+par.midr()
 }
 \arguments{
 \item{grid_type}{one of "none", "x", "y" or "xy".}

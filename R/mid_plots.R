@@ -23,7 +23,7 @@
 mid.plots <- function(
     object, terms = mid.terms(object, interaction = FALSE),
     limits = c(NA, NA), intercept = FALSE, main.effects = FALSE,
-    max.plots = NULL, engine = c("ggplot2", "base", "graphics"), ...) {
+    max.plots = NULL, engine = c("ggplot2", "graphics"), ...) {
   engine <- match.arg(engine)
   if (length(terms) == 0L)
     return(NULL)
