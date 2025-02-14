@@ -340,9 +340,9 @@ adjusted.mai <- function(labels, margin = 1/16) {
 
 
 barplot2 <- function(
-    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL,
-    type = c("b", "d", "n"), col = "gray65", border = NA, width = .9,
-    main = NULL, sub = NULL, xlab = NULL, ylab = NULL, cex = 1, ...
+    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL, width = .9,
+    type = c("b", "d", "n"), col = NA, fill = "gray65", lty = NULL, lwd = 1L,
+    main = NULL, sub = NULL, xlab = NULL, ylab = NULL, cex = 1, pch = 16, ...
 ) {
   type <- match.arg(type)
   if (horizontal) {
@@ -354,6 +354,7 @@ barplot2 <- function(
   to <- rep(to, length.out = n)
   from <- rep(from, length.out = n)
   col <- rep(col, length.out = n)
+  fill <- rep(fill, length.out = n)
   rng <- range(c(to, from), na.rm = TRUE)
   mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
   limits <- ifnot.null(limits, c(rng[1L] - mgn, rng[2L] + mgn))
@@ -367,20 +368,21 @@ barplot2 <- function(
   graphics::axis(side = if (horizontal) 2L else 1L, at = at, labels = labels)
   if (type == "b") {
     hw <- width / 2
-    args <- as.list(numeric(6L))
-    border <- rep(border, length.out = n)
+    args <- as.list(numeric(8L))
     names(args) <- if (horizontal) {
-      c("xleft", "xright", "ybottom", "ytop", "col", "border")
+      c("xleft", "xright", "ybottom", "ytop", "col", "border", "lty", "lwd")
     } else {
-      c("ybottom", "ytop", "xleft", "xright", "col", "border")
+      c("ybottom", "ytop", "xleft", "xright", "col", "border", "lty", "lwd")
     }
+    args[[7L]] <- ifnot.null(lty, 1L)
+    args[[8L]] <- ifnot.null(lwd, 1L)
     for (i in seq_len(n)) {
       args[[1L]] <- from[i]
       args[[2L]] <- to[i]
       args[[3L]] <- at[i] - hw
       args[[4L]] <- at[i] + hw
-      args[[5L]] <- col[i]
-      args[[6L]] <- border[i]
+      args[[5L]] <- fill[i]
+      args[[6L]] <- col[i]
       do.call(graphics::rect, args)
     }
   } else if (type == "d") {
@@ -388,12 +390,12 @@ barplot2 <- function(
       graphics::lines.default(
         x = if (horizontal) c(from[i], to[i]) else c(at[i], at[i]),
         y = if (horizontal) c(at[i], at[i]) else c(from[i], to[i]),
-        col = "black", lty = 3L
+        col = "black", lty = ifnot.null(lty, 3L), lwd = ifnot.null(lwd, 1L)
       )
       graphics::points.default(
         x = if (horizontal) to[i] else at[i],
         y = if (horizontal) at[i] else to[i],
-        col = col[i], pch =16L, cex = cex
+        col = col[i], pch = pch, cex = cex
       )
     }
   }
@@ -401,11 +403,11 @@ barplot2 <- function(
 }
 
 override <- function(args, dots,
-    params = c("color", "colour", "col", "size", "cex",
+    params = c("fill", "color", "colour", "col", "size", "cex", "shape", "pch",
                "linetype", "lty", "linewidth", "lwd",
                "title", "main", "subtitle", "sub", "xlab", "ylab"),
     read.as = list(color = "col", colour = "col", size = "cex",
-                   linetype = "lty", linewidth = "lwd",
+                   shape = "pch", linetype = "lty", linewidth = "lwd",
                    title = "main", subtitle = "sub")
   ) {
   for (param in params) {

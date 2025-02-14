@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mid.R
 \name{plot.mid}
 \alias{plot.mid}
-\title{Plot MID with Basic Functions}
+\title{Plot MID with graphics Package}
 \usage{
 \method{plot}{mid}(
   x,
@@ -36,7 +36,7 @@
 
 \item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
 
-\item{...}{optional parameters to be passed to the graphing function.}
+\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
 \code{plot.mid()} produces a line plot or bar plot for a main effect and a filled contour plot for an interaction and returns \code{NULL}.
@@ -45,7 +45,7 @@
 For "mid" objects, \code{plot()} visualizes a MID component function.
 }
 \details{
-The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
+The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using the functions of the graphics package.
 }
 \examples{
 data(diamonds, package = "ggplot2")

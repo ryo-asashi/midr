@@ -1,8 +1,8 @@
-#' Plot MID with Basic Functions
+#' Plot MID with graphics Package
 #'
 #' For "mid" objects, \code{plot()} visualizes a MID component function.
 #'
-#' The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using \code{base::plot()} for a main effect of a quantitative variable, \code{graphics::barplot()} for a main effect of a qualitative variable, and \code{graphics::filled.contour()} for an interaction.
+#' The S3 method of \code{plot()} for "mid" objects creates a visualization of a MID component function using the functions of the graphics package.
 #'
 #' @param x a "mid" object to be visualized.
 #' @param term a character string specifying the component function to be plotted.
@@ -13,7 +13,7 @@
 #' @param cells.count an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.
 #' @param data a data frame to be plotted.
 #' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
-#' @param ... optional parameters to be passed to the graphing function.
+#' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -73,7 +73,7 @@ plot.mid <- function(
         cols <- if (use.theme)
           to.colors(df$mid, theme, middle = middle) else "gray35"
         args <- list(to = df$mid, labels = df[[term]], limits = limits,
-                     ylab = "mid", xlab = term, col = cols)
+                     ylab = "mid", xlab = term, fill = cols, col = NA)
         args <- override(args, dots)
         do.call(barplot2, args)
       }
@@ -87,10 +87,12 @@ plot.mid <- function(
         xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
-                       ylab = "mid", xlab = term, limits = limits)
+                       ylab = "mid", xlab = term, limits = limits,
+                       x = xval, y = mids, col = cols, pch = 16L, cex = 1L)
           args <- override(args, dots)
           do.call(barplot2, args)
-          graphics::points.default(x = xval, y = mids, pch = 16L, col = cols)
+          args <- args[c("x", "y", "col", "pch", "cex")]
+          do.call(graphics::points.default, args)
         } else if (type == "compound") {
           graphics::points.default(x = xval, y = mids, pch = 16L)
         }
@@ -172,8 +174,10 @@ plot.mid <- function(
       args <- list(x = xy[[1L]], y = xy[[2L]], z = zmat, zlim = zlim,
                    xlab = tags[1L], ylab = tags[2L], color.palette = pal,
                    plot.axes = plot.axes, las = graphics::par("las"),
-                   axes = TRUE)
+                   axes = TRUE, fill = NULL, col = NULL)
       args <- override(args, dots)
+      args$col <- args$fill
+      args$fill <- NULL
       do.call(graphics::filled.contour, args)
     } else if (type == "data") {
       mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
@@ -181,8 +185,8 @@ plot.mid <- function(
         mid <- mid + x$intercept
       middle <- if (intercept) x$intercept else 0
       cols <- to.colors(mid, theme, middle = middle)
-      args <- list(x = xval, y = yval, type = "n",
-                   xlab = tags[1L], ylab = tags[2L], axes = FALSE)
+      args <- list(x = xval, y = yval, type = "n", col = cols, pch = 16L,
+                   cex = 1L, xlab = tags[1L], ylab = tags[2L], axes = FALSE)
       args <- override(args, dots)
       do.call(graphics::plot.default, args)
       graphics::box()
@@ -194,7 +198,8 @@ plot.mid <- function(
           graphics::axis(side = i)
         }
       }
-      graphics::points(x = xval, y = yval, col = cols, pch = 16L)
+      args <- args[c("x", "y", "col", "pch", "cex")]
+      do.call(graphics::points.default, args)
     }
   }
   invisible(NULL)

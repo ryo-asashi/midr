@@ -156,14 +156,31 @@ wrap.theme <- function(
 #' @param name an optional character string, specifying the name of the color theme.
 #' @param ... optional arguments to be passed to palette or ramp functions.
 #' @examples
-#' (ct <- color.theme("Mako"))
+#' ct <- color.theme("Mako")
 #' ct$palette(5L)
 #' ct$ramp(seq.int(0, 1, 1/4))
-#' (ct <- color.theme("RdBu"))
+#' ct <- color.theme("RdBu")
 #' ct$palette(5L)
 #' ct$ramp(seq.int(0, 1, 1/4))
-#' (ct <- color.theme("Tableau 10"))
+#' ct <- color.theme("Tableau 10")
 #' ct$palette(10L)
+#' pals <- c("midr", "grayscale", "bluescale", hcl.pals(), palette.pals())
+#' par(mfrow = c(5L, 2L))
+#' for (pal in pals[1:10]) plot(color.theme(pal))
+#' for (pal in pals[11:20]) plot(color.theme(pal))
+#' for (pal in pals[21:30]) plot(color.theme(pal))
+#' for (pal in pals[31:40]) plot(color.theme(pal))
+#' for (pal in pals[41:50]) plot(color.theme(pal))
+#' for (pal in pals[51:60]) plot(color.theme(pal))
+#' for (pal in pals[61:70]) plot(color.theme(pal))
+#' for (pal in pals[71:80]) plot(color.theme(pal))
+#' for (pal in pals[81:90]) plot(color.theme(pal))
+#' for (pal in pals[91:100]) plot(color.theme(pal))
+#' for (pal in pals[101:110]) plot(color.theme(pal))
+#' for (pal in pals[111:120]) plot(color.theme(pal))
+#' for (pal in pals[121:130]) plot(color.theme(pal))
+#' for (pal in pals[131:134]) plot(color.theme(pal))
+#' par(mfrow = c(1L, 1L))
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
 #' \item{ramp}{the function that takes a numeric vector \code{x} of the values within [0, 1] and returns a color name vector.}

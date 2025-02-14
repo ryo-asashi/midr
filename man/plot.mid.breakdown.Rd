@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mid_breakdown.R
 \name{plot.mid.breakdown}
 \alias{plot.mid.breakdown}
-\title{Plot MID Breakdown with Basic Functions}
+\title{Plot MID Breakdown with graphics Package}
 \usage{
 \method{plot}{mid.breakdown}(
   x,
@@ -36,7 +36,7 @@
 
 \item{format}{a character string to be used as the format of the \code{sprintf()} function for each component.}
 
-\item{...}{optional parameters to be passed to the graphing function.}
+\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
 \code{plot.mid.breakdown()} produces a plot and returns \code{NULL}.
@@ -45,7 +45,7 @@
 For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
 }
 \details{
-The S3 method of \code{plot()} for "mid.breakdown" objects creates a visualization of the MID breakdown using \code{graphics::barplot()} or \code{graphics::dotchart()}.
+The S3 method of \code{plot()} for "mid.breakdown" objects creates a visualization of the MID breakdown using the functions of the graphics package.
 }
 \examples{
 data(diamonds, package = "ggplot2")

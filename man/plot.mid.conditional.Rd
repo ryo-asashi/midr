@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mid_conditional.R
 \name{plot.mid.conditional}
 \alias{plot.mid.conditional}
-\title{Plot ICE of MID Model with Basic Functions}
+\title{Plot ICE of MID Model with graphics Package}
 \usage{
 \method{plot}{mid.conditional}(
   x,
@@ -39,7 +39,7 @@
 
 \item{sample}{an optional vector specifying the names of observations to be plotted.}
 
-\item{...}{optional parameters to be passed to \code{base::plot()}.}
+\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
 \code{plot.mid.conditional()} produces an ICE plot and invisibly returns the ICE matrix used for the plot.
@@ -48,7 +48,7 @@
 For "mid.conditional" objects, \code{plot()} visualizes ICE curves of a MID model.
 }
 \details{
-The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
+The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using the functions of the graphics package.
 }
 \examples{
 data(airquality, package = "datasets")

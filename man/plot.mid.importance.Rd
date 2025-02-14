@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mid_importance.R
 \name{plot.mid.importance}
 \alias{plot.mid.importance}
-\title{Plot MID Importance with Basic Functions}
+\title{Plot MID Importance with graphics Package}
 \usage{
 \method{plot}{mid.importance}(
   x,
@@ -21,7 +21,7 @@
 
 \item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
 
-\item{...}{optional parameters to be passed to the graphing function.}
+\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
 \code{plot.mid.importance()} produces a plot and returns \code{NULL}.
@@ -30,7 +30,7 @@
 For "mid.importance" objects, \code{plot()} visualizes the importance of MID component functions.
 }
 \details{
-The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using \code{graphics::barplot()}, \code{graphics::image()} or \code{graphics::dotchart()}.
+The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using the functions of the graphics package.
 }
 \examples{
 data(diamonds, package = "ggplot2")

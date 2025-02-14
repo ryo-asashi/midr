@@ -1,8 +1,8 @@
-#' Plot MID Breakdown with Basic Functions
+#' Plot MID Breakdown with graphics Package
 #'
 #' For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
 #'
-#' The S3 method of \code{plot()} for "mid.breakdown" objects creates a visualization of the MID breakdown using \code{graphics::barplot()} or \code{graphics::dotchart()}.
+#' The S3 method of \code{plot()} for "mid.breakdown" objects creates a visualization of the MID breakdown using the functions of the graphics package.
 #'
 #' @param x a "mid.breakdown" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot" or "dotchart".
@@ -13,7 +13,7 @@
 #' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
 #' @param catchall a character string to be used as the catchall label.
 #' @param format a character string to be used as the format of the \code{sprintf()} function for each component.
-#' @param ... optional parameters to be passed to the graphing function.
+#' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -67,10 +67,15 @@ plot.mid.breakdown <- function(
   } else "gray35"
   if (type == "barplot" || type == "dotchart") {
     args <- list(to = bd$mid, labels = bd$term,
-                 col = cols, horizontal = TRUE, xlab = "mid")
-    args$type <- if (type == "dotchart") "d" else "b"
-    if (type == "barplot")
+                 horizontal = TRUE, xlab = "mid")
+    if (type == "dotchart") {
+      args$type <- "d"
+      args$col <- cols
+    } else {
+      args$type <- "b"
+      args$fill <- cols
       args$width <- ifnot.null(width, .8)
+    }
     args <- override(args, dots)
     do.call(barplot2, args)
     if (vline)
@@ -83,12 +88,15 @@ plot.mid.breakdown <- function(
     bd$xmin <- cs[1L:n]
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
-                 col = cols, horizontal = TRUE, xlab = "mid", width = width)
+                 fill = cols, horizontal = TRUE, xlab = "mid", width = width,
+                 lty = 1L, lwd = 1L, col = NULL)
     args <- override(args, dots)
     do.call(barplot2, args)
     for (i in seq_len(n)) {
       graphics::lines.default(x = rep.int(bd[i, "xmax"], 2L),
-                              y = c(n + 1 - i + hw, max(n - i - hw, 1 - hw)))
+                              y = c(n + 1 - i + hw, max(n - i - hw, 1 - hw)),
+                              col = ifnot.null(args$col, 1L),
+                              lty = args$lty, lwd = args$lwd)
     }
     if (vline)
       graphics::abline(v = x$intercept, lty = 3L)

@@ -1,8 +1,8 @@
-#' Plot ICE of MID Model with Basic Functions
+#' Plot ICE of MID Model with graphics Package
 #'
 #' For "mid.conditional" objects, \code{plot()} visualizes ICE curves of a MID model.
 #'
-#' The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using \code{base:plot()}.
+#' The S3 method of \code{plot()} for "mid.conditional" objects creates an visualization of ICE curves of a fitted MID model using the functions of the graphics package.
 #'
 #' @param x a "mid.conditional" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.
@@ -14,7 +14,7 @@
 #' @param var.linewidth a name of the variable to be used to set \code{linewidth}.
 #' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
-#' @param ... optional parameters to be passed to \code{base::plot()}.
+#' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #' @examples
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
@@ -92,12 +92,12 @@ plot.mid.conditional <- function(
   }
   args <- list(x = values, ylim = range(mat), xlab = variable,
                ylab = yvar, type = "l", xaxt = if (fv) "n")
+  dcol <- aes$col
   args <- override(args, dt)
   for (arg in c("col", "lty", "lwd", "alpha")) {
     if (!is.null(dt[[arg]]))
       aes[[arg]] <- rep_len(dt[[arg]], length.out = n)
   }
-  aes$dotcol <- aes$col
   if (!is.null(aes$alpha)) {
     clr <- grDevices::col2rgb(col = aes$col)
     aes$col <- grDevices::rgb(clr[1L,], clr[2L,], clr[3L,],
@@ -121,8 +121,8 @@ plot.mid.conditional <- function(
       if (!is.null(attr(values, "catchall")))
         obs[is.na(obs[, variable]), variable] <- attr(values, "catchall")
     }
-    graphics::points(x = obs[, variable], y = obs[, yvar],
-                     pch = 16L, col = aes$dotcol)
+    graphics::points.default(x = obs[, variable], y = obs[, yvar],
+                             pch = 16L, col = dcol)
   }
   invisible(mat)
 }
