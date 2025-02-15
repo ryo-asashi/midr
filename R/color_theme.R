@@ -144,7 +144,7 @@ wrap.theme <- function(
   structure(theme, colors = colors, class = "color.theme")
 }
 
-#' Color Theme for Graphics
+#' Color Themes for Graphics
 #'
 #' \code{color.theme()} returns an object of class "color.theme" that provides two types of color functions.
 #'

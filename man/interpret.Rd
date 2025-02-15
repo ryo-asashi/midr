@@ -142,21 +142,21 @@ The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the
 data(cars, package = "datasets")
 model <- lm(dist ~ I(speed^2) + speed, cars)
 mid <- interpret(dist ~ speed, cars, model)
-plot(mid, "speed", add.intercept = TRUE) +
+plot(mid, "speed", intercept = TRUE) +
   points(cars)
 
 # customize the flexibility of a MID model
 data(Nile, package = "datasets")
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
   points(x = 1L:100L, y = Nile)
 # reduce the number of knots by setting the 'k' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
   points(x = 1L:100L, y = Nile)
 # perform a pseudo smoothing by setting the 'lambda' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-plot(mid, "x", add.intercept = TRUE, ylim = c(600L, 1300L)) +
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
   points(x = 1L:100L, y = Nile)
 
 # fit a MID model as a predictive model
