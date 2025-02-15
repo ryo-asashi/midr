@@ -7,6 +7,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+pkgs <- c("ggplot2", "palmerpenguins")
+for (pkg in pkgs) {
+  if (!(pkg %in% installed.packages())) {
+    install.packages(pkg)
+  }
+}
 ```
 
 ## Fitting a Predictive MID Model
@@ -54,7 +61,7 @@ title(main = 'MID Main Effect: type = "effect"')
 plot(mid, term = "island")
 title(main = 'MID Main Effect: type = "effect"')
 plot(mid, term = "bill_depth_mm", type = "data", data = penguins,
-     col = as.integer(penguins$species))
+     pch = ifelse(Adelies, 16L, 1L))
 title(main = 'MID Main Effect: type = "data"')
 plot(mid, term = "flipper_length_mm", type = "compound",
      data = penguins, theme = "Vik")
