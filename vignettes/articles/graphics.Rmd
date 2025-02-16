@@ -1,5 +1,5 @@
 ---
-title: "Visualization with the graphics package"
+title: "Visualization with graphics"
 ---
 
 ```{r, include = FALSE}
@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("ggplot2", "palmerpenguins")
+pkgs <- c("palmerpenguins")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
     install.packages(pkg)
@@ -16,11 +16,8 @@ for (pkg in pkgs) {
 }
 ```
 
-## Fitting a Predictive MID Model
-
 ```{r setup}
 # load required packages
-library(ggplot2)
 library(midr)
 library(palmerpenguins)
 
@@ -41,40 +38,41 @@ imp <- mid.importance(mid)
 
 # create importance plots
 par.midr()
-plot(imp, theme = "Accent")
+plot(imp)
 title(main = 'MID Importance: type = "barplot"')
-plot(imp, type = "dotchart", theme = "Tableau 10", cex = 2)
+plot(imp, type = "dotchart", theme = "Accent", cex = 2)
 title(main = 'MID Importance: type = "dotchart"')
-plot(imp, type = "heatmap", theme = "Oslo")
+plot(imp, type = "heatmap", theme = "grayscale")
 title(main = 'MID Importance: type = "heatmap"')
-plot(imp, type = "boxplot", fill = "#AC2025", cex = .5)
+plot(imp, type = "boxplot", cex = .5)
 title(main = 'MID Importance: type = "boxplot"')
 ```
 
-## MID Effect Plot
+## MID Component Plot
 
 ```{r effect}
-# create effect plots
+# create component plots
 par.midr()
 plot(mid, term = "bill_length_mm")
 title(main = 'MID Main Effect: type = "effect"')
 plot(mid, term = "island")
 title(main = 'MID Main Effect: type = "effect"')
 plot(mid, term = "bill_depth_mm", type = "data", data = penguins,
-     pch = ifelse(Adelies, 16L, 1L))
+     pch = ifelse(Adelies, 1L, 4L))
 title(main = 'MID Main Effect: type = "data"')
-plot(mid, term = "flipper_length_mm", type = "compound",
-     data = penguins, theme = "Vik")
+plot(mid, term = "flipper_length_mm", type = "compound", data = penguins)
 title(main = 'MID Main Effect: type = "compound"')
-plot(mid, term = "island:bill_length_mm", main.effects = TRUE)
+plot(mid, term = "island:bill_length_mm")
 title(main = 'MID Interaction: type = "effect"')
-plot(mid, term = "bill_depth_mm:bill_length_mm", type = "data",
-     theme = "Berlin", main.effects = TRUE, 
-     data = penguins, pch = ifelse(Adelies, 16L, 1L))
+plot(mid, term = "bill_depth_mm:bill_length_mm")
+title(main = 'MID Interaction: type = "effect"')
+plot(mid, term = "island:bill_length_mm", type = "data",
+     main.effects = TRUE, data = penguins,
+     pch = ifelse(Adelies, 16L, 17L))
 title(main = 'MID Interaction: type = "data"')
 plot(mid, term = "bill_depth_mm:bill_length_mm", type = "compound",
      theme = "Vik", intercept = TRUE, main.effects = TRUE,
-     data = penguins[Adelies, ])
+     data = na.omit(penguins[Adelies, ]))
 title(main = 'MID Interaction: type = "comound"')
 ```
 
@@ -86,13 +84,13 @@ ice <- mid.conditional(mid, variable = "bill_length_mm",
                        data = penguins)
 # create plots
 par.midr()
-plot(ice, alpha = .6, col = ifelse(Adelies, "darkred", "gray60"))
+plot(ice, alpha = .6)
 title(main = 'MID Conditional: type = "iceplot"')
 plot(ice, theme = "Tableau 10", var.color = "island")
 title(main = 'MID Conditional: type = "iceplot"')
-plot(ice, term = "bill_length_mm:island", var.color = "island")
+plot(ice, term = "bill_length_mm:island")
 title(main = 'MID Conditional: type = "iceplot"')
-plot(ice, type = "centered", alpha = .3, col = "darkblue")
+plot(ice, type = "centered", alpha = .3)
 title(main = 'MID Conditional: type = "centered"')
 ```
 
@@ -105,10 +103,12 @@ bd300 <- mid.breakdown(mid, penguins[300L, ])
 
 # create plots
 par.midr()
-plot(bd100, theme = "Tableau 10")
+plot(bd100)
 title(main = 'MID Breakdown: type = "waterfall"')
-plot(bd300, theme = "Set 1", type = "barplot")
+plot(bd300, theme = "Tableau 10")
+title(main = 'MID Breakdown: type = "waterfall"')
+plot(bd300, type = "barplot")
 title(main = 'MID Breakdown: type = "barplot"')
-plot(bd100, theme = "Okabe-Ito", type = "dotchart", cex = 1.5)
+plot(bd100, type = "dotchart", cex = 1.5)
 title(main = 'MID Breakdown: type = "dotchart"')
 ```

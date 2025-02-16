@@ -1,0 +1,115 @@
+---
+title: "Visualization with ggplot2"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+pkgs <- c("ggplot2", "palmerpenguins")
+for (pkg in pkgs) {
+  if (!(pkg %in% installed.packages())) {
+    install.packages(pkg)
+  }
+}
+```
+
+```{r setup}
+# load required packages
+library(midr)
+library(palmerpenguins)
+library(ggplot2)
+theme_set(theme_midr())
+
+# train a predictive MID model
+mid <- interpret(
+  species == "Adelie" ~ (. - sex - year)^2, # model formula
+  data = penguins, # training data
+  lambda = .01 # regularization parameter
+)
+penguins <- na.omit(penguins)
+Adelies <- penguins$species == "Adelie"
+```
+
+## MID Importance Plot
+
+```{r importance}
+# compute MID based variable importance
+imp <- mid.importance(mid)
+
+# create importance plots
+ggmid(imp) +
+  ggtitle('MID Importance: type = "barplot"')
+ggmid(imp, type = "dotchart", theme = "Accent", cex = 3) +
+  ggtitle('MID Importance: type = "dotchart"')
+ggmid(imp, type = "heatmap", theme = "grayscale") +
+  ggtitle('MID Importance: type = "heatmap"')
+ggmid(imp, type = "boxplot", cex = .5) +
+  ggtitle('MID Importance: type = "boxplot"')
+```
+
+## MID Component Plot
+
+```{r effect}
+# create component plots
+ggmid(mid, term = "bill_length_mm") +
+  ggtitle('MID Main Effect: type = "effect"')
+ggmid(mid, term = "island") +
+  ggtitle('MID Main Effect: type = "effect"')
+ggmid(mid, term = "bill_depth_mm", type = "data", data = penguins,
+     pch = ifelse(Adelies, 1L, 4L), cex = 3) +
+  ggtitle('MID Main Effect: type = "data"')
+ggmid(mid, term = "flipper_length_mm", type = "compound",
+      data = penguins) +
+  ggtitle('MID Main Effect: type = "compound"')
+ggmid(mid, term = "island:bill_length_mm") +
+  ggtitle('MID Interaction: type = "effect"')
+ggmid(mid, term = "bill_depth_mm:bill_length_mm") +
+  ggtitle('MID Interaction: type = "effect"')
+ggmid(mid, term = "island:bill_length_mm", type = "data",
+     main.effects = TRUE, data = penguins,
+     pch = ifelse(Adelies, 16L, 17L), cex = 3) +
+  ggtitle('MID Interaction: type = "data"')
+ggmid(mid, term = "bill_depth_mm:bill_length_mm", type = "compound",
+     theme = "Vik", intercept = TRUE, main.effects = TRUE,
+     data = na.omit(penguins[Adelies, ])) +
+  ggtitle('MID Interaction: type = "comound"')
+```
+
+## MID Conditional Plot
+
+```{r conditional}
+# compute ICE plots
+ice <- mid.conditional(mid, variable = "bill_length_mm",
+                       data = penguins)
+
+# create plots
+ggmid(ice, alpha = .6) +
+  ggtitle('MID Conditional: type = "iceplot"')
+ggmid(ice, theme = "Tableau 10", var.color = "island") +
+  ggtitle('MID Conditional: type = "iceplot"')
+ggmid(ice, term = "bill_length_mm:island") +
+  ggtitle('MID Conditional: type = "iceplot"')
+ggmid(ice, type = "centered", alpha = .3) +
+  ggtitle('MID Conditional: type = "centered"')
+```
+
+## MID Breakdown Plot
+
+```{r breakdown}
+# compute MID breakdown for the individual penguins
+bd100 <- mid.breakdown(mid, penguins[100L, ])
+bd300 <- mid.breakdown(mid, penguins[300L, ])
+
+# create plots
+ggmid(bd100) +
+  ggtitle('MID Breakdown: type = "waterfall"')
+ggmid(bd300, theme = "Tableau 10") +
+  ggtitle('MID Breakdown: type = "waterfall"')
+ggmid(bd300, type = "barplot") +
+  ggtitle('MID Breakdown: type = "barplot"')
+ggmid(bd100, type = "dotchart", cex = 3) +
+  ggtitle('MID Breakdown: type = "dotchart"')
+```
