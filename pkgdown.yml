@@ -2,8 +2,9 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  articles/visualization: visualization.html
-last_built: 2025-02-15T15:17Z
+  articles/ggplot2: ggplot2.html
+  articles/graphics: graphics.html
+last_built: 2025-02-16T02:28Z
 urls:
   reference: https://ryo-asashi.github.io/midr/reference
   article: https://ryo-asashi.github.io/midr/articles
