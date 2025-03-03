@@ -1,5 +1,5 @@
 ---
-title: "Visualization with ggplot2"
+title: "Visualization with ggplot2 package"
 ---
 
 ```{r, include = FALSE}
@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("ggplot2", "palmerpenguins")
+pkgs <- c("ggplot2", "ISLR2")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
     install.packages(pkg)
@@ -19,97 +19,85 @@ for (pkg in pkgs) {
 ```{r setup}
 # load required packages
 library(midr)
-library(palmerpenguins)
+library(ISLR2)
 library(ggplot2)
 theme_set(theme_midr())
 
 # train a predictive MID model
 mid <- interpret(
-  species == "Adelie" ~ (. - sex - year)^2, # model formula
-  data = penguins, # training data
-  lambda = .01 # regularization parameter
+  bikers ~ (mnth + hr + as.factor(workingday) +
+    weathersit + temp + hum + windspeed)^2, # model formula
+  data = Bikeshare, # training data
+  lambda = .01 # smoothing parameter
 )
-penguins <- na.omit(penguins)
-Adelies <- penguins$species == "Adelie"
 ```
 
-## MID Importance Plot
+## Feature Importance
 
 ```{r importance}
 # compute MID based variable importance
 imp <- mid.importance(mid)
 
 # create importance plots
-ggmid(imp) +
-  ggtitle('MID Importance: type = "barplot"')
-ggmid(imp, type = "dotchart", theme = "Accent", cex = 3) +
-  ggtitle('MID Importance: type = "dotchart"')
-ggmid(imp, type = "heatmap", theme = "grayscale") +
-  ggtitle('MID Importance: type = "heatmap"')
-ggmid(imp, type = "boxplot", cex = .5) +
-  ggtitle('MID Importance: type = "boxplot"')
+ggmid(imp, theme = "Temps", max = 15) +
+  ggtitle('Feature Importance (barplot)')
+ggmid(imp, type = "dotchart", theme = "Set 1", max = 15, cex = 3) +
+  ggtitle('Feature Importance (dotchart)')
+ggmid(imp, type = "heatmap", theme = "BuPu") +
+  ggtitle('Feature Importance (heatmap)')
+ggmid(imp, type = "boxplot", theme = "Spectral", max = 15) +
+  ggtitle('Feature Importance (boxplot)')
 ```
 
-## MID Component Plot
+## Component Functions
 
 ```{r effect}
 # create component plots
-ggmid(mid, term = "bill_length_mm") +
-  ggtitle('MID Main Effect: type = "effect"')
-ggmid(mid, term = "island") +
-  ggtitle('MID Main Effect: type = "effect"')
-ggmid(mid, term = "bill_depth_mm", type = "data", data = penguins,
-     pch = ifelse(Adelies, 1L, 4L), cex = 3) +
-  ggtitle('MID Main Effect: type = "data"')
-ggmid(mid, term = "flipper_length_mm", type = "compound",
-      data = penguins) +
-  ggtitle('MID Main Effect: type = "compound"')
-ggmid(mid, term = "island:bill_length_mm") +
-  ggtitle('MID Interaction: type = "effect"')
-ggmid(mid, term = "bill_depth_mm:bill_length_mm") +
-  ggtitle('MID Interaction: type = "effect"')
-ggmid(mid, term = "island:bill_length_mm", type = "data",
-     main.effects = TRUE, data = penguins,
-     pch = ifelse(Adelies, 16L, 17L), cex = 3) +
-  ggtitle('MID Interaction: type = "data"')
-ggmid(mid, term = "bill_depth_mm:bill_length_mm", type = "compound",
-     theme = "Vik", intercept = TRUE, main.effects = TRUE,
-     data = na.omit(penguins[Adelies, ])) +
-  ggtitle('MID Interaction: type = "comound"')
+ggmid(mid, term = "temp") +
+  ggtitle('Main Effect (effect)')
+ggmid(mid, term = "hr") +
+  ggtitle('Main Effect (effect)')
+ggmid(mid, term = "hr:as.factor(workingday)") +
+  ggtitle('Interaction Effect (effect)')
+ggmid(mid, term = "hr:temp", type = "data",
+     main.effects = TRUE, theme = "Mako", data = Bikeshare) +
+  ggtitle('Interaction Effect (data)')
+ggmid(mid, term = "temp:windspeed", type = "compound",
+     main.effects = TRUE, data = Bikeshare) +
+  ggtitle('Interaction Effect (comound)')
 ```
 
-## MID Conditional Plot
+## Conditional Expectations
 
 ```{r conditional}
 # compute ICE plots
-ice <- mid.conditional(mid, variable = "bill_length_mm",
-                       data = penguins)
-
+set.seed(42)
+ice_rows <- sample(nrow(Bikeshare), 200L)
+ice <- mid.conditional(mid, variable = "hr",
+                       data = Bikeshare[ice_rows, ])
 # create plots
-ggmid(ice, alpha = .6) +
-  ggtitle('MID Conditional: type = "iceplot"')
-ggmid(ice, theme = "Tableau 10", var.color = "island") +
-  ggtitle('MID Conditional: type = "iceplot"')
-ggmid(ice, term = "bill_length_mm:island") +
-  ggtitle('MID Conditional: type = "iceplot"')
-ggmid(ice, type = "centered", alpha = .3) +
-  ggtitle('MID Conditional: type = "centered"')
+ggmid(ice, var.color = "temp") +
+  ggtitle('Conditional Expectations (iceplot)')
+ggmid(ice, term = "hr:temp", dots = FALSE,
+     theme = "Temps", var.color = "temp") +
+  ggtitle('Conditional Expectations (iceplot)')
+ggmid(ice, type = "centered", alpha = .3,
+     theme = "midr", var.color = "as.factor(workingday)") +
+  ggtitle('Conditional Expectations (centered)') +
+  theme(legend.position = "bottom")
 ```
 
 ## MID Breakdown Plot
 
 ```{r breakdown}
 # compute MID breakdown for the individual penguins
-bd100 <- mid.breakdown(mid, penguins[100L, ])
-bd300 <- mid.breakdown(mid, penguins[300L, ])
+bd100 <- mid.breakdown(mid, Bikeshare[100L, ])
 
 # create plots
-ggmid(bd100) +
-  ggtitle('MID Breakdown: type = "waterfall"')
-ggmid(bd300, theme = "Tableau 10") +
-  ggtitle('MID Breakdown: type = "waterfall"')
-ggmid(bd300, type = "barplot") +
-  ggtitle('MID Breakdown: type = "barplot"')
-ggmid(bd100, type = "dotchart", cex = 3) +
-  ggtitle('MID Breakdown: type = "dotchart"')
+ggmid(bd100, theme = "Tableau 10") +
+  ggtitle('Prediction Breakdown (waterfall)')
+ggmid(bd100, type = "barplot", theme = "Set 1") +
+  ggtitle('Prediction Breakdown (barplot)')
+ggmid(bd100, type = "dotchart", theme = "Set 2", cex = 3) +
+  ggtitle('Prediction Breakdown (dotchart)')
 ```

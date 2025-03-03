@@ -13,7 +13,7 @@ theme_midr(
   base_rect_size = base_size/22
 )
 
-par.midr()
+par.midr(...)
 }
 \arguments{
 \item{grid_type}{one of "none", "x", "y" or "xy".}
@@ -25,6 +25,8 @@ par.midr()
 \item{base_line_size}{base size for line elements.}
 
 \item{base_rect_size}{base size for rect elements.}
+
+\item{...}{optional parameters to be passed to `graphics::par()`.}
 }
 \value{
 \code{theme_midr()} provides a ggplot2 theme customized for the midr package.

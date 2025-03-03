@@ -59,15 +59,15 @@ plot.mid.breakdown <- function(
   }
   if (use.catchall)
     bd[nrow(bd), "term"] <- catchall
-  cols <- if (use.theme) {
-    if (theme$type == "qualitative")
-      to.colors(bd$mid > 0, theme)
-    else
-      to.colors(bd$mid, theme)
-  } else "gray35"
   if (type == "barplot" || type == "dotchart") {
     args <- list(to = bd$mid, labels = bd$term,
                  horizontal = TRUE, xlab = "mid")
+    cols <- if (use.theme) {
+      if (theme$type == "qualitative")
+        to.colors(bd$degree, theme)
+      else
+        to.colors(bd$mid, theme)
+    } else "gray35"
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
@@ -81,6 +81,12 @@ plot.mid.breakdown <- function(
     if (vline)
       graphics::abline(v = 0)
   } else if (type == "waterfall") {
+    cols <- if (use.theme) {
+      if (theme$type == "qualitative")
+        to.colors(bd$mid > 0, theme)
+      else
+        to.colors(bd$mid, theme)
+    } else "gray35"
     width <- ifnot.null(width, .6)
     hw <- width / 2
     n <- nrow(bd)

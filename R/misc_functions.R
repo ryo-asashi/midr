@@ -44,7 +44,7 @@ model.reframe <- function(model, data) {
     data[, yvar] <- 0L
     data <- stats::model.frame(formula = formula, data = data,
                                na.action = "na.pass")
-    data <- data[, -which(colnames(data) == yvar)]
+    data <- data[, -which(colnames(data) == yvar), drop = FALSE]
   }
   data
 }
@@ -310,20 +310,22 @@ theme_midr <- function(
 
 
 #' @rdname theme_midr
+#' @param ... optional parameters to be passed to `graphics::par()`.
 #' @export par.midr
 #'
-par.midr <- function() {
-  pars <- c("mar", "mai",
-            "font.main", "font.sub", "font.lab",
-            "col")
-  prev.par <- graphics::par(pars)
-  graphics::par(
-    mar = c(4.1, 4.1, 2.1, 1.1),
-    font.main = 6L, font.sub = 6L, font.lab = 6L, font.axis = 6L,
-    cex.main = 1.2, cex.sub = 1, cex.lab = 1, cex.axis = .9,
-    las = 0L,
-    col = "black"
+par.midr <- function(...) {
+  dots <- list(...)
+  prev.par <- graphics::par()
+  params <- names(prev.par)
+  args <- list(
+    bg = "white", bty = "o", mar = c(4.1, 4.1, 2.1, 1.1), family = "serif",
+    font = 1L, font.axis = 1L, font.lab = 1L, font.main = 1L, font.sub = 1L,
+    col = "black", col.axis = "black", col.lab = "black", col.main ="black",
+    col.sub = "black", cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1.2,
+    cex.sub = .9, las = 0L, lty = "solid", lwd = 1, pch = 16L
   )
+  args <- override(args = args, dots = dots, params = params)
+  do.call(what = graphics::par, args = args)
   invisible(prev.par)
 }
 

@@ -70,12 +70,11 @@ ggmid.mid.breakdown <- function(
       pl <- pl + ggplot2::geom_col(width = width, ...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
-          pl + ggplot2::aes(fill = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
-            ggplot2::labs(fill = "mid")
+          pl + ggplot2::aes(fill = .data[["degree"]])
         } else {
           pl + ggplot2::aes(fill = .data[["mid"]])
         }
-      pl <- pl + scale_fill_theme(theme = theme)
+        pl <- pl + scale_fill_theme(theme = theme, na.value = "gray50")
       }
     } else if (type == "dotchart") {
       pl <- pl + ggplot2::geom_linerange(
@@ -83,12 +82,11 @@ ggmid.mid.breakdown <- function(
         ggplot2::geom_point(...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
-          pl + ggplot2::aes(color = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
-            ggplot2::labs(color = "mid")
+          pl + ggplot2::aes(color = .data[["degree"]])
         } else {
           pl + ggplot2::aes(color = .data[["mid"]])
         }
-        pl <- pl + scale_color_theme(theme = theme)
+        pl <- pl + scale_color_theme(theme = theme, na.value = "gray50")
       }
     }
     if (vline) {

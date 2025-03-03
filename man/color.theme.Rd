@@ -4,7 +4,7 @@
 \alias{color.theme}
 \alias{plot.color.theme}
 \alias{print.color.theme}
-\title{Color Theme for Graphics}
+\title{Color Themes for Graphics}
 \usage{
 color.theme(
   colors,

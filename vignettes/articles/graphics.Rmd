@@ -1,5 +1,5 @@
 ---
-title: "Visualization with graphics"
+title: "Visualization with graphics package"
 ---
 
 ```{r, include = FALSE}
@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("palmerpenguins")
+pkgs <- c("ISLR2")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
     install.packages(pkg)
@@ -19,96 +19,86 @@ for (pkg in pkgs) {
 ```{r setup}
 # load required packages
 library(midr)
-library(palmerpenguins)
+library(ISLR2)
 
 # train a predictive MID model
 mid <- interpret(
-  species == "Adelie" ~ (. - sex - year)^2, # model formula
-  data = penguins, # training data
-  lambda = .01 # regularization parameter
+  bikers ~ (mnth + hr + as.factor(workingday) +
+    weathersit + temp + hum + windspeed)^2, # model formula
+  data = Bikeshare, # training data
+  lambda = .01 # smoothing parameter
 )
-Adelies <- penguins$species == "Adelie"
 ```
 
-## MID Importance Plot
+## Feature Importance
 
 ```{r importance}
 # compute MID based variable importance
 imp <- mid.importance(mid)
 
 # create importance plots
-par.midr()
-plot(imp)
-title(main = 'MID Importance: type = "barplot"')
-plot(imp, type = "dotchart", theme = "Accent", cex = 2)
-title(main = 'MID Importance: type = "dotchart"')
-plot(imp, type = "heatmap", theme = "grayscale")
-title(main = 'MID Importance: type = "heatmap"')
-plot(imp, type = "boxplot", cex = .5)
-title(main = 'MID Importance: type = "boxplot"')
+par.midr(bg = "#FEFEFE")
+plot(imp, theme = "Temps", max = 15)
+title(main = 'Feature Importance (barplot)')
+plot(imp, type = "dotchart", theme = "Set 1", max = 15, cex = 1.4)
+title(main = 'Feature Importance (dotchart)')
+plot(imp, type = "heatmap", theme = "BuPu")
+title(main = 'Feature Importance (heatmap)')
+plot(imp, type = "boxplot", theme = "Spectral", max = 15, cex = .5)
+title(main = 'Feature Importance (boxplot)')
 ```
 
-## MID Component Plot
+## Component Functions
 
 ```{r effect}
 # create component plots
-par.midr()
-plot(mid, term = "bill_length_mm")
-title(main = 'MID Main Effect: type = "effect"')
-plot(mid, term = "island")
-title(main = 'MID Main Effect: type = "effect"')
-plot(mid, term = "bill_depth_mm", type = "data", data = penguins,
-     pch = ifelse(Adelies, 1L, 4L))
-title(main = 'MID Main Effect: type = "data"')
-plot(mid, term = "flipper_length_mm", type = "compound", data = penguins)
-title(main = 'MID Main Effect: type = "compound"')
-plot(mid, term = "island:bill_length_mm")
-title(main = 'MID Interaction: type = "effect"')
-plot(mid, term = "bill_depth_mm:bill_length_mm")
-title(main = 'MID Interaction: type = "effect"')
-plot(mid, term = "island:bill_length_mm", type = "data",
-     main.effects = TRUE, data = penguins,
-     pch = ifelse(Adelies, 16L, 17L))
-title(main = 'MID Interaction: type = "data"')
-plot(mid, term = "bill_depth_mm:bill_length_mm", type = "compound",
-     theme = "Vik", intercept = TRUE, main.effects = TRUE,
-     data = na.omit(penguins[Adelies, ]))
-title(main = 'MID Interaction: type = "comound"')
+par.midr(bg = "#FEFEFE")
+plot(mid, term = "temp")
+title(main = 'Main Effect (effect)')
+plot(mid, term = "hr")
+title(main = 'Main Effect (effect)')
+plot(mid, term = "hr:as.factor(workingday)")
+title(main = 'Interaction Effect (effect)')
+plot(mid, term = "hr:temp", type = "data",
+     main.effects = TRUE, theme = "Mako", data = Bikeshare)
+title(main = 'Interaction Effect (data)')
+plot(mid, term = "temp:windspeed", type = "compound",
+     main.effects = TRUE, data = Bikeshare)
+title(main = 'Interaction Effect (comound)')
 ```
 
-## MID Conditional Plot
+## Conditional Expectations
 
 ```{r conditional}
 # compute ICE plots
-ice <- mid.conditional(mid, variable = "bill_length_mm",
-                       data = penguins)
+set.seed(42)
+ice_rows <- sample(nrow(Bikeshare), 200L)
+ice <- mid.conditional(mid, variable = "hr",
+                       data = Bikeshare[ice_rows, ])
 # create plots
-par.midr()
-plot(ice, alpha = .6)
-title(main = 'MID Conditional: type = "iceplot"')
-plot(ice, theme = "Tableau 10", var.color = "island")
-title(main = 'MID Conditional: type = "iceplot"')
-plot(ice, term = "bill_length_mm:island")
-title(main = 'MID Conditional: type = "iceplot"')
-plot(ice, type = "centered", alpha = .3)
-title(main = 'MID Conditional: type = "centered"')
+par.midr(bg = "#FEFEFE")
+plot(ice, var.color = "temp")
+title(main = 'Conditional Expectations (iceplot)')
+plot(ice, term = "hr:temp", dots = FALSE,
+     theme = "Temps", var.color = "temp")
+title(main = 'Conditional Expectations (iceplot)')
+plot(ice, type = "centered", alpha = .3,
+     theme = "midr", var.color = "as.factor(workingday)")
+title(main = 'Conditional Expectations (centered)')
 ```
 
-## MID Breakdown Plot
+## Prediction Breakdown
 
 ```{r breakdown}
 # compute MID breakdown for the individual penguins
-bd100 <- mid.breakdown(mid, penguins[100L, ])
-bd300 <- mid.breakdown(mid, penguins[300L, ])
+bd100 <- mid.breakdown(mid, Bikeshare[100L, ])
 
 # create plots
-par.midr()
-plot(bd100)
-title(main = 'MID Breakdown: type = "waterfall"')
-plot(bd300, theme = "Tableau 10")
-title(main = 'MID Breakdown: type = "waterfall"')
-plot(bd300, type = "barplot")
-title(main = 'MID Breakdown: type = "barplot"')
-plot(bd100, type = "dotchart", cex = 1.5)
-title(main = 'MID Breakdown: type = "dotchart"')
+par.midr(bg = "#FEFEFE")
+plot(bd100, theme = "Tableau 10")
+title(main = 'Prediction Breakdown (waterfall)')
+plot(bd100, type = "barplot", theme = "Set 1")
+title(main = 'Prediction Breakdown (barplot)')
+plot(bd100, type = "dotchart", theme = "Set 2", cex = 1.5)
+title(main = 'Prediction Breakdown (dotchart)')
 ```
