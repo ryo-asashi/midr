@@ -64,7 +64,7 @@ ggmid(mid, term = "hr:temp", type = "data",
   ggtitle('Interaction Effect (data)')
 ggmid(mid, term = "temp:windspeed", type = "compound",
      main.effects = TRUE, data = Bikeshare) +
-  ggtitle('Interaction Effect (comound)')
+  ggtitle('Interaction Effect (compound)')
 ```
 
 ## Conditional Expectations
@@ -87,7 +87,7 @@ ggmid(ice, type = "centered", alpha = .3,
   theme(legend.position = "bottom")
 ```
 
-## MID Breakdown Plot
+## Prediction Breakdown
 
 ```{r breakdown}
 # compute MID breakdown for the individual penguins

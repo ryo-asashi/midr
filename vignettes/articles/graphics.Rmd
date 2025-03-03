@@ -64,7 +64,7 @@ plot(mid, term = "hr:temp", type = "data",
 title(main = 'Interaction Effect (data)')
 plot(mid, term = "temp:windspeed", type = "compound",
      main.effects = TRUE, data = Bikeshare)
-title(main = 'Interaction Effect (comound)')
+title(main = 'Interaction Effect (compound)')
 ```
 
 ## Conditional Expectations
