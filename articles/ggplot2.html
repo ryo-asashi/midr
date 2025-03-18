@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,17 +155,18 @@
 <span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, variable <span class="op">=</span> <span class="st">"hr"</span>,</span>
 <span>                       data <span class="op">=</span> <span class="va">Bikeshare</span><span class="op">[</span><span class="va">ice_rows</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="co"># create plots</span></span>
-<span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, var.color <span class="op">=</span> <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'Conditional Expectations (iceplot)'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, theme <span class="op">=</span> <span class="st">"Cividis"</span>, var.color <span class="op">=</span> <span class="va">mnth</span> <span class="op">==</span> <span class="st">"Aug"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'Conditional Expectations (iceplot)'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggplot2_files/figure-html/conditional-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"hr:temp"</span>, dots <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>     theme <span class="op">=</span> <span class="st">"Temps"</span>, var.color <span class="op">=</span> <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>     theme <span class="op">=</span> <span class="st">"Temps"</span>, var.color <span class="op">=</span> <span class="va">temp</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'Conditional Expectations (iceplot)'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggplot2_files/figure-html/conditional-2.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, type <span class="op">=</span> <span class="st">"centered"</span>, alpha <span class="op">=</span> <span class="fl">.3</span>,</span>
-<span>     theme <span class="op">=</span> <span class="st">"midr"</span>, var.color <span class="op">=</span> <span class="st">"as.factor(workingday)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>     theme <span class="op">=</span> <span class="st">"midr"</span>, var.color <span class="op">=</span> <span class="va">`as.factor(workingday)`</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'Conditional Expectations (centered)'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggplot2_files/figure-html/conditional-3.png" width="700"></p>
