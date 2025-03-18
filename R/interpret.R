@@ -16,22 +16,22 @@
 #' data(cars, package = "datasets")
 #' model <- lm(dist ~ I(speed^2) + speed, cars)
 #' mid <- interpret(dist ~ speed, cars, model)
-#' plot(mid, "speed", intercept = TRUE) +
-#'   points(cars)
+#' plot(mid, "speed", intercept = TRUE)
+#' points(cars)
 #'
 #' # customize the flexibility of a MID model
 #' data(Nile, package = "datasets")
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-#'   points(x = 1L:100L, y = Nile)
+#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
 #' # reduce the number of knots by setting the 'k' parameter
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-#'   points(x = 1L:100L, y = Nile)
+#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
 #' # perform a pseudo smoothing by setting the 'lambda' parameter
 #' mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-#'   points(x = 1L:100L, y = Nile)
+#' plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
 #'
 #' # fit a MID model as a predictive model
 #' data(airquality, package = "datasets")
@@ -67,7 +67,7 @@ UseMethod("interpret")
 #' @param y an optional numeric vector of the model predictions or the response variable.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
-#' @param link a character string specifying the link function. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse".
+#' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
 #' @param k an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
@@ -142,7 +142,8 @@ interpret.default <- function(
   if (length(y) != nrow(x))
     stop("length of 'y' doesn't match the number of rows in 'x'")
   if (!is.null(link)){
-    link <- stats::make.link(as.character(substitute(link)))
+    if (is.character(link))
+      link <- stats::make.link(link)
     yres <- y
     y <- link$linkfun(y)
   }
@@ -596,7 +597,7 @@ interpret.formula <- function(
       mf$weights <- attr(data, "weights")
   }
   mf[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf, parent.frame())
+  mf <- eval(mf, envir = parent.frame())
   naa.data <- stats::na.action(mf)
   if (!use.model) {
     naai <- list(n.init = nrow(mf) + length(naa.data))
@@ -610,7 +611,7 @@ interpret.formula <- function(
   tl <- attr(attr(mf, "terms"), "term.labels")
   ret <- interpret.default(model = model, x = x, y = y, weights = w,
                            terms = tl, mode = mode, na.action = na.action, ...)
-  cl[[1L]] <- as.name("interpret")
+  cl[[1L]] <- as.symbol("interpret")
   ret$call <- cl
   if (!is.null(naa.ret <- ret$na.action))
     naai$ids <- naai$ids[-naa.ret]

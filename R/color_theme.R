@@ -473,7 +473,7 @@ to.colors <- function(x, theme, middle = 0, na.value = "gray50") {
     cols <- theme$palette(max(x, na.rm = TRUE))[x]
   } else {
     if (theme$type == "qualitative") {
-      stop("qualitative color theme can't be used for discrete variable")
+      stop("qualitative color theme can't be used for continuous variable")
     } else if (theme$type == "sequential") {
       cols <- theme$ramp(rescale(x))
     } else if (theme$type == "diverging") {

@@ -61,7 +61,7 @@ interpret(object, ...)
 
 \item{pred.fun}{a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.}
 
-\item{link}{a character string specifying the link function. One of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse".}
+\item{link}{a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.}
 
 \item{k}{an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.}
 
@@ -142,22 +142,22 @@ The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the
 data(cars, package = "datasets")
 model <- lm(dist ~ I(speed^2) + speed, cars)
 mid <- interpret(dist ~ speed, cars, model)
-plot(mid, "speed", intercept = TRUE) +
-  points(cars)
+plot(mid, "speed", intercept = TRUE)
+points(cars)
 
 # customize the flexibility of a MID model
 data(Nile, package = "datasets")
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-  points(x = 1L:100L, y = Nile)
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
 # reduce the number of knots by setting the 'k' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-  points(x = 1L:100L, y = Nile)
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
 # perform a pseudo smoothing by setting the 'lambda' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L)) +
-  points(x = 1L:100L, y = Nile)
+plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
 
 # fit a MID model as a predictive model
 data(airquality, package = "datasets")

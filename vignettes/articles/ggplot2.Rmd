@@ -76,13 +76,14 @@ ice_rows <- sample(nrow(Bikeshare), 200L)
 ice <- mid.conditional(mid, variable = "hr",
                        data = Bikeshare[ice_rows, ])
 # create plots
-ggmid(ice, var.color = "temp") +
-  ggtitle('Conditional Expectations (iceplot)')
+ggmid(ice, theme = "Cividis", var.color = mnth == "Aug") +
+  ggtitle('Conditional Expectations (iceplot)') +
+  theme(legend.position = "bottom")
 ggmid(ice, term = "hr:temp", dots = FALSE,
-     theme = "Temps", var.color = "temp") +
+     theme = "Temps", var.color = temp) +
   ggtitle('Conditional Expectations (iceplot)')
 ggmid(ice, type = "centered", alpha = .3,
-     theme = "midr", var.color = "as.factor(workingday)") +
+     theme = "midr", var.color = `as.factor(workingday)`) +
   ggtitle('Conditional Expectations (centered)') +
   theme(legend.position = "bottom")
 ```

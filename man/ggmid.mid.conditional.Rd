@@ -30,13 +30,13 @@
 
 \item{term}{an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.}
 
-\item{var.alpha}{a name of the variable to be used to set \code{alpha}.}
+\item{var.alpha}{a name of the variable or an expression to be used to set \code{alpha}.}
 
-\item{var.color}{a name of the variable to be used to set \code{colour}.}
+\item{var.color}{a name of the variable or an expression to be used to set \code{colour}.}
 
-\item{var.linetype}{a name of the variable to be used to set \code{linetype}.}
+\item{var.linetype}{a name of the variable or an expression to be used to set \code{linetype}.}
 
-\item{var.linewidth}{a name of the variable to be used to set \code{linewidth}.}
+\item{var.linewidth}{a name of the variable or an expression to be used to set \code{linewidth}.}
 
 \item{dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
 

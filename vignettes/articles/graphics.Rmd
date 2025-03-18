@@ -77,13 +77,13 @@ ice <- mid.conditional(mid, variable = "hr",
                        data = Bikeshare[ice_rows, ])
 # create plots
 par.midr(bg = "#FEFEFE")
-plot(ice, var.color = "temp")
+plot(ice, theme = "Cividis", var.color = mnth == "Aug")
 title(main = 'Conditional Expectations (iceplot)')
 plot(ice, term = "hr:temp", dots = FALSE,
-     theme = "Temps", var.color = "temp")
+     theme = "Temps", var.color = temp)
 title(main = 'Conditional Expectations (iceplot)')
 plot(ice, type = "centered", alpha = .3,
-     theme = "midr", var.color = "as.factor(workingday)")
+     theme = "midr", var.color = `as.factor(workingday)`)
 title(main = 'Conditional Expectations (centered)')
 ```
 

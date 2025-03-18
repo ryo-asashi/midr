@@ -8,10 +8,10 @@
 #' @param type a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.
 #' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param term an optional character string specifying the interaction term. If passed, the ICE for the specified term is plotted.
-#' @param var.alpha a name of the variable to be used to set \code{alpha}.
-#' @param var.color a name of the variable to be used to set \code{colour}.
-#' @param var.linetype a name of the variable to be used to set \code{linetype}.
-#' @param var.linewidth a name of the variable to be used to set \code{linewidth}.
+#' @param var.alpha a name of the variable or an expression to be used to set \code{alpha}.
+#' @param var.color a name of the variable or an expression to be used to set \code{colour}.
+#' @param var.linetype a name of the variable or an expression to be used to set \code{linetype}.
+#' @param var.linewidth a name of the variable or an expression to be used to set \code{linewidth}.
 #' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
@@ -29,7 +29,6 @@ plot.mid.conditional <- function(
     x, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
     dots = TRUE, sample = NULL, ...) {
-  cl <- match.call(expand.dots = TRUE)
   dt <- list(...)
   type <- match.arg(type)
   theme <- color.theme(theme)
@@ -68,22 +67,22 @@ plot.mid.conditional <- function(
   }
   rownames(mat) <- obs$ids
   aes <- list(col = rep.int(1L, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
-  if (!is.null(cl$var.color)) {
-    cln <- characterize(cl$var.color)
+  if (!is.null(col <- substitute(var.color))) {
     if (!use.theme)
       theme <- "bluescale"
-    aes$col <- to.colors(obs[, cln], theme)
+    ref <- eval(col, envir = obs)
+    aes$col <- to.colors(ref, theme)
   }
-  if (!is.null(cl$var.alpha)) {
-    ref <- rescale(obs[, characterize(cl$var.alpha)])
+  if (!is.null(alp <- substitute(var.alpha))) {
+    ref <- rescale(eval(alp, envir = obs))
     aes$alpha <- ref * .75 + .25
   }
-  if (!is.null(cl$var.linetype)) {
-    ref <- rescale(obs[, characterize(cl$var.linetype)])
+  if (!is.null(lty <- substitute(var.linetype))) {
+    ref <- rescale(eval(lty, envir = obs))
     aes$lty <- pmin(ref * 6 + 1, 6L)
   }
-  if (!is.null(cl$var.linewidth)) {
-    ref <- rescale(obs[, characterize(cl$var.linewidth)])
+  if (!is.null(lwd <- substitute(var.linewidth))) {
+    ref <- rescale(eval(lwd, envir = obs))
     aes$lwd <- ref * 3
   }
   if (fv <- is.factor(values)) {

@@ -11,10 +11,6 @@ is.discrete <- function(x) {
   is.factor(x) || is.character(x) || is.logical(x)
 }
 
-characterize <- function(expr) {
-  if (is.character(expr)) expr else deparse(expr)
-}
-
 term.split <- function(x) {
   unlist(strsplit(x, split = ":"), use.names = FALSE)
 }
@@ -48,7 +44,6 @@ model.reframe <- function(model, data) {
   }
   data
 }
-
 
 
 #' Weighted Sample Quantile
