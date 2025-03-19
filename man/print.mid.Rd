@@ -4,14 +4,14 @@
 \alias{print.mid}
 \title{Print MID Models}
 \usage{
-\method{print}{mid}(x, digits = max(3L, getOption("digits") - 2L), omit.values = FALSE, ...)
+\method{print}{mid}(x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...)
 }
 \arguments{
 \item{x}{a "mid" object to be printed.}
 
 \item{digits}{an integer specifying the number of significant digits.}
 
-\item{omit.values}{logical. If \code{TRUE}, MID values of the main effects are not printed.}
+\item{main.effects}{logical. If \code{TRUE}, MID values of the main effects are printed.}
 
 \item{...}{not used.}
 }

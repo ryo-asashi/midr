@@ -2,9 +2,15 @@
 
 [First release on CRAN.]
 
-## midr 0.4.3.903
+## midr 0.4.8.904
 
--   Update `interpret()` to ensure that the value of `link` argument should be a character string.
+-   Change default values of some arguments: e.g. `na.action = na.pass` of `predict.mid()`.
+
+-   Fix small bugs of `plot.mid.conditional()`.
+
+## midr 0.4.8.903
+
+-   Update `interpret()` to ensure that the value of the argument `link` is a character string.
 
 -   Update `ggmid.mid.conditional()` and `plot.mid.conditional()`: `var.color` and the similar arguments can take an expression as input.
 

@@ -6,7 +6,7 @@
 #'
 #' @param x a "mid" object to be printed.
 #' @param digits an integer specifying the number of significant digits.
-#' @param omit.values logical. If \code{TRUE}, MID values of the main effects are not printed.
+#' @param main.effects logical. If \code{TRUE}, MID values of the main effects are printed.
 #' @param ... not used.
 #' @examples
 #' data(cars, package = "datasets")
@@ -16,7 +16,7 @@
 #' @exportS3Method base::print
 #'
 print.mid <- function(
-    x, digits = max(3L, getOption("digits") - 2L), omit.values = FALSE, ...) {
+    x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...) {
   cl <- paste0(trimws(deparse(x$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   cat(paste0("\nIntercept: ", format(x$intercept, digits = digits),
@@ -24,7 +24,7 @@ print.mid <- function(
   m <- length(x$main.effects)
   if (m > 0L) {
     cat("\nMain Effects:\n")
-    if (!omit.values) {
+    if (main.effects) {
       for (i in 1L:m) {
         cat(paste0("---\n$",
                    names(x$main.effects)[i], "\n", collapse=""))

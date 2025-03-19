@@ -26,7 +26,7 @@
 #' @exportS3Method stats::predict
 #'
 predict.mid <- function(
-    object, newdata = NULL, na.action = getOption("na.action"),
+    object, newdata = NULL, na.action = na.pass,
     type = c("response", "link", "terms"), terms = object$terms, ...) {
   type <- match.arg(type)
   if (!missing(terms)) {

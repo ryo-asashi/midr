@@ -61,24 +61,21 @@ ggmid.mid.conditional <- function(
     data = obs, ggplot2::aes(x = .data[[variable]], y = .data[[yvar]])
   )
   if (!is.null(alp <- substitute(var.alpha))) {
-    if (is.character(alp))
-      alp <- str2lang(alp)
+    if (is.character(alp)) alp <- str2lang(alp)
     obs$.alp <- eval(alp, envir = obs)
     con$.alp <- eval(alp, envir = con)
     pl <- pl + ggplot2::aes(alpha = .data[[".alp"]]) +
       ggplot2::labs(alpha = alp)
   }
   if (set.color <- !is.null(col <- substitute(var.color))) {
-    if (is.character(col))
-      col <- str2lang(col)
+    if (is.character(col)) col <- str2lang(col)
     obs$.col <- eval(col, envir = obs)
     con$.col <- eval(col, envir = con)
     pl <- pl + ggplot2::aes(colour = .data[[".col"]]) +
       ggplot2::labs(colour = col)
   }
   if (!is.null(lty <- substitute(var.linetype))) {
-    if (is.character(lty))
-      lty <- str2lang(lty)
+    if (is.character(lty)) lty <- str2lang(lty)
     obs$.lty <- eval(lty, envir = obs)
     con$.lty <- eval(lty, envir = con)
     pl <- pl + ggplot2::aes(linetype = .data[[".lty"]]) +
@@ -87,8 +84,7 @@ ggmid.mid.conditional <- function(
       pl <- pl + ggplot2::scale_linetype_binned()
   }
   if (!is.null(lwd <- substitute(var.linewidth))) {
-    if (is.character(lwd))
-      lwd <- str2lang(lwd)
+    if (is.character(lwd)) lwd <- str2lang(lwd)
     obs$.lwd <- eval(lwd, envir = obs)
     con$.lwd <- eval(lwd, envir = con)
     pl <- pl + ggplot2::aes(linewidth = .data[[".lwd"]]) +

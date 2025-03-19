@@ -37,14 +37,12 @@ summary.mid <- function(
   } else {
     print(rsd, digits = digits, ...)
   }
-  ur <- format(object$uninterpreted.rate[1], digits = digits)
   graphics::plot.default(
     yhat, rsd,
     xlab = ifelse(use.link, "Linear Predictors", "Fitted Values"),
     ylab = paste0(if (use.link) "Working ", "Residuals"),
     main = "Residuals vs Fitted Values", font.main = 1L, type = "n"
   )
-  graphics::mtext(paste0("Uninterpreted Rate = ", ur), line = 0.25)
   graphics::panel.smooth(yhat, rsd, iter = 3L)
   graphics::abline(h = 0L, lty = 3L, col = "gray65")
   cat("\nEncoding:\n")

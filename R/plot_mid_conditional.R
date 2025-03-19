@@ -70,18 +70,22 @@ plot.mid.conditional <- function(
   if (!is.null(col <- substitute(var.color))) {
     if (!use.theme)
       theme <- "bluescale"
+    if (is.character(col)) col <- str2lang(col)
     ref <- eval(col, envir = obs)
     aes$col <- to.colors(ref, theme)
   }
   if (!is.null(alp <- substitute(var.alpha))) {
+    if (is.character(alp)) alp <- str2lang(alp)
     ref <- rescale(eval(alp, envir = obs))
     aes$alpha <- ref * .75 + .25
   }
   if (!is.null(lty <- substitute(var.linetype))) {
+    if (is.character(lty)) lty <- str2lang(lty)
     ref <- rescale(eval(lty, envir = obs))
     aes$lty <- pmin(ref * 6 + 1, 6L)
   }
   if (!is.null(lwd <- substitute(var.linewidth))) {
+    if (is.character(lwd)) lwd <- str2lang(lwd)
     ref <- rescale(eval(lwd, envir = obs))
     aes$lwd <- ref * 3
   }
