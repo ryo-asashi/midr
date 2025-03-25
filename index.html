@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.905</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit a two-dimensional MID model</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">rf</span>, lambda <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span>, omit.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">mid</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = rf, lambda = 0.1)</span></span>
@@ -182,12 +182,13 @@
 <code class="sourceCode R"><span><span class="co"># visualize the ICE curves of the MID model</span></span>
 <span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span>
 <span><span class="fu">grid.arrange</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICE of lstat"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, <span class="st">"centered"</span>, theme <span class="op">=</span> <span class="st">"mako_r"</span>, var.color <span class="op">=</span> <span class="va">dis</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICE of lstat"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, <span class="st">"centered"</span>, alpha <span class="op">=</span> <span class="fl">.1</span>, var.color <span class="op">=</span> <span class="va">dis</span> <span class="op">&gt;</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"c-ICE of lstat"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, theme <span class="op">=</span> <span class="st">"mako_r"</span>, term <span class="op">=</span> <span class="st">"lstat:dis"</span>, var.color <span class="op">=</span> <span class="va">dis</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"lstat:dis"</span>, var.color <span class="op">=</span> <span class="va">dis</span> <span class="op">&gt;</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICE of interaction with dis"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, theme <span class="op">=</span> <span class="st">"mako_r"</span>, term <span class="op">=</span> <span class="st">"lstat:age"</span>, var.color <span class="op">=</span> <span class="va">age</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, term <span class="op">=</span> <span class="st">"lstat:age"</span>, var.color <span class="op">=</span> <span class="va">age</span>, dots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICE of interaction with age"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mid_conditional-1.png" width="100%"></p>
