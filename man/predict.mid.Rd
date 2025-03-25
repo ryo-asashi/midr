@@ -8,7 +8,7 @@
 \method{predict}{mid}(
   object,
   newdata = NULL,
-  na.action = na.pass,
+  na.action = "na.pass",
   type = c("response", "link", "terms"),
   terms = object$terms,
   ...

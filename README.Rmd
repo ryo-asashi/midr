@@ -69,7 +69,7 @@ The first step is to create a MID model as a global surrogate of the target mode
 ```{r interpret}
 # fit a two-dimensional MID model
 mid <- interpret(medv ~ .^2, train, rf, lambda = .1)
-print(mid, omit.values = TRUE)
+mid
 preds_mid <- predict(mid, valid)
 cat("RMSE: ", weighted.rmse(preds_rf, preds_mid))
 cat("RMSE: ", weighted.rmse(valid$medv, preds_mid))
@@ -128,12 +128,13 @@ grid.arrange(nrow = 1L,
 # visualize the ICE curves of the MID model
 ice <- mid.conditional(mid, "lstat", data = train)
 grid.arrange(
-  ggmid(ice, alpha = .1) + ggtitle("ICE of lstat"),
-  ggmid(ice, "centered", theme = "mako_r", var.color = dis) +
+  ggmid(ice, alpha = .1) +
+    ggtitle("ICE of lstat"),
+  ggmid(ice, "centered", alpha = .1, var.color = dis > 3) +
     ggtitle("c-ICE of lstat"),
-  ggmid(ice, theme = "mako_r", term = "lstat:dis", var.color = dis) +
+  ggmid(ice, term = "lstat:dis", var.color = dis > 3, alpha = .1) +
     ggtitle("ICE of interaction with dis"),
-  ggmid(ice, theme = "mako_r", term = "lstat:age", var.color = age) +
+  ggmid(ice, term = "lstat:age", var.color = age, dots = FALSE) +
     ggtitle("ICE of interaction with age")
 )
 ```

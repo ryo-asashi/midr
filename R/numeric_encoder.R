@@ -140,7 +140,8 @@ numeric.encoder <- function(
     }
   }
   type <- switch(type + 2L, "null", "constant", "linear")
-  list(frame = frame, encode = encode, n = n.rep, type = type)
+  enc <- list(frame = frame, encode = encode, n = n.rep, type = type)
+  structure(enc, class = "encoder")
 }
 
 
@@ -180,4 +181,25 @@ numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
   class(frame) <- c("numeric.frame", "data.frame")
   structure(frame, reps = reps, breaks = breaks,
             type = type, encoding.digits = encoding.digits)
+}
+
+
+#' @rdname numeric.encoder
+#' @param digits the minimum number of significant digits to be used.
+#' @param ... not used.
+#' @exportS3Method base::print
+#'
+print.encoder <- function(x, digits = NULL, ...) {
+  ty <- switch(x$type, c("Null", "class", "es"),
+               linear = c("Linear", "knot", "s"),
+               constant = c("Constant", "interval", "s"),
+               factor = c("Factor", "level", "s"))
+  cat(paste0("\n", ty[1L], " encoder with ", x$n, " ",
+             ty[2L], if(x$n > 1) ty[3L], "\n"))
+  if (ty[1L] != "Null") {
+    cat("\nFrame:\n")
+    cl <- switch(x$type, linear = 1L, constant = 2L:3L, factor = 1L)
+    print.data.frame(x$frame[, cl, drop = FALSE], digits = digits)
+    cat("\n")
+  }
 }

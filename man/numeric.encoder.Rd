@@ -3,6 +3,7 @@
 \name{numeric.encoder}
 \alias{numeric.encoder}
 \alias{numeric.frame}
+\alias{print.encoder}
 \title{Encoder for Quantitative Variables}
 \usage{
 numeric.encoder(
@@ -22,6 +23,8 @@ numeric.frame(
   encoding.digits = NULL,
   tag = "x"
 )
+
+\method{print}{encoder}(x, digits = NULL, ...)
 }
 \arguments{
 \item{x}{a numeric vector to be encoded.}
@@ -41,6 +44,10 @@ numeric.frame(
 \item{reps}{a numeric vector to be used as the representative values (knots).}
 
 \item{breaks}{a numeric vector to be used as the binning breaks.}
+
+\item{digits}{the minimum number of significant digits to be used.}
+
+\item{...}{not used.}
 }
 \value{
 \code{numeric.encoder()} returns a list containing the following components:

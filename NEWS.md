@@ -2,6 +2,12 @@
 
 [First release on CRAN.]
 
+## midr 0.4.8.905
+
+-   Define `print.encoder()` for "encoder" objects to improve usability of the fitted MID models.
+
+-   Update README.
+
 ## midr 0.4.8.904
 
 -   Change default values of some arguments: e.g. `na.action = na.pass` of `predict.mid()`.

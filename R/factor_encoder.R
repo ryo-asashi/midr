@@ -79,7 +79,8 @@ factor.encoder <- function(
     colnames(mat) <- flvs
     mat
   }
-  list(frame = frame, encode = encode, n = nlvs, type = "factor")
+  enc <- list(frame = frame, encode = encode, n = nlvs, type = "factor")
+  structure(enc, class = "encoder")
 }
 
 #' @rdname factor.encoder
