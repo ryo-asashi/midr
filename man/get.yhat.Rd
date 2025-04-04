@@ -45,7 +45,7 @@ get.yhat(X.model, newdata, ...)
 \arguments{
 \item{X.model}{a fitted model object.}
 
-\item{newdata}{a data frame or a matrix.}
+\item{newdata}{a data.frame or matrix.}
 
 \item{...}{other parameters that are passed to the prediction method for the model.}
 }

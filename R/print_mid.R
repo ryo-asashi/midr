@@ -21,11 +21,13 @@ print.mid <- function(
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   cat(paste0("\nIntercept: ", format(x$intercept, digits = digits),
              "\n", collapse = ""))
+  if (!is.null(x$model.class))
+    cat(paste0("\nModel Class: ", paste0(x$model.class, collapse = ", "), "\n"))
   m <- length(x$main.effects)
   if (m > 0L) {
     cat("\nMain Effects:\n")
     if (main.effects) {
-      for (i in 1L:m) {
+      for (i in seq_len(m)) {
         cat(paste0("---\n$",
                    names(x$main.effects)[i], "\n", collapse=""))
         vl <- x$main.effects[[i]][, "mid"]

@@ -8,7 +8,7 @@
 #' The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
 #'
 #' @param X.model a fitted model object.
-#' @param newdata a data frame or a matrix.
+#' @param newdata a data.frame or matrix.
 #' @param ... other parameters that are passed to the prediction method for the model.
 #' @examples
 #' data(trees, package = "datasets")
@@ -179,7 +179,7 @@ get.yhat.AccurateGLM <- function(X.model, newdata, ...) {
   }
   predvars <- sapply(X.model@vars_info, function(x) x$name)
   if (length(setdiff(colnames(newdata), predvars)) > 0L)
-    newdata <- newdata[, predvars]
+    newdata <- newdata[, predvars, drop = FALSE]
   yhat <- stats::predict(object = X.model, newx = newdata,
                          s = s, type = "response", exact = FALSE)
   if (na.exists)

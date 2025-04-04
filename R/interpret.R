@@ -63,7 +63,7 @@ UseMethod("interpret")
 
 #'
 #' @rdname interpret
-#' @param x a matrix or data frame of predictor variables to be used in the fitting process. The response variable should not be included.
+#' @param x a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.
 #' @param y an optional numeric vector of the model predictions or the response variable.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
@@ -96,7 +96,6 @@ interpret.default <- function(
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
 ) {
-
   cl <- match.call()
   dots <- list(...)
   if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
@@ -105,18 +104,20 @@ interpret.default <- function(
   interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
   weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
   weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
-
   # preprocess data --------
-  if (!is.data.frame(x))
-    x <- as.data.frame(x)
-  naai <- list(n.init = nrow(x), ids = 1L:nrow(x))
+  if (missing(object)) object <- NULL
+  if (missing(weights)) weights <- attr(x, "weights")
+  if (!is.matrix(x) && !is.data.frame(x)) {
+    x <- try(as.data.frame(x), silent = TRUE)
+    if (inherits(x, "try-error"))
+      stop("'data' must be a matrix or data.frame, or an object that can be converted to a data.frame")
+  }
   if (is.null(colnames(x)))
-    colnames(x) <- paste0("x", 1L:ncol(x))
+    colnames(x) <- paste0("x", seq_len(ncol(x)))
   if (any("mid" == colnames(x)))
     stop("'mid' can't be used as a column name")
   tags <- colnames(x)
-  if(missing(weights))
-    weights <- attr(x, "weights")
+  naai <- list(n.init = nrow(x), ids = seq_len(nrow(x)))
   attr(x, "na.action") <- NULL
   x <- do.call(na.action, list(x))
   if (!is.null(naa.x <- stats::na.action(x))) {
@@ -126,10 +127,12 @@ interpret.default <- function(
     attr(x, "na.action") <- NULL
   }
   if (is.null(y)) {
-    if (missing(object))
-      stop("either 'object' or 'y' must be supplied")
-    y <- pred.fun(object, x)
+    y <- try(pred.fun(object, x), silent = TRUE)
+    if (inherits(y, "try-error"))
+      stop("'y' is not supplied and the model prediction failed")
   }
+  if (length(y) != nrow(x))
+    stop("length of 'y' doesn't match the number of rows in 'x'")
   if (is.character(y))
     y <- as.factor(y)
   target.level <- NULL
@@ -139,8 +142,6 @@ interpret.default <- function(
   }
   if (!is.numeric(y))
     y <- as.numeric(y)
-  if (length(y) != nrow(x))
-    stop("length of 'y' doesn't match the number of rows in 'x'")
   if (!is.null(link)){
     if (is.character(link))
       link <- stats::make.link(link)
@@ -167,6 +168,7 @@ interpret.default <- function(
     stop("length of 'weights' doesn't match the number of rows in 'x'")
   if (any(weights < 0))
     stop("negative weights not allowed")
+  if (is.matrix(x)) x <- as.data.frame(x)
   wsum <- sum(weights)
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
@@ -181,7 +183,7 @@ interpret.default <- function(
     its <- unique(terms[spl == 2L])
   }
   terms <- c(mts, its)
-  n <- nrow(x) # sample size
+  n <- nrow(x)
   p <- length(mts)
   q <- length(its)
   if (length(k) == 1L)
@@ -199,7 +201,6 @@ interpret.default <- function(
     method <- if (!singular.ok) 0L else 5L
   if (!singular.ok && any(method == 1L:2L))
     message("when 'method' is set to 1 or 2, singular fits cannot be detected")
-
   # get encoders for the calculation of the main effects --------
   u <- 0L
   if (me <- (p > 0L)) {
@@ -222,7 +223,6 @@ interpret.default <- function(
     mcumlens <- structure(cumsum(c(0L, mlens)), names = c(mts, NA))
     u <- mcumlens[length(mcumlens)] # total number of unique values
   }
-
   # get encoders for the calculation of the interactions --------
   v <- mi <- 0L
   if (ie <- (q > 0L)) {
@@ -251,7 +251,6 @@ interpret.default <- function(
     pcumlens <- structure(cumsum(c(0L, plens)), names = c(its, NA))
     v <- pcumlens[length(pcumlens)] # total number of unique pairs
   }
-
   # create the design matrix and the constraints matrix --------
   fi <- as.integer(fit.intercept)
   ncol <- fi + u + v
@@ -381,7 +380,6 @@ interpret.default <- function(
       Mnil[i, lemp[[i]][1L]] <- 1
     M <- rbind(M, Mnil)
   }
-
   # get the least squares solution --------
   if (mode == 1L) {
     X <- rbind(X, M)
@@ -440,14 +438,12 @@ interpret.default <- function(
       B[m, a] <- - 1
       B[m, m] <- length(a)
     }
-    beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients,
-                silent = TRUE)
+    beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients, silent = TRUE)
     if (inherits(beta, "try-error"))
       beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
     beta[is.na(beta)] <- 0
   }
   beta[abs(beta) <= nil] <- 0
-
   # summarize results of the decomposition --------
   fm <- matrix(0, nrow = n, ncol = p + q)
   colnames(fm) <- terms
@@ -489,15 +485,14 @@ interpret.default <- function(
       fm[, p + i] <- as.numeric(xmat %*% mult)
     }
   }
-
   # calculate the uninterpreted rate --------
   tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
   uiq <- stats::weighted.mean(rsd ^ 2, weights)
   uir <- attract(uiq / tot, nil)
-
   # output the result --------
   obj <- list()
   class(obj) <- c("mid")
+  obj$model.class <- attr(object, "class")
   cl[[1L]] <- as.name("interpret")
   obj$weights <- weights
   obj$call <- cl
@@ -538,7 +533,7 @@ interpret.default <- function(
 #'
 #' @rdname interpret
 #' @param formula a symbolic description of the MID model to be fit.
-#' @param data a data frame containing the variables in the formula. If not found in data, the variables are taken from environment(formula).
+#' @param data a data.frame, list or environment containing the variables in \code{formula}. If not found in data, the variables are taken from \code{environment(formula)}.
 #' @param model a fitted model object to be interpreted.
 #' @param subset an optional vector specifying a subset of observations to be used in the fitting process.
 #' @param drop.unused.levels logical. If \code{TRUE}, unused levels of factors will be dropped.
@@ -550,68 +545,74 @@ interpret.formula <- function(
     drop.unused.levels = FALSE, ...
 ) {
   cl <- match.call()
+  cl[[1L]] <- as.symbol("interpret")
   mf <- match.call(expand.dots = FALSE)
-  mf$... <- NULL
-  mf$model <- NULL
-  mf$pred.fun <- NULL
-  mf$mode <- NULL
-  if (use.model <- !missing(model)) {
+  mf[c("model", "pred.fun", "mode", "...")] <- NULL
+  mf[[1L]] <- quote(stats::model.frame.default)
+  env <- ifnot.null(environment(formula), parent.frame())
+  if (!missing(model)) {
     if (is.null(data))
-      stop("'data' is required to get predicted values from the 'model'")
-    if (!is.data.frame(data))
-      data <- as.data.frame(data)
-    naai <- list(n.init = nrow(data), ids = 1L:nrow(data))
+      data <- environment(formula)
+    if (!is.data.frame(data) && !is.matrix(data))
+      data <- stats::model.frame(formula, data, na.action = stats::na.pass)
     if (is.null(weights))
       weights <- attr(data, "weights")
-    yvar <- if (any("yhat" == colnames(data))) ".yhat" else "yhat"
-    rvar <- deparse(formula[[2L]])
+    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
     attr(data, "na.action") <- NULL
-    data <- do.call(na.action, list(data[names(data) != rvar]))
+    data <- do.call(na.action, list(data))
     if (!is.null(naa.x <- stats::na.action(data))) {
       weights <- weights[-naa.x]
       naai$ids <- naai$ids[-naa.x]
       attr(data, "na.action") <- NULL
     }
-    yhat <- pred.fun(model, data)
-    attr(yhat, "na.action") <- NULL
-    yhat <- do.call(na.action, list(yhat))
-    if (anyNA(yhat))
+    y <- pred.fun(model, data)
+    attr(y, "na.action") <- NULL
+    y <- do.call(na.action, list(y))
+    if (anyNA(y))
       stop("NA values found in the model predictions")
-    if (!is.null(naa.y <- stats::na.action(yhat))) {
-      tags <- colnames(data)
+    if (!is.null(naa.y <- stats::na.action(y))) {
       data <- data[-naa.y, , drop = FALSE]
       weights <- weights[-naa.y]
       naai$ids <- naai$ids[-naa.y]
-      attr(yhat, "na.action") <- NULL
+      attr(y, "na.action") <- NULL
     }
-    data[[yvar]] <- yhat
-    formula[[2L]] <- as.name(yvar)
-    cl$formula <- mf$formula <- formula
+    if (!is.data.frame(data))
+      data <- as.data.frame(data)
+    ftest <- try(stats::model.frame.default(formula, data[NULL, ]),
+                 silent = TRUE)
+    if (inherits(ftest, "try-error")) {
+      formula[[2L]] <- NULL
+      mf$formula <- formula
+    }
     mf$data <- data
     mf$weights <- weights
+    mf <- eval(mf, envir = env)
+    ytag <- if (any(colnames(data) == "yhat")) "predicted" else "yhat"
+    if (length(formula) == 2L)
+      formula[[3L]] <- formula[[2L]]
+    formula[[2L]] <- as.symbol(ytag)
+    cl$formula <- formula
   } else {
     message("'model' is not passed: the response variable in the data is used")
+    if (length(formula) < 3L)
+      stop("invalid formula found")
     if (is.matrix(data))
       mf$data <- as.data.frame(data)
     if (is.null(weights))
       mf$weights <- attr(data, "weights")
-  }
-  mf[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf, envir = parent.frame())
-  naa.data <- stats::na.action(mf)
-  if (!use.model) {
+    mf <- eval(mf, envir = env)
+    naa.data <- stats::na.action(mf)
     naai <- list(n.init = nrow(mf) + length(naa.data))
-    naai$ids <- 1L:naai$n.init
+    naai$ids <- seq_len(naai$n.init)
+    if (!is.null(naa.data))
+      naai$ids <- naai$ids[-naa.data]
+    y <- stats::model.response(mf, "any")
   }
-  if (!is.null(naa.data))
-    naai$ids <- naai$ids[-naa.data]
-  x <- structure(as.data.frame(mf), na.action = NULL)
-  y <- stats::model.response(mf, "any")
   w <- as.vector(stats::model.weights(mf))
+  attr(mf, "na.action") <- NULL
   tl <- attr(attr(mf, "terms"), "term.labels")
-  ret <- interpret.default(model = model, x = x, y = y, weights = w,
+  ret <- interpret.default(object = model, x = mf, y = y, weights = w,
                            terms = tl, mode = mode, na.action = na.action, ...)
-  cl[[1L]] <- as.symbol("interpret")
   ret$call <- cl
   if (!is.null(naa.ret <- ret$na.action))
     naai$ids <- naai$ids[-naa.ret]

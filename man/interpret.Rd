@@ -53,7 +53,7 @@ interpret(object, ...)
 
 \item{...}{for \code{interpret.default()}, optional arguments including special aliases such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, optional parameters to be passed to \code{interpret.default()}.}
 
-\item{x}{a matrix or data frame of predictor variables to be used in the fitting process. The response variable should not be included.}
+\item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
 \item{y}{an optional numeric vector of the model predictions or the response variable.}
 
@@ -99,7 +99,7 @@ interpret(object, ...)
 
 \item{formula}{a symbolic description of the MID model to be fit.}
 
-\item{data}{a data frame containing the variables in the formula. If not found in data, the variables are taken from environment(formula).}
+\item{data}{a data.frame, list or environment containing the variables in \code{formula}. If not found in data, the variables are taken from \code{environment(formula)}.}
 
 \item{model}{a fitted model object to be interpreted.}
 

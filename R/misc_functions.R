@@ -36,11 +36,12 @@ term.check <- function(x, terms, stop = TRUE) {
 
 model.reframe <- function(model, data) {
   if (!is.null(formula <- eval(model$call$formula))) {
-    yvar <- deparse(formula[[2L]])
-    data[, yvar] <- 0L
+    test <- try(stats::model.frame.default(formula, data[NULL, ]), silent = TRUE)
+    if (inherits(test, "try-error")) {
+      formula[[2L]] <- NULL
+    }
     data <- stats::model.frame(formula = formula, data = data,
                                na.action = "na.pass")
-    data <- data[, -which(colnames(data) == yvar), drop = FALSE]
   }
   data
 }
