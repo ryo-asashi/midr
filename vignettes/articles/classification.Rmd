@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", 
+pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "DALEX",
           "glmnet", "ranger", "e1071", "nnet", "rpart", "gam", "xgboost")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
