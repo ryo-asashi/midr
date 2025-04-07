@@ -9,7 +9,7 @@ A fitted MID model consists of a set of component functions, each with up to two
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.8.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,7 +20,8 @@ A fitted MID model consists of a set of component functions, each with up to two
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ggplot2.html">Visualization with ggplot2 package</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/classification.html">Interpretation of Classification Models</a></li>
+    <li><a class="dropdown-item" href="../articles/ggplot2.html">Visualization with ggplot2 package</a></li>
     <li><a class="dropdown-item" href="../articles/graphics.html">Visualization with graphics package</a></li>
     <li><a class="dropdown-item" href="../articles/regression.html">Interpretation of Regression Models</a></li>
   </ul></li>
@@ -80,6 +81,7 @@ A fitted MID model consists of a set of component functions, each with up to two
 <span>  max.ncol <span class="op">=</span> <span class="fl">3000L</span>,</span>
 <span>  nil <span class="op">=</span> <span class="fl">1e-07</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-07</span>,</span>
+<span>  pred.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -94,6 +96,7 @@ A fitted MID model consists of a set of component functions, each with up to two
 <span>  na.action <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"na.action"</span><span class="op">)</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  drop.unused.levels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pred.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -196,6 +199,10 @@ A fitted MID model consists of a set of component functions, each with up to two
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
 <dd><p>a tolerance for the singular value decomposition. The default is <code>1e-7</code>.</p></dd>
+
+
+<dt id="arg-pred-args">pred.args<a class="anchor" aria-label="anchor" href="#arg-pred-args"></a></dt>
+<dd><p>optional parameters other than the fitted model and new data to be passed to <code>pred.fun()</code>.</p></dd>
 
 
 <dt id="arg-formula">formula<a class="anchor" aria-label="anchor" href="#arg-formula"></a></dt>
