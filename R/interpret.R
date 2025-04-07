@@ -85,6 +85,7 @@ UseMethod("interpret")
 #' @param max.ncol integer. The maximum number of columns of the design matrix.
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
+#' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
 #' @param ... for \code{interpret.default()}, optional arguments including special aliases such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, optional parameters to be passed to \code{interpret.default()}.
 #' @exportS3Method midr::interpret
 #'
@@ -94,7 +95,7 @@ interpret.default <- function(
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
     lambda = 0, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
-    max.ncol = 3000L, nil = 1e-7, tol = 1e-7, ...
+    max.ncol = 3000L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   dots <- list(...)
@@ -127,7 +128,7 @@ interpret.default <- function(
     attr(x, "na.action") <- NULL
   }
   if (is.null(y)) {
-    y <- try(pred.fun(object, x), silent = TRUE)
+    y <- try(do.call(pred.fun, c(list(object, x), pred.args)), silent = TRUE)
     if (inherits(y, "try-error"))
       stop("'y' is not supplied and the model prediction failed")
   }
@@ -542,12 +543,12 @@ interpret.default <- function(
 interpret.formula <- function(
     formula, data = NULL, model = NULL, pred.fun = get.yhat, weights = NULL,
     subset = NULL, na.action = getOption("na.action"), mode = 1L,
-    drop.unused.levels = FALSE, ...
+    drop.unused.levels = FALSE, pred.args = list(), ...
 ) {
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
   mf <- match.call(expand.dots = FALSE)
-  mf[c("model", "pred.fun", "mode", "...")] <- NULL
+  mf[c("model", "pred.fun", "mode", "pred.args", "...")] <- NULL
   mf[[1L]] <- quote(stats::model.frame.default)
   env <- ifnot.null(environment(formula), parent.frame())
   if (!missing(model)) {
@@ -565,7 +566,7 @@ interpret.formula <- function(
       naai$ids <- naai$ids[-naa.x]
       attr(data, "na.action") <- NULL
     }
-    y <- pred.fun(model, data)
+    y <- do.call(pred.fun, c(list(model, data), pred.args))
     attr(y, "na.action") <- NULL
     y <- do.call(na.action, list(y))
     if (anyNA(y))

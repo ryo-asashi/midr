@@ -75,6 +75,8 @@ mid
 #> 
 #> Intercept: 22.446
 #> 
+#> Model Class: ranger
+#> 
 #> Main Effects:
 #> 12 main effect terms
 #> 
@@ -177,7 +179,8 @@ grid.arrange(
 
 \[1\] Iwasawa, H. & Matsumori, Y. (2025). \[Forthcoming\]
 
-\[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). \[Forthcoming\]
+\[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “Global Additive
+Explanation of Black-Box Predictive Models in R”. \[Forthcoming\]
 
 \[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
 “Peeking Inside the Black Box: Visualizing Statistical Learning With

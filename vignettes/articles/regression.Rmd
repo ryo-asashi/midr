@@ -17,6 +17,8 @@ for (pkg in pkgs) {
 }
 ```
 
+This article presents some examples of the interpretation of regression models using `midr`.
+
 ```{r setup, message = FALSE}
 # load required packages
 library(midr)
@@ -28,20 +30,9 @@ theme_set(theme_midr())
 
 ## Regression Task
 
-Here, we use a benchmark task, originally described in Friedman (1991) and Breiman (1996), and provided by the `mlbench` package. The data have 10 independent predictor variables $x_1,x_2,...,x_{10}$ each uniformly distributed on the interval $[0,1]$, and the response variable $y$ , generated according to the following formula with disturbance term $\epsilon\ {\sim}\ \mathcal{N}{(0, 1)}$.
-
-$$
+We use a benchmark regression task, originally described in Friedman (1991) and Breiman (1996), and implemented in the `mlbench` package. The dataset has 10 independent predictor variables $x_1,x_2,...,x_{10}$ each uniformly distributed on the interval $[0,1]$, and the response variable $y$ , generated according to the following formula with disturbance term $\epsilon\ {\sim}\ \mathcal{N}{(0, 1)}$. $$
 y=10\sin{(\pi{x_1}{x_2})+20{(x_3-0.5)}^2+10x_4+5x_5+\epsilon}
 $$
-
-```{r mlbench}
-# benchmark dataset for regression task
-library(mlbench)
-set.seed(42)
-train  <- as.data.frame(mlbench.friedman1(n = 500L))
-test   <- as.data.frame(mlbench.friedman1(n = 500L))
-mtrain <- as.data.frame(mlbench.friedman1(n = 2500L))[, -11L]
-```
 
 The following plots show the effect of each predictor variable on the response. For $x_1$ and $x_2$ , the interaction effect is shown by the colored lines: the effect of $x_1$ depends on the value of $x_2$ (blue for 0 and red for 1) and *vice versa*.
 
@@ -82,46 +73,64 @@ grid.arrange(nrow = 2,
 )
 ```
 
-For each model, we fit a regression model using the `train` data of 500 observations and an interpretative MID surrogate of the target model using the `mtrain` data of 2500 observations without the response variable. We then evaluate the predictive accuracy of the target model and the interpretative accuracy of the MID surrogate based on the RMSE between the `test` and model prediction or the two predictions, respectively.
+```{r mlbench}
+# benchmark regression task
+library(mlbench)
+set.seed(42)
+train  <- as.data.frame(mlbench.friedman1(n = 500L))
+test   <- as.data.frame(mlbench.friedman1(n = 500L))
+mtrain <- as.data.frame(mlbench.friedman1(n = 2500L))[, -11L]
+```
+
+For each model type, we fit a regression model using the `train` data of 500 observations and an interpretative MID surrogate of the target model using the `mtrain` data of 2500 observations without the response variable. We then evaluate the predictive accuracy of the target model and the interpretative accuracy of the MID surrogate based on the RMSE between the `test` and model prediction or the two predictions, respectively.
 
 ```{r utils}
 # define utility functions for the following chunks
 effect_plots <- function(object) {
   plots <- mid.plots(mid, terms = paste("x", 1:5, sep = "."))
+  for (i in 1:5)
+    plots[[i]] <- plots[[i]] + ggtitle("main effect")
   plots[[6]] <- ggmid(mid, "x.1:x.2", main.effects = TRUE) +
-    theme(legend.position = "none")
+    theme(legend.position = "none") +
+    ggtitle("main effect + interaction")
   plots
 }
+
 ice_theme <- color.theme("Zissou 1", type = "sequential")
 ice_plots <- function(object, data) {
   p1 <- ggmid(mid.conditional(mid, "x.1", data = data),
               var.color = x.2, type = "centered", theme = ice_theme) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    ggtitle("conditional expectation")
   p2 <- ggmid(mid.conditional(mid, "x.2", data = data),
               var.color = x.1, type = "centered", theme = ice_theme) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    ggtitle("conditional expectation")
   list(p1, p2)
 }
+
 importance_plot <- function(object) {
   ggmid(mid.importance(object), "dotchart", theme = "Set 1") +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    ggtitle("feature importance")
 }
+
 evaluation_plot <- function(pred, pred_mid, actual) {
   rmse_vs_test <- rmse(pred, actual)
   rmse_vs_mid <-  rmse(pred, pred_mid)
   ggplot() + scale_color_theme("Accent") +
-    geom_point(aes(x = preds, y = test$y, col = "vs test")) +
-    geom_point(aes(x = preds, y = preds_mid, col = "vs mid")) +
+    geom_point(aes(x = pred, y = actual, col = "vs test")) +
+    geom_point(aes(x = pred, y = pred_mid, col = "vs mid")) +
     geom_abline(slope = 1, intercept = 0, col = "black", lty = 2) +
     theme(legend.position = "bottom") +
     labs(x = "model-prediction", y = "mid-prediction / test") +
     annotate(
       "text", family = "serif", size = 3,
-      x = min(preds) + diff(range(preds)) / 10,
+      x = min(pred) + diff(range(pred)) / 9,
       y = max(actual) - diff(range(actual) / 10),
       label = sprintf("RMSE\nvs test: %.3f\nvs mid: %.3f",
                       rmse_vs_test, rmse_vs_mid)
-    )
+    ) + ggtitle("prediction/interpretation accuracy")
 }
 ```
 
@@ -134,10 +143,10 @@ model <- lm(y ~ ., train)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-preds <- predict(model, test)
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)
+pred_mid <- predict(mid, test)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 # grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -147,15 +156,14 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 library(glmnet)
 model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
-pred_rglm <- function(object, newdata)
-  predict(object, newx = as.matrix(newdata), s = object$lambda[9])
-mid <- interpret(y ~ .^2, train[, -11], model, pred.fun = pred_rglm)
-preds <- predict(model, as.matrix(test[, -11]), s = model$lambda[9])
-preds_mid <- predict(mid, test)
+mid <- interpret(y ~ .^2, train[, -11], model,
+                 pred.args = list(s = model$lambda[9]))
+pred <- predict(model, as.matrix(test[, -11]), s = model$lambda[9])
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 # grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -167,12 +175,12 @@ model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
 mid <- interpret(y ~ .^2, train, model)
-preds <- predict(model, test)
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -185,12 +193,12 @@ library(nnet)
 set.seed(42)
 model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
 mid <- interpret(y ~ .^2, mtrain, model)
-preds <- predict(model, test)
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -202,12 +210,12 @@ grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 library(e1071)
 model <- svm(y ~ ., train, kernel = "radial")
 mid <- interpret(y ~ .^2, mtrain, model)
-preds <- predict(model, test)
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -222,12 +230,12 @@ set.seed(42)
 model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
                  params = params, verbose = 0)
 mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
-preds <- predict(model, as.matrix(test[, -11]))
-preds_mid <- predict(mid, test)
+pred <- predict(model, as.matrix(test[, -11]))
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -238,12 +246,12 @@ library(ranger)
 set.seed(42)
 model <- ranger(y ~ ., train, mtry = 5)
 mid <- interpret(y ~ .^2, mtrain, model)
-preds <- predict(model, test)$predictions
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)$predictions
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```
 
@@ -253,11 +261,25 @@ grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 library(rpart)
 model <- rpart(y ~ ., train)
 mid <- interpret(y ~ .^2, mtrain, model)
-preds <- predict(model, test)
-preds_mid <- predict(mid, test)
+pred <- predict(model, test)
+pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(preds, preds_mid, test$y))
+             evaluation_plot(pred, pred_mid, test$y))
+grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+```
+
+## Other Modes
+
+### Predictive MID
+
+```{r mid_interpret}
+model <- mid <- interpret(y ~ .^2, train, lambda = .2)
+pred <- pred_mid <- predict(mid, test)
+print(mid)
+grid.arrange(grobs = effect_plots(mid), nrow = 2L)
+grid.arrange(nrow = 1L, importance_plot(mid),
+             evaluation_plot(pred, pred_mid, test$y))
 grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 ```

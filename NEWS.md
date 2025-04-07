@@ -2,6 +2,18 @@
 
 [First release on CRAN.]
 
+## midr 0.4.8.907
+
+-   Modify `interpret()` to add the `pred.args` argument that can be used to pass optional arguments to the prediction function (`pred.fun()`).
+
+-   Add a draft of the article on "the interpretation of classification models".
+
+## midr 0.4.8.906
+
+-   Modify `interpret()` to allow matrices to be used as valid inputs for `data` (`interpret.formula()`) and `x` (`interpret.default()`).
+
+-   Add an article on "the interpretation of regression models".
+
 ## midr 0.4.8.905
 
 -   Define `print.encoder()` for "encoder" objects to improve usability of the fitted MID models.

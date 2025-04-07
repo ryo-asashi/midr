@@ -32,6 +32,7 @@ interpret(object, ...)
   max.ncol = 3000L,
   nil = 1e-07,
   tol = 1e-07,
+  pred.args = list(),
   ...
 )
 
@@ -45,6 +46,7 @@ interpret(object, ...)
   na.action = getOption("na.action"),
   mode = 1L,
   drop.unused.levels = FALSE,
+  pred.args = list(),
   ...
 )
 }
@@ -96,6 +98,8 @@ interpret(object, ...)
 \item{nil}{a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.}
 
 \item{tol}{a tolerance for the singular value decomposition. The default is \code{1e-7}.}
+
+\item{pred.args}{optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.}
 
 \item{formula}{a symbolic description of the MID model to be fit.}
 
