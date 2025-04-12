@@ -65,7 +65,9 @@ ggmid.mid.importance <- function(
     ftag <- sapply(spt, function(x) x[1L])
     stag <- sapply(spt, function(x) x[2L])
     stag <- ifelse(is.na(stag), ftag, stag)
-    fr <- data.frame(x = c(stag, ftag), y = c(ftag, stag),
+    levs <- unique(spt)
+    fr <- data.frame(x = factor(c(stag, ftag), levels = levs),
+                     y = factor(c(ftag, stag), levels = levs),
                      importance = rep.int(imp$importance, 2L))
     fr <- unique(fr)
     pl <- ggplot2::ggplot(data = fr,

@@ -14,7 +14,7 @@
   width = NULL,
   vline = TRUE,
   catchall = "others",
-  format = "\%s=\%s",
+  format = c("\%t=\%v", "\%t"),
   ...
 )
 
@@ -37,7 +37,7 @@
 
 \item{catchall}{a character string to be used as the catchall label.}
 
-\item{format}{a character string to be used as the format of the \code{sprintf()} function for each component.}
+\item{format}{a character string or character vector of length two to be used as the format of the axis labels. "t" and "v" immediately after the percent sign are replaced with the corresponding term and value.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }

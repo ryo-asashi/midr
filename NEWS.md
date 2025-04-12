@@ -2,6 +2,10 @@
 
 [First release on CRAN.]
 
+## midr 0.4.8.9.8
+
+-   Modify `ggmid.mid.breakdown()` , `ggmid.mid.importance()` and `plot.mid.breakdown()` to improve usability of the functions.
+
 ## midr 0.4.8.907
 
 -   Modify `interpret()` to add the `pred.args` argument that can be used to pass optional arguments to the prediction function (`pred.fun()`).

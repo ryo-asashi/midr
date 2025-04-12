@@ -13,7 +13,7 @@
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
 #' @param catchall a character string to be used as the catchall label.
-#' @param format a character string to be used as the format of the \code{sprintf()} function for each component.
+#' @param format a character string or character vector of length two to be used as the format of the axis labels. "t" and "v" immediately after the percent sign are replaced with the corresponding term and value.
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(diamonds, package = "ggplot2")
@@ -32,13 +32,17 @@
 ggmid.mid.breakdown <- function(
     object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
-    catchall = "others", format = "%s=%s", ...) {
+    catchall = "others", format = c("%t=%v", "%t"), ...) {
   dots <- list(...)
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown
   bd$term <- as.character(bd$term)
+  if (any(!grepl("%t", format) & !grepl("%v", format)))
+    stop("all format strings must contain '%t' or '%v'")
+  if (length(format) == 1L)
+    format <- c(format, format)
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
@@ -56,7 +60,9 @@ ggmid.mid.breakdown <- function(
   }
   for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
     term <- bd[i, "term"]
-    bd[i, "term"] <- sprintf(format, bd[i, "term"], bd[i, "value"])
+    fmt <- if (grepl(":", term)) format[2L] else format[1L]
+    bd[i, "term"] <-
+      gsub("%v", bd[i, "value"], gsub("%t", bd[i, "term"], fmt))
   }
   if (use.catchall)
     bd[nrow(bd), "term"] <- catchall
