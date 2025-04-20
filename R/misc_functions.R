@@ -167,12 +167,12 @@ weighted.tabulate <- function(
 
 #' Weighted Loss Functions
 #'
-#' \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss from a weighted vector of prediction errors.
+#' \code{weighted.mse()}, \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss based on the differences of two numeric vectors or deviations from the mean of a numeric vector.
 #'
-#' \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
+#' \code{weighted.rmse()} returns the mean square error, \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
 #'
-#' @param x a numeric vector of errors.
-#' @param y an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}.
+#' @param x a numeric vector.
+#' @param y an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}. If not, the loss is calculated for the deviations of \code{x} from the weighted mean of itself.
 #' @param w a numeric vector of sample weights for each value in \code{x}.
 #' @param ... optional parameters.
 #' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from \code{x} before the calculation.
@@ -182,69 +182,100 @@ weighted.tabulate <- function(
 #' weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' @returns
 #' \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
-#' @export weighted.rmse
+#' @export weighted.mse
 #'
-weighted.rmse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
-  if (!is.null(y))
-    x <- x - y
+weighted.mse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
   if (is.null(w)) {
-    if (na.rm)
-      x <- x[!is.na(x)]
-    return(sqrt(mean(x ^ 2)))
+    if (na.rm) {
+      ok <- !is.na(x)
+      x <- x[ok]
+      if (length(y) > 1L) y <- y[ok]
+    }
+    if (is.null(y)) y <- mean(x)
+    x <- x - y
+    return(mean(x ^ 2))
   }
   if (length(w) != length(x))
     stop("'x' and 'w' must have the same length")
+  if (!is.numeric(w) || anyNA(w))
+    stop("'w' must be a numeric vector without missing values")
   if (na.rm) {
     ok <- !is.na(x) & w != 0
     x <- x[ok]
     w <- w[ok]
+    if (length(y) > 1L) y <- y[ok]
   }
-  sqrt(sum(x ^ 2 * w) / sum(w))
+  if (is.null(y)) y <- sum(x * w) / sum(w)
+  x <- x - y
+  sum(x ^ 2 * w) / sum(w)
 }
 
 
-#' @rdname weighted.rmse
+#' @rdname weighted.mse
+#' @export weighted.rmse
+#'
+weighted.rmse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
+  sqrt(weighted.mse(x = x, y = y, w = w, ..., na.rm = na.rm))
+}
+
+
+#' @rdname weighted.mse
 #' @export weighted.mae
 #'
 weighted.mae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
-  if (!is.null(y))
-    x <- x - y
   if (is.null(w)) {
-    if (na.rm)
-      x <- x[!is.na(x)]
+    if (na.rm) {
+      ok <- !is.na(x)
+      x <- x[ok]
+      if (length(y) > 1L) y <- y[ok]
+    }
+    if (is.null(y)) y <- mean(x)
+    x <- x - y
     return(mean(abs(x)))
   }
   if (length(w) != length(x))
     stop("'x' and 'w' must have the same length")
+  if (!is.numeric(w) || anyNA(w))
+    stop("'w' must be a numeric vector without missing values")
   if (na.rm) {
     ok <- !is.na(x) & w != 0
     x <- x[ok]
     w <- w[ok]
+    if (length(y) > 1L) y <- y[ok]
   }
+  if (is.null(y)) y <- sum(x * w) / sum(w)
+  x <- x - y
   sum(abs(x) * w) / sum(w)
 }
 
 
-#' @rdname weighted.rmse
+#' @rdname weighted.mse
 #' @export weighted.medae
 #'
-weighted.medae <- function(
-    x, y = NULL, w = NULL, ..., na.rm = FALSE) {
-  if (!is.null(y))
-    x <- x - y
+weighted.medae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
   if (is.null(w)) {
-    if (na.rm)
-      x <- x[!is.na(x)]
+    if (na.rm) {
+      ok <- !is.na(x)
+      x <- x[ok]
+      if (length(y) > 1L) y <- y[ok]
+    }
+    if (is.null(y)) y <- mean(x)
+    x <- x - y
     return(stats::quantile(abs(x), probs = 0.5,
                            na.rm = na.rm, names = FALSE, type = 1L, ...))
   }
   if (length(w) != length(x))
     stop("'x' and 'w' must have the same length")
+  if (!is.numeric(w) || anyNA(w))
+    stop("'w' must be a numeric vector without missing values")
   if (na.rm) {
     ok <- !is.na(x) & w != 0
     x <- x[ok]
     w <- w[ok]
+    if (length(y) > 1L) y <- y[ok]
   }
+  if (is.null(y)) y <- sum(x * w) / sum(w)
+  x <- x - y
   weighted.quantile(abs(x), w, probs = 0.5,
                     na.rm = na.rm, names = FALSE, type = 1L, ...)
 }

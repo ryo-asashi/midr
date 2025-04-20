@@ -80,7 +80,7 @@ ggmid.mid.conditional <- function(
     con$.lty <- eval(lty, envir = con)
     pl <- pl + ggplot2::aes(linetype = .data[[".lty"]]) +
       ggplot2::labs(linetype = lty)
-    if (!is.discrete(obs[, lty]))
+    if (!is.discrete(obs$.lty))
       pl <- pl + ggplot2::scale_linetype_binned()
   }
   if (!is.null(lwd <- substitute(var.linewidth))) {
@@ -89,7 +89,7 @@ ggmid.mid.conditional <- function(
     con$.lwd <- eval(lwd, envir = con)
     pl <- pl + ggplot2::aes(linewidth = .data[[".lwd"]]) +
       ggplot2::labs(linewidth = lwd)
-    if (is.discrete(obs[, lwd])) {
+    if (is.discrete(obs$.lwd)) {
       pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))
     } else {
       pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))

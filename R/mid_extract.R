@@ -28,6 +28,7 @@ mid.extract <- function(object, component, ...) {
     return(object$main.effects[[component]])
   }
   rt <- switch(component,
+    breakdown = mid.breakdown(object, ...),
     conditional = mid.conditional(object, ...),
     encoding.scheme = mid.encoding.scheme(object, ...),
     frames = mid.frames(object, ...),
@@ -78,6 +79,14 @@ mid.frames <- function(object, ...) {
     }
   }
   res
+}
+
+
+#' @rdname mid.extract
+#' @export mid.ur
+#'
+mid.ur <- function(object, ...) {
+  object$uninterpreted.rate
 }
 
 

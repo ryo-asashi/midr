@@ -2,7 +2,13 @@
 
 [First release on CRAN.]
 
-## midr 0.4.8.9.8
+## midr 0.4.8.909
+
+-   Add `mid.ur()` to extract uninterpreted ratio (rate) more conveniently.
+
+-   Modify weighted loss functions to compute deviation-from-mean based losses for one input.
+
+## midr 0.4.8.908
 
 -   Modify `ggmid.mid.breakdown()` , `ggmid.mid.importance()` and `plot.mid.breakdown()` to improve usability of the functions.
 

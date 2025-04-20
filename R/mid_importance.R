@@ -47,7 +47,10 @@ mid.importance <- function(
   out <- list()
   out$importance <- df
   out$predictions <- preds
-  out$measure <- switch(measure, "MAE", "RMSE", "MedAE")
+  out$measure <- switch(measure,
+                        "Mean Absolute Deviation",
+                        "Root Mean Square Deviation",
+                        "Median Absolute Deviation")
   attr(out, "terms") <- as.character(df$term)
   class(out) <- c("mid.importance")
   out

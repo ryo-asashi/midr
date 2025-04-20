@@ -4,6 +4,7 @@
 \alias{mid.extract}
 \alias{mid.encoding.scheme}
 \alias{mid.frames}
+\alias{mid.ur}
 \alias{mid.terms}
 \alias{terms.mid}
 \alias{terms.mid.importance}
@@ -14,6 +15,8 @@ mid.extract(object, component, ...)
 mid.encoding.scheme(object, ...)
 
 mid.frames(object, ...)
+
+mid.ur(object, ...)
 
 mid.terms(
   object,

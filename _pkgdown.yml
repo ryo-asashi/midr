@@ -61,5 +61,5 @@ reference:
   - theme_midr
   - weighted.tabulate
   - weighted.quantile
-  - weighted.rmse
+  - weighted.mse
   - shapviz.mid

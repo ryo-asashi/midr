@@ -111,7 +111,7 @@ interpret.default <- function(
   if (!is.matrix(x) && !is.data.frame(x)) {
     x <- try(as.data.frame(x), silent = TRUE)
     if (inherits(x, "try-error"))
-      stop("'data' must be a matrix or data.frame, or an object that can be converted to a data.frame")
+      stop("'x' must be a matrix or data.frame, or an object that can be converted to a data.frame")
   }
   if (is.null(colnames(x)))
     colnames(x) <- paste0("x", seq_len(ncol(x)))

@@ -4,7 +4,7 @@
 \name{midr-package}
 \alias{midr}
 \alias{midr-package}
-\title{midr: Global Additive Explanation of Black-Box Predictive Models}
+\title{midr: Interpret Black-Box Models by Maximum Interpretation Decomposition}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
