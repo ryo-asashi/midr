@@ -113,10 +113,11 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>mid.extract()</code> returns the <code>component</code> extracted from the <code>object</code>.
-<code>mid.encoding.scheme()</code> returns a data frame containing the information about encoding schemes.
-<code>mid.frames()</code> returns a list of the encoding frames.
-<code>mid.terms()</code> returns a character vector of the term labels.</p>
+    <p><code>mid.extract()</code> returns the <code>component</code> extracted from the <code>object</code>,
+<code>mid.encoding.scheme()</code> returns a data frame containing the information about encoding schemes,
+<code>mid.frames()</code> returns a list of the encoding frames,
+<code>mid.terms()</code> returns a character vector of the term labels, and
+<code>mid.ur()</code> returns the uninterpreted rate of the MID model.</p>
     </div>
 
     <div class="section level2">
@@ -128,7 +129,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>        main.effect interaction</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Girth   linear(10)   linear(4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Height  linear(10)   linear(4)</span>
-<span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">uninterpreted.rate</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">ur</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0002371872</span>
 <span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">frames</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`|Girth`</span>

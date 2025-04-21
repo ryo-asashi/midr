@@ -86,11 +86,11 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>weighted.rmse()</code> (root mean squared error), <code>weighted.mae()</code> (mean absolute error) and <code>weighted.medae</code> (median absolute error) returns a single numeric value.</p>
+    <p><code>weighted.mse()</code> (mean square error), <code>weighted.rmse()</code> (root mean square error), <code>weighted.mae()</code> (mean absolute error) and <code>weighted.medae</code> (median absolute error) returns a single numeric value.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>weighted.rmse()</code> returns the mean square error, <code>weighted.rmse()</code> returns the root mean square error, <code>weighted.mae()</code> returns the mean absolute error, and <code>weighted.medae()</code> returns the median absolute error for a weighted vector.</p>
+    <p><code>weighted.mse()</code> returns the mean square error, <code>weighted.rmse()</code> returns the root mean square error, <code>weighted.mae()</code> returns the mean absolute error, and <code>weighted.medae()</code> returns the median absolute error between two weighted vectors <code>x</code> and <code>y</code>. If <code>y</code> is not passed, these functions return the corresponding statistic based on the deviations from the mean of <code>x</code>.</p>
     </div>
 
     <div class="section level2">
@@ -101,6 +101,13 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
 <span class="r-in"><span><span class="fu">weighted.medae</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">99</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-in"><span><span class="co"># compute uninterpreted rate</span></span></span>
+<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span>, <span class="va">cars</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' is not passed: the response variable in the data is used</span>
+<span class="r-in"><span><span class="fu">weighted.mse</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu">weighted.mse</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
+<span class="r-in"><span><span class="fu"><a href="mid.extract.html">mid.ur</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
