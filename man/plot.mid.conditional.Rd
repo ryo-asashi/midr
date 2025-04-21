@@ -52,8 +52,10 @@ The S3 method of \code{plot()} for "mid.conditional" objects creates an visualiz
 }
 \examples{
 data(airquality, package = "datasets")
-mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-ice <- mid.conditional(mid, "Wind", na.omit(airquality))
-plot(ice, theme = "Mako", var.color = "Temp")
-plot(ice, type = "centered", theme = "Cividis", var.color = "Temp")
+library(midr)
+mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.1)
+ice <- mid.conditional(mid, "Temp", data = airquality)
+plot(ice, var.color = "Wind")
+plot(ice, type = "centered", theme = "Purple-Yellow",
+     var.color = factor(Month), var.linetype = Wind > 10)
 }

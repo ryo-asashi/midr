@@ -17,10 +17,12 @@
 #' @param ... optional parameters to be passed to the main layer.
 #' @examples
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.5)
-#' ice <- mid.conditional(mid, "Wind", airquality)
-#' ggmid(ice, theme = "Mako", var.color = "Temp")
-#' ggmid(ice, type = "centered", theme = "Cividis", var.color = "Temp")
+#' library(midr)
+#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.1)
+#' ice <- mid.conditional(mid, "Temp", data = airquality)
+#' ggmid(ice, var.color = "Wind")
+#' ggmid(ice, type = "centered", theme = "Purple-Yellow",
+#'       var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
 #' \code{ggmid.mid.conditional()} returns a "ggplot" object.
 #' @exportS3Method midr::ggmid
