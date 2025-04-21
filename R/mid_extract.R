@@ -9,15 +9,16 @@
 #' data(trees, package = "datasets")
 #' mid <- interpret(Volume ~ .^2, trees, k = 10)
 #' mid.extract(mid, encoding.scheme)
-#' mid.extract(mid, uninterpreted.rate)
+#' mid.extract(mid, ur)
 #' mid.extract(mid, frames)
 #' mid.extract(mid, Girth)
 #' mid.extract(mid, intercept)
 #' @returns
-#' \code{mid.extract()} returns the \code{component} extracted from the \code{object}.
-#' \code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes.
-#' \code{mid.frames()} returns a list of the encoding frames.
-#' \code{mid.terms()} returns a character vector of the term labels.
+#' \code{mid.extract()} returns the \code{component} extracted from the \code{object},
+#' \code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes,
+#' \code{mid.frames()} returns a list of the encoding frames,
+#' \code{mid.terms()} returns a character vector of the term labels, and
+#' \code{mid.ur()} returns the uninterpreted rate of the MID model.
 #' @export mid.extract
 #'
 mid.extract <- function(object, component, ...) {
@@ -34,7 +35,8 @@ mid.extract <- function(object, component, ...) {
     frames = mid.frames(object, ...),
     importance = mid.importance(object, ...),
     plots = mid.plots(object, ...),
-    terms = mid.terms(object, ...)
+    terms = mid.terms(object, ...),
+    ur = mid.ur(object, ...)
   )
   ifnot.null(rt, object[[component]])
 }

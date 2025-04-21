@@ -169,7 +169,7 @@ weighted.tabulate <- function(
 #'
 #' \code{weighted.mse()}, \code{weighted.rmse()}, \code{weighted.mae()} and \code{weighted.medae()} compute the loss based on the differences of two numeric vectors or deviations from the mean of a numeric vector.
 #'
-#' \code{weighted.rmse()} returns the mean square error, \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error for a weighted vector.
+#' \code{weighted.mse()} returns the mean square error, \code{weighted.rmse()} returns the root mean square error, \code{weighted.mae()} returns the mean absolute error, and \code{weighted.medae()} returns the median absolute error between two weighted vectors \code{x} and \code{y}. If \code{y} is not passed, these functions return the corresponding statistic based on the deviations from the mean of \code{x}.
 #'
 #' @param x a numeric vector.
 #' @param y an optional numeric vector. If passed, the loss is calculated for the differences between \code{x} and \code{y}. If not, the loss is calculated for the deviations of \code{x} from the weighted mean of itself.
@@ -180,8 +180,12 @@ weighted.tabulate <- function(
 #' weighted.rmse(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' weighted.mae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 #' weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
+#' # compute uninterpreted rate
+#' mid <- interpret(dist ~ speed, cars)
+#' weighted.mse(cars$dist, predict(mid, cars)) / weighted.mse(cars$dist)
+#' mid.ur(mid)
 #' @returns
-#' \code{weighted.rmse()} (root mean squared error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
+#' \code{weighted.mse()} (mean square error), \code{weighted.rmse()} (root mean square error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 #' @export weighted.mse
 #'
 weighted.mse <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
