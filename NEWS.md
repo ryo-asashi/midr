@@ -2,6 +2,10 @@
 
 [First release on CRAN.]
 
+## midr 0.4.9.900
+
+-   `interpret()` now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.
+
 ## midr 0.4.8.909
 
 -   Add `mid.ur()` to extract uninterpreted ratio (rate) more conveniently.

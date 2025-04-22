@@ -29,7 +29,7 @@ interpret(object, ...)
   encoding.digits = 3L,
   use.catchall = FALSE,
   catchall = "(others)",
-  max.ncol = 3000L,
+  max.ncol = 10000L,
   nil = 1e-07,
   tol = 1e-07,
   pred.args = list(),

@@ -95,7 +95,7 @@ interpret.default <- function(
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
     lambda = 0, kappa = 1e6, na.action = getOption("na.action"),
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
-    max.ncol = 3000L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
+    max.ncol = 1e4L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   dots <- list(...)
@@ -256,8 +256,14 @@ interpret.default <- function(
   fi <- as.integer(fit.intercept)
   ncol <- fi + u + v
   ncon <- p + mi
-  if (ncol > max.ncol)
-    stop(paste0("number of columns of the design matrix (", ncol, ") exceeded the limit (", max.ncol, ")"))
+  if (!is.null(max.ncol) && ncol > max.ncol) {
+    title <- paste0("number of columns of the design matrix (", ncol,
+                    ") exceeded 'max.ncol' (", max.ncol, ")")
+    choices <- c("exit", "continue")
+    sel <- try(utils::select.list(choices, title = title), silent = TRUE)
+    if (inherits(sel, "try-error") || sel == "exit")
+      stop("execution halted")
+  }
   X <- matrix(0, nrow = n, ncol = ncol)
   M <- matrix(0, nrow = ncon, ncol = ncol)
   Y <- y
@@ -421,8 +427,13 @@ interpret.default <- function(
     rsd <- z$residuals[1L:n] / w[1L:n]
   }
   if (!(any(method == 1L:2L)) && z$rank < ncol - r) {
-    if (!singular.ok)
-      stop("singular fit encountered")
+    if (!singular.ok) {
+      title <- "singular fit encountered"
+      choices <- c("exit", "continue")
+      sel <- try(utils::select.list(choices, title = title), silent = TRUE)
+      if (inherits(sel, "try-error") || sel == "exit")
+        stop("execution halted")
+    }
     message("singular fit encountered")
   }
   if (weighted.norm) {
