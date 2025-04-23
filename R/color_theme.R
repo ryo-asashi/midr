@@ -232,10 +232,20 @@ color.theme <- function(
     name,
     "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
     "grayscale" = to.palette(directed(c("white", "black"), d)),
+    "shap" = to.palette(directed(c("#2C87E1","#2A6BE9","#774DCF","#9C30BB","#C60099","#E7007E","#F72A5A"), d)),
     NA
   )
   if (is.palette(f)) {
     return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+  }
+  # qualitative themes
+  f <- switch(
+    name,
+    "DALEX" = directed(c("#4378bf","#8bdcbe", "#f05a71", "#ffa58c", "#ae2c87", "#46bac2", "#371ea3"), d),
+    NA
+  )
+  if (is.color(f)) {
+    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
   }
   # sequential themes from viridisLite package
   f <- switch(

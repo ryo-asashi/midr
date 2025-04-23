@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", 
+pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "patchwork", 
           "glmnet", "ranger", "e1071", "nnet", "rpart", "gam", "xgboost")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
@@ -24,6 +24,7 @@ This article presents some examples of the interpretation of regression models u
 library(midr)
 library(ggplot2)
 library(gridExtra)
+library(patchwork)
 library(Metrics)
 theme_set(theme_midr())
 ```
@@ -92,45 +93,41 @@ effect_plots <- function(object) {
     plots[[i]] <- plots[[i]] + ggtitle("main effect")
   plots[[6]] <- ggmid(mid, "x.1:x.2", main.effects = TRUE) +
     theme(legend.position = "none") +
-    ggtitle("main effect + interaction")
+    ggtitle("interaction effect")
   plots
 }
 
-ice_theme <- color.theme("Zissou 1", type = "sequential")
-ice_plots <- function(object, data) {
-  p1 <- ggmid(mid.conditional(mid, "x.1", data = data),
-              var.color = x.2, type = "centered", theme = ice_theme) +
-    theme(legend.position = "bottom") +
+ice_theme <- color.theme("Zissou 1", "sequential")
+ice_plot <- function(object, data = train[1:200, ]) {
+  ggmid(mid.conditional(object, "x.1", data = data),
+        var.color = x.2, type = "centered", theme = ice_theme) +
+    theme(legend.position = "none") +
     ggtitle("conditional expectation")
-  p2 <- ggmid(mid.conditional(mid, "x.2", data = data),
-              var.color = x.1, type = "centered", theme = ice_theme) +
-    theme(legend.position = "bottom") +
-    ggtitle("conditional expectation")
-  list(p1, p2)
 }
 
 importance_plot <- function(object) {
-  ggmid(mid.importance(object), "dotchart", theme = "Set 1") +
-    theme(legend.position = "bottom") +
+  ggmid(mid.importance(object), "heatmap") +
     ggtitle("feature importance")
 }
 
-evaluation_plot <- function(pred, pred_mid, actual) {
+eval_plot <- function(model, mid, data = test, ...) {
+  pred <- get.yhat(model, data, ...)
+  pred_mid <- get.yhat(mid, data)
+  actual <- test$y
   rmse_vs_test <- rmse(pred, actual)
   rmse_vs_mid <-  rmse(pred, pred_mid)
-  ggplot() + scale_color_theme("Accent") +
+  ggplot() + scale_color_theme("DALEX") +
     geom_point(aes(x = pred, y = actual, col = "vs test")) +
     geom_point(aes(x = pred, y = pred_mid, col = "vs mid")) +
     geom_abline(slope = 1, intercept = 0, col = "black", lty = 2) +
-    theme(legend.position = "bottom") +
     labs(x = "model-prediction", y = "mid-prediction / test") +
     annotate(
       "text", family = "serif", size = 3,
-      x = min(pred) + diff(range(pred)) / 9,
-      y = max(actual) - diff(range(actual) / 10),
+      x = min(pred) + diff(range(pred)) / 8,
+      y = max(actual) - diff(range(actual) / 8),
       label = sprintf("RMSE\nvs test: %.3f\nvs mid: %.3f",
                       rmse_vs_test, rmse_vs_mid)
-    ) + ggtitle("prediction/interpretation accuracy")
+    ) + ggtitle("prediction / representation accuracy")
 }
 ```
 
@@ -140,14 +137,11 @@ evaluation_plot <- function(pred, pred_mid, actual) {
 
 ```{r stats_lm}
 model <- lm(y ~ ., train)
+coef(model)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-pred <- predict(model, test)
-pred_mid <- predict(mid, test)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-# grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ### Regularized GLM
@@ -158,13 +152,11 @@ model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
 mid <- interpret(y ~ .^2, train[, -11], model,
                  pred.args = list(s = model$lambda[9]))
-pred <- predict(model, as.matrix(test[, -11]), s = model$lambda[9])
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-# grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+evp <- eval_plot(model, mid, data = test[, -11],
+                       s = model$lambda[9])
+(importance_plot(mid) / evp) | ice_plot(mid)
 ```
 
 ### Generalized Additive Model
@@ -175,13 +167,9 @@ model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
 mid <- interpret(y ~ .^2, train, model)
-pred <- predict(model, test)
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ## Neural Network
@@ -193,13 +181,9 @@ library(nnet)
 set.seed(42)
 model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
 mid <- interpret(y ~ .^2, mtrain, model)
-pred <- predict(model, test)
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ## Support Vector Machine
@@ -210,13 +194,9 @@ grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 library(e1071)
 model <- svm(y ~ ., train, kernel = "radial")
 mid <- interpret(y ~ .^2, mtrain, model)
-pred <- predict(model, test)
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ## Tree Based Models
@@ -230,13 +210,10 @@ set.seed(42)
 model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
                  params = params, verbose = 0)
 mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
-pred <- predict(model, as.matrix(test[, -11]))
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+evp <- eval_plot(model, mid, as.matrix(test[, -11]))
+(importance_plot(mid) / evp) | ice_plot(mid)
 ```
 
 ### Random Forest
@@ -246,13 +223,9 @@ library(ranger)
 set.seed(42)
 model <- ranger(y ~ ., train, mtry = 5)
 mid <- interpret(y ~ .^2, mtrain, model)
-pred <- predict(model, test)$predictions
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ### Decision Tree
@@ -261,13 +234,9 @@ grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
 library(rpart)
 model <- rpart(y ~ ., train)
 mid <- interpret(y ~ .^2, mtrain, model)
-pred <- predict(model, test)
-pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```
 
 ## Other Modes
@@ -279,7 +248,5 @@ model <- mid <- interpret(y ~ .^2, train, lambda = .2)
 pred <- pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, test$y))
-grid.arrange(grobs = ice_plots(mid, test[1:100, ]), nrow = 1L)
+(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
 ```

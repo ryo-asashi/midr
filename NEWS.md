@@ -2,6 +2,10 @@
 
 [First release on CRAN.]
 
+## midr 0.4.9.901
+
+-   Add link functions: `translogit`, `transprobit`, `identity-logit` and `identity-probit` for the interpretation task of classification models.
+
 ## midr 0.4.9.900
 
 -   `interpret()` now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.

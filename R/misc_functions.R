@@ -36,6 +36,8 @@ term.check <- function(x, terms, stop = TRUE) {
 
 model.reframe <- function(model, data) {
   if (!is.null(formula <- eval(model$call$formula))) {
+    if (!is.data.frame(data))
+      data <- as.data.frame(data)
     test <- try(stats::model.frame.default(formula, data[NULL, ]), silent = TRUE)
     if (inherits(test, "try-error")) {
       formula[[2L]] <- NULL
@@ -448,4 +450,32 @@ override <- function(args, dots,
     args[[arg]] <- ifnot.null(dots[[param]], args[[arg]])
   }
   args
+}
+
+
+get.link <- function(link) {
+  res <- switch(
+    link,
+    "transprobit" = list(
+      linkfun = function(mu) stats::qnorm(mu, mean = .5, sd = sqrt(.5 / pi)),
+      linkinv = function(eta) stats::pnorm(eta, mean = .5, sd = sqrt(.5 / pi))
+    ),
+    "identity-gaussian" = list(
+      linkfun = function(mu) mu,
+      linkinv = function(eta) stats::pnorm(eta, mean = .5, sd = sqrt(.5 / pi))
+    ),
+    "translogit" = list(
+      linkfun = function(mu) .5 - .25 * log(1 / mu - 1),
+      linkinv = function(eta) 1 / (1 + exp(2 - 4 * eta))
+    ),
+    "identity-logistic" = list(
+      linkfun = function(mu) mu,
+      linkinv = function(eta) 1 / (1 + exp(2 - 4 * eta))
+    ),
+    stats::make.link(link)
+  )
+  res$name <- as.character(link)
+  if (!inherits(res, "link-glm"))
+    class(res) <- "link-midr"
+  res
 }

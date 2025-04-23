@@ -47,11 +47,6 @@ For each model type, we fit a classification model using the `train` data of 170
 
 ```{r utils}
 # define utility functions for the following chunks
-link <- list(
-  linkfun = function(mu) binomial()$linkfun(pmax(1e-9, pmin(1 - 1e-9, mu))),
-  linkinv = binomial()$linkinv
-)
-
 effect_plots <- function(object) {
   plots <- mid.plots(mid, terms = terms(mid)[1:6])
   for (i in 1:6) {
@@ -62,43 +57,47 @@ effect_plots <- function(object) {
   plots
 }
 
-interaction_plot <- function(object, data) {
-  ggmid(mid, "age:class", type = "data", data = na.omit(titanic), 
-        theme = "Temps", main.effects = TRUE) +
-    theme(legend.position = "bottom") +
-    ggtitle("main effect + interaction")
+interaction_plot <- function(
+    object, term = NULL, theme = "shap") {
+  if (is.null(term))
+    term <- mid.terms(mid.importance(object), main.effect = FALSE)[1L]
+  ggmid(object, term, type = "data", data = na.omit(titanic), 
+        theme = theme, main.effects = TRUE) +
+    theme(legend.position = "right") +
+    ggtitle("interaction effect plot")
 }
 
-ice_plot <- function(object, data) {
-  ggmid(mid.conditional(mid, "age", data = data),
-              var.color = gender, theme = "Set 1") +
-    theme(legend.position = "bottom") +
+ice_plot <- function(object, variable = "age") {
+  ggmid(mid.conditional(object, variable,
+                        data = na.omit(titanic)[1:200, ]),
+        var.color = gender, theme = "shap_r") +
+    theme(legend.position = "right") +
     ggtitle("conditional expectation")
 }
 
 importance_plot <- function(object) {
-  ggmid(mid.importance(object), "dotchart", theme = "Okabe-Ito") +
-    theme(legend.position = "bottom") +
+  ggmid(mid.importance(object), "heatmap", theme = "grayscale") +
+    theme(legend.position = "right") +
     ggtitle("feature importance")
 }
 
-evaluation_plot <- function(pred, pred_mid, actual) {
+evaluation_plot <- function(model, mid, ...) {
+  pred <- get.yhat(model, test, ...)
+  pred_mid <- get.yhat(mid, test)
+  actual <- as.numeric(test$survived == "yes")
   auc_vs_test <- auc(actual, pred)
   cor_vs_mid <-  cor(pred, pred_mid, method = "spearman",
                      use = "pairwise.complete.obs")
   ggplot() + scale_color_theme("Accent") +
-    geom_point(aes(x = pred, y = actual, col = "vs test"),
-               data = na.omit(data.frame(pred, actual))) +
-    geom_point(aes(x = pred, y = pred_mid, col = "vs mid"),
+    geom_point(aes(x = pred, y = pred_mid), col = "#4378bf",
                data = na.omit(data.frame(pred, pred_mid))) +
     geom_abline(slope = 1, intercept = 0, col = "black", lty = 2) +
-    theme(legend.position = "bottom") + xlim(0, 1) +
-    labs(x = "model-prediction", y = "mid-prediction / test") +
-    annotate(
-      "text", family = "serif", size = 3, x = 0.2, y = 0.8,
-      label = sprintf("vs test (AUC): %.3f\nvs mid (Spearman): %.3f",
+    theme(legend.position = "right") + xlim(0, 1) +
+    labs(x = "model-prediction", y = "mid-prediction") +
+    annotate("text", family = "serif", size = 3, x = 0.2, y = 0.8,
+      label = sprintf("vs test (AUC)       : %.3f\nvs mid (Spearman): %.3f",
                       auc_vs_test, cor_vs_mid)
-    ) + ggtitle("prediction/interpretation accuracy")
+    ) + ggtitle("representation accuracy")
 }
 ```
 
@@ -108,15 +107,14 @@ evaluation_plot <- function(pred, pred_mid, actual) {
 
 ```{r stats_glm}
 model <- glm(survived == "yes" ~ ., family = "binomial", data = train)
-mid <- interpret(survived ~ .^2, train, model, link = "logit")
-pred <- get.yhat(model, test)
-pred_mid <- predict(mid, test)
+mid <- interpret(survived ~ .^2, train, model, link = "translogit")
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             evaluation_plot(model, mid, target = "yes"))
 ```
 
 ## Neural Network
@@ -127,15 +125,15 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 library(nnet)
 set.seed(42)
 model <- nnet(survived ~ ., train, size = 5, maxit = 1e3, trace = FALSE)
-mid <- interpret(survived ~ .^2, train, model, link = link, lambda = .1)
-pred <- get.yhat(model, test)
-pred_mid <- predict(mid, test)
+mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+                 lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             evaluation_plot(model, mid))
 ```
 
 ## Support Vector Machine
@@ -145,15 +143,15 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 ```{r e1071_svm}
 library(e1071)
 model <- svm(survived ~ ., train, kernel = "radial", probability = TRUE)
-mid <- interpret(survived ~ .^2, train, model, link = link,
-                 pred.args = list(target = "yes"), lambda = .1)
-pred <- get.yhat(model, test, target = "yes")
-pred_mid <- predict(mid, test)
+mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+                 pred.args = list(target = "yes"))
+print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             evaluation_plot(model, mid, target = "yes"))
 ```
 
 ## Tree Based Models
@@ -164,16 +162,15 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 library(ranger)
 set.seed(42)
 model <- ranger(survived ~ ., na.omit(train), probability = TRUE)
-mid <- interpret(survived ~ .^2, train, model, link = link,
-                 pred.args = list(target = "yes"), lambda = .1)
-pred <- get.yhat(model, test, target = "yes")
-pred_mid <- predict(mid, test)
+mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+                 pred.args = list(target = "yes"), lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             evaluation_plot(model, mid, target = "yes"))
 ```
 
 ### Decision Tree
@@ -181,16 +178,15 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 ```{r rpart_rpart}
 library(rpart)
 model <- rpart(survived ~ ., train)
-mid <- interpret(survived ~ .^2, train, model, link = link,
-                 pred.args = list(target = "yes"), lambda = .1)
-pred <- get.yhat(model, test, target = "yes")
-pred_mid <- predict(mid, test)
+mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+                 pred.args = list(target = "yes"), lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             evaluation_plot(model, mid, target = "yes"))
 ```
 
 ## Other Models
@@ -198,14 +194,13 @@ grid.arrange(nrow = 1L, importance_plot(mid),
 ### Predictive MID
 
 ```{r midr_interpret}
-train$survived <- relevel(train$survived, "yes")
-# unlike glm(), interpret() takes the first level as the target
-mid <- interpret(survived ~ .^2, train, lambda = 10, link = link)
-pred <- pred_mid <- predict(mid, test)
+mid <- interpret(survived == "yes" ~ .^2, train,
+                 link = "identity-logistic", lambda = .1)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-grid.arrange(nrow = 1L, interaction_plot(mid),
-             ice_plot(mid, test[1:100, ]))
-grid.arrange(nrow = 1L, importance_plot(mid),
-             evaluation_plot(pred, pred_mid, (test$survived == "yes") * 1L))
+grid.arrange(nrow = 2L,
+             importance_plot(mid),
+             interaction_plot(mid),
+             ice_plot(mid),
+             interaction_plot(mid, "age:class"))
 ```

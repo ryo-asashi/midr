@@ -145,7 +145,7 @@ interpret.default <- function(
     y <- as.numeric(y)
   if (!is.null(link)){
     if (is.character(link))
-      link <- stats::make.link(link)
+      link <- get.link(link)
     yres <- y
     y <- link$linkfun(y)
   }
