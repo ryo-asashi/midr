@@ -7,7 +7,7 @@
 #'
 #' @param object a "mid" object.
 #' @param variable a character string or expression specifying the variable for the ICE calculation.
-#' @param data a data frame containing observations for which ICE values are calculated.
+#' @param data a data frame containing observations for which ICE values are calculated. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
 #' @param keep.effects logical. If \code{TRUE}, the effects of component functions are stored in the output object.
 #' @param n.samples integer. The number of sample points for the calculation.
 #' @param max.nrow an integer specifying the maximum number of rows of the output data frames.
@@ -26,13 +26,15 @@
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, variable, data, keep.effects = TRUE, n.samples = 100L,
+    object, variable, data = NULL, keep.effects = TRUE, n.samples = 100L,
     max.nrow = 1e5L, type = c("response", "link")) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))
   rv <- length(tv <- mid.terms(object, require = variable))
   if (length(variable) != 1L || rv == 0L)
     stop("'variable' must be a character denoting a valid predictor variable of the model")
+  if (is.null(data))
+    data <- model.data(object)
   if (!is.data.frame(data))
     data <- as.data.frame(data)
   if ("mid" %in% colnames(data))

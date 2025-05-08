@@ -12,7 +12,7 @@ mid.importance(object, data = NULL, weights = NULL, sort = TRUE, measure = 1L)
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".}
+\item{data}{a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used.}
 
 \item{weights}{an optional numeric vector of sample weights.}
 

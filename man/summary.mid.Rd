@@ -22,7 +22,7 @@
 For "mid" objects, \code{summary()} prints information about the fitted MID model.
 }
 \details{
-The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
+The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted variation ratio, residuals, encoding schemes, and MID importance.
 }
 \examples{
 data(cars, package = "datasets")

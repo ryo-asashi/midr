@@ -3,13 +3,12 @@
 #' \code{mid.extract()} returns a component of a MID model.
 #'
 #' @param object a "mid" object.
-#' @param component a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".
+#' @param component a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "terms".
 #' @param ... optional parameters to be passed to the function used to extract the component.
 #' @examples
 #' data(trees, package = "datasets")
 #' mid <- interpret(Volume ~ .^2, trees, k = 10)
 #' mid.extract(mid, encoding.scheme)
-#' mid.extract(mid, ur)
 #' mid.extract(mid, frames)
 #' mid.extract(mid, Girth)
 #' mid.extract(mid, intercept)
@@ -18,7 +17,6 @@
 #' \code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes,
 #' \code{mid.frames()} returns a list of the encoding frames,
 #' \code{mid.terms()} returns a character vector of the term labels, and
-#' \code{mid.ur()} returns the uninterpreted rate of the MID model.
 #' @export mid.extract
 #'
 mid.extract <- function(object, component, ...) {
@@ -32,11 +30,12 @@ mid.extract <- function(object, component, ...) {
     breakdown = mid.breakdown(object, ...),
     conditional = mid.conditional(object, ...),
     encoding.scheme = mid.encoding.scheme(object, ...),
+    formula = formula.mid(object, ...),
     frames = mid.frames(object, ...),
     importance = mid.importance(object, ...),
+    model.frame = model.frame.mid(object, ...),
     plots = mid.plots(object, ...),
     terms = mid.terms(object, ...),
-    ur = mid.ur(object, ...)
   )
   ifnot.null(rt, object[[component]])
 }
@@ -81,14 +80,6 @@ mid.frames <- function(object, ...) {
     }
   }
   res
-}
-
-
-#' @rdname mid.extract
-#' @export mid.ur
-#'
-mid.ur <- function(object, ...) {
-  object$uninterpreted.rate
 }
 
 
@@ -138,3 +129,21 @@ terms.mid <- function(x, ...) {
 terms.mid.importance <- function(x, ...) {
   mid.terms(object = x, ...)
 }
+
+
+#' @rdname mid.extract
+#' @exportS3Method stats::formula
+#'
+formula.mid <- function(x, ...) {
+  x$call$formula
+}
+
+
+#' @rdname mid.extract
+#' @exportS3Method stats::model.frame
+#'
+model.frame.mid <- function(object, ...) {
+  data <- model.data(object)
+  model.reframe(object, data)
+}
+

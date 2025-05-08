@@ -150,6 +150,7 @@ wrap.theme <- function(
 #'
 #' "color.theme" objects is a container of the two types of color functions: \code{palette(n)} returns a color name vector of length \code{n}, and \code{ramp(x)} returns color names for each values of \code{x} within [0, 1].
 #' Some color themes are "qualitative" and do not contain \code{ramp()} function.
+#' The color palettes implemented in the following packages are available: \code{grDevices}, \code{viridisLite}, \code{RColorBrewer} and \code{khroma}.
 #'
 #' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
 #' @param type a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".
@@ -164,7 +165,8 @@ wrap.theme <- function(
 #' ct$ramp(seq.int(0, 1, 1/4))
 #' ct <- color.theme("Tableau 10")
 #' ct$palette(10L)
-#' pals <- c("midr", "grayscale", "bluescale", hcl.pals(), palette.pals())
+#' pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
+#' pals <- c(pals, hcl.pals(), palette.pals())
 #' par(mfrow = c(5L, 2L))
 #' for (pal in pals[1:10]) plot(color.theme(pal))
 #' for (pal in pals[11:20]) plot(color.theme(pal))
@@ -179,7 +181,7 @@ wrap.theme <- function(
 #' for (pal in pals[101:110]) plot(color.theme(pal))
 #' for (pal in pals[111:120]) plot(color.theme(pal))
 #' for (pal in pals[121:130]) plot(color.theme(pal))
-#' for (pal in pals[131:134]) plot(color.theme(pal))
+#' for (pal in pals[131:136]) plot(color.theme(pal))
 #' par(mfrow = c(1L, 1L))
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
@@ -290,6 +292,45 @@ color.theme <- function(
   }
   if (is.color(f)) {
     return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+  }
+  # sequential themes from khroma package
+  names <- c(
+    "devon", "lajolla", "bamako", "davos", "bilbao", "nuuk", "oslo", "grayC",
+    "hawaii", "lapaz", "tokyo", "buda", "acton", "turku", "imola", "batlow",
+    "batlowW", "batlowK", "brocO", "corkO", "vikO", "romaO", "bamO", "YlOrBr",
+    "iridescent", "incandescent", "smoothrainbow"
+  )
+  if (any(name == names))
+    f <- function(n) khroma::colour(name, reverse = (d < 0), force = TRUE)(n)
+  else
+    f <- NA
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+  }
+  # diverging themes from khroma package
+  names <- c(
+    "broc", "cork", "vik", "lisbon", "tofino", "berlin", "roma", "bam",
+    "vanimo", "oleron", "bukavu", "fes", "sunset", "nightfall", "BuRd", "PRGn"
+  )
+  if (any(name == names))
+    f <- function(n) khroma::colour(name, reverse = (d < 0), force = TRUE)(n)
+  else
+    f <- NA
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+  }
+  # qualitative themes from khroma package
+  names <- c(
+    "bright", "highcontrast", "vibrant", "muted", "mediumcontrast",
+    "pale", "dark", "light", "discreterainbow", "okabeito",
+    "okabeitoblack", "stratigraphy", "soil", "land"
+  )
+  if (any(name == names))
+    f <- function(n) khroma::colour(name, reverse = (d < 0), force = FALSE)(n)
+  else
+    f <- NA
+  if (is.palette(f)) {
+    return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
   }
   # diverging themes from grDevices package
   f <- if (any(name == grDevices::hcl.pals("diverging"))) {

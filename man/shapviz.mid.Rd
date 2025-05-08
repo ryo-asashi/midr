@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing observations for which SHAP values are calculated.}
+\item{data}{a data frame containing observations for which SHAP values are calculated. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
 }
 \value{
 \code{shapviz.mid()} returns an object of class "shapviz".

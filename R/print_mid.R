@@ -46,8 +46,8 @@ print.mid <- function(
     cat(paste0("\nInteractions:\n",
                m, " interaction term", if (m > 1L) "s", "\n"))
   }
-  ur <- x$uninterpreted.rate
-  cat(paste0("\nUninterpreted Rate: ", format(ur[1L], digits = digits), "\n"))
+  ur <- x$uninterpreted.variation
+  cat(paste0("\nUninterpreted Variation Ratio: ", format(ur[1L], digits = digits), "\n"))
   invisible(x)
 }
 

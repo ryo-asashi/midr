@@ -40,7 +40,7 @@ ggmid.mid.importance <- function(
     if (type == "barplot") {
       pl <- pl + ggplot2::geom_col(...)
       if (use.theme) {
-        var <- if (theme$type == "qualitative") "degree" else "importance"
+        var <- if (theme$type == "qualitative") "order" else "importance"
         pl <- pl + ggplot2::aes(fill = .data[[var]]) +
           scale_fill_theme(theme = theme)
       }
@@ -51,7 +51,7 @@ ggmid.mid.importance <- function(
         ggplot2::aes(xmin = 0, xmax = .data[["importance"]])) +
         ggplot2::geom_point(...)
       if (use.theme) {
-        var <- if (theme$type == "qualitative") "degree" else "importance"
+        var <- if (theme$type == "qualitative") "order" else "importance"
         pl <- pl + ggplot2::aes(color = .data[[var]]) +
           scale_color_theme(theme = theme)
       }

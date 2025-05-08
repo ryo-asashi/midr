@@ -12,6 +12,7 @@
   intercept = FALSE,
   main.effects = FALSE,
   data = NULL,
+  jitter = 0.3,
   cells.count = c(100L, 100L),
   limits = NULL,
   ...
@@ -30,7 +31,9 @@
 
 \item{main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
 
-\item{data}{a data frame to be plotted.}
+\item{data}{a data.frame to be plotted with the corresponding MID values. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
+
+\item{jitter}{a numeric value specifying the amount of jitter for points.}
 
 \item{cells.count}{an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.}
 

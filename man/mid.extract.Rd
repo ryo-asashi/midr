@@ -4,10 +4,11 @@
 \alias{mid.extract}
 \alias{mid.encoding.scheme}
 \alias{mid.frames}
-\alias{mid.ur}
 \alias{mid.terms}
 \alias{terms.mid}
 \alias{terms.mid.importance}
+\alias{formula.mid}
+\alias{model.frame.mid}
 \title{Extract Components from MID Models}
 \usage{
 mid.extract(object, component, ...)
@@ -15,8 +16,6 @@ mid.extract(object, component, ...)
 mid.encoding.scheme(object, ...)
 
 mid.frames(object, ...)
-
-mid.ur(object, ...)
 
 mid.terms(
   object,
@@ -30,11 +29,15 @@ mid.terms(
 \method{terms}{mid}(x, ...)
 
 \method{terms}{mid.importance}(x, ...)
+
+\method{formula}{mid}(x, ...)
+
+\method{model.frame}{mid}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{component}{a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "uninterpreted.rate".}
+\item{component}{a literal character string or name. The name of the component to extract, such as "frames", "encoding.scheme" and "terms".}
 
 \item{...}{optional parameters to be passed to the function used to extract the component.}
 
@@ -53,7 +56,6 @@ mid.terms(
 \code{mid.encoding.scheme()} returns a data frame containing the information about encoding schemes,
 \code{mid.frames()} returns a list of the encoding frames,
 \code{mid.terms()} returns a character vector of the term labels, and
-\code{mid.ur()} returns the uninterpreted rate of the MID model.
 }
 \description{
 \code{mid.extract()} returns a component of a MID model.
@@ -62,7 +64,6 @@ mid.terms(
 data(trees, package = "datasets")
 mid <- interpret(Volume ~ .^2, trees, k = 10)
 mid.extract(mid, encoding.scheme)
-mid.extract(mid, ur)
 mid.extract(mid, frames)
 mid.extract(mid, Girth)
 mid.extract(mid, intercept)

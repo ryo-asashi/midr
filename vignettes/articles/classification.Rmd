@@ -43,7 +43,21 @@ test  <- titanic[ test_rows, -5]
 str(test[, -9])
 ```
 
-For each model type, we fit a classification model using the `train` data of 1707 people and an interpretative MID surrogate of the target model using the same data. We then evaluate the predictive accuracy of the target model and the interpretative accuracy of the MID surrogate based on the AUC between the `test` and predicted probabilities or the Spearman's rank correlation coefficient between two predicted probabilities, respectively.
+For each model type, we fit a classification model using the training dataset of 1707 people and an interpretative MID surrogate of the target model using the same dataset. We then evaluate the predictive accuracy of the target model by AUC and the representation accuracy of the surrogate model by the Spearman's rank correlation coefficient between two predicted probabilities.
+
+In the following examples, we use two specialized link functions for classification tasks: `translogit` (transformed-logit) and `transprobit` (transformed-probit). These two link functions are transformed so that their slope at $x = 0.5$ equals $1$.
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 6}
+par.midr(mfrow = c(1, 2))
+link <- midr:::get.link("translogit")
+curve(link$linkfun(x), 0, 1)
+title("transformed-logit")
+abline(0, 1, lty = 3)
+link <- midr:::get.link("transprobit")
+curve(link$linkfun(x), 0, 1)
+title("transformed-probit")
+abline(0, 1, lty = 3)
+```
 
 ```{r utils}
 # define utility functions for the following chunks
@@ -193,9 +207,22 @@ grid.arrange(nrow = 2L,
 
 ### Predictive MID
 
+To fit a MID model for the Titanic classification task, we can use "one-sided" link functions: `identity-gaussian` or `identity-logistic`. These link functions map $0$ to $0$ and $1$ to $1$, while the inverse link functions map any real number to the value in the unit interval $(0, 1)$.
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 6}
+par.midr(mfrow = c(1, 2))
+link <- midr:::get.link("identity-gaussian")
+curve(link$linkfun(x), 0, 1)
+title("link: identity")
+abline(0, 1, lty = 3)
+curve(link$linkinv(x), -.8, 1.8)
+title("inverse link: gaussian QDF")
+abline(0, 1, lty = 3)
+```
+
 ```{r midr_interpret}
-mid <- interpret(survived == "yes" ~ .^2, train,
-                 link = "identity-logistic", lambda = .1)
+mid <- interpret(survived ~ .^2, train,
+                 link = "identity-gaussian", lambda = .1)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,

@@ -2,9 +2,17 @@
 
 [First release on CRAN.]
 
+## midr 0.4.9.902
+
+-   **(Important)** Update the behavior of `interpret()` for classification tasks: If `y` is a factor or character, convert its base level to `0` and all other levels to `1`.
+-   Modify `ggmid()` and `plot.mid()` to correct effect plots for factor variables with a `catchall` level. Additionallym `ggmid()` now utilize `ggplot2::geom_jitter()` and allow for adjustable jitter amounts with the `jitter` argument. Additionally, when data is not explicitly provided, it is now automatically extracted from the function call stored in the `"mid"` object.
+-   Adjust `mid.conditional()` and `mid.breakdown()` so they no longer require explicit data input.
+-   Update terminology.
+-   The color palettes of the `khroma` package are now available for `color.theme()`.
+
 ## midr 0.4.9.901
 
--   Add link functions: `translogit`, `transprobit`, `identity-logit` and `identity-probit` for the interpretation task of classification models.
+-   Add link functions: `translogit`, `transprobit`, `identity-logistic` and `identity-gaussian` for the interpretation task of classification models.
 
 ## midr 0.4.9.900
 

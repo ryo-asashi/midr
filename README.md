@@ -83,7 +83,7 @@ mid
 #> Interactions:
 #> 66 interaction terms
 #> 
-#> Uninterpreted Rate: 0.016249
+#> Uninterpreted Variation Ratio: 0.016249
 ```
 
 ``` r
@@ -126,7 +126,7 @@ grid.arrange(nrow = 1L,
   ggmid(imp, theme = "Dark 2_r", max.bars = 20L) +
     theme(legend.position = "bottom") +
     ggtitle("importance of variable effects"),
-  ggmid(imp, "heatmap", theme = "grayscale") +
+  ggmid(imp, "heatmap") +
     theme(legend.position = "bottom") +
     ggtitle("heatmap of variable importance")
 )
@@ -160,7 +160,7 @@ curves by main and interaction effects.
 
 ``` r
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", data = train)
+ice <- mid.conditional(mid, "lstat")
 grid.arrange(
   ggmid(ice, alpha = .1) +
     ggtitle("ICE of lstat"),
@@ -177,10 +177,13 @@ grid.arrange(
 
 ## References
 
-\[1\] Iwasawa, H. & Matsumori, Y. (2025). \[Forthcoming\]
+\[1\] Iwasawa, H. & Matsumori, Y. (2025). “A Functional Decomposition
+Approach to Maximize the Interpretability of Black-Box Models”.
+\[Forthcoming\]
 
-\[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “Interpreting
-Black-Box Models by Functional Decomposition in R”. \[Forthcoming\]
+\[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “midr: Learning
+from Black-Box Models by Maximum Interpretation Decomposition”.
+\[Forthcoming\]
 
 \[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
 “Peeking Inside the Black Box: Visualizing Statistical Learning With

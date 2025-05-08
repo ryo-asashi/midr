@@ -7,7 +7,7 @@
 \usage{
 mid.breakdown(
   object,
-  data,
+  data = NULL,
   sort = TRUE,
   digits = 6L,
   format = c("\%s", "\%s, \%s")
@@ -18,7 +18,7 @@ mid.breakdown(
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".}
+\item{data}{a data.frame containing a single observation to be used to calculate the MID breakdown. If \code{NULL}, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
 
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID .}
 

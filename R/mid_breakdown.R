@@ -5,7 +5,7 @@
 #' \code{mid.breakdown()} returns an object of class "mid.breakdown".
 #'
 #' @param object a "mid" object.
-#' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".
+#' @param data a data.frame containing a single observation to be used to calculate the MID breakdown. If \code{NULL}, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID .
 #' @param digits an integer specifying the minimum number of significant digits.
 #' @param format a character vector of length two to be used as the formats of the \code{sprintf()} function for each value or pair of values of predictor variables.
@@ -23,11 +23,13 @@
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(
-    object, data, sort = TRUE, digits = 6L, format = c("%s", "%s, %s")) {
+    object, data = NULL, sort = TRUE, digits = 6L, format = c("%s", "%s, %s")) {
+  if (is.null(data))
+    data <- model.data(object)
   if (!is.data.frame(data))
     data <- data.frame(data)
   if (nrow(data) != 1L) {
-    message("'data' must be a data.frame containing a single observation: the first observation is used")
+    message("'data' contains multiple observations: the first observation is used")
     data <- data[1L, ]
   }
   preds <- predict.mid(object, data,
@@ -35,7 +37,7 @@ mid.breakdown <- function(
   data <- model.reframe(object, data)
   terms <- names(if (sort) base::sort(abs(preds), decreasing = TRUE) else preds)
   m <- length(terms)
-  degrees <- as.factor(sapply(strsplit(terms, split = ":"), length))
+  orders <- as.factor(sapply(strsplit(terms, split = ":"), length))
   values <- character(m)
   for (i in seq_len(m)) {
     term <- terms[i]
@@ -50,7 +52,7 @@ mid.breakdown <- function(
     }
   }
   df <- data.frame(term = factor(terms, levels = rev(terms)),
-                   value = values, mid = preds[terms], degree = degrees)
+                   value = values, mid = preds[terms], order = orders)
   rownames(df) <- NULL
   out <- list()
   out$breakdown <- df

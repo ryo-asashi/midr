@@ -10,8 +10,9 @@
 #' @param theme a character vector of color names or a character string specifying the color theme.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.
 #' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
+#' @param jitter a numeric value specifying the amount of jitter for points.
 #' @param cells.count an integer or integer-valued vector of length two specifying the number of cells for the raster type interaction plot.
-#' @param data a data frame to be plotted.
+#' @param data a data.frame to be plotted with the corresponding MID values. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
 #' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #' @examples
@@ -30,7 +31,7 @@
 #'
 plot.mid <- function(
     x, term, type = c("effect", "data", "compound"), theme = NULL,
-    intercept = FALSE, main.effects = FALSE, data = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL, jitter = .3,
     cells.count = c(100L, 100L), limits = NULL, ...) {
   dots <- list(...)
   tags <- term.split(term)
@@ -41,10 +42,12 @@ plot.mid <- function(
   use.theme <- inherits(theme, "color.theme")
   if (type == "data" || type == "compound") {
     if (is.null(data))
+      data <- model.data(x)
+    if (is.null(data))
       stop(paste0("'data' must be supplied for the '", type, "' plot"))
     preds <- predict.mid(x, data, terms = unique(c(tags, term)),
                          type = "terms", na.action = "na.pass")
-    data <- model.reframe(model = x, data = data)
+    data <- model.reframe(x, data)
   }
   # main effect
   if ((len <- length(tags)) == 1L) {
@@ -84,7 +87,9 @@ plot.mid <- function(
       if (intercept) mids <- mids + x$intercept
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
       if (enc$type == "factor") {
-        xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
+        xval <- apply.catchall(xval, enc)
+        jit <- jitter[1L]
+        xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
                        ylab = "mid", xlab = term, limits = limits,
@@ -107,7 +112,7 @@ plot.mid <- function(
         }
       }
     }
-    # interaction
+  # interaction
   } else if (len == 2L) {
     ms <- cells.count
     if (length(ms) == 1L)
@@ -154,11 +159,17 @@ plot.mid <- function(
     pal <- theme$palette
     if (type == "data" || type == "compound") {
       xval <- data[[tags[1L]]]
-      if (encs[[1L]]$type == "factor")
-        xval <- as.integer(xval) - stats::runif(length(xval), -0.4, 0.4)
+      if (encs[[1L]]$type == "factor") {
+        xval <- apply.catchall(xval, encs[[1L]])
+        jit <- jitter[1L]
+        xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
+      }
       yval <- data[[tags[2L]]]
-      if (encs[[2L]]$type == "factor")
-        yval <- as.integer(yval) - stats::runif(length(yval), -0.4, 0.4)
+      if (encs[[2L]]$type == "factor") {
+        yval <- apply.catchall(yval, encs[[2L]])
+        jit <- if (length(jitter) > 1L) jitter[2L] else jitter[1L]
+        yval <- as.integer(yval) - stats::runif(length(yval), -jit, jit)
+      }
     }
     if (type == "effect" || type == "compound") {
       plot.axes <- substitute(

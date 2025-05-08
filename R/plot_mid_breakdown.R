@@ -70,7 +70,7 @@ plot.mid.breakdown <- function(
                  horizontal = TRUE, xlab = "mid")
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
-        to.colors(bd$degree, theme)
+        to.colors(bd$order, theme)
       else
         to.colors(bd$mid, theme)
     } else "gray35"

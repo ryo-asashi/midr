@@ -47,6 +47,7 @@ color.theme(
 \details{
 "color.theme" objects is a container of the two types of color functions: \code{palette(n)} returns a color name vector of length \code{n}, and \code{ramp(x)} returns color names for each values of \code{x} within [0, 1].
 Some color themes are "qualitative" and do not contain \code{ramp()} function.
+The color palettes implemented in the following packages are available: \code{grDevices}, \code{viridisLite}, \code{RColorBrewer} and \code{khroma}.
 }
 \examples{
 ct <- color.theme("Mako")
@@ -57,7 +58,8 @@ ct$palette(5L)
 ct$ramp(seq.int(0, 1, 1/4))
 ct <- color.theme("Tableau 10")
 ct$palette(10L)
-pals <- c("midr", "grayscale", "bluescale", hcl.pals(), palette.pals())
+pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
+pals <- c(pals, hcl.pals(), palette.pals())
 par(mfrow = c(5L, 2L))
 for (pal in pals[1:10]) plot(color.theme(pal))
 for (pal in pals[11:20]) plot(color.theme(pal))
@@ -72,6 +74,6 @@ for (pal in pals[91:100]) plot(color.theme(pal))
 for (pal in pals[101:110]) plot(color.theme(pal))
 for (pal in pals[111:120]) plot(color.theme(pal))
 for (pal in pals[121:130]) plot(color.theme(pal))
-for (pal in pals[131:134]) plot(color.theme(pal))
+for (pal in pals[131:136]) plot(color.theme(pal))
 par(mfrow = c(1L, 1L))
 }

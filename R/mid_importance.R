@@ -6,7 +6,7 @@
 #' The MID importance is defined for each component function of a MID model as the mean absolute effect in the given \code{data}.
 #'
 #' @param object a "mid" object.
-#' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used. If the \code{data} has only one observation, the output has the special class "mid.breakdown".
+#' @param data a data frame containing the observations to be used to calculate the MID importance. If \code{NULL}, the \code{fitted.matrix} of the MID model is used.
 #' @param weights an optional numeric vector of sample weights.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID importance.
 #' @param measure an integer specifying the measure of the MID importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
@@ -42,7 +42,7 @@ mid.importance <- function(
   df <- data.frame(term = factor(names(imp), levels = rev(names(imp))),
                    importance = imp)
   rownames(df) <- NULL
-  df$degree <-
+  df$order <-
     as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
   out <- list()
   out$importance <- df

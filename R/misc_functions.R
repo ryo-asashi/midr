@@ -34,20 +34,53 @@ term.check <- function(x, terms, stop = TRUE) {
   return(x)
 }
 
-model.reframe <- function(model, data) {
-  if (!is.null(formula <- eval(model$call$formula))) {
-    if (!is.data.frame(data))
+model.reframe <- function(object, data) {
+  if (!is.null(formula <- eval(object$call$formula))) {
+    if (!is.data.frame(data) && !is.environment(data))
       data <- as.data.frame(data)
-    test <- try(stats::model.frame.default(formula, data[NULL, ]), silent = TRUE)
-    if (inherits(test, "try-error")) {
+    res <- try(stats::model.frame.default(formula, data), silent = TRUE)
+    if (inherits(res, "try-error")) {
       formula[[2L]] <- NULL
+      res <- stats::model.frame(formula, data, na.action = "na.pass")
     }
-    data <- stats::model.frame(formula = formula, data = data,
-                               na.action = "na.pass")
+    return(res)
   }
   data
 }
 
+model.data <- function(object, env = parent.frame()) {
+  fcl <- object$call
+  if (!is.null(fcl$data))
+    return(eval(fcl$data, envir = env))
+  if (!is.null(fml <- fcl$formula)) {
+    env <- ifnot.null(environment(fml), parent.frame())
+    return(env)
+  }
+  if (!is.null(fcl$x)) {
+    x <- eval(fcl$x, envir = env)
+    if (!is.null(dim(x)[2]) && is.null(colnames(x)))
+      colnames(x) <- paste0("x", seq_len(dim(x)[2]))
+    if (!is.data.frame(x))
+      x <- as.data.frame(x)
+    if (!is.null(fcl$y)) {
+      y <- eval(fcl$y, envir = env)
+      x <- cbind.data.frame(x, y)
+      colnames(x)[[ncol(x)]] <- "y"
+    }
+    return(x)
+  }
+  NULL
+}
+
+
+apply.catchall <- function(x, encoder) {
+  catchall <- attr(encoder$frame, "catchall")
+  if (!is.null(catchall)) {
+    x <- factor(x, attr(encoder$frame, "levels"))
+    x[is.na(x)] <- catchall
+  }
+  x
+}
 
 #' Weighted Sample Quantile
 #'
@@ -185,7 +218,7 @@ weighted.tabulate <- function(
 #' # compute uninterpreted rate
 #' mid <- interpret(dist ~ speed, cars)
 #' weighted.mse(cars$dist, predict(mid, cars)) / weighted.mse(cars$dist)
-#' mid.ur(mid)
+#' mid$uninterpreted.variation
 #' @returns
 #' \code{weighted.mse()} (mean square error), \code{weighted.rmse()} (root mean square error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 #' @export weighted.mse

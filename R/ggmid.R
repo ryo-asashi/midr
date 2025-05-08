@@ -31,8 +31,9 @@ UseMethod("ggmid")
 #' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
 #' @param main.effects logical. If \code{TRUE}, the main effects are included in the interaction plot.
+#' @param jitter a numeric value specifying the amount of jitter for points.
 #' @param cells.count an integer or integer-valued vector of length two, specifying the number of cells for the raster type interaction plot.
-#' @param data a data frame to be plotted with the corresponding MID values.
+#' @param data a data.frame to be plotted with the corresponding MID values. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
 #' @param limits \code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.
 #' @param ... optional parameters to be passed to the main layer.
 #' @importFrom rlang .data
@@ -40,7 +41,7 @@ UseMethod("ggmid")
 #'
 ggmid.mid <- function(
     object, term, type = c("effect", "data", "compound"), theme = NULL,
-    intercept = FALSE, main.effects = FALSE, data = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL, jitter = .3,
     cells.count = c(100L, 100L), limits = c(NA, NA), ...) {
   tags <- term.split(term)
   term <- term.check(term, object$terms, stop = TRUE)
@@ -48,12 +49,14 @@ ggmid.mid <- function(
   if (missing(theme) && length(tags) == 2L) theme <- "midr"
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
-  if (type != "effect") {
+  if (type == "data" || type == "compound") {
+    if (is.null(data))
+      data <- model.data(object)
     if (is.null(data))
       stop(paste0("'data' must be supplied for the '", type, "' plot"))
     preds <- predict.mid(object, data, terms = unique(c(tags, term)),
                          type = "terms", na.action = "na.pass")
-    data <- model.reframe(model = object, data = data)
+    data <- model.reframe(object, data)
   }
   # main effect
   if ((len <- length(tags)) == 1L) {
@@ -64,7 +67,7 @@ ggmid.mid <- function(
       data = df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
     # main layer
     enc <- object$encoders[["main.effects"]][[term]]
-    if (type != "data") {
+    if (type == "effect" || type == "compound") {
       if (enc$type == "constant") {
         cols <- paste0(term, c("_min", "_max"))
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cols]))),
@@ -78,17 +81,21 @@ ggmid.mid <- function(
         pl <- pl + ggplot2::geom_col(...)
       }
     }
-    if (type != "effect") {
+    if (type == "data" || type == "compound") {
       data$mid <- as.numeric(preds[, term])
       if (intercept)
         data$mid <- data$mid + object$intercept
-      pos <- if (enc$type == "factor") "jitter" else "identity"
+      jit <- 0
+      if (enc$type == "factor") {
+        data[[term]] <- apply.catchall(data[[term]], enc)
+        jit <- jitter[1L]
+      }
       pl <- pl + if (type == "data") {
-        ggplot2::geom_point(
-          ggplot2::aes(y = .data[["mid"]]), data, position = pos, ...)
+        ggplot2::geom_jitter(
+          ggplot2::aes(y = .data[["mid"]]), data, width = jit, height = 0, ...)
       } else {
-        ggplot2::geom_point(
-          ggplot2::aes(y = .data[["mid"]]), data, position = pos)
+        ggplot2::geom_jitter(
+          ggplot2::aes(y = .data[["mid"]]), data, width = jit, height = 0)
       }
     }
     if (use.theme) {
@@ -127,7 +134,7 @@ ggmid.mid <- function(
     pl <- ggplot2::ggplot(
       data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
     # main.layer
-    if (type != "data") {
+    if (type == "effect" || type == "compound") {
       use.raster <- encs[[1L]]$type == "linear" ||
         encs[[2L]]$type == "linear" || main.effects
       if (use.raster) {
@@ -171,18 +178,24 @@ ggmid.mid <- function(
         pl <- pl + ggplot2::scale_fill_continuous(limits = limits)
       }
     }
-    if (type != "effect") {
-      pos <- if (encs[[1L]]$type == "factor" || encs[[2L]]$type == "factor")
-        "jitter" else "identity"
+    if (type == "data" || type == "compound") {
+      jit <- c(0, 0)
+      for (i in 1L:2L) {
+        if (encs[[i]]$type == "factor") {
+          data[[tags[i]]] <- apply.catchall(data[[tags[i]]], encs[[i]])
+          jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+        }
+      }
       if (type == "compound") {
-        pl <- pl + ggplot2::geom_point(data = data, position = pos)
+        pl <- pl + ggplot2::geom_jitter(data = data,
+                                        width = jit[1L], height = jit[2L])
       } else if (type == "data") {
         data$mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
         if (intercept)
           data$mid <- data$mid + object$intercept
-        pl <- pl + ggplot2::geom_point(
+        pl <- pl + ggplot2::geom_jitter(
           ggplot2::aes(colour = .data[["mid"]]), data = data,
-          position = pos, ...)
+          width = jit[1L], height = jit[2L], ...)
         if (use.theme) {
           middle <- if (intercept) object$intercept else 0
           pl <- pl + scale_color_theme(theme = theme, limits = limits,

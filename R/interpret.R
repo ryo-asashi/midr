@@ -50,7 +50,7 @@
 #' \item{encoders}{a list of variable encoders.}
 #' \item{main.effects}{a list of data frames representing the main effects.}
 #' \item{interacions}{a list of data frames representing the interactions.}
-#' \item{uninterpreted.rate}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
+#' \item{uninterpreted.variation}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 #' \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
@@ -136,11 +136,8 @@ interpret.default <- function(
     stop("length of 'y' doesn't match the number of rows in 'x'")
   if (is.character(y))
     y <- as.factor(y)
-  target.level <- NULL
-  if (is.factor(y)) {
-    target.level <- levels(y)[1L]
-    y <- (y == target.level)
-  }
+  if (is.factor(y))
+    y <- (y != levels(y)[1L])
   if (!is.numeric(y))
     y <- as.numeric(y)
   if (!is.null(link)){
@@ -497,7 +494,7 @@ interpret.default <- function(
       fm[, p + i] <- as.numeric(xmat %*% mult)
     }
   }
-  # calculate the uninterpreted rate --------
+  # calculate the uninterpreted variation ratio --------
   tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
   uiq <- stats::weighted.mean(rsd ^ 2, weights)
   uir <- attract(uiq / tot, nil)
@@ -508,7 +505,6 @@ interpret.default <- function(
   cl[[1L]] <- as.name("interpret")
   obj$weights <- weights
   obj$call <- cl
-  obj$target.level <- target.level
   obj$terms <- terms
   obj$link <- link
   obj$intercept <- intercept
@@ -521,7 +517,7 @@ interpret.default <- function(
     obj$interactions <- interactions
     obj$encoders[["interactions"]] <- iencs
   }
-  obj$uninterpreted.rate <- uir
+  obj$uninterpreted.variation <- uir
   obj$fitted.matrix <- fm
   obj$fitted.values <- rowSums(fm) + intercept
   obj$residuals <- rsd
@@ -533,7 +529,7 @@ interpret.default <- function(
     rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
     ruiq <- stats::weighted.mean(obj$response.residuals ^ 2, weights)
     ruir <- attract(ruiq / rtot, nil)
-    obj$uninterpreted.rate <- c(working = uir, response = ruir)
+    obj$uninterpreted.variation <- c(working = uir, response = ruir)
   }
   if (length(naai$ids) < naai$n.init) {
     naacl <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")
@@ -605,7 +601,7 @@ interpret.formula <- function(
     formula[[2L]] <- as.symbol(ytag)
     cl$formula <- formula
   } else {
-    message("'model' is not passed: the response variable in the data is used")
+    message("'model' not passed: response variable in 'data' is used")
     if (length(formula) < 3L)
       stop("invalid formula found")
     if (is.matrix(data))

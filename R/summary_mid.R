@@ -2,7 +2,7 @@
 #'
 #' For "mid" objects, \code{summary()} prints information about the fitted MID model.
 #'
-#' The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted rate, residuals, encoding schemes, and MID importance.
+#' The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted variation ratio, residuals, encoding schemes, and MID importance.
 #'
 #' @param object a "mid" object to be summarized.
 #' @param digits an integer specifying the number of significant digits.
@@ -21,8 +21,8 @@ summary.mid <- function(
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   if(use.link <- !is.null(object$link))
     cat(paste0("\nLink: ", object$link$name, "\n", collapse = ""))
-  cat(paste0("\nUninterpreted Rate:\n"))
-  print.default(object$uninterpreted.rate, digits = digits)
+  cat(paste0("\nUninterpreted Variation Ratio:\n"))
+  print.default(object$uninterpreted.variation, digits = digits)
   rsd <- object$residuals
   yhat <- if (use.link) {
     object$linear.predictors

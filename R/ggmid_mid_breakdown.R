@@ -76,7 +76,7 @@ ggmid.mid.breakdown <- function(
       pl <- pl + ggplot2::geom_col(width = width, ...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
-          pl + ggplot2::aes(fill = .data[["degree"]])
+          pl + ggplot2::aes(fill = .data[["order"]])
         } else {
           pl + ggplot2::aes(fill = .data[["mid"]])
         }
@@ -88,7 +88,7 @@ ggmid.mid.breakdown <- function(
         ggplot2::geom_point(...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
-          pl + ggplot2::aes(color = .data[["degree"]])
+          pl + ggplot2::aes(color = .data[["order"]])
         } else {
           pl + ggplot2::aes(color = .data[["mid"]])
         }

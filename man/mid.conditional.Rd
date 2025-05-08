@@ -8,7 +8,7 @@
 mid.conditional(
   object,
   variable,
-  data,
+  data = NULL,
   keep.effects = TRUE,
   n.samples = 100L,
   max.nrow = 100000L,
@@ -22,7 +22,7 @@ mid.conditional(
 
 \item{variable}{a character string or expression specifying the variable for the ICE calculation.}
 
-\item{data}{a data frame containing observations for which ICE values are calculated.}
+\item{data}{a data frame containing observations for which ICE values are calculated. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
 
 \item{keep.effects}{logical. If \code{TRUE}, the effects of component functions are stored in the output object.}
 
