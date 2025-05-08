@@ -12,6 +12,7 @@
 #' @param var.color a name of the variable or an expression to be used to set \code{colour}.
 #' @param var.linetype a name of the variable or an expression to be used to set \code{linetype}.
 #' @param var.linewidth a name of the variable or an expression to be used to set \code{linewidth}.
+#' @param reference an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is \code{1}. If negative, the maximum value of the variable is used.
 #' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
@@ -30,7 +31,7 @@
 plot.mid.conditional <- function(
     x, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
-    dots = TRUE, sample = NULL, ...) {
+    reference = 1L, dots = TRUE, sample = NULL, ...) {
   dt <- list(...)
   type <- match.arg(type)
   theme <- color.theme(theme)
@@ -39,6 +40,7 @@ plot.mid.conditional <- function(
   n <- attr(x, "n")
   obs <- x$observed
   con <- x$conditional
+  values <- x$values
   yvar <- "yhat"
   if (!is.null(term)) {
     if (is.null(x$conditional.effects))
@@ -49,7 +51,9 @@ plot.mid.conditional <- function(
     con[, yvar] <- x$conditional.effects[, term]
   }
   if (type == "centered") {
-    stp <- con[, yvar][1L:n]
+    if (reference < 0) reference <- length(values)
+    ref <- values[min(length(values), max(1L, reference))]
+    stp <- con[con[[variable]] == ref, yvar]
     ynew <- paste0("centered ", yvar)
     obs[, ynew] <- obs[, yvar] - stp
     con[, ynew] <- con[, yvar] - stp
@@ -60,7 +64,6 @@ plot.mid.conditional <- function(
     con <- con[con$id %in% sample, ]
     n <- nrow(obs)
   }
-  values <- x$values
   mat <- matrix(con[[yvar]], nrow = n, ncol = length(values))
   colnames(mat) <- values
   if (n == 0L) {

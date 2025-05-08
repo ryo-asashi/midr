@@ -2,6 +2,10 @@
 
 [First release on CRAN.]
 
+## midr 0.4.9.903
+
+-   `ggmid.mid.conditional()` and `plot.mid.conditional()` has a new argument `reference`, which enables to set the reference point of c-ICE plot to be any of the sample points.
+
 ## midr 0.4.9.902
 
 -   **(Important)** Update the behavior of `interpret()` for classification tasks: If `y` is a factor or character, convert its base level to `0` and all other levels to `1`.

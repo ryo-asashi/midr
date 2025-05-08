@@ -12,6 +12,7 @@
 #' @param var.color a name of the variable or an expression to be used to set \code{colour}.
 #' @param var.linetype a name of the variable or an expression to be used to set \code{linetype}.
 #' @param var.linewidth a name of the variable or an expression to be used to set \code{linewidth}.
+#' @param reference an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is \code{1}. If negative, the maximum value of the variable is used.
 #' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters to be passed to the main layer.
@@ -30,7 +31,7 @@
 ggmid.mid.conditional <- function(
     object, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
-    dots = TRUE, sample = NULL, ...) {
+    reference = 1L, dots = TRUE, sample = NULL, ...) {
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
@@ -38,6 +39,7 @@ ggmid.mid.conditional <- function(
   n <- attr(object, "n")
   obs <- object$observed
   con <- object$conditional
+  values <- object$values
   yvar <- "yhat"
   if (!is.null(term)) {
     if (is.null(object$conditional.effects))
@@ -48,7 +50,9 @@ ggmid.mid.conditional <- function(
     con[, yvar] <- object$conditional.effects[, term]
   }
   if (type == "centered") {
-    stp <- con[, yvar][1L:n]
+    if (reference < 0) reference <- length(values)
+    ref <- values[min(length(values), max(1L, reference))]
+    stp <- con[con[[variable]] == ref, yvar]
     ynew <- paste0("centered ", yvar)
     obs[, ynew] <- obs[, yvar] - stp
     con[, ynew] <- con[, yvar] - stp

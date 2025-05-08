@@ -14,6 +14,7 @@
   var.color = NULL,
   var.linetype = NULL,
   var.linewidth = NULL,
+  reference = 1L,
   dots = TRUE,
   sample = NULL,
   ...
@@ -37,6 +38,8 @@
 \item{var.linetype}{a name of the variable or an expression to be used to set \code{linetype}.}
 
 \item{var.linewidth}{a name of the variable or an expression to be used to set \code{linewidth}.}
+
+\item{reference}{an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is \code{1}. If negative, the maximum value of the variable is used.}
 
 \item{dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
 
