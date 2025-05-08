@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
 <span>  var.color <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var.linetype <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var.linewidth <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reference <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  dots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -101,6 +102,10 @@
 
 <dt id="arg-var-linewidth">var.linewidth<a class="anchor" aria-label="anchor" href="#arg-var-linewidth"></a></dt>
 <dd><p>a name of the variable or an expression to be used to set <code>linewidth</code>.</p></dd>
+
+
+<dt id="arg-reference">reference<a class="anchor" aria-label="anchor" href="#arg-reference"></a></dt>
+<dd><p>an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is <code>1</code>. If negative, the maximum value of the variable is used.</p></dd>
 
 
 <dt id="arg-dots">dots<a class="anchor" aria-label="anchor" href="#arg-dots"></a></dt>
