@@ -10,6 +10,7 @@ color.theme(
   colors,
   type = c("sequential", "qualitative", "diverging"),
   name = NULL,
+  pkg = NULL,
   ...
 )
 
@@ -23,6 +24,8 @@ color.theme(
 \item{type}{a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".}
 
 \item{name}{an optional character string, specifying the name of the color theme.}
+
+\item{pkg}{an optional character string, specifying the package in which the palette is to be searched for.}
 
 \item{...}{optional arguments to be passed to palette or ramp functions.}
 

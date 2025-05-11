@@ -2,9 +2,11 @@
 
 [First release on CRAN.]
 
-## midr 0.4.9.903
+## midr 0.4.9.903-0.4.9.904
 
 -   `ggmid.mid.conditional()` and `plot.mid.conditional()` has a new argument `reference`, which enables to set the reference point of c-ICE plot to be any of the sample points.
+-   **`color.theme()`** now includes a new argument, `pkg`, for package specification**.**
+-   Add an article about "color.theme" objects.
 
 ## midr 0.4.9.902
 

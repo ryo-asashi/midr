@@ -155,6 +155,7 @@ wrap.theme <- function(
 #' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
 #' @param type a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".
 #' @param name an optional character string, specifying the name of the color theme.
+#' @param pkg an optional character string, specifying the package in which the palette is to be searched for.
 #' @param ... optional arguments to be passed to palette or ramp functions.
 #' @examples
 #' ct <- color.theme("Mako")
@@ -193,7 +194,7 @@ wrap.theme <- function(
 #'
 color.theme <- function(
     colors, type = c("sequential", "qualitative", "diverging"),
-    name = NULL, ...) {
+    name = NULL, pkg = NULL, ...) {
   if (is.null(colors))
     return(NULL)
   if (inherits(colors, "color.theme"))
@@ -220,168 +221,179 @@ color.theme <- function(
     name <- colors
     d <- 1L
   }
-  # diverging themes
-  f <- switch(
-    name,
-    "midr" = to.palette(directed(c("#005587", "#FFFFFF", "#8B0058"), d)),
-    NA
-  )
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+  if (is.null(pkg) || pkg == "midr") {
+    # diverging themes
+    f <- switch(
+      name,
+      "midr" = to.palette(directed(c("#005587", "#FFFFFF", "#8B0058"), d)),
+      NA
+    )
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+    }
+    # sequential themes
+    f <- switch(
+      name,
+      "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
+      "grayscale" = to.palette(directed(c("white", "black"), d)),
+      "shap" = to.palette(directed(c("#2C87E1","#2A6BE9","#774DCF","#9C30BB","#C60099","#E7007E","#F72A5A"), d)),
+      NA
+    )
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+    }
+    # qualitative themes
+    f <- switch(
+      name,
+      "DALEX" = directed(c("#4378bf","#8bdcbe", "#f05a71", "#ffa58c", "#ae2c87", "#46bac2", "#371ea3"), d),
+      NA
+    )
+    if (is.color(f)) {
+      return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+    }
   }
-  # sequential themes
-  f <- switch(
-    name,
-    "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
-    "grayscale" = to.palette(directed(c("white", "black"), d)),
-    "shap" = to.palette(directed(c("#2C87E1","#2A6BE9","#774DCF","#9C30BB","#C60099","#E7007E","#F72A5A"), d)),
-    NA
-  )
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+  if (is.null(pkg) || pkg == "viridisLite") {
+    # sequential themes from viridisLite package
+    f <- switch(
+      name,
+      "cividis" = function(n) viridisLite::cividis(n, direction = d, ...),
+      "inferno" = function(n) viridisLite::inferno(n, direction = d, ...),
+      "magma" = function(n) viridisLite::magma(n, direction = d, ...),
+      "mako" = function(n) viridisLite::mako(n, direction = d, ...),
+      "plasma" = function(n) viridisLite::plasma(n, direction = d, ...),
+      "rocket" = function(n) viridisLite::rocket(n, direction = d, ...),
+      "turbo" = function(n) viridisLite::turbo(n, direction = d, ...),
+      "viridis" = function(n) viridisLite::viridis(n, direction = d, ...),
+      NA)
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+    }
   }
-  # qualitative themes
-  f <- switch(
-    name,
-    "DALEX" = directed(c("#4378bf","#8bdcbe", "#f05a71", "#ffa58c", "#ae2c87", "#46bac2", "#371ea3"), d),
-    NA
-  )
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+  if (is.null(pkg) || pkg == "RColorBrewer") {
+    # diverging themes from RColorBrewer package
+    names <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu", "RdGy", "RdYlBu", "RdYlGn", "Spectral")
+    f <- if (any(name == names)) {
+      try(directed(RColorBrewer::brewer.pal(11L, name), d), silent = TRUE)
+    } else NA
+    if (is.color(f)) {
+      return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
+    }
+    # sequential themes from RColorBrewer package
+    names <- c("Blues", "BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges",
+               "OrRd", "PuBu", "PuBuGn", "PuRd", "Purples", "RdPu", "Reds",
+               "YlGn", "YlGnBu", "YlOrBr", "YlOrRd")
+    f <- if (any(name == names)) {
+      try(directed(RColorBrewer::brewer.pal(9L, name), d), silent = TRUE)
+    } else NA
+    if (is.color(f)) {
+      return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
+    }
+    # qualitative themes from RColorBrewer package
+    names <- c("Accent", "Dark2", "Paired", "Pastel1", "Pastel2", "Set1", "Set2", "Set3")
+    if (any(name == names)) {
+      npal <- switch(name, Paird = 12L, Pastel1 = 9L, Pastel2 = 8L, Set1 = 9L, 8L)
+      f <- try(directed(RColorBrewer::brewer.pal(npal, name), d), silent = TRUE)
+    } else {
+      f <- NA
+    }
+    if (is.color(f)) {
+      return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+    }
   }
-  # sequential themes from viridisLite package
-  f <- switch(
-    name,
-    "cividis" = function(n) viridisLite::cividis(n, direction = d, ...),
-    "inferno" = function(n) viridisLite::inferno(n, direction = d, ...),
-    "magma" = function(n) viridisLite::magma(n, direction = d, ...),
-    "mako" = function(n) viridisLite::mako(n, direction = d, ...),
-    "plasma" = function(n) viridisLite::plasma(n, direction = d, ...),
-    "rocket" = function(n) viridisLite::rocket(n, direction = d, ...),
-    "turbo" = function(n) viridisLite::turbo(n, direction = d, ...),
-    "viridis" = function(n) viridisLite::viridis(n, direction = d, ...),
-    NA)
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+  if (is.null(pkg) || pkg == "khroma") {
+    # sequential themes from khroma package
+    names <- c(
+      "devon", "lajolla", "bamako", "davos", "bilbao", "nuuk", "oslo", "grayC",
+      "hawaii", "lapaz", "tokyo", "buda", "acton", "turku", "imola", "batlow",
+      "batlowW", "batlowK", "brocO", "corkO", "vikO", "romaO", "bamO", "YlOrBr",
+      "iridescent", "incandescent", "smoothrainbow"
+    )
+    if (any(name == names))
+      f <- khroma::colour(name, reverse = (d < 0), force = TRUE)
+    else
+      f <- NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+    }
+    # diverging themes from khroma package
+    names <- c(
+      "broc", "cork", "vik", "lisbon", "tofino", "berlin", "roma", "bam",
+      "vanimo", "oleron", "bukavu", "fes", "sunset", "nightfall", "BuRd", "PRGn"
+    )
+    if (any(name == names))
+      f <- khroma::colour(name, reverse = (d < 0), force = TRUE)
+    else
+      f <- NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+    }
+    # qualitative themes from khroma package
+    names <- c(
+      "bright", "highcontrast", "vibrant", "muted", "mediumcontrast",
+      "pale", "dark", "light", "discreterainbow", "okabeito",
+      "okabeitoblack", "stratigraphy", "soil", "land"
+    )
+    if (any(name == names))
+      f <- khroma::colour(name, reverse = (d < 0), force = FALSE)
+    else
+      f <- NA
+    if (is.palette(f)) {
+      attr(f, "n") <- attr(f, "max")
+      return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
+    }
   }
-  # diverging themes from RColorBrewer package
-  names <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu", "RdGy", "RdYlBu", "RdYlGn", "Spectral")
-  f <- if (any(name == names)) {
-    try(directed(RColorBrewer::brewer.pal(11L, name), d), silent = TRUE)
-  } else NA
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), colors = f, name = name))
-  }
-  # sequential themes from RColorBrewer package
-  names <- c("Blues", "BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges",
-             "OrRd", "PuBu", "PuBuGn", "PuRd", "Purples", "RdPu", "Reds",
-             "YlGn", "YlGnBu", "YlOrBr", "YlOrRd")
-  f <- if (any(name == names)) {
-    try(directed(RColorBrewer::brewer.pal(9L, name), d), silent = TRUE)
-  } else NA
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), colors = f, name = name))
-  }
-  # qualitative themes from RColorBrewer package
-  names <- c("Accent", "Dark2", "Paird", "Pastel1", "Pastel2", "Set1", "Set2", "Set3")
-  if (any(name == names)) {
-    npal <- switch(name, Paird = 12L, Pastel1 = 9L, Pastel2 = 8L, Set1 = 9L, 8L)
-    f <- try(directed(RColorBrewer::brewer.pal(npal, name), d), silent = TRUE)
-  } else {
-    f <- NA
-  }
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
-  }
-  # sequential themes from khroma package
-  names <- c(
-    "devon", "lajolla", "bamako", "davos", "bilbao", "nuuk", "oslo", "grayC",
-    "hawaii", "lapaz", "tokyo", "buda", "acton", "turku", "imola", "batlow",
-    "batlowW", "batlowK", "brocO", "corkO", "vikO", "romaO", "bamO", "YlOrBr",
-    "iridescent", "incandescent", "smoothrainbow"
-  )
-  if (any(name == names))
-    f <- function(n) khroma::colour(name, reverse = (d < 0), force = TRUE)(n)
-  else
-    f <- NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
-  }
-  # diverging themes from khroma package
-  names <- c(
-    "broc", "cork", "vik", "lisbon", "tofino", "berlin", "roma", "bam",
-    "vanimo", "oleron", "bukavu", "fes", "sunset", "nightfall", "BuRd", "PRGn"
-  )
-  if (any(name == names))
-    f <- function(n) khroma::colour(name, reverse = (d < 0), force = TRUE)(n)
-  else
-    f <- NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
-  }
-  # qualitative themes from khroma package
-  names <- c(
-    "bright", "highcontrast", "vibrant", "muted", "mediumcontrast",
-    "pale", "dark", "light", "discreterainbow", "okabeito",
-    "okabeitoblack", "stratigraphy", "soil", "land"
-  )
-  if (any(name == names))
-    f <- function(n) khroma::colour(name, reverse = (d < 0), force = FALSE)(n)
-  else
-    f <- NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
-  }
-  # diverging themes from grDevices package
-  f <- if (any(name == grDevices::hcl.pals("diverging"))) {
-    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
-  } else NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
-  }
-  # diverging themes from grDevices package
-  f <- if (any(name == grDevices::hcl.pals("divergingx"))) {
-    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
-  } else NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
-  }
-  # sequential themes from grDevices package
-  f <- if (any(name == grDevices::hcl.pals("sequential"))) {
-    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
-  } else NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
-  }
-  # qualitative themes from grDevices package (hcl.pals)
-  f <- if (any(name == grDevices::hcl.pals("qualitative"))) {
-    function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
-  } else NA
-  if (is.palette(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
-  }
-  # qualitative themes from grDevices package (palette.pals)
-  f <- switch(
-    name,
-    "R3" = directed(grDevices::palette.colors(8L, name), d),
-    "R4" = directed(grDevices::palette.colors(8L, name), d),
-    "ggplot2" = directed(grDevices::palette.colors(8L, name), d),
-    "Okabe-Ito" = directed(grDevices::palette.colors(8L, name), d),
-    "Accent" = directed(grDevices::palette.colors(8L, name), d),
-    "Dark 2" = directed(grDevices::palette.colors(8L, name), d),
-    "Paired" = directed(grDevices::palette.colors(12L, name), d),
-    "Pastel 1" = directed(grDevices::palette.colors(9L, name), d),
-    "Pastel 2" = directed(grDevices::palette.colors(8L, name), d),
-    "Set 1" = directed(grDevices::palette.colors(9L, name), d),
-    "Set 2" = directed(grDevices::palette.colors(8L, name), d),
-    "Set 3" = directed(grDevices::palette.colors(12L, name), d),
-    "Tableau 10" = directed(grDevices::palette.colors(10L, name), d),
-    "Classic Tableau" = directed(grDevices::palette.colors(10L, name), d),
-    "Polychrome 36" = directed(grDevices::palette.colors(36L, name), d),
-    "Alphabet" = directed(grDevices::palette.colors(26L, name), d),
-    NA)
-  if (is.color(f)) {
-    return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+  if (is.null(pkg) || pkg == "grDevices") {
+    # diverging themes from grDevices package
+    f <- if (any(name == grDevices::hcl.pals("diverging"))) {
+      function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
+    } else NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+    }
+    # diverging themes from grDevices package
+    f <- if (any(name == grDevices::hcl.pals("divergingx"))) {
+      function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
+    } else NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "diverging"), palette = f, name = name))
+    }
+    # sequential themes from grDevices package
+    f <- if (any(name == grDevices::hcl.pals("sequential"))) {
+      function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
+    } else NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "sequential"), palette = f, name = name))
+    }
+    # qualitative themes from grDevices package (hcl.pals)
+    f <- if (any(name == grDevices::hcl.pals("qualitative"))) {
+      function(n) grDevices::hcl.colors(n, name, rev = (d < 0), ...)
+    } else NA
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
+    }
+    # qualitative themes from grDevices package (palette.pals)
+    f <- switch(
+      name,
+      "R3" = directed(grDevices::palette.colors(8L, name), d),
+      "R4" = directed(grDevices::palette.colors(8L, name), d),
+      "ggplot2" = directed(grDevices::palette.colors(8L, name), d),
+      "Okabe-Ito" = directed(grDevices::palette.colors(8L, name), d),
+      "Accent" = directed(grDevices::palette.colors(8L, name), d),
+      "Dark 2" = directed(grDevices::palette.colors(8L, name), d),
+      "Paired" = directed(grDevices::palette.colors(12L, name), d),
+      "Pastel 1" = directed(grDevices::palette.colors(9L, name), d),
+      "Pastel 2" = directed(grDevices::palette.colors(8L, name), d),
+      "Set 1" = directed(grDevices::palette.colors(9L, name), d),
+      "Set 2" = directed(grDevices::palette.colors(8L, name), d),
+      "Set 3" = directed(grDevices::palette.colors(12L, name), d),
+      "Tableau 10" = directed(grDevices::palette.colors(10L, name), d),
+      "Classic Tableau" = directed(grDevices::palette.colors(10L, name), d),
+      "Polychrome 36" = directed(grDevices::palette.colors(36L, name), d),
+      "Alphabet" = directed(grDevices::palette.colors(26L, name), d),
+      NA)
+    if (is.color(f)) {
+      return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+    }
   }
   stop(paste0("not implemented palette/ramp name: '", colors, "'"))
 }
