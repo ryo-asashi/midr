@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "patchwork", 
+pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "khroma", 
           "glmnet", "ranger", "e1071", "nnet", "rpart", "gam", "xgboost")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
@@ -35,7 +35,7 @@ We use a benchmark regression task, originally described in Friedman (1991) and 
 y=10\sin{(\pi{x_1}{x_2})+20{(x_3-0.5)}^2+10x_4+5x_5+\epsilon}
 $$
 
-The following plots show the effect of each predictor variable on the response. For $x_1$ and $x_2$ , the interaction effect is shown by the colored lines: the effect of $x_1$ depends on the value of $x_2$ (blue for 0 and red for 1) and *vice versa*.
+The following plots show the effect of each predictor variable on the response. For $x_1$ and $x_2$ , the interaction effect is shown by the colored lines: the effect of $x_1$ depends on the value of $x_2$ (pale purple for 0 and dark red for 1) and *vice versa*.
 
 ```{r dataviz, echo = FALSE}
 # visualization of the component functions
@@ -43,7 +43,7 @@ f1 <- function(y) {function(x) 10 * sin(pi * x * y)}
 f3 <- function(x) 20 * (x - 0.5)^2
 f4 <- function(x) 10 * x
 f5 <- function(x) 5 * x
-cols <- color.theme("Zissou 1")$ramp
+cols <- color.theme("smoothrainbow")$ramp
 pl <- ggplot() + xlim(0, 1) + xlab("x1, x2") +
   geom_function(fun = f1(0.0), col = cols(0.0)) +
   geom_function(fun = f1(0.1), col = cols(0.1)) +
@@ -88,20 +88,18 @@ For each model type, we fit a regression model using the `train` data of 500 obs
 ```{r utils}
 # define utility functions for the following chunks
 effect_plots <- function(object) {
-  plots <- mid.plots(mid, terms = paste("x", 1:5, sep = "."))
-  for (i in 1:5)
-    plots[[i]] <- plots[[i]] + ggtitle("main effect")
-  plots[[6]] <- ggmid(mid, "x.1:x.2", main.effects = TRUE) +
-    theme(legend.position = "none") +
-    ggtitle("interaction effect")
-  plots
+  mid.plots(object, terms = paste("x", 1:6, sep = "."))
 }
 
-ice_theme <- color.theme("Zissou 1", "sequential")
+interaction_plot <- function(object) {
+  ggmid(object, "x.1:x.2", main.effects = TRUE) +
+    ggtitle("interaction effect")
+}
+
+ice_theme <- color.theme("smoothrainbow")
 ice_plot <- function(object, data = train[1:200, ]) {
   ggmid(mid.conditional(object, "x.1", data = data),
         var.color = x.2, type = "centered", theme = ice_theme) +
-    theme(legend.position = "none") +
     ggtitle("conditional expectation")
 }
 
@@ -141,7 +139,8 @@ coef(model)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ### Regularized GLM
@@ -156,7 +155,8 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 evp <- eval_plot(model, mid, data = test[, -11],
                        s = model$lambda[9])
-(importance_plot(mid) / evp) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), evp, nrow = 2)
 ```
 
 ### Generalized Additive Model
@@ -168,8 +168,8 @@ model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              family = gaussian, data = train)
 mid <- interpret(y ~ .^2, train, model)
 print(mid)
-grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ## Neural Network
@@ -183,7 +183,8 @@ model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ## Support Vector Machine
@@ -196,7 +197,8 @@ model <- svm(y ~ ., train, kernel = "radial")
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ## Tree Based Models
@@ -213,7 +215,8 @@ mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 evp <- eval_plot(model, mid, as.matrix(test[, -11]))
-(importance_plot(mid) / evp) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), evp, nrow = 2)
 ```
 
 ### Random Forest
@@ -225,7 +228,8 @@ model <- ranger(y ~ ., train, mtry = 5)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ### Decision Tree
@@ -236,7 +240,8 @@ model <- rpart(y ~ ., train)
 mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
 
 ## Other Modes
@@ -248,5 +253,6 @@ model <- mid <- interpret(y ~ .^2, train, lambda = .2)
 pred <- pred_mid <- predict(mid, test)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
-(importance_plot(mid) / eval_plot(model, mid)) | ice_plot(mid)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```

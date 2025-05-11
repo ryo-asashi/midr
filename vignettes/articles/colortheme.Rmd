@@ -146,7 +146,7 @@ themes[[9L]] <- data.frame(
   type = c("d", "q", "s", "s", "s")
 )
 
-.df <- do.call(rbind, themes)
+.df <- unique(do.call(rbind, themes))
 .df <- .df[order(.df$type, .df$name, .df$pack),]
 ```
 
@@ -174,7 +174,7 @@ for (i in seq_len(nrow(df))) {
 }
 ```
 
-## Sequential Colort Themes
+## Sequential Color Themes
 
 ```{r, echo = FALSE}
 par.midr(mfrow = c(2, 2))
