@@ -1,7 +1,7 @@
 Package: midr
 Type: Package
 Title: Learning from Black-Box Models by Maximum Interpretation Decomposition
-Version: 0.4.9.904
+Version: 0.4.9.905
 Authors@R: c(
     person("Ryoichi", "Asasihba", email = "ryoichi.asashiba@gmail.com",
            role = c("aut", "cre")),
@@ -9,7 +9,7 @@ Authors@R: c(
     person("Reiji", "Kozuma", role = c("ctb"))
   )
 Description:
-  midr is designed to provide a model-agnostic method for interpreting and explaining black-box machine learning models by creating a globally interpretable surrogate of the target model using a functional decomposition technique called Maximum Interpretation Decomposition (MID).
+  midr is designed to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model using a functional decomposition technique called Maximum Interpretation Decomposition (MID).
   For the theoretical details of MID, see Iwasawa & Matsumori (2025) <d>[Forthcoming], and for the technical details of the package, see Asashiba et al. (2025) [Forthcoming].
 License: MIT + file LICENSE
 Encoding: UTF-8

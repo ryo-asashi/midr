@@ -76,7 +76,7 @@ grid.arrange(
 The functions `scale_color_theme()` and `scale_fill_theme()` provide a pipeline for customizing ggplot graphics.
 
 ```{r, fig.weight = 6, fig.height = 4}
-p <- ggplot(dataset) + geom_jitter(aes(carat, price, col = color))
+p <- ggplot(dataset) + geom_point(aes(carat, price, col = color))
 grid.arrange(
   p + scale_color_theme("DALEX"),
   p + scale_color_theme("discreterainbow"),

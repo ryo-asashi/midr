@@ -25,7 +25,7 @@ color.theme(
 
 \item{name}{an optional character string, specifying the name of the color theme.}
 
-\item{pkg}{an optional character string, specifying the package in which the palette is to be searched for.}
+\item{pkg}{an optional character string, specifying the package in which the palette is to be searched for. Available options include "viridisLite", "RColorBrewer", "khroma", "grDevices" and "midr".}
 
 \item{...}{optional arguments to be passed to palette or ramp functions.}
 
@@ -62,21 +62,9 @@ ct$ramp(seq.int(0, 1, 1/4))
 ct <- color.theme("Tableau 10")
 ct$palette(10L)
 pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
-pals <- c(pals, hcl.pals(), palette.pals())
+pals <- unique(c(pals, hcl.pals(), palette.pals()))
+pals <- lapply(pals, color.theme)
 par(mfrow = c(5L, 2L))
-for (pal in pals[1:10]) plot(color.theme(pal))
-for (pal in pals[11:20]) plot(color.theme(pal))
-for (pal in pals[21:30]) plot(color.theme(pal))
-for (pal in pals[31:40]) plot(color.theme(pal))
-for (pal in pals[41:50]) plot(color.theme(pal))
-for (pal in pals[51:60]) plot(color.theme(pal))
-for (pal in pals[61:70]) plot(color.theme(pal))
-for (pal in pals[71:80]) plot(color.theme(pal))
-for (pal in pals[81:90]) plot(color.theme(pal))
-for (pal in pals[91:100]) plot(color.theme(pal))
-for (pal in pals[101:110]) plot(color.theme(pal))
-for (pal in pals[111:120]) plot(color.theme(pal))
-for (pal in pals[121:130]) plot(color.theme(pal))
-for (pal in pals[131:136]) plot(color.theme(pal))
+for (pal in pals) plot(pal, text = paste(pal$name, "-", pal$type))
 par(mfrow = c(1L, 1L))
 }

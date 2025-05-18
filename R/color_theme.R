@@ -155,7 +155,7 @@ wrap.theme <- function(
 #' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
 #' @param type a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".
 #' @param name an optional character string, specifying the name of the color theme.
-#' @param pkg an optional character string, specifying the package in which the palette is to be searched for.
+#' @param pkg an optional character string, specifying the package in which the palette is to be searched for. Available options include "viridisLite", "RColorBrewer", "khroma", "grDevices" and "midr".
 #' @param ... optional arguments to be passed to palette or ramp functions.
 #' @examples
 #' ct <- color.theme("Mako")
@@ -167,22 +167,10 @@ wrap.theme <- function(
 #' ct <- color.theme("Tableau 10")
 #' ct$palette(10L)
 #' pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
-#' pals <- c(pals, hcl.pals(), palette.pals())
+#' pals <- unique(c(pals, hcl.pals(), palette.pals()))
+#' pals <- lapply(pals, color.theme)
 #' par(mfrow = c(5L, 2L))
-#' for (pal in pals[1:10]) plot(color.theme(pal))
-#' for (pal in pals[11:20]) plot(color.theme(pal))
-#' for (pal in pals[21:30]) plot(color.theme(pal))
-#' for (pal in pals[31:40]) plot(color.theme(pal))
-#' for (pal in pals[41:50]) plot(color.theme(pal))
-#' for (pal in pals[51:60]) plot(color.theme(pal))
-#' for (pal in pals[61:70]) plot(color.theme(pal))
-#' for (pal in pals[71:80]) plot(color.theme(pal))
-#' for (pal in pals[81:90]) plot(color.theme(pal))
-#' for (pal in pals[91:100]) plot(color.theme(pal))
-#' for (pal in pals[101:110]) plot(color.theme(pal))
-#' for (pal in pals[111:120]) plot(color.theme(pal))
-#' for (pal in pals[121:130]) plot(color.theme(pal))
-#' for (pal in pals[131:136]) plot(color.theme(pal))
+#' for (pal in pals) plot(pal, text = paste(pal$name, "-", pal$type))
 #' par(mfrow = c(1L, 1L))
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
@@ -309,7 +297,8 @@ color.theme <- function(
       "iridescent", "incandescent", "smoothrainbow"
     )
     if (any(name == names))
-      f <- khroma::colour(name, reverse = (d < 0), force = TRUE)
+      f <- try(khroma::colour(name, reverse = (d < 0), force = TRUE),
+               silent = TRUE)
     else
       f <- NA
     if (is.palette(f)) {
@@ -321,7 +310,8 @@ color.theme <- function(
       "vanimo", "oleron", "bukavu", "fes", "sunset", "nightfall", "BuRd", "PRGn"
     )
     if (any(name == names))
-      f <- khroma::colour(name, reverse = (d < 0), force = TRUE)
+      f <- try(khroma::colour(name, reverse = (d < 0), force = TRUE),
+               silent = TRUE)
     else
       f <- NA
     if (is.palette(f)) {
@@ -334,7 +324,8 @@ color.theme <- function(
       "okabeitoblack", "stratigraphy", "soil", "land"
     )
     if (any(name == names))
-      f <- khroma::colour(name, reverse = (d < 0), force = FALSE)
+      f <- try(khroma::colour(name, reverse = (d < 0), force = FALSE),
+               silent = TRUE)
     else
       f <- NA
     if (is.palette(f)) {
@@ -395,7 +386,7 @@ color.theme <- function(
       return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
     }
   }
-  stop(paste0("not implemented palette/ramp name: '", colors, "'"))
+  stop(paste0("color theme '", colors, "' not found"))
 }
 
 #' @rdname color.theme
@@ -425,8 +416,8 @@ plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
 #' @exportS3Method base::print
 #'
 print.color.theme <- function(x, display = TRUE, ...) {
-  type <- switch(x$type, qualitative = "Qualitative",
-                 diverging = "Diverging", sequential = "Sequential")
+  type <- x$type
+  substr(type, 1L, 1L) <- toupper(substr(type, 1L, 1L))
   text <- paste0(type, " Color Theme")
   if (!is.null(x$name)) text <- paste0(text, ' : "', x$name, '" ')
   cat(text)

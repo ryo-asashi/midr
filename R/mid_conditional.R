@@ -118,5 +118,5 @@ print.mid.conditional <- function(
              n, " Observation", if (n > 1L) "s", "\n"))
   cat(paste0("\nVariable: ", attr(x, "variable"), "\n"))
   cat("\nSample Points:\n")
-  print.default(x$values, digits = digits, ...)
+  print(x$values, digits = digits, ...)
 }

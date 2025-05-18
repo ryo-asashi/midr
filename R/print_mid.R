@@ -19,10 +19,10 @@ print.mid <- function(
     x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...) {
   cl <- paste0(trimws(deparse(x$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
-  cat(paste0("\nIntercept: ", format(x$intercept, digits = digits),
-             "\n", collapse = ""))
   if (!is.null(x$model.class))
     cat(paste0("\nModel Class: ", paste0(x$model.class, collapse = ", "), "\n"))
+  cat(paste0("\nIntercept: ", format(x$intercept, digits = digits),
+             "\n", collapse = ""))
   m <- length(x$main.effects)
   if (m > 0L) {
     cat("\nMain Effects:\n")
