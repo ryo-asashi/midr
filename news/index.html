@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.905</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,11 +18,11 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/classification.html">Interpretation of Classification Models</a></li>
-    <li><a class="dropdown-item" href="../articles/colortheme.html">Getting Started with Color Themes</a></li>
-    <li><a class="dropdown-item" href="../articles/ggplot2.html">Visualization with ggplot2 package</a></li>
-    <li><a class="dropdown-item" href="../articles/graphics.html">Visualization with graphics package</a></li>
-    <li><a class="dropdown-item" href="../articles/regression.html">Interpretation of Regression Models</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/01-regression.html">Interpretation of Regression Models</a></li>
+    <li><a class="dropdown-item" href="../articles/02-classification.html">Interpretation of Classification Models</a></li>
+    <li><a class="dropdown-item" href="../articles/03-graphics.html">Visualization with graphics package</a></li>
+    <li><a class="dropdown-item" href="../articles/04-ggplot2.html">Visualization with ggplot2 package</a></li>
+    <li><a class="dropdown-item" href="../articles/05-colortheme.html">Getting Started with Color Themes</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -50,22 +50,23 @@
 <p>[First release on CRAN.]</p>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.903-0.4.9.904" id="midr-049903-049904">midr 0.4.9.903-0.4.9.904<a class="anchor" aria-label="anchor" href="#midr-049903-049904"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.9.903-0.4.9.905" id="midr-049903-049905">midr 0.4.9.903-0.4.9.905<a class="anchor" aria-label="anchor" href="#midr-049903-049905"></a></h2>
 <ul><li>
-<code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code> has a new argument <code>reference</code>, which enables to set the reference point of c-ICE plot to be any of the sample points.</li>
+<code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code> now include a new argument <code>reference</code>, which allows setting the reference point of c-ICE plot to any of the sample points.</li>
 <li>
-<strong><code><a href="../reference/color.theme.html">color.theme()</a></code></strong> now includes a new argument, <code>pkg</code>, for package specification<strong>.</strong>
-</li>
-<li>Add an article about “color.theme” objects.</li>
+<code><a href="../reference/color.theme.html">color.theme()</a></code> now includes a new argument, <code>pkg</code>, for package specification.</li>
+<li>A new article about “color.theme” objects is added.</li>
+<li>A small change of <code><a href="../reference/print.mid.html">print.mid()</a></code> and <code><a href="../reference/mid.conditional.html">print.mid.conditional()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.9.902" id="midr-049902">midr 0.4.9.902<a class="anchor" aria-label="anchor" href="#midr-049902"></a></h2>
 <ul><li>
-<strong>(Important)</strong> Update the behavior of <code><a href="../reference/interpret.html">interpret()</a></code> for classification tasks: If <code>y</code> is a factor or character, convert its base level to <code>0</code> and all other levels to <code>1</code>.</li>
+<strong>Important:</strong> Update and chane the behavior of <code><a href="../reference/interpret.html">interpret()</a></code> for classification tasks: If <code>y</code> is a factor or character, <code><a href="../reference/interpret.html">interpret()</a></code> convert its base level to <code>0</code> and all other levels to <code>1</code>.</li>
 <li>Modify <code><a href="../reference/ggmid.html">ggmid()</a></code> and <code><a href="../reference/plot.mid.html">plot.mid()</a></code> to correct effect plots for factor variables with a <code>catchall</code> level. Additionallym <code><a href="../reference/ggmid.html">ggmid()</a></code> now utilize <code><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">ggplot2::geom_jitter()</a></code> and allow for adjustable jitter amounts with the <code>jitter</code> argument. Additionally, when data is not explicitly provided, it is now automatically extracted from the function call stored in the <code>"mid"</code> object.</li>
 <li>Adjust <code><a href="../reference/mid.conditional.html">mid.conditional()</a></code> and <code><a href="../reference/mid.breakdown.html">mid.breakdown()</a></code> so they no longer require explicit data input.</li>
 <li>Update terminology.</li>
 <li>The color palettes of the <code>khroma</code> package are now available for <code><a href="../reference/color.theme.html">color.theme()</a></code>.</li>
+<li>The default theme for <code>ggmid(type = "data")</code> and <code>plot(type = "data")</code> is changed to a sequential color scheme: “bluescale”.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.9.901" id="midr-049901">midr 0.4.9.901<a class="anchor" aria-label="anchor" href="#midr-049901"></a></h2>
