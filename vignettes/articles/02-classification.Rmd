@@ -45,7 +45,7 @@ str(test[, -9])
 
 For each model type, we fit a classification model using the training dataset of 1707 people and an interpretative MID surrogate of the target model using the same dataset. We then evaluate the predictive accuracy of the target model by AUC and the representation accuracy of the surrogate model by the Spearman's rank correlation coefficient between two predicted probabilities.
 
-In the following examples, we use two specialized link functions for classification tasks: `translogit` (transformed-logit) and `transprobit` (transformed-probit). These two link functions are transformed so that their slope at $x = 0.5$ equals $1$.
+In the following examples, we use two specialized link functions for classification tasks: `translogit` (transformed-logit) and `transprobit` (transformed-probit). These two link functions are transformed so that $g(0.5) = 0.5$ and $g'(0.5) = 1$. With these link functions, the effects on the linear predictor can be approximately interpreted as the upper bound of the effects on the predicted probabilities.
 
 ```{r, echo = FALSE, fig.height = 3, fig.width = 6}
 par.midr(mfrow = c(1, 2))

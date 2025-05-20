@@ -18,7 +18,7 @@
 \usage{
 get.yhat(X.model, newdata, ...)
 
-\method{get.yhat}{default}(X.model, newdata, ...)
+\method{get.yhat}{default}(X.model, newdata, target = -1L, ...)
 
 \method{get.yhat}{mid}(X.model, newdata, ...)
 
@@ -26,28 +26,30 @@ get.yhat(X.model, newdata, ...)
 
 \method{get.yhat}{glm}(X.model, newdata, ...)
 
-\method{get.yhat}{rpart}(X.model, newdata, ...)
+\method{get.yhat}{rpart}(X.model, newdata, target = -1L, ...)
 
-\method{get.yhat}{randomForest}(X.model, newdata, ...)
+\method{get.yhat}{randomForest}(X.model, newdata, target = -1L, ...)
 
-\method{get.yhat}{ranger}(X.model, newdata, ...)
+\method{get.yhat}{ranger}(X.model, newdata, target = -1L, ...)
 
-\method{get.yhat}{svm}(X.model, newdata, ...)
+\method{get.yhat}{svm}(X.model, newdata, target = -1L, ...)
 
-\method{get.yhat}{ksvm}(X.model, newdata, ...)
+\method{get.yhat}{ksvm}(X.model, newdata, target = -1L, ...)
 
 \method{get.yhat}{AccurateGLM}(X.model, newdata, ...)
 
 \method{get.yhat}{glmnet}(X.model, newdata, ...)
 
-\method{get.yhat}{model_fit}(X.model, newdata, ...)
+\method{get.yhat}{model_fit}(X.model, newdata, target = -1L, ...)
 }
 \arguments{
 \item{X.model}{a fitted model object.}
 
 \item{newdata}{a data.frame or matrix.}
 
-\item{...}{other parameters that are passed to the prediction method for the model.}
+\item{...}{optional parameters that are passed to the prediction method for the model.}
+
+\item{target}{an integer or character vector specifying the target levels for the prediction, used for the models that returns a matrix or data.frame of class probabilities. Default is \code{-1}, representing the probability of not being the base level.}
 }
 \value{
 \code{get.yhat()} returns a numeric vector of model predictions for the \code{newdata}.
@@ -64,6 +66,6 @@ The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
 \examples{
 data(trees, package = "datasets")
 model <- glm(Volume ~ ., trees, family = Gamma(log))
-predict(model, trees, "response")[1:5]
-get.yhat(model, trees)[1:5]
+predict(model, trees[1:5, ], type = "response")
+get.yhat(model, trees[1:5, ])
 }

@@ -2,6 +2,10 @@
 
 [First release on CRAN.]
 
+## midr 0.4.9.906
+
+-   **Important:** Update the behavior of `get.yhat()` for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, `get.yhat()` returns the probability of *not* being the base level.
+
 ## midr 0.4.9.903-0.4.9.905
 
 -   `ggmid.mid.conditional()` and `plot.mid.conditional()` now include a new argument `reference`, which allows setting the reference point of c-ICE plot to any of the sample points.

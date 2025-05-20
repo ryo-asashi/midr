@@ -11,12 +11,12 @@ status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/p
 
 <!-- badges: end -->
 
-midr is designed to provide a model-agnostic method for interpreting
-black-box machine learning models by creating a globally interpretable
-surrogate of the target model using a functional decomposition technique
-called *Maximum Interpretation Decomposition* (MID). For the theoretical
-details of MID, see Iwasawa & Matsumori (2025) \[Forthcoming\], and for
-the technical details of the package, see Asashiba et al. (2025)
+midr is designed to provide a model-agnostic method for interpreting and
+explaining black-box predictive models by creating a globally
+interpretable surrogate model using a functional decomposition technique
+called Maximum Interpretation Decomposition (MID). For the theoretical
+details of MID, see Iwasawa & Matsumori (2025) \<\>\[Forthcoming\], and
+for the technical details of the package, see Asashiba et al. (2025)
 \[Forthcoming\].
 
 ## Installation
@@ -73,9 +73,9 @@ mid
 #> Call:
 #> interpret(formula = yhat ~ .^2, data = train, model = rf, lambda = 0.1)
 #> 
-#> Intercept: 22.446
-#> 
 #> Model Class: ranger
+#> 
+#> Intercept: 22.446
 #> 
 #> Main Effects:
 #> 12 main effect terms
