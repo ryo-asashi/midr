@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.905</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.906</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,10 +140,13 @@ two predicted probabilities.</p>
 <p>In the following examples, we use two specialized link functions for
 classification tasks: <code>translogit</code> (transformed-logit) and
 <code>transprobit</code> (transformed-probit). These two link functions
-are transformed so that their slope at
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">x = 0.5</annotation></semantics></math>
-equals
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.</p>
+are transformed so that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">g(0.5) = 0.5</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g'(0.5) = 1</annotation></semantics></math>.
+With these link functions, the effects on the linear predictor can be
+approximately interpreted as the upper bound of the effects on the
+predicted probabilities.</p>
 <p><img src="02-classification_files/figure-html/unnamed-chunk-2-1.png" width="576"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define utility functions for the following chunks</span></span>
