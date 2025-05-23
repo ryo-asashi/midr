@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,11 @@
 <p>[First release on CRAN.]</p>
 </div>
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.9.907" id="midr-049907">midr 0.4.9.907<a class="anchor" aria-label="anchor" href="#midr-049907"></a></h2>
+<ul><li>
+<code><a href="../reference/interpret.html">interpret()</a></code> now includes a new <code>verbosity</code> argument for logging.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.9.906" id="midr-049906">midr 0.4.9.906<a class="anchor" aria-label="anchor" href="#midr-049906"></a></h2>
 <ul><li>
 <strong>Important:</strong> Update the behavior of <code><a href="../reference/get.yhat.html">get.yhat()</a></code> for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, <code><a href="../reference/get.yhat.html">get.yhat()</a></code> returns the probability of <em>not</em> being the base level.</li>
@@ -83,41 +88,23 @@
 <code><a href="../reference/interpret.html">interpret()</a></code> now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.909" id="midr-048909">midr 0.4.8.909<a class="anchor" aria-label="anchor" href="#midr-048909"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.3-0.4.8.909" id="midr-043-048909">midr 0.4.3-0.4.8.909<a class="anchor" aria-label="anchor" href="#midr-043-048909"></a></h2>
 <ul><li><p>Add <code>mid.ur()</code> to extract uninterpreted ratio (rate) more conveniently.</p></li>
 <li><p>Modify weighted loss functions to compute deviation-from-mean based losses for one input.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.908" id="midr-048908">midr 0.4.8.908<a class="anchor" aria-label="anchor" href="#midr-048908"></a></h2>
-<ul><li>Modify <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> , <code><a href="../reference/ggmid.mid.importance.html">ggmid.mid.importance()</a></code> and <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> to improve usability of the functions.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.907" id="midr-048907">midr 0.4.8.907<a class="anchor" aria-label="anchor" href="#midr-048907"></a></h2>
-<ul><li><p>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to add the <code>pred.args</code> argument that can be used to pass optional arguments to the prediction function (<code>pred.fun()</code>).</p></li>
+<li><p>Modify <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> , <code><a href="../reference/ggmid.mid.importance.html">ggmid.mid.importance()</a></code> and <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> to improve usability of the functions.</p></li>
+<li><p>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to add the <code>pred.args</code> argument that can be used to pass optional arguments to the prediction function (<code>pred.fun()</code>).</p></li>
 <li><p>Add a draft of the article on “the interpretation of classification models”.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.906" id="midr-048906">midr 0.4.8.906<a class="anchor" aria-label="anchor" href="#midr-048906"></a></h2>
-<ul><li><p>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to allow matrices to be used as valid inputs for <code>data</code> (<code><a href="../reference/interpret.html">interpret.formula()</a></code>) and <code>x</code> (<code><a href="../reference/interpret.html">interpret.default()</a></code>).</p></li>
+<li><p>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to allow matrices to be used as valid inputs for <code>data</code> (<code><a href="../reference/interpret.html">interpret.formula()</a></code>) and <code>x</code> (<code><a href="../reference/interpret.html">interpret.default()</a></code>).</p></li>
 <li><p>Add an article on “the interpretation of regression models”.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.905" id="midr-048905">midr 0.4.8.905<a class="anchor" aria-label="anchor" href="#midr-048905"></a></h2>
-<ul><li><p>Define <code><a href="../reference/numeric.encoder.html">print.encoder()</a></code> for “encoder” objects to improve usability of the fitted MID models.</p></li>
+<li><p>Define <code><a href="../reference/numeric.encoder.html">print.encoder()</a></code> for “encoder” objects to improve usability of the fitted MID models.</p></li>
 <li><p>Update README.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.904" id="midr-048904">midr 0.4.8.904<a class="anchor" aria-label="anchor" href="#midr-048904"></a></h2>
-<ul><li><p>Change default values of some arguments: e.g. <code>na.action = na.pass</code> of <code><a href="../reference/predict.mid.html">predict.mid()</a></code>.</p></li>
+<li><p>Change default values of some arguments: e.g. <code>na.action = na.pass</code> of <code><a href="../reference/predict.mid.html">predict.mid()</a></code>.</p></li>
 <li><p>Fix small bugs of <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code>.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.8.903" id="midr-048903">midr 0.4.8.903<a class="anchor" aria-label="anchor" href="#midr-048903"></a></h2>
-<ul><li><p>Update <code><a href="../reference/interpret.html">interpret()</a></code> to ensure that the value of the argument <code>link</code> is a character string.</p></li>
+<li><p>Update <code><a href="../reference/interpret.html">interpret()</a></code> to ensure that the value of the argument <code>link</code> is a character string.</p></li>
 <li><p>Update <code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code>: <code>var.color</code> and the similar arguments can take an expression as input.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.3-0.4.8.902" id="midr-043-048902">midr 0.4.3-0.4.8.902<a class="anchor" aria-label="anchor" href="#midr-043-048902"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.3" id="midr-043">midr 0.4.3<a class="anchor" aria-label="anchor" href="#midr-043"></a></h2>
 <p>midr is in the release process. We will submit the package to CRAN by mid-January 2025 .</p>
 <ul><li><p>Improving usability of graphing functions.</p></li>
 <li><p>Finalizing code and documentation.</p></li>
