@@ -76,12 +76,11 @@ predict.mid <- function(
       }
       preds[, i] <- as.numeric(X %*% mid)
     }
-    attr(preds, "constant") <- object$intercept
   }
   if (type == "terms") {
     if (inherits(naa, "exclude"))
       return(stats::napredict(naa, preds))
-    return(structure(preds, na.action = naa))
+    return(structure(preds, constant = object$intercept, na.action = naa))
   }
   preds <- rowSums(preds) + object$intercept
   if (type == "response" && !is.null(object$link))

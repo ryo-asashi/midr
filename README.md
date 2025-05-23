@@ -11,13 +11,14 @@ status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/p
 
 <!-- badges: end -->
 
-midr is designed to provide a model-agnostic method for interpreting and
-explaining black-box predictive models by creating a globally
-interpretable surrogate model using a functional decomposition technique
-called Maximum Interpretation Decomposition (MID). For the theoretical
-details of MID, see Iwasawa & Matsumori (2025) \<\>\[Forthcoming\], and
-for the technical details of the package, see Asashiba et al. (2025)
-\[Forthcoming\].
+midr provides a model-agnostic method to interpret and explain black-box
+predictive models by creating a globally interpretable surrogate based
+on Maximum Interpretation Decomposition (MID), a functional
+decomposition technique that minimizes the squared error between the
+target model predictions and the predictions of the surrogate model. For
+the theoretical foundations of MID, please refer to Iwasawa & Matsumori
+(2025) \[Forthcoming\]. For technical details of the midr package,
+please see Asashiba et al. (2025) \[Forthcoming\].
 
 ## Installation
 
@@ -84,15 +85,9 @@ mid
 #> 66 interaction terms
 #> 
 #> Uninterpreted Variation Ratio: 0.016249
-```
-
-``` r
 preds_mid <- predict(mid, valid)
 cat("RMSE: ", weighted.rmse(preds_rf, preds_mid))
 #> RMSE:  1.106746
-```
-
-``` r
 cat("RMSE: ", weighted.rmse(valid$medv, preds_mid))
 #> RMSE:  3.306111
 ```
@@ -101,7 +96,7 @@ To visualize the main and interaction effects of the variables, apply
 `ggmid()` or `plot()` to the fitted MID model.
 
 ``` r
-# visualize the main effects and interactions of the MID model
+# visualize the main and interaction effects of the MID model
 grid.arrange(
   ggmid(mid, "lstat") +
     ggtitle("main effect of lstat"),
@@ -109,12 +104,19 @@ grid.arrange(
     ggtitle("main effect of dis"),
   ggmid(mid, "lstat:dis") +
     ggtitle("interaction of lstat:dis"),
-  ggmid(mid, "lstat:dis", main.effects = TRUE) +
+  ggmid(mid, "lstat:dis", main.effects = TRUE, theme = "Temps") +
     ggtitle("interaction + main effects")
 )
 ```
 
 <img src="man/figures/README-ggmid-1.png" width="100%" />
+
+``` r
+# visualize all main effects
+grid.arrange(grobs = mid.plots(mid), nrow = 3)
+```
+
+<img src="man/figures/README-ggmid-2.png" width="100%" />
 
 `mid.importance()` helps to compute and compare the importance of main
 and interaction effects.
@@ -123,7 +125,7 @@ and interaction effects.
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, theme = "Dark 2_r", max.bars = 20L) +
+  ggmid(imp, "dotchart", theme = "Okabe-Ito") +
     theme(legend.position = "bottom") +
     ggtitle("importance of variable effects"),
   ggmid(imp, "heatmap") +
@@ -143,10 +145,10 @@ value into variable effects.
 bd1 <- mid.breakdown(mid, data = train[1L, ])
 bd9 <- mid.breakdown(mid, data = train[9L, ])
 grid.arrange(nrow = 1L,
-  ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 12L) +
+  ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "Tableau 10", max.bars = 12L) +
+  ggmid(bd9, "waterfall", theme = "Tableau 10", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )

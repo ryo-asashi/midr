@@ -22,7 +22,7 @@ summary.mid <- function(
   if(use.link <- !is.null(object$link))
     cat(paste0("\nLink: ", object$link$name, "\n", collapse = ""))
   cat(paste0("\nUninterpreted Variation Ratio:\n"))
-  print.default(object$uninterpreted.variation, digits = digits)
+  print.default(object$ratio, digits = digits)
   rsd <- object$residuals
   yhat <- if (use.link) {
     object$linear.predictors

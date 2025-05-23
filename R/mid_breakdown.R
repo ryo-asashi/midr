@@ -25,7 +25,7 @@
 mid.breakdown <- function(
     object, data = NULL, sort = TRUE, digits = 6L, format = c("%s", "%s, %s")) {
   if (is.null(data))
-    data <- model.data(object)
+    data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
     data <- data.frame(data)
   if (nrow(data) != 1L) {

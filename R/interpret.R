@@ -1,15 +1,24 @@
 #' Fit MID Models
 #'
-#' \code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box ML models.
+#' \code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box predictive models.
 #' A fitted MID model consists of a set of component functions, each with up to two variables.
 #'
-#' The prediction function of a fitted MID model \eqn{\hat{f}(X)} has the following structure:
-#' \deqn{\hat{f}(X) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)}
-#' where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(X_j)} is the main effect of the variable \eqn{j}, and \eqn{f_{j,k}(X_j, X_k)} is the second-order interaction between the two variables \eqn{j} and \eqn{k}.
-#' The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
+#' \code{interpret()} returns a global surrogate model of the target predictive model.
+#' The prediction function of this surrogate model is derived from Maximum Interpretation
+#' Decomposition (MID) applied to the prediction function of the target model
+#' (denoted \eqn{f(\mathbf{x})}).
 #'
-#' The MID values for each sample point are determined using the constrained least squares method.
-#' The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraints are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
+#' The prediction function of the global surrogate model, denoted \eqn{\mathcal{F}(\mathbf{x})}, has the following structure:
+#' \deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
+#' where \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of feature \eqn{j},
+#' and \eqn{f_{jk}(x_j, x_k)} is the second-order interaction effect between features \eqn{j} and \eqn{k}.
+#'
+#' To ensure the identifiability (uniqueness) of these decomposed components, they are subject to centering constraints during the fitting process.
+#' Specifically, each main effect function \eqn{f_j(x_j)} is constrained such that its average over the data distribution of feature \eqn{X_j} is zero.
+#' Similarly, each second-order interaction effect function \eqn{f_{jk}(x_j, x_k)} is constrained such that its conditional average over \eqn{X_j} (for any fixed value \eqn{x_k}) is zero, and its conditional average over \eqn{X_k} (for any fixed value \eqn{x_j}) is also zero.
+#'
+#' The surrogate model is fitted using the least squares method, which minimizes the squared error between the predictions of the target model \eqn{f(\mathbf{x})} and the surrogate model \eqn{\mathcal{F}(\mathbf{x})} (typically evaluated on a representative dataset).
+#'
 #' @param object a fitted model object to be interpreted.
 #' @examples
 #' # fit a MID model as a surrogate model
@@ -45,12 +54,12 @@
 #' \item{weights}{a numeric vector of the sample weights.}
 #' \item{call}{the matched call.}
 #' \item{terms}{the term labels.}
-#' \item{link}{a "link-glm" object containing the link function.}
+#' \item{link}{a "link-glm" or "link-midr" object containing the link function.}
 #' \item{intercept}{the intercept.}
 #' \item{encoders}{a list of variable encoders.}
 #' \item{main.effects}{a list of data frames representing the main effects.}
 #' \item{interacions}{a list of data frames representing the interactions.}
-#' \item{uninterpreted.variation}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
+#' \item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 #' \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
@@ -67,7 +76,7 @@ UseMethod("interpret")
 #' @param y an optional numeric vector of the model predictions or the response variable.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
-#' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
+#' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
 #' @param k an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
@@ -79,6 +88,7 @@ UseMethod("interpret")
 #' @param lambda the strength of the smoothing penalty. The default is \code{0}.
 #' @param kappa the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
+#' @param verbosity the level of verbosity. \code{0}: fatal, \code{1}: warning (default), \code{2}: info or \code{3}: debug.
 #' @param encoding.digits an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.
 #' @param use.catchall logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.
 #' @param catchall a character string specifying the catchall level.
@@ -92,13 +102,15 @@ UseMethod("interpret")
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
-    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL,
-    lambda = 0, kappa = 1e6, na.action = getOption("na.action"),
+    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0,
+    kappa = 1e6, na.action = getOption("na.action"), verbosity = 1L,
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
     max.ncol = 1e4L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   dots <- list(...)
+  if (is.null(dots$internal.call) || !dots$internal.call)
+    verbose("model fitting started", verbosity, 2L, TRUE)
   if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
   fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
@@ -122,6 +134,8 @@ interpret.default <- function(
   attr(x, "na.action") <- NULL
   x <- do.call(na.action, list(x))
   if (!is.null(naa.x <- stats::na.action(x))) {
+    verbose(paste(length(naa.x), "observations with NAs in 'x' are omitted"),
+            verbosity, 3L)
     y <- y[-naa.x]
     weights <- weights[-naa.x]
     naai$ids <- naai$ids[-naa.x]
@@ -131,6 +145,8 @@ interpret.default <- function(
     y <- try(do.call(pred.fun, c(list(object, x), pred.args)), silent = TRUE)
     if (inherits(y, "try-error"))
       stop("'y' is not supplied and the model prediction failed")
+    verbose(paste0(length(y), " predictions obtained from 'object': ",
+                   examples(y, 3L)), verbosity, 3L)
   }
   if (length(y) != nrow(x))
     stop("length of 'y' doesn't match the number of rows in 'x'")
@@ -145,12 +161,15 @@ interpret.default <- function(
       link <- get.link(link)
     yres <- y
     y <- link$linkfun(y)
+    verbose(paste0("'y' values are transformed by 'link': ", examples(y, 3L)),
+            verbosity, 3L)
   }
   attr(y, "na.action") <- NULL
   y <- do.call(na.action, list(y))
   if (anyNA(y))
     stop("NA values in 'y' are not allowed")
   if (!is.null(naa.y <- stats::na.action(y))) {
+    verbose(paste(length(naa.y), "NA values in 'y' are omitted"), verbosity, 3L)
     x <- x[-naa.y, , drop = FALSE]
     weights <- weights[-naa.y]
     naai$ids <- naai$ids[-naa.y]
@@ -181,6 +200,9 @@ interpret.default <- function(
     its <- unique(terms[spl == 2L])
   }
   terms <- c(mts, its)
+  verbose(sprintf("'terms' includes %s main effect%s and %s interaction%s",
+                  length(mts), if (length(mts) != 1L) "s" else "", length(its),
+                  if (length(its) != 1L) "s" else ""), verbosity, 3L)
   n <- nrow(x)
   p <- length(mts)
   q <- length(its)
@@ -190,6 +212,8 @@ interpret.default <- function(
     k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% p))
   if (is.na(k[2L]))
     k[2L] <- min(5L, max(2L, if (lambda > 0) 5L else floor(sqrt(n / q))))
+  verbose(sprintf("'k' is set to %s for main effects and %s for interactions",
+                  k[1L], k[2L]), verbosity, 3L)
   if (length(type) == 1L)
     type <- c(type, type)
   f <- function(tag, d) {
@@ -198,7 +222,8 @@ interpret.default <- function(
   if (is.null(method))
     method <- if (!singular.ok) 0L else 5L
   if (!singular.ok && any(method == 1L:2L))
-    message("when 'method' is set to 1 or 2, singular fits cannot be detected")
+    verbose("when 'method' is set to 1 or 2, singular fits cannot be detected",
+            verbosity, level = 1L)
   # get encoders for the calculation of the main effects --------
   u <- 0L
   if (me <- (p > 0L)) {
@@ -256,6 +281,8 @@ interpret.default <- function(
   if (!is.null(max.ncol) && ncol > max.ncol) {
     title <- paste0("number of columns of the design matrix (", ncol,
                     ") exceeded 'max.ncol' (", max.ncol, ")")
+    if (verbosity < 1L)
+      stop(title)
     choices <- c("exit", "continue")
     sel <- try(utils::select.list(choices, title = title), silent = TRUE)
     if (inherits(sel, "try-error") || sel == "exit")
@@ -385,6 +412,10 @@ interpret.default <- function(
     M <- rbind(M, Mnil)
   }
   # get the least squares solution --------
+  verbose(paste0("least squares estimation initiated with 'mode' ", mode,
+                 " and 'method' ", method), verbosity, 2L, FALSE)
+  verbose(sprintf("%s parameters, %s observations, %s centering constraints",
+                  ncol, n, ncon), verbosity, 3L, FALSE)
   if (mode == 1L) {
     X <- rbind(X, M)
     Y <- c(Y, numeric(nrow(M)))
@@ -402,8 +433,9 @@ interpret.default <- function(
     rsd <- z$residuals[1L:n] / w[1L:n]
     crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
     if (any(abs(crsd) > (nil * sqrt(kappa) * wsum))) {
-      message(paste0("not strictly centralized: max absolute expected effect is ",
-                     format(max(abs(crsd)) / sqrt(kappa) / wsum, digits = 6L)))
+      verbose(paste0("not strictly centered: max absolute average effect = ",
+                     format(max(abs(crsd)) / sqrt(kappa) / wsum, digits = 6L)),
+              verbosity, level = 1L)
     }
   } else {
     Msvd <- svd(M, nv = ncol)
@@ -426,12 +458,14 @@ interpret.default <- function(
   if (!(any(method == 1L:2L)) && z$rank < ncol - r) {
     if (!singular.ok) {
       title <- "singular fit encountered"
+      if (verbosity < 1L)
+        stop(title)
       choices <- c("exit", "continue")
       sel <- try(utils::select.list(choices, title = title), silent = TRUE)
       if (inherits(sel, "try-error") || sel == "exit")
         stop("execution halted")
     }
-    message("singular fit encountered")
+    verbose("singular fit encountered", verbosity, level = 1L)
   }
   if (weighted.norm) {
     gamm <- beta
@@ -451,8 +485,11 @@ interpret.default <- function(
     if (inherits(beta, "try-error"))
       beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
     beta[is.na(beta)] <- 0
+    verbose("parameters with no observation weights are linearly interpolated",
+            verbosity, 3L)
   }
   beta[abs(beta) <= nil] <- 0
+  verbose("least squares estimation completed", verbosity, 2L, FALSE)
   # summarize results of the decomposition --------
   fm <- matrix(0, nrow = n, ncol = p + q)
   colnames(fm) <- terms
@@ -498,6 +535,7 @@ interpret.default <- function(
   tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
   uiq <- stats::weighted.mean(rsd ^ 2, weights)
   uir <- attract(uiq / tot, nil)
+  verbose(paste0("uninterpreted variation ratio: ", format(uir)), verbosity, 3L)
   # output the result --------
   obj <- list()
   class(obj) <- c("mid")
@@ -517,7 +555,7 @@ interpret.default <- function(
     obj$interactions <- interactions
     obj$encoders[["interactions"]] <- iencs
   }
-  obj$uninterpreted.variation <- uir
+  obj$ratio <- uir
   obj$fitted.matrix <- fm
   obj$fitted.values <- rowSums(fm) + intercept
   obj$residuals <- rsd
@@ -529,12 +567,16 @@ interpret.default <- function(
     rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
     ruiq <- stats::weighted.mean(obj$response.residuals ^ 2, weights)
     ruir <- attract(ruiq / rtot, nil)
-    obj$uninterpreted.variation <- c(working = uir, response = ruir)
+    verbose(paste0("uninterpreted variation ratio (response): ", format(ruir)),
+            verbosity, 3L)
+    obj$ratio <- c(working = uir, response = ruir)
   }
   if (length(naai$ids) < naai$n.init) {
     naacl <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")
     obj$na.action <- structure((1L:naai$n.init)[-naai$ids], class = naacl)
   }
+  if (is.null(dots$internal.call) || !dots$internal.call)
+    verbose("model fitting successfully finished", verbosity, 2L, TRUE)
   return(obj)
 }
 
@@ -549,13 +591,14 @@ interpret.default <- function(
 #'
 interpret.formula <- function(
     formula, data = NULL, model = NULL, pred.fun = get.yhat, weights = NULL,
-    subset = NULL, na.action = getOption("na.action"), mode = 1L,
-    drop.unused.levels = FALSE, pred.args = list(), ...
+    subset = NULL, na.action = getOption("na.action"), verbosity = 1L,
+    mode = 1L, drop.unused.levels = FALSE, pred.args = list(), ...
 ) {
+  verbose("model fitting started", verbosity, 2L, TRUE)
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
   mf <- match.call(expand.dots = FALSE)
-  mf[c("model", "pred.fun", "mode", "pred.args", "...")] <- NULL
+  mf[c("model", "pred.fun", "verbosity", "mode", "pred.args", "...")] <- NULL
   mf[[1L]] <- quote(stats::model.frame.default)
   env <- ifnot.null(environment(formula), parent.frame())
   if (!missing(model)) {
@@ -569,16 +612,22 @@ interpret.formula <- function(
     attr(data, "na.action") <- NULL
     data <- do.call(na.action, list(data))
     if (!is.null(naa.x <- stats::na.action(data))) {
+      verbose(paste(length(naa.x), "observations with NAs in 'data' are omitted"),
+              verbosity, 3L)
       weights <- weights[-naa.x]
       naai$ids <- naai$ids[-naa.x]
       attr(data, "na.action") <- NULL
     }
     y <- do.call(pred.fun, c(list(model, data), pred.args))
+    verbose(paste0(length(y), " predictions obtained from 'model': ",
+                   examples(y, 3L)), verbosity, 3L)
     attr(y, "na.action") <- NULL
     y <- do.call(na.action, list(y))
     if (anyNA(y))
       stop("NA values found in the model predictions")
     if (!is.null(naa.y <- stats::na.action(y))) {
+      verbose(paste(length(naa.y), "NA values in predictions are omitted"),
+              verbosity, 3L)
       data <- data[-naa.y, , drop = FALSE]
       weights <- weights[-naa.y]
       naai$ids <- naai$ids[-naa.y]
@@ -601,7 +650,8 @@ interpret.formula <- function(
     formula[[2L]] <- as.symbol(ytag)
     cl$formula <- formula
   } else {
-    message("'model' not passed: response variable in 'data' is used")
+    verbose("'model' not passed: response variable in 'data' is used",
+            verbosity, level = 1L)
     if (length(formula) < 3L)
       stop("invalid formula found")
     if (is.matrix(data))
@@ -609,7 +659,9 @@ interpret.formula <- function(
     if (is.null(weights))
       mf$weights <- attr(data, "weights")
     mf <- eval(mf, envir = env)
-    naa.data <- stats::na.action(mf)
+    if (!is.null(naa.data <- stats::na.action(mf)))
+      verbose(paste(length(naa.data), "observations with NA in 'data' are omitted"),
+              verbosity, 3L)
     naai <- list(n.init = nrow(mf) + length(naa.data))
     naai$ids <- seq_len(naai$n.init)
     if (!is.null(naa.data))
@@ -620,7 +672,8 @@ interpret.formula <- function(
   attr(mf, "na.action") <- NULL
   tl <- attr(attr(mf, "terms"), "term.labels")
   ret <- interpret.default(object = model, x = mf, y = y, weights = w,
-                           terms = tl, mode = mode, na.action = na.action, ...)
+                           terms = tl, mode = mode, na.action = na.action,
+                           verbosity = verbosity, internal.call = TRUE, ...)
   ret$call <- cl
   if (!is.null(naa.ret <- ret$na.action))
     naai$ids <- naai$ids[-naa.ret]
@@ -628,5 +681,6 @@ interpret.formula <- function(
     naacl <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")
     ret$na.action <- structure((1L:naai$n.init)[-naai$ids], class = naacl)
   }
+  verbose("model fitting successfully finished", verbosity, 2L, TRUE)
   return(ret)
 }

@@ -26,6 +26,7 @@ interpret(object, ...)
   lambda = 0,
   kappa = 1e+06,
   na.action = getOption("na.action"),
+  verbosity = 1L,
   encoding.digits = 3L,
   use.catchall = FALSE,
   catchall = "(others)",
@@ -44,6 +45,7 @@ interpret(object, ...)
   weights = NULL,
   subset = NULL,
   na.action = getOption("na.action"),
+  verbosity = 1L,
   mode = 1L,
   drop.unused.levels = FALSE,
   pred.args = list(),
@@ -63,7 +65,7 @@ interpret(object, ...)
 
 \item{pred.fun}{a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.}
 
-\item{link}{a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", and "inverse", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.}
+\item{link}{a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.}
 
 \item{k}{an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.}
 
@@ -86,6 +88,8 @@ interpret(object, ...)
 \item{kappa}{the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.}
 
 \item{na.action}{a function or character string specifying the method of \code{NA} handling. The default is "na.omit".}
+
+\item{verbosity}{the level of verbosity. \code{0}: fatal, \code{1}: warning (default), \code{2}: info or \code{3}: debug.}
 
 \item{encoding.digits}{an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.}
 
@@ -116,12 +120,12 @@ interpret(object, ...)
 \item{weights}{a numeric vector of the sample weights.}
 \item{call}{the matched call.}
 \item{terms}{the term labels.}
-\item{link}{a "link-glm" object containing the link function.}
+\item{link}{a "link-glm" or "link-midr" object containing the link function.}
 \item{intercept}{the intercept.}
 \item{encoders}{a list of variable encoders.}
 \item{main.effects}{a list of data frames representing the main effects.}
 \item{interacions}{a list of data frames representing the interactions.}
-\item{uninterpreted.variation}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
+\item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 \item{linear.predictors}{a numeric vector of the linear predictors.}
 \item{fitted.values}{a numeric vector of the fitted values.}
@@ -129,17 +133,25 @@ interpret(object, ...)
 \item{na.action}{information about the special handlings of \code{NA}s.}
 }
 \description{
-\code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box ML models.
+\code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box predictive models.
 A fitted MID model consists of a set of component functions, each with up to two variables.
 }
 \details{
-The prediction function of a fitted MID model \eqn{\hat{f}(X)} has the following structure:
-\deqn{\hat{f}(X) = f_{\phi} + \Sigma_{j\ \in D}\ f_{j}(X_j) + \Sigma_{j,k\ \in D}\ f_{j,k}(X_j, X_k)}
-where, \eqn{f_\phi} is the intercept, \eqn{f_{j}(X_j)} is the main effect of the variable \eqn{j}, and \eqn{f_{j,k}(X_j, X_k)} is the second-order interaction between the two variables \eqn{j} and \eqn{k}.
-The effects of quantitative variables are modeled as piecewise functions of degree 1 (piecewise linear function) or 0 (step function).
+\code{interpret()} returns a global surrogate model of the target predictive model.
+The prediction function of this surrogate model is derived from Maximum Interpretation
+Decomposition (MID) applied to the prediction function of the target model
+(denoted \eqn{f(\mathbf{x})}).
 
-The MID values for each sample point are determined using the constrained least squares method.
-The loss function is \eqn{E[(\hat{Y}-\hat{f}(X))^2]}, where \eqn{\hat{Y}} is the model prediction or the response variable, and the constraints are \eqn{E[f_j(X_j)] = 0} for each variable \eqn{j} and \eqn{E[f_{j,k}(X_j, X_k)]=E[f_{j,k}(X_j, X_k)|X_j]=E[f_{j,k}(X_j, X_k)|X_k]=0} for each pair of variables \eqn{(j,k)}.
+The prediction function of the global surrogate model, denoted \eqn{\mathcal{F}(\mathbf{x})}, has the following structure:
+\deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
+where \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of feature \eqn{j},
+and \eqn{f_{jk}(x_j, x_k)} is the second-order interaction effect between features \eqn{j} and \eqn{k}.
+
+To ensure the identifiability (uniqueness) of these decomposed components, they are subject to centering constraints during the fitting process.
+Specifically, each main effect function \eqn{f_j(x_j)} is constrained such that its average over the data distribution of feature \eqn{X_j} is zero.
+Similarly, each second-order interaction effect function \eqn{f_{jk}(x_j, x_k)} is constrained such that its conditional average over \eqn{X_j} (for any fixed value \eqn{x_k}) is zero, and its conditional average over \eqn{X_k} (for any fixed value \eqn{x_j}) is also zero.
+
+The surrogate model is fitted using the least squares method, which minimizes the squared error between the predictions of the target model \eqn{f(\mathbf{x})} and the surrogate model \eqn{\mathcal{F}(\mathbf{x})} (typically evaluated on a representative dataset).
 }
 \examples{
 # fit a MID model as a surrogate model

@@ -42,5 +42,5 @@ weighted.medae(x = c(0, 10), y = c(0, 0), w = c(99, 1))
 # compute uninterpreted rate
 mid <- interpret(dist ~ speed, cars)
 weighted.mse(cars$dist, predict(mid, cars)) / weighted.mse(cars$dist)
-mid$uninterpreted.variation
+mid$ratio
 }

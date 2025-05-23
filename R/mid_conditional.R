@@ -34,7 +34,7 @@ mid.conditional <- function(
   if (length(variable) != 1L || rv == 0L)
     stop("'variable' must be a character denoting a valid predictor variable of the model")
   if (is.null(data))
-    data <- model.data(object)
+    data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
     data <- as.data.frame(data)
   if ("mid" %in% colnames(data))

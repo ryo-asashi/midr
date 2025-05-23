@@ -218,7 +218,7 @@ weighted.tabulate <- function(
 #' # compute uninterpreted rate
 #' mid <- interpret(dist ~ speed, cars)
 #' weighted.mse(cars$dist, predict(mid, cars)) / weighted.mse(cars$dist)
-#' mid$uninterpreted.variation
+#' mid$ratio
 #' @returns
 #' \code{weighted.mse()} (mean square error), \code{weighted.rmse()} (root mean square error), \code{weighted.mae()} (mean absolute error) and \code{weighted.medae} (median absolute error) returns a single numeric value.
 #' @export weighted.mse
@@ -511,4 +511,22 @@ get.link <- function(link) {
   if (!inherits(res, "link-glm"))
     class(res) <- "link-midr"
   res
+}
+
+
+verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
+  if (verbosity >= level) {
+    ltag <- if (level >= 3L) "- [debug] " else if (level >= 2L) "[info] " else ""
+    stamp <- if (timestamp)
+      format(Sys.time(), " (%Y-%m-%d %H:%M:%S)") else NULL
+    text <- paste0(ltag, text, stamp)
+    message(text)
+  }
+}
+
+
+examples <- function(x, n = 3L, ...) {
+  dts <- if (length(x) > n) ", ..." else ""
+  n <- min(length(x), n)
+  paste0(paste(trimws(format(x[seq_len(n)]), ...), collapse = ", "), dts)
 }
