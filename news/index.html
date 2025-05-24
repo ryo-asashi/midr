@@ -53,6 +53,7 @@
 <h2 class="pkg-version" data-toc-text="0.4.9.907" id="midr-049907">midr 0.4.9.907<a class="anchor" aria-label="anchor" href="#midr-049907"></a></h2>
 <ul><li>
 <code><a href="../reference/interpret.html">interpret()</a></code> now includes a new <code>verbosity</code> argument for logging.</li>
+<li>Fix small bugs.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.9.906" id="midr-049906">midr 0.4.9.906<a class="anchor" aria-label="anchor" href="#midr-049906"></a></h2>
@@ -60,31 +61,22 @@
 <strong>Important:</strong> Update the behavior of <code><a href="../reference/get.yhat.html">get.yhat()</a></code> for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, <code><a href="../reference/get.yhat.html">get.yhat()</a></code> returns the probability of <em>not</em> being the base level.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.903-0.4.9.905" id="midr-049903-049905">midr 0.4.9.903-0.4.9.905<a class="anchor" aria-label="anchor" href="#midr-049903-049905"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.9.900-0.4.9.905" id="midr-049900-049905">midr 0.4.9.900-0.4.9.905<a class="anchor" aria-label="anchor" href="#midr-049900-049905"></a></h2>
 <ul><li>
 <code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code> now include a new argument <code>reference</code>, which allows setting the reference point of c-ICE plot to any of the sample points.</li>
 <li>
 <code><a href="../reference/color.theme.html">color.theme()</a></code> now includes a new argument, <code>pkg</code>, for package specification.</li>
 <li>A new article about “color.theme” objects is added.</li>
 <li>A small change of <code><a href="../reference/print.mid.html">print.mid()</a></code> and <code><a href="../reference/mid.conditional.html">print.mid.conditional()</a></code>.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.902" id="midr-049902">midr 0.4.9.902<a class="anchor" aria-label="anchor" href="#midr-049902"></a></h2>
-<ul><li>
+<li>
 <strong>Important:</strong> Update and chane the behavior of <code><a href="../reference/interpret.html">interpret()</a></code> for classification tasks: If <code>y</code> is a factor or character, <code><a href="../reference/interpret.html">interpret()</a></code> convert its base level to <code>0</code> and all other levels to <code>1</code>.</li>
 <li>Modify <code><a href="../reference/ggmid.html">ggmid()</a></code> and <code><a href="../reference/plot.mid.html">plot.mid()</a></code> to correct effect plots for factor variables with a <code>catchall</code> level. Additionallym <code><a href="../reference/ggmid.html">ggmid()</a></code> now utilize <code><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">ggplot2::geom_jitter()</a></code> and allow for adjustable jitter amounts with the <code>jitter</code> argument. Additionally, when data is not explicitly provided, it is now automatically extracted from the function call stored in the <code>"mid"</code> object.</li>
 <li>Adjust <code><a href="../reference/mid.conditional.html">mid.conditional()</a></code> and <code><a href="../reference/mid.breakdown.html">mid.breakdown()</a></code> so they no longer require explicit data input.</li>
 <li>Update terminology.</li>
 <li>The color palettes of the <code>khroma</code> package are now available for <code><a href="../reference/color.theme.html">color.theme()</a></code>.</li>
 <li>The default theme for <code>ggmid(type = "data")</code> and <code>plot(type = "data")</code> is changed to a sequential color scheme: “bluescale”.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.901" id="midr-049901">midr 0.4.9.901<a class="anchor" aria-label="anchor" href="#midr-049901"></a></h2>
-<ul><li>Add link functions: <code>translogit</code>, <code>transprobit</code>, <code>identity-logistic</code> and <code>identity-gaussian</code> for the interpretation task of classification models.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.900" id="midr-049900">midr 0.4.9.900<a class="anchor" aria-label="anchor" href="#midr-049900"></a></h2>
-<ul><li>
+<li>Add link functions: <code>translogit</code>, <code>transprobit</code>, <code>identity-logistic</code> and <code>identity-gaussian</code> for the interpretation task of classification models.</li>
+<li>
 <code><a href="../reference/interpret.html">interpret()</a></code> now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.</li>
 </ul></div>
     <div class="section level2">
