@@ -5,33 +5,25 @@
 ## midr 0.4.9.907
 
 -   `interpret()` now includes a new `verbosity` argument for logging.
+-   Fix small bugs.
 
 ## midr 0.4.9.906
 
 -   **Important:** Update the behavior of `get.yhat()` for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, `get.yhat()` returns the probability of *not* being the base level.
 
-## midr 0.4.9.903-0.4.9.905
+## midr 0.4.9.900-0.4.9.905
 
 -   `ggmid.mid.conditional()` and `plot.mid.conditional()` now include a new argument `reference`, which allows setting the reference point of c-ICE plot to any of the sample points.
 -   `color.theme()` now includes a new argument, `pkg`, for package specification.
 -   A new article about "color.theme" objects is added.
 -   A small change of `print.mid()` and `print.mid.conditional()`.
-
-## midr 0.4.9.902
-
 -   **Important:** Update and chane the behavior of `interpret()` for classification tasks: If `y` is a factor or character, `interpret()` convert its base level to `0` and all other levels to `1`.
 -   Modify `ggmid()` and `plot.mid()` to correct effect plots for factor variables with a `catchall` level. Additionallym `ggmid()` now utilize `ggplot2::geom_jitter()` and allow for adjustable jitter amounts with the `jitter` argument. Additionally, when data is not explicitly provided, it is now automatically extracted from the function call stored in the `"mid"` object.
 -   Adjust `mid.conditional()` and `mid.breakdown()` so they no longer require explicit data input.
 -   Update terminology.
 -   The color palettes of the `khroma` package are now available for `color.theme()`.
 -   The default theme for `ggmid(type = "data")` and `plot(type = "data")` is changed to a sequential color scheme: "bluescale".
-
-## midr 0.4.9.901
-
 -   Add link functions: `translogit`, `transprobit`, `identity-logistic` and `identity-gaussian` for the interpretation task of classification models.
-
-## midr 0.4.9.900
-
 -   `interpret()` now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.
 
 ## midr 0.4.3-0.4.8.909
@@ -71,3 +63,4 @@ midr is in the release process. We will submit the package to CRAN by mid-Januar
 -   Finalizing code and documentation.
 
 -   Writing some vignettes. [Submitted to JARIP BULLETIN]
+

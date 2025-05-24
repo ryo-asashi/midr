@@ -164,15 +164,15 @@ points(cars)
 # customize the flexibility of a MID model
 data(Nile, package = "datasets")
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
 points(x = 1L:100L, y = Nile)
 # reduce the number of knots by setting the 'k' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
 points(x = 1L:100L, y = Nile)
 # perform a pseudo smoothing by setting the 'lambda' parameter
 mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-plot(mid, "x", intercept = TRUE, ylim = c(600L, 1300L))
+plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
 points(x = 1L:100L, y = Nile)
 
 # fit a MID model as a predictive model

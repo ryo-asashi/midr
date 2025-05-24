@@ -38,7 +38,8 @@ model.reframe <- function(object, data) {
   if (!is.null(formula <- eval(object$call$formula))) {
     if (!is.data.frame(data) && !is.environment(data))
       data <- as.data.frame(data)
-    res <- try(stats::model.frame.default(formula, data), silent = TRUE)
+    res <- try(stats::model.frame.default(formula, data, na.action = "na.pass"),
+               silent = TRUE)
     if (inherits(res, "try-error")) {
       formula[[2L]] <- NULL
       res <- stats::model.frame(formula, data, na.action = "na.pass")
