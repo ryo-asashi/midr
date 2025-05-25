@@ -200,7 +200,7 @@ interpret.default <- function(
     its <- unique(terms[spl == 2L])
   }
   terms <- c(mts, its)
-  verbose(sprintf("'terms' includes %s main effect%s and %s interaction%s",
+  verbose(sprintf("'terms' include %s main effect%s and %s interaction%s",
                   length(mts), if (length(mts) != 1L) "s" else "", length(its),
                   if (length(its) != 1L) "s" else ""), verbosity, 3L)
   n <- nrow(x)
@@ -414,8 +414,11 @@ interpret.default <- function(
   # get the least squares solution --------
   verbose(paste0("least squares estimation initiated with 'mode' ", mode,
                  " and 'method' ", method), verbosity, 2L, FALSE)
-  verbose(sprintf("%s parameters, %s observations, %s centering constraints",
-                  ncol, n, ncon), verbosity, 3L, FALSE)
+  verbose(paste0(
+    ncol, " parameters", if (nemp > 0L) paste0(" (", nemp, " unestimables)"),
+    ", ", n, " observations, ", ncon, " centering constraints",
+    if (nreg > 0L) paste0(", ", nreg, " smoothing constraints")
+  ), verbosity, 3L, FALSE)
   if (mode == 1L) {
     X <- rbind(X, M)
     Y <- c(Y, numeric(nrow(M)))
@@ -446,10 +449,12 @@ interpret.default <- function(
     if (method >= 0L)
       z <- try(RcppEigen::fastLmPure((X * w) %*% vr, Y * w, method),
                silent = TRUE)
-    if (method < 0L || inherits(z, "try-error")) {
+    if (inherits(z, "try-error")) {
+      verbose("'RcppEigen::fastLmPure' failed: 'lm.fit' is used", verbosity, 1L)
       method <- -1L
-      z <- stats::lm.fit((X * w) %*% vr, Y * w)
     }
+    if (method < 0L)
+      z <- stats::lm.fit((X * w) %*% vr, Y * w)
     coef <- z$coefficients
     coef[is.na(coef)] <- 0
     beta <- as.numeric(vr %*% coef)
@@ -474,6 +479,8 @@ interpret.default <- function(
   lemp <- lemp[vapply(lemp, length, 0L) > 1L]
   nemp <- length(lemp)
   if (interpolate.beta && nemp > 0L) {
+    verbose("interpolating unestimable parameters lacking observation weights",
+            verbosity, 3L)
     B <- diag(1, ncol)
     for (i in seq_len(nemp)) {
       a <- lemp[[i]][-1L]
@@ -482,11 +489,11 @@ interpret.default <- function(
       B[m, m] <- length(a)
     }
     beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients, silent = TRUE)
-    if (inherits(beta, "try-error"))
+    if (inherits(beta, "try-error")) {
+      verbose("'RcppEigen::fastLmPure' failed: 'lm.fit' is used", verbosity, 1L)
       beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
+    }
     beta[is.na(beta)] <- 0
-    verbose("parameters with no observation weights are linearly interpolated",
-            verbosity, 3L)
   }
   beta[abs(beta) <= nil] <- 0
   verbose("least squares estimation completed", verbosity, 2L, FALSE)
