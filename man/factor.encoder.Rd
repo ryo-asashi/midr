@@ -37,7 +37,7 @@ factor.frame(levels, catchall = "(others)", tag = "x")
 \value{
 \code{factor.encoder()} returns a list containing the following components:
 \item{frame}{an object of class "factor.frame".}
-\item{encode}{a function to encode \code{new_x} into a dummy matrix.}
+\item{encode}{a function to encode \code{x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
 \item{type}{the type of encoding.}
 \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
@@ -53,7 +53,7 @@ If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k},
 data(iris, package = "datasets")
 enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 enc$frame
-enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 
 frm <- factor.frame(c("setosa", "virginica"), "other iris")
 enc <- factor.encoder(x = iris$Species, frame = frm)

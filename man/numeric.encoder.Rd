@@ -52,7 +52,7 @@ numeric.frame(
 \value{
 \code{numeric.encoder()} returns a list containing the following components:
 \item{frame}{an object of class "numeric.frame".}
-\item{encode}{a function to encode \code{new_x} into a dummy matrix.}
+\item{encode}{a function to encode \code{x} into a dummy matrix.}
 \item{n}{the number of encoding levels.}
 \item{type}{the type of encoding, "linear" or "constant".}
 \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
@@ -69,12 +69,12 @@ If \code{type} is \code{0}, \code{k} is considered the maximum number of interva
 data(iris, package = "datasets")
 enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 enc$frame
-enc$encode(new_x = c(4:8, NA))
+enc$encode(x = c(4:8, NA))
 
 frm <- numeric.frame(breaks = seq(3, 9, 2), type = 0L)
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
-enc$encode(new_x = c(4:8, NA))
+enc$encode(x = c(4:8, NA))
 
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = seq(3, 9, 2))
-enc$encode(new_x = c(4:8, NA))
+enc$encode(x = c(4:8, NA))
 }

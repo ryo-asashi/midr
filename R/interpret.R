@@ -209,9 +209,9 @@ interpret.default <- function(
   if (length(k) == 1L)
     k <- c(k, ceiling(sqrt(max(k, 0L))))
   if (is.na(k[1L]))
-    k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% p))
+    k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% (p + q)))
   if (is.na(k[2L]))
-    k[2L] <- min(5L, max(2L, if (lambda > 0) 5L else floor(sqrt(n / q))))
+    k[2L] <- min(5L, max(2L, if (lambda > 0) 5L else floor(sqrt(n / (p + q)))))
   verbose(sprintf("'k' is set to %s for main effects and %s for interactions",
                   k[1L], k[2L]), verbosity, 3L)
   if (length(type) == 1L)
@@ -533,7 +533,7 @@ interpret.default <- function(
       dat$mid <- beta[lt:rt]
       rownames(dat) <- NULL
       interactions[[its[i]]] <- dat
-      xmat <- X[1L:n, lt:rt]
+      xmat <- X[seq_len(n), lt:rt, drop = FALSE]
       mult <- if (!weighted.norm) dat$mid else gamm[lt:rt]
       fm[, p + i] <- as.numeric(xmat %*% mult)
     }

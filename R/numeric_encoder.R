@@ -17,18 +17,18 @@
 #' data(iris, package = "datasets")
 #' enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 #' enc$frame
-#' enc$encode(new_x = c(4:8, NA))
+#' enc$encode(x = c(4:8, NA))
 #'
 #' frm <- numeric.frame(breaks = seq(3, 9, 2), type = 0L)
 #' enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
-#' enc$encode(new_x = c(4:8, NA))
+#' enc$encode(x = c(4:8, NA))
 #'
 #' enc <- numeric.encoder(x = iris$Sepal.Length, frame = seq(3, 9, 2))
-#' enc$encode(new_x = c(4:8, NA))
+#' enc$encode(x = c(4:8, NA))
 #' @returns
 #' \code{numeric.encoder()} returns a list containing the following components:
 #' \item{frame}{an object of class "numeric.frame".}
-#' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
+#' \item{encode}{a function to encode \code{x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
 #' \item{type}{the type of encoding, "linear" or "constant".}
 #' \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
@@ -74,7 +74,8 @@ numeric.encoder <- function(
       mgn <- 1 / (2 * k)
       pr <- seq.int(mgn, 1 - mgn, length.out = k)
     }
-    qs <- weighted.quantile(x, weights, pr, TRUE, FALSE, type = 1L)
+    qs <- weighted.quantile(x = x, w = weights, probs = pr,
+                            na.rm = TRUE, names = FALSE, type = 1L)
     reps <- unique(round(qs, 12L))
     n.rep <- length(reps)
     if (n.rep == 1L) {
@@ -93,10 +94,10 @@ numeric.encoder <- function(
                          encoding.digits = encoding.digits, tag = tag)
   # define encoder function --------
   if (type == 1L) {
-    encode <- function(new_x, ...) {
-      n <- length(new_x)
+    encode <- function(x, ...) {
+      n <- length(x)
       mat <- matrix(0, nrow = n, ncol = n.rep)
-      itv <- findInterval(new_x, reps)
+      itv <- findInterval(x, reps)
       for (i in seq_len(n)) {
         if (is.na(itv[i]))
           next
@@ -107,7 +108,7 @@ numeric.encoder <- function(
         } else {
           l <- reps[itv[i]]
           r <- reps[itv[i] + 1L]
-          prop <- (r - new_x[i]) / (r - l)
+          prop <- (r - x[i]) / (r - l)
           if (!is.null(encoding.digits))
             prop <- round(prop, digits = encoding.digits)
           mat[i, itv[i]] <- prop
@@ -118,10 +119,10 @@ numeric.encoder <- function(
       mat
     }
   } else if (type == 0L) {
-    encode <- function(new_x, ...) {
-      n <- length(new_x)
+    encode <- function(x, ...) {
+      n <- length(x)
       mat <- matrix(0, nrow = n, ncol = n.rep)
-      itv <- findInterval(new_x, br, all.inside = TRUE)
+      itv <- findInterval(x, br, all.inside = TRUE)
       for (i in seq_len(n)) {
         if (is.na(itv[i]))
           next
@@ -133,8 +134,8 @@ numeric.encoder <- function(
       mat
     }
   } else {
-    encode <- function(new_x, ...) {
-      mat <- matrix(0, nrow = length(new_x), ncol = 1L)
+    encode <- function(x, ...) {
+      mat <- matrix(0, nrow = length(x), ncol = 1L)
       colnames(mat) <- "Void"
       mat
     }

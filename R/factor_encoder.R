@@ -16,7 +16,7 @@
 #' data(iris, package = "datasets")
 #' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 #' enc$frame
-#' enc$encode(new_x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+#' enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 #'
 #' frm <- factor.frame(c("setosa", "virginica"), "other iris")
 #' enc <- factor.encoder(x = iris$Species, frame = frm)
@@ -27,7 +27,7 @@
 #' @returns
 #' \code{factor.encoder()} returns a list containing the following components:
 #' \item{frame}{an object of class "factor.frame".}
-#' \item{encode}{a function to encode \code{new_x} into a dummy matrix.}
+#' \item{encode}{a function to encode \code{x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels.}
 #' \item{type}{the type of encoding.}
 #' \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
@@ -63,18 +63,18 @@ factor.encoder <- function(
     catchall <- NULL
   frame <- factor.frame(levels = flvs, catchall = catchall, tag = tag)
   # define encoder function --------
-  encode <- function(new_x, ...) {
-    n <- length(new_x)
+  encode <- function(x, ...) {
+    n <- length(x)
     mat <- matrix(0, nrow = n, ncol = nlvs)
-    if (!is.factor(new_x) || !identical(levels(new_x), flvs))
-      new_x <- factor(new_x, levels = flvs)
+    if (!is.factor(x) || !identical(levels(x), flvs))
+      x <- factor(x, levels = flvs)
     if (use.catchall)
-      new_x[is.na(new_x)] <- catchall
-    new_x <- as.integer(new_x)
+      x[is.na(x)] <- catchall
+    x <- as.integer(x)
     for (i in seq_len(n)) {
-      if (is.na(new_x[i]))
+      if (is.na(x[i]))
         next
-      mat[i, new_x[i]] <- 1
+      mat[i, x[i]] <- 1
     }
     colnames(mat) <- flvs
     mat
