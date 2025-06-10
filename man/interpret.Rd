@@ -55,7 +55,7 @@ interpret(object, ...)
 \arguments{
 \item{object}{a fitted model object to be interpreted.}
 
-\item{...}{for \code{interpret.default()}, optional arguments including special aliases such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, optional parameters to be passed to \code{interpret.default()}.}
+\item{...}{for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta}, \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.}
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
@@ -83,9 +83,9 @@ interpret(object, ...)
 
 \item{method}{an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.}
 
-\item{lambda}{the strength of the smoothing penalty. The default is \code{0}.}
+\item{lambda}{the penalty factor for pseudo smoothing. The default is \code{0}.}
 
-\item{kappa}{the strength of the penalty for the centralization. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.}
+\item{kappa}{the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.}
 
 \item{na.action}{a function or character string specifying the method of \code{NA} handling. The default is "na.omit".}
 

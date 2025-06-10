@@ -1,5 +1,7 @@
 ---
 title: "Visualization with ggplot2 package"
+description: >
+  Provides a gallery of examples for creating ggplot2-based plots using functions from the midr package.
 ---
 
 ```{r, include = FALSE}

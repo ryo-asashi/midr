@@ -1,5 +1,7 @@
 ---
 title: "Getting Started with Color Themes"
+description: >
+  Provides a gallery of color themes implemented in the midr package.
 ---
 
 ```{r, include = FALSE}

@@ -1,5 +1,7 @@
 ---
 title: "Interpretation of Regression Models"
+description: >
+  Demonstrates how to use the midr package to interpret regression models.
 ---
 
 ```{r, include = FALSE}
@@ -238,7 +240,15 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```{r rpart_rpart}
 library(rpart)
 model <- rpart(y ~ ., train)
-mid <- interpret(y ~ .^2, mtrain, model)
+# create encoding frames for CART
+frm <- cbind(model$frame, labels(model, collapse = FALSE))
+print(t(frm[frm$var != "<leaf>", c("var", "ltemp")]))
+frames <- lapply(mtrain, range)
+frames$x.1 <- c(frames$x.1, .2100, .3184)
+frames$x.2 <- c(frames$x.2, .3110, .2653, .4782)
+frames$x.4 <- c(frames$x.4, .5579, .2953, .8843, .8413)
+frames$x.5 <- c(frames$x.5, .5849, .2486)
+mid <- interpret(y ~ .^2, mtrain, model, type = 0, frames = frames)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),

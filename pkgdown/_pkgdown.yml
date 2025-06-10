@@ -9,6 +9,25 @@ template:
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "All Articles"
+          href: articles/index.html
+        - text: "JARIP Bulletin (Japanese, PDF)"
+          href: midr_jarip.pdf
+
+articles:
+- title: Articles
+- contents:
+  - 01-regression
+  - 02-classification
+  - 03-graphics
+  - 04-ggplot2
+  - 05-colortheme
+
 reference:
 - title: MID Models
 - contents:

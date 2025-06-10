@@ -1,5 +1,7 @@
 ---
 title: "Interpretation of Classification Models"
+description: >
+  Demonstrates how to use the midr package to interpret classification models.
 ---
 
 ```{r, include = FALSE}
@@ -176,8 +178,8 @@ grid.arrange(nrow = 2L,
 library(ranger)
 set.seed(42)
 model <- ranger(survived ~ ., na.omit(train), probability = TRUE)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
-                 pred.args = list(target = "yes"), lambda = .01)
+mid <- interpret(survived ~ .^2, train, model,
+                 link = "transprobit", lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,
@@ -192,8 +194,16 @@ grid.arrange(nrow = 2L,
 ```{r rpart_rpart}
 library(rpart)
 model <- rpart(survived ~ ., train)
+# create encoding frames for CART
+frm <- cbind(model$frame, labels(model, collapse = FALSE))
+print(t(frm[frm$var != "<leaf>", c("var", "ltemp")]))
+fun <- function(x) if (is.numeric(x)) range(x, na.rm = TRUE) else levels(x)
+frames <- lapply(train, fun)
+frames$age <- c(frames$age, 9.5, 54.5, 36.5)
+frames$fare <- c(frames$fare, 26.63, 24.56)
+frames$sibsp <- c(frames$fare, 2.5)
 mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
-                 pred.args = list(target = "yes"), lambda = .01)
+                 singular.ok = TRUE, type = 0, frames = frames)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,

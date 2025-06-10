@@ -18,7 +18,8 @@ decomposition technique that minimizes the squared error between the
 target model predictions and the predictions of the surrogate model. For
 the theoretical foundations of MID, please refer to Iwasawa & Matsumori
 (2025) \[Forthcoming\]. For technical details of the midr package,
-please see Asashiba et al. (2025) \[Forthcoming\].
+please see Asashiba et al. (2025)
+\<<https://arxiv.org/abs/2506.00000>\>.
 
 ## Installation
 
@@ -185,7 +186,7 @@ Approach to Maximize the Interpretability of Black-Box Models”.
 
 \[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “midr: Learning
 from Black-Box Models by Maximum Interpretation Decomposition”.
-\[Forthcoming\]
+<https://arxiv.org/abs/2506.00000>
 
 \[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
 “Peeking Inside the Black Box: Visualizing Statistical Learning With

@@ -1,5 +1,7 @@
 ---
 title: "Visualization with graphics package"
+description: >
+  Provides a gallery of examples for creating graphics-based plots using functions from the midr package.
 ---
 
 ```{r, include = FALSE}
