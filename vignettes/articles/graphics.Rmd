@@ -1,12 +1,7 @@
 ---
 title: "Visualization with graphics package"
-output: rmarkdown::html_vignette
 description: >
   Provides a gallery of examples for creating graphics-based plots using functions from the midr package.
-vignette: >
-  %\VignetteIndexEntry{Visualization with graphics package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

@@ -1,12 +1,7 @@
 ---
 title: "Interpretation of Classification Models"
-output: rmarkdown::html_vignette
 description: >
   Demonstrates how to use the midr package to interpret classification models.
-vignette: >
-  %\VignetteIndexEntry{Interpretation of Classification Models}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

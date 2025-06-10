@@ -1,12 +1,7 @@
 ---
 title: "Getting Started with Color Themes"
-output: rmarkdown::html_vignette
 description: >
   Provides a gallery of color themes implemented in the midr package.
-vignette: >
-  %\VignetteIndexEntry{Getting Started with Color Themes}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
