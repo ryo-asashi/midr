@@ -1,7 +1,12 @@
 ---
 title: "Interpretation of Regression Models"
+output: rmarkdown::html_vignette
 description: >
   Demonstrates how to use the midr package to interpret regression models.
+vignette: >
+  %\VignetteIndexEntry{Interpretation of Regression Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
