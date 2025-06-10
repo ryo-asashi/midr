@@ -21,7 +21,7 @@ navbar:
 
 articles:
 - title: Articles
-- contents:
+  contents:
   - 01-regression
   - 02-classification
   - 03-graphics
@@ -29,11 +29,11 @@ articles:
   - 05-colortheme
 
 reference:
-- title: MID Models
-- contents:
+- title: MID Model
+  contents:
   - interpret
 - subtitle: Methods
-- contents:
+  contents:
   - ggmid
   - mid.extract
   - mid.plots
@@ -42,40 +42,40 @@ reference:
   - print.mid
   - summary.mid
 - title: MID Importance
-- contents:
+  contents:
   - mid.importance
 - subtitle: Methods
-- contents:
+  contents:
   - ggmid.mid.importance
   - plot.mid.importance
 - title: MID Breakdown
-- contents:
+  contents:
   - mid.breakdown
 - subtitle: Methods
-- contents:
+  contents:
   - ggmid.mid.breakdown
   - plot.mid.breakdown
 - title: MID Conditional
-- contents:
+  contents:
   - mid.conditional
 - subtitle: Methods
-- contents:
+  contents:
   - ggmid.mid.conditional
   - plot.mid.conditional
 - title: Other Functions
 - subtitle: Variable Encoders
-- contents:
+  contents:
   - factor.encoder
   - numeric.encoder
 - subtitle: Weighted Data Frames
-- contents:
+  contents:
   - weighted
 - subtitle: Color Themes
-- contents:
+  contents:
   - color.theme
   - scale_color_theme
-- subtitle: Other Functions
-- contents:
+- subtitle: Miscellaneous
+  contents:
   - get.yhat
   - theme_midr
   - weighted.tabulate
