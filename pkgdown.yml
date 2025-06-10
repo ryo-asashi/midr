@@ -2,12 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  articles/01-regression: 01-regression.html
-  articles/02-classification: 02-classification.html
-  articles/03-graphics: 03-graphics.html
-  articles/04-ggplot2: 04-ggplot2.html
-  articles/05-colortheme: 05-colortheme.html
-last_built: 2025-05-31T10:06Z
+  articles/classification: classification.html
+  articles/colortheme: colortheme.html
+  articles/ggplot2: ggplot2.html
+  articles/graphics: graphics.html
+  articles/regression: regression.html
+last_built: 2025-06-10T14:18Z
 urls:
   reference: https://ryo-asashi.github.io/midr/reference
   article: https://ryo-asashi.github.io/midr/articles

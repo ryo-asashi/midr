@@ -16,6 +16,9 @@
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Interpretation of Regression Models">
+<meta name="description" content="Demonstrates how to use the midr package to interpret regression models.">
+<meta property="og:description" content="Demonstrates how to use the midr package to interpret regression models.">
+<meta property="og:image" content="https://ryo-asashi.github.io/midr/logo.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 </head>
@@ -27,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,11 +43,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/classification.html">Interpretation of Classification Models</a></li>
-    <li><a class="dropdown-item" href="../articles/colortheme.html">Getting Started with Color Themes</a></li>
-    <li><a class="dropdown-item" href="../articles/ggplot2.html">Visualization with ggplot2 package</a></li>
-    <li><a class="dropdown-item" href="../articles/graphics.html">Visualization with graphics package</a></li>
-    <li><a class="dropdown-item" href="../articles/regression.html">Interpretation of Regression Models</a></li>
+<li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
+    <li><a class="dropdown-item" href="../midr_jarip.pdf">JARIP Bulletin (Japanese, PDF)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -196,9 +196,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.319</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: lm</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.319</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -229,9 +229,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train[, -11], model = model,</span></span>
 <span><span class="co">#&gt;  pred.args = list(s = model$lambda[9]))</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.417</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: elnet, glmnet</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.417</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -263,9 +263,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.417</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: Gam, glm, lm</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.417</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -273,10 +273,13 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Interactions:</span></span>
 <span><span class="co">#&gt; 45 interaction terms</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Variation Ratio: 1.1114e-07</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Uninterpreted Variation Ratio: 3.2805e-05</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/gam_gam-1.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="regression_files/figure-html/gam_gam-2.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -285,7 +288,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="single-hidden-layer-network">Single Hidden Layer Network<a class="anchor" aria-label="anchor" href="#single-hidden-layer-network"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">nnet</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, size <span class="op">=</span> <span class="fl">5</span>, linout <span class="op">=</span> <span class="cn">TRUE</span>, maxit <span class="op">=</span> <span class="fl">1e3</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -295,9 +298,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.195</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: nnet.formula, nnet</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.195</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -308,7 +311,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.0028096</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/nnet_nnet-1.png" width="700"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/nnet_nnet-2.png" width="700"></p>
@@ -320,7 +323,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="rbf-kernel-svm">RBF Kernel SVM<a class="anchor" aria-label="anchor" href="#rbf-kernel-svm"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">e1071</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html" class="external-link">svm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, kernel <span class="op">=</span> <span class="st">"radial"</span><span class="op">)</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">mtrain</span>, <span class="va">model</span><span class="op">)</span></span>
@@ -329,9 +332,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.32</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: svm.formula, svm</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.32</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -342,7 +345,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.0075539</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/e1071_svm-1.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/e1071_svm-2.png" width="700"></p>
@@ -354,7 +357,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="gradient-boosting-trees">Gradient Boosting Trees<a class="anchor" aria-label="anchor" href="#gradient-boosting-trees"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dmlc/xgboost" class="external-link">xgboost</a></span><span class="op">)</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>eta <span class="op">=</span> <span class="fl">.1</span>, subsample <span class="op">=</span> <span class="fl">.7</span>, max_depth <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
@@ -366,9 +369,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = as.matrix(mtrain), model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.172</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: xgb.Booster</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.172</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -379,7 +382,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.011813</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/xgboost_xgboost-1.png" width="700"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evp</span> <span class="op">&lt;-</span> <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="op">-</span><span class="fl">11</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="va">evp</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
@@ -388,7 +391,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="random-forest">Random Forest<a class="anchor" aria-label="anchor" href="#random-forest"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://imbs-hl.github.io/ranger/" class="external-link">ranger</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -398,9 +401,9 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.27</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: ranger</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.27</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -411,7 +414,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.0075668</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/ranger_ranger-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/ranger_ranger-2.png" width="700"></p>
@@ -419,18 +422,33 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="decision-tree">Decision Tree<a class="anchor" aria-label="anchor" href="#decision-tree"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart" class="external-link">rpart</a></span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">mtrain</span>, <span class="va">model</span><span class="op">)</span></span>
+<span><span class="co"># create encoding frames for CART</span></span>
+<span><span class="va">frm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">frame</span>, <span class="fu"><a href="https://rdrr.io/r/base/labels.html" class="external-link">labels</a></span><span class="op">(</span><span class="va">model</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">frm</span><span class="op">[</span><span class="va">frm</span><span class="op">$</span><span class="va">var</span> <span class="op">!=</span> <span class="st">"&lt;leaf&gt;"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"var"</span>, <span class="st">"ltemp"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       1          2        5         11         22         3          7         </span></span>
+<span><span class="co">#&gt; var   "x.4"      "x.1"    "x.2"     "x.4"      "x.5"      "x.2"      "x.1"     </span></span>
+<span><span class="co">#&gt; ltemp "&lt; 0.5579" "&lt; 0.21" "&lt; 0.311" "&lt; 0.2953" "&lt; 0.5849" "&lt; 0.2653" "&lt; 0.3184"</span></span>
+<span><span class="co">#&gt;       14         15         31         62        </span></span>
+<span><span class="co">#&gt; var   "x.4"      "x.5"      "x.4"      "x.2"     </span></span>
+<span><span class="co">#&gt; ltemp "&lt; 0.8843" "&lt; 0.2486" "&lt; 0.8413" "&lt; 0.4782"</span></span>
+<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">mtrain</span>, <span class="va">range</span><span class="op">)</span></span>
+<span><span class="va">frames</span><span class="op">$</span><span class="va">x.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">x.1</span>, <span class="fl">.2100</span>, <span class="fl">.3184</span><span class="op">)</span></span>
+<span><span class="va">frames</span><span class="op">$</span><span class="va">x.2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">x.2</span>, <span class="fl">.3110</span>, <span class="fl">.2653</span>, <span class="fl">.4782</span><span class="op">)</span></span>
+<span><span class="va">frames</span><span class="op">$</span><span class="va">x.4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">x.4</span>, <span class="fl">.5579</span>, <span class="fl">.2953</span>, <span class="fl">.8843</span>, <span class="fl">.8413</span><span class="op">)</span></span>
+<span><span class="va">frames</span><span class="op">$</span><span class="va">x.5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">x.5</span>, <span class="fl">.5849</span>, <span class="fl">.2486</span><span class="op">)</span></span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">mtrain</span>, <span class="va">model</span>, type <span class="op">=</span> <span class="fl">0</span>, frames <span class="op">=</span> <span class="va">frames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Intercept: 14.264</span></span>
+<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = mtrain, model = model,</span></span>
+<span><span class="co">#&gt;  type = 0, frames = frames)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: rpart</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Intercept: 14.264</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Main Effects:</span></span>
 <span><span class="co">#&gt; 10 main effect terms</span></span>
@@ -438,10 +456,10 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Interactions:</span></span>
 <span><span class="co">#&gt; 45 interaction terms</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.05739</span></span>
+<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.031256</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/rpart_rpart-1.png" width="700"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/rpart_rpart-2.png" width="700"></p>
@@ -453,7 +471,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="section level3">
 <h3 id="predictive-mid">Predictive MID<a class="anchor" aria-label="anchor" href="#predictive-mid"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, lambda <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'model' not passed: response variable in 'data' is used</span></span>
 <span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="va">pred_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">test</span><span class="op">)</span></span>
@@ -473,7 +491,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.031792</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/mid_interpret-1.png" width="700"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/mid_interpret-2.png" width="700"></p>
@@ -490,7 +508,7 @@ model prediction or the two predictions, respectively.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
