@@ -14,22 +14,35 @@ navbar:
     articles:
       text: Articles
       menu:
-        - text: "All Articles"
+        - text: "Package Articles"
           href: articles/index.html
-        - text: "JARIP Bulletin (Japanese, PDF)"
+        - text: "- Interpretation of Regression Models"
+          href: articles/regression.html
+        - text: "- Interpretation of Classification Models"
+          href: articles/classification.html
+        - text: "- Visualization with graphics package"
+          href: articles/graphics.html
+        - text: "- Vaisualization with ggplot2 package"
+          href: articles/ggplot2.html
+        - text: "- Getting Started with Color Themes"
+          href: articles/colortheme.html
+        - text: "Other Articles"
+        - text: "- JARIP Bulletin (Japanese, PDF)"
           href: midr_jarip.pdf
 
 articles:
-- title: Articles
+- title: Interpret black-box models with midr
   contents:
   - articles/regression
   - articles/classification
+- title: How to visualize MID models
+  contents:
   - articles/graphics
   - articles/ggplot2
   - articles/colortheme
 
 reference:
-- title: MID Model
+- title: Fit MID models
   contents:
   - interpret
 - subtitle: Methods
@@ -41,36 +54,36 @@ reference:
   - predict.mid
   - print.mid
   - summary.mid
-- title: MID Importance
+- title: Importance of effects
   contents:
   - mid.importance
 - subtitle: Methods
   contents:
   - ggmid.mid.importance
   - plot.mid.importance
-- title: MID Breakdown
+- title: Breakdown of predictions
   contents:
   - mid.breakdown
 - subtitle: Methods
   contents:
   - ggmid.mid.breakdown
   - plot.mid.breakdown
-- title: MID Conditional
+- title: Conditional expectations
   contents:
   - mid.conditional
 - subtitle: Methods
   contents:
   - ggmid.mid.conditional
   - plot.mid.conditional
-- title: Other Functions
-- subtitle: Variable Encoders
+- title: Other functions
+- subtitle: Variable encoders
   contents:
   - factor.encoder
   - numeric.encoder
-- subtitle: Weighted Data Frames
+- subtitle: Weighted data frames
   contents:
   - weighted
-- subtitle: Color Themes
+- subtitle: Color themes
   contents:
   - color.theme
   - scale_color_theme
