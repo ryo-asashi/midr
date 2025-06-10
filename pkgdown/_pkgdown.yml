@@ -22,11 +22,11 @@ navbar:
 articles:
 - title: Articles
   contents:
-  - 01-regression
-  - 02-classification
-  - 03-graphics
-  - 04-ggplot2
-  - 05-colortheme
+  - '01-regression'
+  - '02-classification'
+  - '03-graphics'
+  - '04-ggplot2'
+  - '05-colortheme'
 
 reference:
 - title: MID Model
