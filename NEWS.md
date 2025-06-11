@@ -1,10 +1,15 @@
-## midr 0.5.0 (TBR)
+## midr 0.5.0
 
-[First release on CRAN.]
+First release on CRAN.
+
+## midr 0.4.9.909
+
+-   Working paper is now available on arXiv.
+-   Updates for final adjustments.
 
 ## midr 0.4.9.908
 
--   Fix small bugs including reported in <https://github.com/ryo-asashi/midr/issues/5>.
+-   Fix small bugs including one reported in <https://github.com/ryo-asashi/midr/issues/5>.
 -   Change the default values of `k` to avoid singular fits with smaller datasets.
 
 ## midr 0.4.9.907
