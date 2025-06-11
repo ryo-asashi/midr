@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.908</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.9.909</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,10 +47,10 @@
     <li><a class="dropdown-item" href="../articles/regression.html">- Interpretation of Regression Models</a></li>
     <li><a class="dropdown-item" href="../articles/classification.html">- Interpretation of Classification Models</a></li>
     <li><a class="dropdown-item" href="../articles/graphics.html">- Visualization with graphics package</a></li>
-    <li><a class="dropdown-item" href="../articles/ggplot2.html">- Vaisualization with ggplot2 package</a></li>
+    <li><a class="dropdown-item" href="../articles/ggplot2.html">- Visualization with ggplot2 package</a></li>
     <li><a class="dropdown-item" href="../articles/colortheme.html">- Getting Started with Color Themes</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>Publications</h6></li>
-    <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338"><span class="fa fa-solid fa-arrow-up-right-from-square"></span> Working Paper (arXiv)</a></li>
+    <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338">- Working Paper (arXiv)</a></li>
     <li><a class="dropdown-item" href="../midr_jarip.pdf">- JARIP Bulletin (Japanese, PDF)</a></li>
   </ul>
 </li>
@@ -90,10 +90,22 @@
 
     
     
-<p>The “color.theme” object is designed as a container for two color
-functions: <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> and <code>ramp()</code>. It can be
-created by specifying a color theme name as the first argument of the
-<code><a href="../reference/color.theme.html">color.theme()</a></code> function.</p>
+<p>The “color.theme” object is a container for two functions that
+generate colors from a specific theme: <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> and
+<code>ramp()</code>. The <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> function takes an
+integer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+and returns a vector of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+color names, and is typically used to generate discrete colors from a
+<code>qualitative</code> theme. The <code>ramp()</code> function takes a
+numeric vector of values in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>
+interval and returns a color vector of the same length. It is used to
+map values onto a continuous color gradient from <code>diverging</code>
+(which have a midpoint) and <code>sequential</code> theme.</p>
+<p>You can create a color theme by specifying a theme name as the first
+argument of the <code><a href="../reference/color.theme.html">color.theme()</a></code> function.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ryo-asashi/midr" class="external-link">midr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -126,7 +138,8 @@ created by specifying a color theme name as the first argument of the
 <span><span class="va">viridis</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.00</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "#440053" "#3E5188" "#20908C" "#6AC661" "#FDE625"</span></span></code></pre></div>
 <p>Alternatively, a new color theme can be created by passing a color
-vector.</p>
+vector or a color function (color ramp or color palette) to the
+<code><a href="../reference/color.theme.html">color.theme()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">divct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/color.theme.html">color.theme</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"violetred"</span>, <span class="st">"white"</span>, <span class="st">"darkblue"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"diverging"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">divct</span><span class="op">)</span></span>
