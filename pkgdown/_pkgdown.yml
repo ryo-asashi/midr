@@ -22,14 +22,13 @@ navbar:
           href: articles/classification.html
         - text: "- Visualization with graphics package"
           href: articles/graphics.html
-        - text: "- Vaisualization with ggplot2 package"
+        - text: "- Visualization with ggplot2 package"
           href: articles/ggplot2.html
         - text: "- Getting Started with Color Themes"
           href: articles/colortheme.html
         - text: "Publications"
-        - text: "Working Paper (arXiv)"
+        - text: "- Working Paper (arXiv)"
           href: https://arxiv.org/abs/2506.08338
-          icon: fa-solid fa-arrow-up-right-from-square
         - text: "- JARIP Bulletin (Japanese, PDF)"
           href: midr_jarip.pdf
 

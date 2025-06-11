@@ -3,7 +3,7 @@ bibentry(
   title    = "midr: Learning from Black-Box Models by Maximum Interpretation Decomposition",
   author   = c(person("Ryoichi", "Asashiba"), person("Reiji", "Kozuma"), person("Hirokazu", "Iwasawa")),
   year     = "2025",
-  eprint   = "2506.00000",
+  eprint   = "2506.08338",
   archivePrefix = "arXiv",
   primaryClass  = "stat.ME",
   url      = "https://arxiv.org/abs/2506.08338"

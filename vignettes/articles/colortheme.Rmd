@@ -20,8 +20,9 @@ for (pkg in pkgs) {
 }
 ```
 
-The "color.theme" object is designed as a container for two color functions: `palette()` and `ramp()`.
-It can be created by specifying a color theme name as the first argument of the `color.theme()` function.
+The "color.theme" object is a container for two functions that generate colors from a specific theme: `palette()` and `ramp()`. The `palette()` function takes an integer $n$ and returns a vector of $n$ color names, and is typically used to generate discrete colors from a `qualitative` theme. The `ramp()` function takes a numeric vector of values in the $[0, 1]$ interval and returns a color vector of the same length. It is used to map values onto a continuous color gradient from `diverging` (which have a midpoint) and `sequential` theme.
+
+You can create a color theme by specifying a theme name as the first argument of the `color.theme()` function.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-3, -4)}
 library(midr)
@@ -42,7 +43,7 @@ viridis$palette(3)
 viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 ```
 
-Alternatively, a new color theme can be created by passing a color vector.
+Alternatively, a new color theme can be created by passing a color vector or a color function (color ramp or color palette) to the `color.theme()` function.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = -1}
 par.midr()
@@ -187,4 +188,3 @@ for (i in seq_len(nrow(df))) {
   plot(ct, text = text)
 }
 ```
-
