@@ -11,15 +11,15 @@ status](https://www.r-pkg.org/badges/version/midr)](https://CRAN.R-project.org/p
 
 <!-- badges: end -->
 
-midr provides a model-agnostic method to interpret and explain black-box
-predictive models by creating a globally interpretable surrogate based
-on Maximum Interpretation Decomposition (MID), a functional
-decomposition technique that minimizes the squared error between the
-target model predictions and the predictions of the surrogate model. For
-the theoretical foundations of MID, please refer to Iwasawa & Matsumori
-(2025) \[Forthcoming\]. For technical details of the midr package,
-please see Asashiba et al. (2025)
-\<<https://arxiv.org/abs/2506.00000>\>.
+The goal of ‘midr’ is to provide a model-agnostic method to interpret
+and explain black-box predictive models by creating a globally
+interpretable surrogate based on Maximum Interpretation Decomposition
+(MID), a functional decomposition technique that minimizes the squared
+error between the target model predictions and the predictions of the
+surrogate model. For the theoretical foundations of MID, please refer to
+Iwasawa & Matsumori (2025) \[Forthcoming\]. For technical details of the
+midr package, please see [Asashiba et
+al. (2025)](https://arxiv.org/abs/2506.08338).
 
 ## Installation
 
@@ -27,7 +27,7 @@ You can install the released version of midr from
 [CRAN](https://cran.r-project.org/) with:
 
 ``` r
-install.packages("midr") # not yet available
+install.packages("midr")
 ```
 
 and the development version from [GitHub](https://github.com/) with:
@@ -186,7 +186,7 @@ Approach to Maximize the Interpretability of Black-Box Models”.
 
 \[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “midr: Learning
 from Black-Box Models by Maximum Interpretation Decomposition”.
-<https://arxiv.org/abs/2506.00000>
+<https://arxiv.org/abs/2506.08338>
 
 \[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
 “Peeking Inside the Black Box: Visualizing Statistical Learning With

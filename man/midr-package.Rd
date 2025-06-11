@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-midr provides a model-agnostic method to interpret and explain black-box predictive models by creating a globally interpretable surrogate based on Maximum Interpretation Decomposition (MID), a functional decomposition technique that minimizes the squared error between the target model predictions and the predictions of the surrogate model. For the theoretical foundations of MID, please refer to Iwasawa & Matsumori (2025) [Forthcoming]. For technical details of the midr package, please see Asashiba et al. (2025) \doi{10.48550/arXiv.2506.00000}.
+The goal of 'midr' is to provide a model-agnostic method to interpret and explain black-box predictive models by creating a globally interpretable surrogate based on Maximum Interpretation Decomposition (MID), a functional decomposition technique that minimizes the squared error between the target model predictions and the predictions of the surrogate model. For the theoretical foundations of MID, please refer to Iwasawa & Matsumori (2025) [Forthcoming]. For technical details of the midr package, please see Asashiba et al. (2025) \doi{10.48550/arXiv.2506.08338}.
 }
 \seealso{
 Useful links:
