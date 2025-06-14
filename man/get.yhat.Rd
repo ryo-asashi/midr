@@ -14,6 +14,7 @@
 \alias{get.yhat.AccurateGLM}
 \alias{get.yhat.glmnet}
 \alias{get.yhat.model_fit}
+\alias{get.yhat.rpf}
 \title{Wrapper Prediction Function}
 \usage{
 get.yhat(X.model, newdata, ...)
@@ -41,6 +42,8 @@ get.yhat(X.model, newdata, ...)
 \method{get.yhat}{glmnet}(X.model, newdata, ...)
 
 \method{get.yhat}{model_fit}(X.model, newdata, target = -1L, ...)
+
+\method{get.yhat}{rpf}(X.model, newdata, target = -1L, ...)
 }
 \arguments{
 \item{X.model}{a fitted model object.}

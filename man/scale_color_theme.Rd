@@ -35,6 +35,9 @@ scale_fill_theme(theme, ..., discrete = NULL, middle = 0, aesthetics = "fill")
 
 \item{aesthetics}{character string: "fill" or "color".}
 }
+\value{
+\code{scale_color_theme()} returns a ggplot2 "ScaleContinuous" or "ScaleDiscrete" object that can be added to a plot.
+}
 \description{
 \code{scale_color_theme()} and family functions returns color scales for the "colour" and "fill" aesthetics of ggplot objects.
 }

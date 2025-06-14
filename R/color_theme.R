@@ -169,9 +169,10 @@ wrap.theme <- function(
 #' pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
 #' pals <- unique(c(pals, hcl.pals(), palette.pals()))
 #' pals <- lapply(pals, color.theme)
+#' old.par <- par(no.readonly = TRUE)
 #' par(mfrow = c(5L, 2L))
 #' for (pal in pals) plot(pal, text = paste(pal$name, "-", pal$type))
-#' par(mfrow = c(1L, 1L))
+#' par(old.par)
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object containing following components:
 #' \item{ramp}{the function that takes a numeric vector \code{x} of the values within [0, 1] and returns a color name vector.}
@@ -453,6 +454,8 @@ print.color.theme <- function(x, display = TRUE, ...) {
 #' v + scale_fill_theme("Spectral")
 #' v + scale_fill_theme("Spectral_r")
 #' v + scale_fill_theme("midr", middle = 0.017)
+#' @returns
+#' \code{scale_color_theme()} returns a ggplot2 "ScaleContinuous" or "ScaleDiscrete" object that can be added to a plot.
 #' @export scale_color_theme
 #'
 scale_color_theme <- function(

@@ -6,9 +6,14 @@
 
 ## Resubmission
 
-This is a resubmission of the 'midr' package. In this version I have:
+This is a resubmission of the 'midr' package. In this version, I have addressed the previous comments as follows:
 
--   Updated the description field of DESCRIPTION file to avoid unexplained acronyms.
--   Added a reference to the package article in the DESCRIPTION file.
+-   Added the \`\\value\` section to the documentation for \`scale_color_theme()\` (\`man/scale_color_theme.Rd\`).
 
-Additionally, many functions have been updated for new features and improvements.
+-   Corrected the example in \`color.theme()\` (\`man/color.theme.Rd\`) to ensure that graphical parameters (\`par()\`) are reset on exit.
+
+Thank you for your time and consideration.
+
+Best regards,\
+Ryoichi Asashiba [aut, cre]
+
