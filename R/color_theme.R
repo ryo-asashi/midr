@@ -455,7 +455,7 @@ print.color.theme <- function(x, display = TRUE, ...) {
 #' v + scale_fill_theme("Spectral_r")
 #' v + scale_fill_theme("midr", middle = 0.017)
 #' @returns
-#' \code{scale_color_theme()} returns a ggplot2 "ScaleContinuous" or "ScaleDiscrete" object that can be added to a plot.
+#' \code{scale_color_theme()} returns a "ScaleContinuous" or "ScaleDiscrete" object that can be added to a "ggplot" object.
 #' @export scale_color_theme
 #'
 scale_color_theme <- function(
