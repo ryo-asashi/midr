@@ -323,7 +323,7 @@ weighted.medae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
 
 #' Theme for ggplot Objects
 #'
-#' \code{theme_midr()} returns a complete theme for "ggplot" objects.
+#' \code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters to the package default.
 #'
 #' @param grid_type one of "none", "x", "y" or "xy".
 #' @param base_size base font size, given in pts.
@@ -341,8 +341,13 @@ weighted.medae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
 #' ggplot2::ggplot(X) +
 #'   ggplot2::geom_line(ggplot2::aes(x, y)) +
 #'   theme_midr(grid_type = "xy")
+#' old.par <- par.midr()
+#' plot(y ~ x, data = X)
+#' plot(y ~ x, data = X, type = "l")
+#' plot(y ~ x, data = X, type = "h")
+#' par(old.par)
 #' @returns
-#' \code{theme_midr()} provides a ggplot2 theme customized for the midr package.
+#' \code{theme_midr()} provides a ggplot2 theme customized for the midr package. \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
 #' @export theme_midr
 #'
 theme_midr <- function(
@@ -377,13 +382,11 @@ theme_midr <- function(
 
 
 #' @rdname theme_midr
-#' @param ... optional parameters to be passed to `graphics::par()`.
+#' @param ... optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.
 #' @export par.midr
 #'
 par.midr <- function(...) {
   dots <- list(...)
-  prev.par <- graphics::par()
-  params <- names(prev.par)
   args <- list(
     bg = "white", bty = "o", mar = c(4.1, 4.1, 2.1, 1.1), family = "serif",
     font = 1L, font.axis = 1L, font.lab = 1L, font.main = 1L, font.sub = 1L,
@@ -391,9 +394,9 @@ par.midr <- function(...) {
     col.sub = "black", cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1.2,
     cex.sub = .9, las = 0L, lty = "solid", lwd = 1, pch = 16L
   )
-  args <- override(args = args, dots = dots, params = params)
+  args <- override(args = args, dots = dots,
+                   params = names(graphics::par(no.readonly = TRUE)))
   do.call(what = graphics::par, args = args)
-  invisible(prev.par)
 }
 
 

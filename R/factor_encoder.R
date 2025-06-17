@@ -58,28 +58,41 @@ factor.encoder <- function(
     if (use.catchall)
       flvs <- c(flvs, catchall)
   }
+  type <- "factor"
+  if (length(flvs) == 0L) {
+    flvs <- character(1L)
+    type <- "null"
+  }
   nlvs <- length(flvs)
   if (!use.catchall)
     catchall <- NULL
   frame <- factor.frame(levels = flvs, catchall = catchall, tag = tag)
   # define encoder function --------
-  encode <- function(x, ...) {
-    n <- length(x)
-    mat <- matrix(0, nrow = n, ncol = nlvs)
-    if (!is.factor(x) || !identical(levels(x), flvs))
-      x <- factor(x, levels = flvs)
-    if (use.catchall)
-      x[is.na(x)] <- catchall
-    x <- as.integer(x)
-    for (i in seq_len(n)) {
-      if (is.na(x[i]))
-        next
-      mat[i, x[i]] <- 1
+  if (type == "factor") {
+    encode <- function(x, ...) {
+      n <- length(x)
+      mat <- matrix(0, nrow = n, ncol = nlvs)
+      if (!is.factor(x) || !identical(levels(x), flvs))
+        x <- factor(x, levels = flvs)
+      if (use.catchall)
+        x[is.na(x)] <- catchall
+      x <- as.integer(x)
+      for (i in seq_len(n)) {
+        if (is.na(x[i]))
+          next
+        mat[i, x[i]] <- 1
+      }
+      colnames(mat) <- flvs
+      mat
     }
-    colnames(mat) <- flvs
-    mat
+  } else {
+    encode <- function(x, ...) {
+      mat <- matrix(0, nrow = length(x), ncol = 1L)
+      colnames(mat) <- "Void"
+      mat
+    }
   }
-  enc <- list(frame = frame, encode = encode, n = nlvs, type = "factor")
+  enc <- list(frame = frame, encode = encode, n = nlvs, type = type)
   structure(enc, class = "encoder")
 }
 

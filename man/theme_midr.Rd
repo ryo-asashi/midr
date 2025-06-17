@@ -26,13 +26,13 @@ par.midr(...)
 
 \item{base_rect_size}{base size for rect elements.}
 
-\item{...}{optional parameters to be passed to `graphics::par()`.}
+\item{...}{optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.}
 }
 \value{
-\code{theme_midr()} provides a ggplot2 theme customized for the midr package.
+\code{theme_midr()} provides a ggplot2 theme customized for the midr package. \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
 }
 \description{
-\code{theme_midr()} returns a complete theme for "ggplot" objects.
+\code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters to the package default.
 }
 \examples{
 X <- data.frame(x = 1:10, y = 1:10)
@@ -45,4 +45,9 @@ ggplot2::ggplot(X) +
 ggplot2::ggplot(X) +
   ggplot2::geom_line(ggplot2::aes(x, y)) +
   theme_midr(grid_type = "xy")
+old.par <- par.midr()
+plot(y ~ x, data = X)
+plot(y ~ x, data = X, type = "l")
+plot(y ~ x, data = X, type = "h")
+par(old.par)
 }

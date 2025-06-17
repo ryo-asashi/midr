@@ -175,8 +175,8 @@ interpret.default <- function(
     naai$ids <- naai$ids[-naa.y]
     attr(y, "na.action") <- NULL
   }
-  if (any(is.infinite(as.matrix(x))) || any(is.infinite(y)))
-    stop("'Inf' and '-Inf' are not allowed")
+  if (any(is.infinite(y)))
+    stop("'Inf' and '-Inf' in 'y' are not allowed")
   if (is.null(weights))
     weights <- rep.int(1, nrow(x))
   if (!is.numeric(weights) || anyNA(weights))

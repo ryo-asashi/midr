@@ -38,7 +38,14 @@ numeric.encoder <- function(
     x, k, type = 1L, encoding.digits = NULL, tag = "x", frame = NULL,
     weights = NULL) {
   # set breaks and representative values --------
+  if (any(is.infinite(x))) {
+    xmax <- .Machine$double.xmax
+    x[xmax < x] <- xmax
+    x[x < - xmax] <- - xmax
+  }
   uni <- sort(unique(round(x, 12L)))
+  if (length(uni) == 0L)
+    uni <- 0
   n.uni <- length(uni)
   if (!is.null(frame)) {
     if (is.vector(frame)) {
@@ -77,6 +84,8 @@ numeric.encoder <- function(
     qs <- weighted.quantile(x = x, w = weights, probs = pr,
                             na.rm = TRUE, names = FALSE, type = 1L)
     reps <- unique(round(qs, 12L))
+    if (any(is.na(reps)))
+      reps <- 0
     n.rep <- length(reps)
     if (n.rep == 1L) {
       if (n.uni == 1L) {
