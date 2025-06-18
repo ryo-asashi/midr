@@ -1,4 +1,4 @@
-## midr 0.5.0 [TBR]
+## midr 0.5.0
 
 First release on CRAN.
 
@@ -6,7 +6,7 @@ First release on CRAN.
 
 -   Working paper is now available on arXiv.
 -   Updates for final adjustments.
--   Some requirements for the 'x' argument is removed or relaxed.
+-   Some requirements for the 'x' argument are removed or relaxed.
 
 ## midr 0.4.9.908
 

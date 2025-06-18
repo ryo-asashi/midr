@@ -323,7 +323,7 @@ weighted.medae <- function(x, y = NULL, w = NULL, ..., na.rm = FALSE) {
 
 #' Theme for ggplot Objects
 #'
-#' \code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters to the package default.
+#' \code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters at the package default.
 #'
 #' @param grid_type one of "none", "x", "y" or "xy".
 #' @param base_size base font size, given in pts.

@@ -8,12 +8,13 @@
 
 This is a resubmission of the 'midr' package. In this version, I have addressed the previous comments as follows:
 
--   Added the \`\\value\` section to the documentation for \`scale_color_theme()\` (\`man/scale_color_theme.Rd\`).
+-   The `par.midr()` function has been corrected. It now uses `par(no.readonly = TRUE)` to exclude read-only graphical parameters from its return value. This addresses the NOTE regarding changes to `par()` settings.
 
--   Corrected the example in \`color.theme()\` (\`man/color.theme.Rd\`) to ensure that graphical parameters (\`par()\`) are reset on exit.
+<!-- -->
+
+-    The `Description` field in the DESCRIPTION file has been revised to ensure the package name 'midr' is properly quoted, as per CRAN policy.
 
 Thank you for your time and consideration.
 
 Best regards,\
 Ryoichi Asashiba [aut, cre]
-

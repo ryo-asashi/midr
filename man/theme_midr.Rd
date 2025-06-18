@@ -32,7 +32,7 @@ par.midr(...)
 \code{theme_midr()} provides a ggplot2 theme customized for the midr package. \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
 }
 \description{
-\code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters to the package default.
+\code{theme_midr()} returns a complete theme for "ggplot" objects. \code{par.midr()} can be used to set graphical parameters at the package default.
 }
 \examples{
 X <- data.frame(x = 1:10, y = 1:10)
