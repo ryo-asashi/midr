@@ -204,6 +204,8 @@ interpret.default <- function(
                   length(mts), if (length(mts) != 1L) "s" else "", length(its),
                   if (length(its) != 1L) "s" else ""), verbosity, 3L)
   n <- nrow(x)
+  if (n == 0L)
+    stop("no observations found")
   p <- length(mts)
   q <- length(its)
   if (length(k) == 1L)
