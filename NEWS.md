@@ -1,3 +1,9 @@
+## midr 0.5.0.900
+
+- Enable to change default color themes as options: `midr.diverging`, `midr.qualitative` and `midr.sequential`.
+- Add the "HCL" color theme and set it as the default qualitative theme.
+- Fix `interpret.formula()` to store the evaluated `formula` in the function call.
+
 ## midr 0.5.0
 
 First release on CRAN.

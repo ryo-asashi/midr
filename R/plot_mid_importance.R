@@ -28,6 +28,8 @@ plot.mid.importance <- function(
     theme = NULL, max.bars = 30L, ...) {
   dots <- list(...)
   type <- match.arg(type)
+  if (missing(theme))
+    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "dotchart" || type == "barplot") {

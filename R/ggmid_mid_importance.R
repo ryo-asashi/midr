@@ -28,6 +28,8 @@ ggmid.mid.importance <- function(
     object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
     theme = NULL, max.bars = 30L, ...) {
   type <- match.arg(type)
+  if (missing(theme))
+    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   # barplot and dotchart

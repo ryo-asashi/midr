@@ -11,6 +11,8 @@
 #' @exportS3Method shapviz::shapviz
 #'
 shapviz.mid <- function(object, data = NULL) {
+  if (missing(data))
+    data <- model.data(object)
   preds <- predict.mid(object, data, type = "term", na.action = "na.pass")
   xvars <- unique(term.split(colnames(preds)))
   shaps <- matrix(0, nrow = nrow(preds), ncol = length(xvars))
@@ -25,8 +27,6 @@ shapviz.mid <- function(object, data = NULL) {
       shaps[, tags[2L]] <- shaps[, tags[2L]] + preds[, term] / 2
     }
   }
-  if (is.null(data))
-    data <- model.data(object)
   if (is.null(data)) {
     message("'data' not passed")
     data <- matrix(nrow = nrow(shaps), ncol = ncol(shaps))

@@ -108,7 +108,9 @@ ggmid.mid.conditional <- function(
   }
   if (set.color) {
     if (!use.theme)
-      theme <- "bluescale"
+      theme <- if (is.discrete(obs$.col))
+        getOption("midr.qualitative", "HCL") else
+        getOption("midr.sequential", "bluescale")
     pl <- pl + scale_color_theme(theme = theme,
                                  discrete = is.discrete(obs$.col))
   }

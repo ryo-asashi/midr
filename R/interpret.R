@@ -288,7 +288,7 @@ interpret.default <- function(
     choices <- c("exit", "continue")
     sel <- try(utils::select.list(choices, title = title), silent = TRUE)
     if (inherits(sel, "try-error") || sel == "exit")
-      stop("execution halted")
+      stop("execution halted: number of parameters exceeded 'max.ncol'")
   }
   X <- matrix(0, nrow = n, ncol = ncol)
   M <- matrix(0, nrow = ncon, ncol = ncol)
@@ -470,7 +470,7 @@ interpret.default <- function(
       choices <- c("exit", "continue")
       sel <- try(utils::select.list(choices, title = title), silent = TRUE)
       if (inherits(sel, "try-error") || sel == "exit")
-        stop("execution halted")
+        stop("execution halted: singular fit encountered")
     }
     verbose("singular fit encountered", verbosity, level = 1L)
   }
@@ -657,7 +657,6 @@ interpret.formula <- function(
     if (length(formula) == 2L)
       formula[[3L]] <- formula[[2L]]
     formula[[2L]] <- as.symbol(ytag)
-    cl$formula <- formula
   } else {
     verbose("'model' not passed: response variable in 'data' is used",
             verbosity, level = 1L)
@@ -683,6 +682,7 @@ interpret.formula <- function(
   ret <- interpret.default(object = model, x = mf, y = y, weights = w,
                            terms = tl, mode = mode, na.action = na.action,
                            verbosity = verbosity, internal.call = TRUE, ...)
+  cl$formula <- formula
   ret$call <- cl
   if (!is.null(naa.ret <- ret$na.action))
     naai$ids <- naai$ids[-naa.ret]

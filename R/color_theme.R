@@ -226,6 +226,7 @@ color.theme <- function(
       "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
       "grayscale" = to.palette(directed(c("white", "black"), d)),
       "shap" = to.palette(directed(c("#2C87E1","#2A6BE9","#774DCF","#9C30BB","#C60099","#E7007E","#F72A5A"), d)),
+      "HCL" = get.hcl.palette(direction = d),
       NA
     )
     if (is.palette(f)) {
@@ -540,4 +541,14 @@ to.colors <- function(x, theme, middle = 0, na.value = "gray50") {
   }
   cols[is.na(cols)] <- na.value
   cols
+}
+
+get.hcl.palette <- function(direction = 1L) {
+  fun <- function(n) {
+    if (n < 1L) return(character(0L))
+    hues <- seq(0, 360, length.out = n + 1)[seq_len(n)] %% 360
+    if (direction < 0L) hues <- rev(hues)
+    grDevices::hcl(h = hues, c = 100, l = 65)
+  }
+  structure(fun, n = 255)
 }

@@ -35,6 +35,8 @@ ggmid.mid.breakdown <- function(
     catchall = "others", format = c("%t=%v", "%t"), ...) {
   dots <- list(...)
   type <- match.arg(type)
+  if (missing(theme))
+    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown

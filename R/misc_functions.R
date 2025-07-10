@@ -520,11 +520,12 @@ get.link <- function(link) {
 
 verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
   if (verbosity >= level) {
-    ltag <- if (level >= 3L) "- [debug] " else if (level >= 2L) "[info] " else ""
+    ltag <- if (level >= 3L)
+      "- [debug] " else if (level >= 2L) "[info] " else NULL
     stamp <- if (timestamp)
       format(Sys.time(), " (%Y-%m-%d %H:%M:%S)") else NULL
     text <- paste0(ltag, text, stamp)
-    message(text)
+    message(text, appendLF = getOption("message.appendLF", TRUE))
   }
 }
 

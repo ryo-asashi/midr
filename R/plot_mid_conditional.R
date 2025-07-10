@@ -73,10 +73,13 @@ plot.mid.conditional <- function(
   rownames(mat) <- obs$ids
   aes <- list(col = rep.int(1L, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
   if (!is.null(col <- substitute(var.color))) {
-    if (!use.theme)
-      theme <- "bluescale"
     if (is.character(col)) col <- str2lang(col)
     ref <- eval(col, envir = obs)
+    if (!use.theme) {
+      theme <- if (is.discrete(ref))
+        getOption("midr.qualitative", "HCL") else
+        getOption("midr.sequential", "bluescale")
+    }
     aes$col <- to.colors(ref, theme)
   }
   if (!is.null(alp <- substitute(var.alpha))) {

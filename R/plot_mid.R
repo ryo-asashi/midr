@@ -38,7 +38,11 @@ plot.mid <- function(
   term <- term.check(term, x$terms, stop = TRUE)
   type <- match.arg(type)
   if (missing(theme) && length(tags) == 2L)
-    theme <- if(type == "data") "bluescale" else "midr"
+    theme <- if(type == "data") {
+      getOption("midr.sequential", "bluescale")
+    } else {
+      getOption("midr.diverging", "midr")
+    }
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "data" || type == "compound") {
