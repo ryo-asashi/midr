@@ -1,34 +1,40 @@
-## midr 0.5.0.900
+# midr 0.5.0.901
+
+- Fix "HCL" color theme to turn it to be a "qualitative" color theme.
+- Change rounding method of numeric "encoder" objects.
+- Update an article and example related to `color.theme()`.
+
+# midr 0.5.0.900
 
 - Enable to change default color themes as options: `midr.diverging`, `midr.qualitative` and `midr.sequential`.
 - Add the "HCL" color theme and set it as the default qualitative theme.
 - Fix `interpret.formula()` to store the evaluated `formula` in the function call.
 
-## midr 0.5.0
+# midr 0.5.0
 
 First release on CRAN.
 
-## midr 0.4.9.909
+# midr 0.4.9.909
 
 -   Working paper is now available on arXiv.
 -   Updates for final adjustments.
 -   Some requirements for the 'x' argument are removed or relaxed.
 
-## midr 0.4.9.908
+# midr 0.4.9.908
 
 -   Fix small bugs including one reported in <https://github.com/ryo-asashi/midr/issues/5>.
 -   Change the default values of `k` to avoid singular fits with smaller datasets.
 
-## midr 0.4.9.907
+# midr 0.4.9.907
 
 -   `interpret()` now includes a new `verbosity` argument for logging.
 -   Fix small bugs.
 
-## midr 0.4.9.906
+# midr 0.4.9.906
 
 -   **Important:** Update the behavior of `get.yhat()` for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, `get.yhat()` returns the probability of *not* being the base level.
 
-## midr 0.4.9.900-0.4.9.905
+# midr 0.4.9.900-0.4.9.905
 
 -   `ggmid.mid.conditional()` and `plot.mid.conditional()` now include a new argument `reference`, which allows setting the reference point of c-ICE plot to any of the sample points.
 -   `color.theme()` now includes a new argument, `pkg`, for package specification.
@@ -43,7 +49,7 @@ First release on CRAN.
 -   Add link functions: `translogit`, `transprobit`, `identity-logistic` and `identity-gaussian` for the interpretation task of classification models.
 -   `interpret()` now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.
 
-## midr 0.4.3-0.4.8.909
+# midr 0.4.3-0.4.8.909
 
 -   Add `mid.ur()` to extract uninterpreted ratio (rate) more conveniently.
 -   Modify weighted loss functions to compute deviation-from-mean based losses for one input.
@@ -59,7 +65,7 @@ First release on CRAN.
 -   Update `interpret()` to ensure that the value of the argument `link` is a character string.
 -   Update `ggmid.mid.conditional()` and `plot.mid.conditional()`: `var.color` and the similar arguments can take an expression as input.
 
-## midr 0.4.3
+# midr 0.4.3
 
 midr is in the release process. We will submit the package to CRAN by mid-January 2025 .
 

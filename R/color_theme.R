@@ -166,7 +166,7 @@ wrap.theme <- function(
 #' ct$ramp(seq.int(0, 1, 1/4))
 #' ct <- color.theme("Tableau 10")
 #' ct$palette(10L)
-#' pals <- c("midr", "grayscale", "bluescale", "shap", "DALEX")
+#' pals <- c("midr", "grayscale", "bluescale", "HCL", "shap", "DALEX")
 #' pals <- unique(c(pals, hcl.pals(), palette.pals()))
 #' pals <- lapply(pals, color.theme)
 #' old.par <- par(no.readonly = TRUE)
@@ -226,7 +226,6 @@ color.theme <- function(
       "bluescale" = to.palette(directed(c("#132B43", "#56B1F7"), d)),
       "grayscale" = to.palette(directed(c("white", "black"), d)),
       "shap" = to.palette(directed(c("#2C87E1","#2A6BE9","#774DCF","#9C30BB","#C60099","#E7007E","#F72A5A"), d)),
-      "HCL" = get.hcl.palette(direction = d),
       NA
     )
     if (is.palette(f)) {
@@ -236,10 +235,14 @@ color.theme <- function(
     f <- switch(
       name,
       "DALEX" = directed(c("#4378bf","#8bdcbe", "#f05a71", "#ffa58c", "#ae2c87", "#46bac2", "#371ea3"), d),
+      "HCL" = get.hcl.palette(direction = d),
       NA
     )
     if (is.color(f)) {
       return(wrap.theme(ifnot.null(type, "qualitative"), colors = f, name = name))
+    }
+    if (is.palette(f)) {
+      return(wrap.theme(ifnot.null(type, "qualitative"), palette = f, name = name))
     }
   }
   if (is.null(pkg) || pkg == "viridisLite") {
@@ -543,12 +546,12 @@ to.colors <- function(x, theme, middle = 0, na.value = "gray50") {
   cols
 }
 
-get.hcl.palette <- function(direction = 1L) {
+get.hcl.palette <- function(direction = 1L, n = 24L) {
   fun <- function(n) {
     if (n < 1L) return(character(0L))
     hues <- seq(0, 360, length.out = n + 1)[seq_len(n)] %% 360
     if (direction < 0L) hues <- rev(hues)
     grDevices::hcl(h = hues, c = 100, l = 65)
   }
-  structure(fun, n = 255)
+  structure(fun, n = n)
 }

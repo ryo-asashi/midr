@@ -107,6 +107,8 @@ numeric.encoder <- function(
       n <- length(x)
       mat <- matrix(0, nrow = n, ncol = n.rep)
       itv <- findInterval(x, reps)
+      if (doround <- !is.null(encoding.digits))
+        rounder <- 10 ^ encoding.digits
       for (i in seq_len(n)) {
         if (is.na(itv[i]))
           next
@@ -118,8 +120,8 @@ numeric.encoder <- function(
           l <- reps[itv[i]]
           r <- reps[itv[i] + 1L]
           prop <- (r - x[i]) / (r - l)
-          if (!is.null(encoding.digits))
-            prop <- round(prop, digits = encoding.digits)
+          if (doround)
+            prop <- floor(prop * rounder + .5) / rounder
           mat[i, itv[i]] <- prop
           mat[i, itv[i] + 1L] <- 1 - prop
         }

@@ -145,8 +145,8 @@ themes[[8L]] <- data.frame(
 
 themes[[9L]] <- data.frame(
   pack = "midr",
-  name = c("midr", "DALEX", "shap", "grayscale", "bluescale"),
-  type = c("d", "q", "s", "s", "s")
+  name = c("midr", "DALEX", "shap", "grayscale", "bluescale", "HCL"),
+  type = c("d", "q", "s", "s", "s", "q")
 )
 
 .df <- unique(do.call(rbind, themes))
