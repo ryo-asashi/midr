@@ -89,9 +89,9 @@ mid
 #> Uninterpreted Variation Ratio: 0.016249
 preds_mid <- predict(mid, valid)
 cat("RMSE: ", weighted.rmse(preds_rf, preds_mid))
-#> RMSE:  1.106746
+#> RMSE:  1.106763
 cat("RMSE: ", weighted.rmse(valid$medv, preds_mid))
-#> RMSE:  3.306111
+#> RMSE:  3.306072
 ```
 
 To visualize the main and interaction effects of the variables, apply
@@ -150,7 +150,7 @@ grid.arrange(nrow = 1L,
   ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "Tableau 10", max.bars = 14L) +
+  ggmid(bd9, "waterfall", theme = "Zissou 1", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )

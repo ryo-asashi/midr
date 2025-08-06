@@ -98,7 +98,7 @@ interaction_plot <- function(object) {
     ggtitle("interaction effect")
 }
 
-ice_theme <- color.theme("smoothrainbow")
+ice_theme <- color.theme("shap")
 ice_plot <- function(object, data = train[1:200, ]) {
   ggmid(mid.conditional(object, "x.1", data = data),
         var.color = x.2, type = "centered", theme = ice_theme) +

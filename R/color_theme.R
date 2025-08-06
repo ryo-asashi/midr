@@ -214,7 +214,7 @@ color.theme <- function(
     # diverging themes
     f <- switch(
       name,
-      "midr" = to.palette(directed(c("#005587", "#FFFFFF", "#8B0058"), d)),
+      "midr" = to.palette(directed(c("#005AAD", "#688BC0", "#A8B8D6", "#D7DCE7", "#F1F1F1", "#E9D8DF", "#D9ABBF", "#C27098", "#A4136E"), d)),
       NA
     )
     if (is.palette(f)) {

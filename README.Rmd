@@ -118,7 +118,7 @@ grid.arrange(nrow = 1L,
   ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "Tableau 10", max.bars = 14L) +
+  ggmid(bd9, "waterfall", theme = "Zissou 1", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )

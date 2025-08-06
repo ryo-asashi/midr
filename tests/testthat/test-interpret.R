@@ -7,7 +7,7 @@ test_that("interpret() returns weighted least-norm solutions", {
   expect_equal(mid$ratio, 0L)
   expect_equal(mid$main.effects$x1$mid, c(-.75, .75),
                ignore_attr = TRUE)
-  # test 1 : rank deficient case 2
+  # test 2 : rank deficient case 2
   x1 <- c(1, 1, 2, 2, -1, -1, -2, -2)
   x2 <- c(1, -1, 2, -2, 1, -1, 2, -2)
   mid <- interpret(formula = x1^2 ~ x1 + x2,

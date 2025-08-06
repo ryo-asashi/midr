@@ -606,17 +606,9 @@ interpret.formula <- function(
   verbose("model fitting started", verbosity, 2L, TRUE)
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
-  mf <- match.call(expand.dots = FALSE)
-  mf[c("model", "pred.fun", "verbosity", "mode", "pred.args", "...")] <- NULL
-  mf[[1L]] <- quote(stats::model.frame.default)
-  env <- ifnot.null(environment(formula), parent.frame())
-  if (!missing(model)) {
-    if (is.null(data))
-      data <- environment(formula)
-    if (!is.data.frame(data) && !is.matrix(data))
-      data <- stats::model.frame(formula, data, na.action = stats::na.pass)
-    if (is.null(weights))
-      weights <- attr(data, "weights")
+  if (is.null(weights)) weights <- attr(data, "weights")
+  naai <- NULL
+  if (is.data.frame(data) || is.matrix(data)) {
     naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
     attr(data, "na.action") <- NULL
     data <- do.call(na.action, list(data))
@@ -627,59 +619,56 @@ interpret.formula <- function(
       naai$ids <- naai$ids[-naa.x]
       attr(data, "na.action") <- NULL
     }
+  }
+  yty <- if (useyhat <- !missing(model)) "predictions" else "response variable"
+  if (useyhat) {
     y <- do.call(pred.fun, c(list(model, data), pred.args))
     verbose(paste0(length(y), " predictions obtained from 'model': ",
                    examples(y, 3L)), verbosity, 3L)
-    attr(y, "na.action") <- NULL
-    y <- do.call(na.action, list(y))
-    if (anyNA(y))
-      stop("NA values found in the model predictions")
-    if (!is.null(naa.y <- stats::na.action(y))) {
-      verbose(paste(length(naa.y), "NA values in predictions are omitted"),
-              verbosity, 3L)
-      data <- data[-naa.y, , drop = FALSE]
-      weights <- weights[-naa.y]
-      naai$ids <- naai$ids[-naa.y]
-      attr(y, "na.action") <- NULL
-    }
-    if (!is.data.frame(data))
-      data <- as.data.frame(data)
-    ftest <- try(stats::model.frame.default(formula, data[NULL, ]),
-                 silent = TRUE)
-    if (inherits(ftest, "try-error")) {
-      formula[[2L]] <- NULL
-      mf$formula <- formula
-    }
-    mf$data <- data
-    mf$weights <- weights
-    mf <- eval(mf, envir = env)
-    ytag <- if (any(colnames(data) == "yhat")) "predicted" else "yhat"
-    if (length(formula) == 2L)
-      formula[[3L]] <- formula[[2L]]
-    formula[[2L]] <- as.symbol(ytag)
-  } else {
+  }
+  if (is.matrix(data))
+    data <- as.data.frame(data)
+  args <- list(formula = formula, data = data, subset = numeric())
+  ftry <- try(do.call(stats::model.frame.default, args), silent = TRUE)
+  if (inherits(ftry, "try-error")) {
+    formula[[2L]] <- NULL
+    args$formula <- formula
+  }
+  args$subset <- subset
+  args$na.action <- stats::na.pass
+  args$drop.unused.levels <- drop.unused.levels
+  data <- do.call(stats::model.frame.default, args)
+  if (useyhat && length(y) != nrow(data))
+    stop("length of predictions doesn't match the number of rows in 'data'")
+  if (is.null(naai))
+    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
+  if (!useyhat) {
     verbose("'model' not passed: response variable in 'data' is used",
             verbosity, level = 1L)
-    if (length(formula) < 3L)
-      stop("invalid formula found")
-    if (is.matrix(data))
-      mf$data <- as.data.frame(data)
-    if (is.null(weights))
-      mf$weights <- attr(data, "weights")
-    mf <- eval(mf, envir = env)
-    if (!is.null(naa.data <- stats::na.action(mf)))
-      verbose(paste(length(naa.data), "observations with NA in 'data' are omitted"),
-              verbosity, 3L)
-    naai <- list(n.init = nrow(mf) + length(naa.data))
-    naai$ids <- seq_len(naai$n.init)
-    if (!is.null(naa.data))
-      naai$ids <- naai$ids[-naa.data]
-    y <- stats::model.response(mf, "any")
+    y <- stats::model.response(data, "any")
+    if (is.null(y))
+      stop("invalid formula: response variable can't be extracted from 'data'")
   }
-  w <- as.vector(stats::model.weights(mf))
-  attr(mf, "na.action") <- NULL
-  tl <- attr(attr(mf, "terms"), "term.labels")
-  ret <- interpret.default(object = model, x = mf, y = y, weights = w,
+  attr(y, "na.action") <- NULL
+  y <- do.call(na.action, list(y))
+  if (anyNA(y))
+    stop(paste0("NA values found in ", yty))
+  if (!is.null(naa.y <- stats::na.action(y))) {
+    verbose(paste(length(naa.y), paste0("NA values in ", yty, " are omitted")),
+            verbosity, 3L)
+    data <- data[-naa.y, , drop = FALSE]
+    weights <- weights[-naa.y]
+    naai$ids <- naai$ids[-naa.y]
+    attr(y, "na.action") <- NULL
+  }
+  if (useyhat) {
+    ycl <- if (any(colnames(data) == "yhat")) ".yhat" else "yhat"
+    if (length(formula) == 2L)
+      formula[[3L]] <- formula[[2L]]
+    formula[[2L]] <- as.symbol(ycl)
+  }
+  tl <- attr(attr(data, "terms"), "term.labels")
+  ret <- interpret.default(object = model, x = data, y = y, weights = weights,
                            terms = tl, mode = mode, na.action = na.action,
                            verbosity = verbosity, internal.call = TRUE, ...)
   cl$formula <- formula

@@ -1,3 +1,9 @@
+# midr 0.5.0.902
+
+- Rewrite "interpret.formula()" to make it able to be called in another function: resolve problems caused by `stats::model.frame()`
+- Add new tests for the above feature.
+- Refine the diverging color theme "midr".
+
 # midr 0.5.0.901
 
 - Fix "HCL" color theme to turn it to be a "qualitative" color theme.
