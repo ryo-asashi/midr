@@ -8,4 +8,8 @@ test_that("mid.f() correctly runs for interactions", {
   expect_equal(fxy, fx)
   fyx <- mid.f(mid, "Girth:Height", x = g, y = h)
   expect_equal(fyx, fx)
+  # test 2: additional
+  fx <- mid.f(mid, "Height:Girth", x = data.frame(Height = h, Girth = 10))
+  fyx <- mid.f(mid, "Girth:Height", 10, h)
+  expect_equal(fyx, fx)
 })

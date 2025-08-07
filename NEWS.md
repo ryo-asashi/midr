@@ -1,3 +1,10 @@
+# midr 0.5.0.903
+
+- Fixed a bug in interpret.default() that caused inconsistency between "fitted.values" and "residuals.
+- Updated interpret() to change the automatic determination method of 'k'.
+- Added support for "type" suffixes ("_s": as sequential, "_q": as qualitative, "_d": as diverging) in color.theme().
+- Improved mid.f() to correctly handle vector recycling when an input's length is 1.
+
 # midr 0.5.0.902
 
 - Rewrite "interpret.formula()" to make it able to be called in another function: resolve problems caused by `stats::model.frame()`

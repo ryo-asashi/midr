@@ -77,7 +77,7 @@ UseMethod("interpret")
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
 #' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
-#' @param k an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, \code{k[1L]} is used for main effects and \code{k[2L]} is used for interactions. If an integer is passed, \code{k} is used for main effects and \code{sqrt(k)} is used for interactions. If not positive, all unique values are used as sample points.
+#' @param k an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
 #' @param interaction logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
@@ -108,6 +108,7 @@ interpret.default <- function(
     max.ncol = 1e4L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
+  cl[[1L]] <- as.name("interpret")
   dots <- list(...)
   if (is.null(dots$internal.call) || !dots$internal.call)
     verbose("model fitting started", verbosity, 2L, TRUE)
@@ -186,6 +187,9 @@ interpret.default <- function(
   if (any(weights < 0))
     stop("negative weights not allowed")
   if (is.matrix(x)) x <- as.data.frame(x)
+  n <- nrow(x)
+  if (n == 0L)
+    stop("no observations found")
   wsum <- sum(weights)
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
@@ -200,22 +204,23 @@ interpret.default <- function(
     its <- unique(terms[spl == 2L])
   }
   terms <- c(mts, its)
-  verbose(sprintf("'terms' include %s main effect%s and %s interaction%s",
-                  length(mts), if (length(mts) != 1L) "s" else "", length(its),
-                  if (length(its) != 1L) "s" else ""), verbosity, 3L)
-  n <- nrow(x)
-  if (n == 0L)
-    stop("no observations found")
   p <- length(mts)
   q <- length(its)
+  verbose(text = paste0(collapse = "",
+    c("'terms' include ", if (p) c(p, " main effect", if (p > 1L) "s"),
+    if (p > 0L && q > 0L) " and ", if (q) c(q, " interaction", if (q > 1L) "s"))
+  ), verbosity, 3L)
   if (length(k) == 1L)
-    k <- c(k, ceiling(sqrt(max(k, 0L))))
+    k <- c(k, NA)
+  k[2L] <- ifnot.null(dots$k2, k[2L])
   if (is.na(k[1L]))
     k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% (p + q)))
   if (is.na(k[2L]))
     k[2L] <- min(5L, max(2L, if (lambda > 0) 5L else floor(sqrt(n / (p + q)))))
-  verbose(sprintf("'k' is set to %s for main effects and %s for interactions",
-                  k[1L], k[2L]), verbosity, 3L)
+  verbose(text = paste0(collapse = "",
+    c("'k' is set to ", if (p > 0L) c(k[1L], " for main effects"),
+    if (p > 0L && q > 0L) " and ", if (q > 0L) c(k[2L], " for interactions"))
+    ), verbosity, 3L)
   if (length(type) == 1L)
     type <- c(type, type)
   f <- function(tag, d) {
@@ -435,14 +440,13 @@ interpret.default <- function(
     }
     beta <- z$coefficients
     beta[is.na(beta)] <- 0
-    rsd <- z$residuals[1L:n] / w[1L:n]
     crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
     if (any(abs(crsd) > (nil * sqrt(kappa) * wsum))) {
       verbose(paste0("not strictly centered: max absolute average effect = ",
                      format(max(abs(crsd)) / sqrt(kappa) / wsum, digits = 6L)),
               verbosity, level = 1L)
     }
-  } else {
+  } else if (mode == 2L) {
     Msvd <- svd(M, nv = ncol)
     r <- sum(Msvd$d > tol)
     if (r == dim(Msvd$v)[2L])
@@ -460,7 +464,8 @@ interpret.default <- function(
     coef <- z$coefficients
     coef[is.na(coef)] <- 0
     beta <- as.numeric(vr %*% coef)
-    rsd <- z$residuals[1L:n] / w[1L:n]
+  } else {
+    stop("'mode' must be 1 or 2")
   }
   if (!(any(method == 1L:2L)) && z$rank < ncol - r) {
     if (!singular.ok) {
@@ -474,12 +479,11 @@ interpret.default <- function(
     }
     verbose("singular fit encountered", verbosity, level = 1L)
   }
-  if (weighted.norm) {
-    gamm <- beta
-    beta <- beta / D
-  }
   lemp <- lemp[vapply(lemp, length, 0L) > 1L]
   nemp <- length(lemp)
+  gamma <- beta
+  if (weighted.norm)
+    beta <- beta / D
   if (interpolate.beta && nemp > 0L) {
     verbose("interpolating unestimable parameters lacking observation weights",
             verbosity, 3L)
@@ -497,7 +501,9 @@ interpret.default <- function(
     }
     beta[is.na(beta)] <- 0
   }
-  beta[abs(beta) <= nil] <- 0
+  indices <- (abs(beta) <= nil)
+  gamma[indices] <- 0
+  beta[indices] <- 0
   verbose("least squares estimation completed", verbosity, 2L, FALSE)
   # summarize results of the decomposition --------
   fm <- matrix(0, nrow = n, ncol = p + q)
@@ -511,13 +517,11 @@ interpret.default <- function(
     main.effects <- list()
     for (i in seq_len(p)) {
       dat <- mencs[[mts[i]]]$frame
-      lt <- fi + mcumlens[i] + 1L
-      rt <- fi + mcumlens[i + 1L]
-      dat$density <- dens[lt:rt]
-      dat$mid <- beta[lt:rt]
+      indices <- (fi + mcumlens[i] + 1L):(fi + mcumlens[i + 1L])
+      dat$density <- dens[indices]
+      dat$mid <- beta[indices]
       main.effects[[mts[i]]] <- dat
-      xmat <- mmats[[mts[i]]]
-      fm[, i] <- as.numeric(xmat %*% dat$mid)
+      fm[, i] <- as.numeric(mmats[[mts[i]]] %*% dat$mid)
     }
   }
   ## interactions
@@ -529,28 +533,19 @@ interpret.default <- function(
       vals <- expand.grid(1L:nval[1L], 1L:nval[2L])
       dat <- cbind(iencs[[pcl[1L]]]$frame[vals[, 1L], ],
                    iencs[[pcl[2L]]]$frame[vals[, 2L], ])
-      lt <- fi + u + pcumlens[i] + 1L
-      rt <- fi + u + pcumlens[i + 1L]
-      dat$density <- dens[lt:rt]
-      dat$mid <- beta[lt:rt]
+      indices <- (fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])
+      dat$density <- dens[indices]
+      dat$mid <- beta[indices]
       rownames(dat) <- NULL
       interactions[[its[i]]] <- dat
-      xmat <- X[seq_len(n), lt:rt, drop = FALSE]
-      mult <- if (!weighted.norm) dat$mid else gamm[lt:rt]
-      fm[, p + i] <- as.numeric(xmat %*% mult)
+      fm[, p + i] <-
+        as.numeric(X[seq_len(n), indices, drop = FALSE] %*% gamma[indices])
     }
   }
-  # calculate the uninterpreted variation ratio --------
-  tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
-  uiq <- stats::weighted.mean(rsd ^ 2, weights)
-  uir <- attract(uiq / tot, nil)
-  verbose(paste0("uninterpreted variation ratio: ", format(uir)), verbosity, 3L)
   # output the result --------
   obj <- list()
   class(obj) <- c("mid")
   obj$model.class <- attr(object, "class")
-  cl[[1L]] <- as.name("interpret")
-  obj$weights <- weights
   obj$call <- cl
   obj$terms <- terms
   obj$link <- link
@@ -564,21 +559,26 @@ interpret.default <- function(
     obj$interactions <- interactions
     obj$encoders[["interactions"]] <- iencs
   }
-  obj$ratio <- uir
+  obj$weights <- weights
   obj$fitted.matrix <- fm
   obj$fitted.values <- rowSums(fm) + intercept
-  obj$residuals <- rsd
+  obj$residuals <- y - obj$fitted.values
+  tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
+  uiq <- stats::weighted.mean(obj$residuals ^ 2, weights)
+  uir <- attract(uiq / tot, nil)
+  verbose(paste0("uninterpreted variation ratio: ", format(uir)), verbosity, 3L)
+  obj$ratio <- uir
   if (!is.null(link)) {
     obj$linear.predictors <- obj$fitted.values
     obj$fitted.values <- link$linkinv(obj$fitted.values)
     obj$response.residuals <- yres - obj$fitted.values
     mu <- stats::weighted.mean(yres, weights)
-    rtot <- stats::weighted.mean((yres - mu) ^ 2, weights)
-    ruiq <- stats::weighted.mean(obj$response.residuals ^ 2, weights)
-    ruir <- attract(ruiq / rtot, nil)
-    verbose(paste0("uninterpreted variation ratio (response): ", format(ruir)),
-            verbosity, 3L)
-    obj$ratio <- c(working = uir, response = ruir)
+    tot <- stats::weighted.mean((yres - mu) ^ 2, weights)
+    uiq <- stats::weighted.mean(obj$response.residuals ^ 2, weights)
+    uir <- attract(uiq / tot, nil)
+    verbose(paste0("uninterpreted variation ratio (response): ",
+                   format(uir)), verbosity, 3L)
+    obj$ratio <- c(working = obj$ratio, response = uir)
   }
   if (length(naai$ids) < naai$n.init) {
     naacl <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")

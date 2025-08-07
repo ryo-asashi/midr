@@ -19,7 +19,7 @@ color.theme(
 \method{print}{color.theme}(x, display = TRUE, ...)
 }
 \arguments{
-\item{colors}{one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
+\item{colors}{one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
 
 \item{type}{a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".}
 

@@ -152,7 +152,7 @@ wrap.theme <- function(
 #' Some color themes are "qualitative" and do not contain \code{ramp()} function.
 #' The color palettes implemented in the following packages are available: \code{grDevices}, \code{viridisLite}, \code{RColorBrewer} and \code{khroma}.
 #'
-#' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix "_r" for color themes in reverse order ("Viridis_r"), a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
+#' @param colors one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
 #' @param type a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".
 #' @param name an optional character string, specifying the name of the color theme.
 #' @param pkg an optional character string, specifying the package in which the palette is to be searched for. Available options include "viridisLite", "RColorBrewer", "khroma", "grDevices" and "midr".
@@ -203,12 +203,23 @@ color.theme <- function(
     type <- ifnot.null(type, ifnot.null(attr(colors, "type"), "sequential"))
     return(wrap.theme(type, ramp = colors, name = name))
   }
-  if (grepl("_r", colors)) {
-    name <- sub("_r", "", colors)
+  name <- colors
+  d <- 1L
+  if (grepl("_r", name)) {
+    name <- sub("_r", "", name)
     d <- -1L
-  } else {
-    name <- colors
-    d <- 1L
+  }
+  if (grepl("_q", name) && is.null(type)) {
+    name <- sub("_q", "", name)
+    type <- "qualitative"
+  }
+  if (grepl("_d", name) && is.null(type)) {
+    name <- sub("_d", "", name)
+    type <- "diverging"
+  }
+  if (grepl("_s", name) && is.null(type)) {
+    name <- sub("_s", "", name)
+    type <- "sequential"
   }
   if (is.null(pkg) || pkg == "midr") {
     # diverging themes

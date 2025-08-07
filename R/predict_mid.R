@@ -113,17 +113,26 @@ mid.f <- function(object, term, x, y = NULL) {
     X <- enc$encode(x)
     mid <- object$main.effects[[.term]]$mid
   } else {
-    if (length(x) != length(y))
-      stop("x and y must have the same length")
+    ny <- length(y)
+    if (ny != n) {
+      if (n == 1L) {
+        x <- rep.int(x, ny)
+        n <- ny
+      } else if (ny == 1L) {
+        y <- rep.int(y, n)
+      } else {
+        stop("x and y must have the same length")
+      }
+    }
     encs <- list(object$encoders[["interactions"]][[tags[1L]]],
                  object$encoders[["interactions"]][[tags[2L]]])
     mats <- list(encs[[1L]]$encode(x), encs[[2L]]$encode(y))
-    lr <- if (term == .term) 1L:2L else 2L:1L
-    uni <- as.matrix(expand.grid(1L:encs[[lr[1L]]]$n, 1L:encs[[lr[2L]]]$n))
+    r <- if (term == .term) 0L else 1L
+    uni <- as.matrix(expand.grid(1L:encs[[1L + r]]$n, 1L:encs[[2L - r]]$n))
     X <- matrix(0, nrow = n, ncol = nrow(uni))
     for (j in seq_len(nrow(uni))) {
-      X[, j] <- as.numeric(mats[[lr[1L]]][, uni[j, 1L]] *
-                           mats[[lr[2L]]][, uni[j, 2L]])
+      X[, j] <- as.numeric(mats[[1L + r]][, uni[j, 1L]] *
+                           mats[[2L - r]][, uni[j, 2L]])
     }
     mid <- object$interactions[[.term]]$mid
   }
