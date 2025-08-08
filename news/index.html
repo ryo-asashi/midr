@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,11 +50,23 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0.904" id="midr-050904">midr 0.5.0.904<a class="anchor" aria-label="anchor" href="#midr-050904"></a></h2>
+<ul><li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to imporove computational efficiency of interpolating parameters.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0.903" id="midr-050903">midr 0.5.0.903<a class="anchor" aria-label="anchor" href="#midr-050903"></a></h2>
+<ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals.</li>
+<li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to change the automatic determination method of ‘k’.</li>
+<li>Added support for “type” suffixes (“_s”: as sequential, “_q”: as qualitative, “_d”: as diverging) in color.theme().</li>
+<li>Improved <code><a href="../reference/predict.mid.html">mid.f()</a></code> to correctly handle vector recycling when an input’s length is 1.</li>
+<li>Fixed <code><a href="../reference/ggmid.mid.conditional.html">autoplot.mid.conditional()</a></code> to avoid doubly evaluation of the “mid” object.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.902" id="midr-050902">midr 0.5.0.902<a class="anchor" aria-label="anchor" href="#midr-050902"></a></h2>
-<ul><li>Rewrite “interpret.formula()” to make it able to be called in another function: resolve problems caused by <code><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">stats::model.frame()</a></code>
+<ul><li>Rewrote <code><a href="../reference/interpret.html">interpret.formula()</a></code> to make it able to be called in another function: resolve problems caused by <code><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">stats::model.frame()</a></code>
 </li>
-<li>Add new tests for the above feature.</li>
-<li>Refine the diverging color theme “midr”.</li>
+<li>Added new tests for the above feature.</li>
+<li>Refined the diverging color theme “midr”.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.901" id="midr-050901">midr 0.5.0.901<a class="anchor" aria-label="anchor" href="#midr-050901"></a></h2>

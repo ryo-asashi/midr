@@ -9,7 +9,7 @@ A fitted MID model consists of a set of component functions, each with up to two
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,7 +141,7 @@ A fitted MID model consists of a set of component functions, each with up to two
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>an integer or integer-valued vector of length two. The maximum number of sample points for each variable. If a vector is passed, <code>k[1L]</code> is used for main effects and <code>k[2L]</code> is used for interactions. If an integer is passed, <code>k</code> is used for main effects and <code>sqrt(k)</code> is used for interactions. If not positive, all unique values are used as sample points.</p></dd>
+<dd><p>an integer or a vector of two integers specifying the maximum number of sample points for main effects (<code>k[1]</code>) and interactions (<code>k[2]</code>). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any <code>NA</code> value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>

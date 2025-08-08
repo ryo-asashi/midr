@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,8 +135,8 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
 <span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">encoding.scheme</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        main.effect interaction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Girth   linear(10)   linear(4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Height  linear(10)   linear(4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Girth   linear(10)   linear(3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Height  linear(10)   linear(3)</span>
 <span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">frames</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`|Girth`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Girth Girth_min Girth_max</span>
@@ -153,10 +153,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`:Girth`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Girth Girth_min Girth_max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   8.3      8.30      9.80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  11.3      9.80     12.65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  14.0     12.65     17.30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  20.6     17.30     20.60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   8.3      8.30     10.60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  12.9     10.60     16.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  20.6     16.75     20.60</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`|Height`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Height Height_min Height_max</span>
@@ -173,23 +172,22 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`:Height`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Height Height_min Height_max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     63       63.0       68.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     74       68.5       77.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     80       77.0       83.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     87       83.5       87.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     63       63.0       69.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     76       69.5       81.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     87       81.5       87.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">Girth</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Girth Girth_min Girth_max    density         mid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    8.3      8.30      9.40 0.08506452  -21.003604</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   10.5      9.40     10.75 0.07622581   -6.108702</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   11.0     10.75     11.15 0.12903226    1.782576</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   11.3     11.15     11.50 0.11290323    4.368677</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   11.7     11.50     12.50 0.09070968    2.595397</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   13.3     12.50     13.65 0.10977419  -18.178493</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   14.0     13.65     15.15 0.13261290   -5.837210</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   16.3     15.15     17.10 0.09029032   31.919879</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   17.9     17.10     19.25 0.13874194   42.242478</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  20.6     19.25     20.60 0.03464516 -135.072647</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Girth Girth_min Girth_max    density        mid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    8.3      8.30      9.40 0.08506452 -19.808727</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   10.5      9.40     10.75 0.07622581 -15.354723</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   11.0     10.75     11.15 0.12903226  -8.052967</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   11.3     11.15     11.50 0.11290323  -5.993537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   11.7     11.50     12.50 0.09070968  -5.309870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   13.3     12.50     13.65 0.10977419  -8.740132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   14.0     13.65     15.15 0.13261290   1.695132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   16.3     15.15     17.10 0.09029032  10.950917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   17.9     17.10     19.25 0.13874194  22.136588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  20.6     19.25     20.60 0.03464516  49.862503</span>
 <span class="r-in"><span><span class="fu">mid.extract</span><span class="op">(</span><span class="va">mid</span>, <span class="va">intercept</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30.17097</span>
 </code></pre></div>
