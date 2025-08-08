@@ -122,7 +122,8 @@ ggmid.mid.conditional <- function(
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mid.conditional <- function(object, ...) {
-  args <- as.list(match.call())
-  args[[1L]] <- NULL
-  do.call("ggmid.mid.conditional", args)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(midr::ggmid)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

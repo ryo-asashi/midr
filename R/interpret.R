@@ -485,7 +485,7 @@ interpret.default <- function(
   if (weighted.norm)
     beta <- beta / D
   if (interpolate.beta && nemp > 0L) {
-    verbose("interpolating unestimable parameters lacking observation weights",
+    verbose("interpolating unestimable parameters...",
             verbosity, 3L)
     B <- diag(1, ncol)
     for (i in seq_len(nemp)) {
