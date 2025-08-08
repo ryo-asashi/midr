@@ -1,3 +1,7 @@
+# midr 0.5.0.904
+
+- Updated `interpret()` to imporove computational efficiency of interpolating parameters.
+
 # midr 0.5.0.903
 
 - Fixed a bug in `interpret.default()` that caused inconsistency between "fitted.values" and "residuals.

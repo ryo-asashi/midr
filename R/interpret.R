@@ -116,6 +116,7 @@ interpret.default <- function(
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
   fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
   interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
+  maxit <- ifnot.null(dots$maxit, 1e4L)
   weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
   weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
   # preprocess data --------
@@ -301,9 +302,9 @@ interpret.default <- function(
   w <- sqrt(weights)
   D <- rep.int(1, ncol)
   dens <- numeric(ncol)
+  bemp <- logical(ncol)
   lemp <- list()
-  ladj <- list()
-  vnil <- logical(ncol)
+  lreg <- list()
   ## intercept
   if (fit.intercept) {
     X[, 1L] <- 1
@@ -326,7 +327,7 @@ interpret.default <- function(
           if (ord && j > 1L) m - 1L,
           if (ord && j < mlens[[i]]) m + 1L
         )
-        vnil[m] <- TRUE
+        bemp[m] <- TRUE
         next
       }
       M[i, m] <- vsum
@@ -337,7 +338,7 @@ interpret.default <- function(
       }
       dens[m] <- vsum / wsum
       if (lambda > 0 && ord)
-        ladj[[length(ladj) + 1L]] <- c(
+        lreg[[length(lreg) + 1L]] <- c(
           m,
           if (j > 1L) m - 1L,
           if (j < mlens[[i]]) m + 1L
@@ -364,7 +365,7 @@ interpret.default <- function(
           if (ords[2L] && val[2L] > 1L) m - nval[1L],
           if (ords[2L] && val[2L] < nval[2L]) m + nval[1L]
         )
-        vnil[m] <- TRUE
+        bemp[m] <- TRUE
         next
       }
       M[ofs + val[1L], m] <- vsum
@@ -376,13 +377,13 @@ interpret.default <- function(
       }
       dens[m] <- vsum / wsum
       if (lambda > 0 && ords[1L])
-        ladj[[length(ladj) + 1L]] <- c(
+        lreg[[length(lreg) + 1L]] <- c(
           m,
           if (val[1L] > 1L) m - 1L,
           if (val[1L] < nval[1L]) m + 1L
         )
       if (lambda > 0 && ords[2L])
-        ladj[[length(ladj) + 1L]] <- c(
+        lreg[[length(lreg) + 1L]] <- c(
           m,
           if (val[2L] > 1L) m - nval[1L],
           if (val[2L] < nval[2L]) m + nval[1L]
@@ -393,15 +394,15 @@ interpret.default <- function(
   ## ridge regularization
   nreg <- 0L
   if (lambda > 0) {
-    nreg <- length(ladj)
+    nreg <- length(lreg)
     wreg <- rep.int(sqrt(lambda), nreg)
     R <- matrix(0, nrow = nreg, ncol = ncol)
     for (i in seq_len(nreg)) {
-      a <- ladj[[i]][-1L]
-      a <- a[!vnil[a]]
+      a <- lreg[[i]][-1L]
+      a <- a[!bemp[a]]
       if (length(a) == 0L)
         next
-      m <- ladj[[i]][1L]
+      m <- lreg[[i]][1L]
       R[i, a] <- - (if (weighted.norm) 1 / D[a] else 1)
       R[i, m] <- (if (weighted.norm) 1 / D[m] else 1) * length(a)
       wreg[i] <- wreg[i] * D[m]
@@ -413,10 +414,10 @@ interpret.default <- function(
   ## additional constraints for columns filled with zero
   nemp <- length(lemp)
   if (nemp > 0L) {
-    Mnil <- matrix(0, nrow = nemp, ncol = ncol)
+    Memp <- matrix(0, nrow = nemp, ncol = ncol)
     for (i in 1L:nemp)
-      Mnil[i, lemp[[i]][1L]] <- 1
-    M <- rbind(M, Mnil)
+      Memp[i, lemp[[i]][1L]] <- 1
+    M <- rbind(M, Memp)
   }
   # get the least squares solution --------
   verbose(paste0("least squares estimation initiated with 'mode' ", mode,
@@ -484,20 +485,32 @@ interpret.default <- function(
   gamma <- beta
   if (weighted.norm)
     beta <- beta / D
-  if (interpolate.beta && nemp > 0L) {
+  if (!isFALSE(interpolate.beta) && nemp > 0L) {
     verbose("interpolating unestimable parameters...",
             verbosity, 3L)
-    B <- diag(1, ncol)
-    for (i in seq_len(nemp)) {
-      a <- lemp[[i]][-1L]
-      m <- lemp[[i]][1L]
-      B[m, a] <- - 1
-      B[m, m] <- length(a)
-    }
-    beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients, silent = TRUE)
-    if (inherits(beta, "try-error")) {
-      verbose("'RcppEigen::fastLmPure' failed: 'lm.fit' is used", verbosity, 1L)
-      beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
+    if (isTRUE(interpolate.beta) || interpolate.beta == 1L) {
+      mis <- vapply(lemp, `[`, 0, 1L)
+      ais <- lapply(lemp, `[`, -1)
+      pts <- cumsum(c(1L, vapply(ais, length, 0)))
+      ais <- unlist(ais)
+      rlx <- relax_beta_cpp(beta, mis, ais, pts, tol, maxit)
+      verbose(text = paste0(
+        "interpolation ", if (rlx$iter + 1L < maxit) "converged" else "stopped",
+        " after ", rlx$iter," iterations"), verbosity, 3L)
+      beta <- rlx$beta
+    } else if (interpolate.beta == 2L) {
+      B <- diag(1, ncol)
+      for (i in seq_len(nemp)) {
+        a <- lemp[[i]][-1L]
+        m <- lemp[[i]][1L]
+        B[m, a] <- - 1
+        B[m, m] <- length(a)
+      }
+      beta <- try(RcppEigen::fastLmPure(B, beta, 0L)$coefficients, silent = TRUE)
+      if (inherits(beta, "try-error")) {
+        verbose("'RcppEigen::fastLmPure' failed: 'lm.fit' is used", verbosity, 1L)
+        beta <- as.numeric(stats::lm.fit(B, beta)$coefficients)
+      }
     }
     beta[is.na(beta)] <- 0
   }
