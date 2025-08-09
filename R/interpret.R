@@ -647,7 +647,7 @@ interpret.formula <- function(
     formula[[2L]] <- NULL
     args$formula <- formula
   }
-  args$subset <- subset
+  args$subset <- eval(substitute(subset), envir = data, enclos = parent.frame())
   args$na.action <- stats::na.pass
   args$drop.unused.levels <- drop.unused.levels
   data <- do.call(stats::model.frame.default, args)
