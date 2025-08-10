@@ -621,7 +621,12 @@ interpret.formula <- function(
   cl[[1L]] <- as.symbol("interpret")
   if (is.null(weights)) weights <- attr(data, "weights")
   naai <- NULL
-  if (is.data.frame(data) || is.matrix(data)) {
+  if (!(lazy <- !is.data.frame(data) && !is.matrix(data))) {
+    subset <- eval(substitute(subset), as.data.frame(data), parent.frame())
+    if (!is.null(subset)) {
+      data <- data[subset, ]
+      subset <- NULL
+    }
     naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
     attr(data, "na.action") <- NULL
     data <- do.call(na.action, list(data))
@@ -647,10 +652,27 @@ interpret.formula <- function(
     formula[[2L]] <- NULL
     args$formula <- formula
   }
-  args$subset <- eval(substitute(subset), envir = data, enclos = parent.frame())
+  args$subset <- NULL
   args$na.action <- stats::na.pass
   args$drop.unused.levels <- drop.unused.levels
   data <- do.call(stats::model.frame.default, args)
+  if (lazy) {
+    subset <- eval(substitute(subset), as.data.frame(data), parent.frame())
+    if (!is.null(subset))
+      data <- data[subset, ]
+    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
+    attr(data, "na.action") <- NULL
+    data <- do.call(na.action, list(data))
+    if (!is.null(naa.x <- stats::na.action(data))) {
+      verbose(paste(length(naa.x), "observations with NAs in 'data' are omitted"),
+              verbosity, 3L)
+      weights <- weights[-naa.x]
+      naai$ids <- naai$ids[-naa.x]
+      attr(data, "na.action") <- NULL
+    }
+  }
+  verbose(paste("model frame with", nrow(data), "observations created"),
+          verbosity, 3L)
   if (useyhat && length(y) != nrow(data))
     stop("length of predictions doesn't match the number of rows in 'data'")
   if (is.null(naai))
