@@ -93,6 +93,7 @@ factor.encoder <- function(
     }
   }
   enc <- list(frame = frame, encode = encode, n = nlvs, type = type)
+  on.exit(remove(list = c("x", "weights", "enc", "encode")))
   structure(enc, class = "encoder")
 }
 

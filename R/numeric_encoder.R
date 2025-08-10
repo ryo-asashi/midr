@@ -153,6 +153,7 @@ numeric.encoder <- function(
   }
   type <- switch(type + 2L, "null", "constant", "linear")
   enc <- list(frame = frame, encode = encode, n = n.rep, type = type)
+  on.exit(remove(list = c("x", "weights", "enc", "encode")))
   structure(enc, class = "encoder")
 }
 
