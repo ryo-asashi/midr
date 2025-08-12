@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.905</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,53 +56,53 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'mid'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'lm'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'glm'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rpart'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'randomForest'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'ranger'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'svm'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'ksvm'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'AccurateGLM'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'glmnet'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'model_fit'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rpf'</span></span>
-<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">X.model</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">get.yhat</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, target <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-x-model">X.model<a class="anchor" aria-label="anchor" href="#arg-x-model"></a></dt>
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>a fitted model object.</p></dd>
 
 
