@@ -11,25 +11,25 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// relax_beta_cpp
-Rcpp::List relax_beta_cpp(Eigen::VectorXd beta, const Rcpp::IntegerVector& m_indices, const Rcpp::IntegerVector& a_indices, const Rcpp::IntegerVector& pointers, const double tol, const int maxit);
-RcppExport SEXP _midr_relax_beta_cpp(SEXP betaSEXP, SEXP m_indicesSEXP, SEXP a_indicesSEXP, SEXP pointersSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+// cpp_interpolate_beta
+Rcpp::List cpp_interpolate_beta(Eigen::VectorXd beta, const Rcpp::IntegerVector& indices, const Rcpp::IntegerVector& neighbors, const Rcpp::IntegerVector& pointers, const double tol, const int maxit);
+RcppExport SEXP _midr_cpp_interpolate_beta(SEXP betaSEXP, SEXP indicesSEXP, SEXP neighborsSEXP, SEXP pointersSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Eigen::VectorXd >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type m_indices(m_indicesSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type a_indices(a_indicesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type indices(indicesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type neighbors(neighborsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type pointers(pointersSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int >::type maxit(maxitSEXP);
-    rcpp_result_gen = Rcpp::wrap(relax_beta_cpp(beta, m_indices, a_indices, pointers, tol, maxit));
+    rcpp_result_gen = Rcpp::wrap(cpp_interpolate_beta(beta, indices, neighbors, pointers, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_midr_relax_beta_cpp", (DL_FUNC) &_midr_relax_beta_cpp, 6},
+    {"_midr_cpp_interpolate_beta", (DL_FUNC) &_midr_cpp_interpolate_beta, 6},
     {NULL, NULL, 0}
 };
 

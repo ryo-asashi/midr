@@ -96,7 +96,7 @@ UseMethod("interpret")
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
 #' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
-#' @param ... for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta}, \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.
+#' @param ... for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta} ("iterative" for iterative smoothing, "direct" for solving the linear system, or "none" to disable interpolation), \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.
 #' @exportS3Method midr::interpret
 #'
 interpret.default <- function(
@@ -485,20 +485,20 @@ interpret.default <- function(
   gamma <- beta
   if (weighted.norm)
     beta <- beta / D
-  if (!isFALSE(interpolate.beta) && nemp > 0L) {
+  if (!(interpolate.beta == "none" || isFALSE(interpolate.beta)) && nemp > 0L) {
     verbose("interpolating unestimable parameters...",
             verbosity, 3L)
-    if (isTRUE(interpolate.beta) || interpolate.beta == 1L) {
-      mis <- vapply(lemp, `[`, 0, 1L)
-      ais <- lapply(lemp, `[`, -1)
-      pts <- cumsum(c(1L, vapply(ais, length, 0)))
-      ais <- unlist(ais)
-      rlx <- relax_beta_cpp(beta, mis, ais, pts, tol, maxit)
+    if (interpolate.beta == "iterative" || isTRUE(interpolate.beta)) {
+      midx <- vapply(lemp, `[`, 0, 1L)
+      aidx <- lapply(lemp, `[`, -1)
+      pntr <- cumsum(c(1L, vapply(aidx, length, 0)))
+      aidx <- unlist(aidx)
+      res <- cpp_interpolate_beta(beta, midx, aidx, pntr, tol, maxit)
       verbose(text = paste0(
-        "interpolation ", if (rlx$iter + 1L < maxit) "converged" else "stopped",
-        " after ", rlx$iter," iterations"), verbosity, 3L)
-      beta <- rlx$beta
-    } else if (interpolate.beta == 2L) {
+        "interpolation ", if (res$converged) "converged" else "stopped",
+        " after ", res$iter," iterations"), verbosity, 3L)
+      beta <- res$beta
+    } else {
       B <- diag(1, ncol)
       for (i in seq_len(nemp)) {
         a <- lemp[[i]][-1L]

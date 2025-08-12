@@ -55,7 +55,7 @@ interpret(object, ...)
 \arguments{
 \item{object}{a fitted model object to be interpreted.}
 
-\item{...}{for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta}, \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.}
+\item{...}{for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta} ("iterative" for iterative smoothing, "direct" for solving the linear system, or "none" to disable interpolation), \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.}
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
