@@ -620,26 +620,9 @@ interpret.formula <- function(
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
   if (is.null(weights)) weights <- attr(data, "weights")
-  naai <- NULL
-  if (!(lazy <- !is.data.frame(data) && !is.matrix(data))) {
-    subset <- eval(substitute(subset), as.data.frame(data), parent.frame())
-    if (!is.null(subset)) {
-      data <- data[subset, ]
-      subset <- NULL
-    }
-    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
-    attr(data, "na.action") <- NULL
-    data <- do.call(na.action, list(data))
-    if (!is.null(naa.x <- stats::na.action(data))) {
-      verbose(paste(length(naa.x), "observations with NAs in 'data' are omitted"),
-              verbosity, 3L)
-      weights <- weights[-naa.x]
-      naai$ids <- naai$ids[-naa.x]
-      attr(data, "na.action") <- NULL
-    }
-  }
-  yty <- if (useyhat <- !missing(model)) "predictions" else "response variable"
-  if (useyhat) {
+  use.yhat <- !missing(model)
+  ystr <- if (use.yhat) "predictions" else "response variable"
+  if (use.yhat) {
     y <- do.call(pred.fun, c(list(model, data), pred.args))
     verbose(paste0(length(y), " predictions obtained from 'model': ",
                    examples(y, 3L)), verbosity, 3L)
@@ -652,55 +635,42 @@ interpret.formula <- function(
     formula[[2L]] <- NULL
     args$formula <- formula
   }
-  args$subset <- NULL
-  args$na.action <- stats::na.pass
+  args$subset <- eval(substitute(subset), data, parent.frame())
+  args$na.action <- na.action
   args$drop.unused.levels <- drop.unused.levels
+  if (use.yhat) args$.yhat <- y
+  args$weights <- weights
   data <- do.call(stats::model.frame.default, args)
-  if (lazy) {
-    subset <- eval(substitute(subset), as.data.frame(data), parent.frame())
-    if (!is.null(subset))
-      data <- data[subset, ]
-    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
+  naa <- na.action(data)
+  n <- nrow(data) + length(naa)
+  naai <- list(n.init = n, ids = seq_len(n))
+  if (!is.null(naa)) {
+    verbose(paste(length(naa), "observations with NAs in 'data' are omitted"),
+            verbosity, 3L)
+    naai$ids <- naai$ids[-naa]
     attr(data, "na.action") <- NULL
-    data <- do.call(na.action, list(data))
-    if (!is.null(naa.x <- stats::na.action(data))) {
-      verbose(paste(length(naa.x), "observations with NAs in 'data' are omitted"),
-              verbosity, 3L)
-      weights <- weights[-naa.x]
-      naai$ids <- naai$ids[-naa.x]
-      attr(data, "na.action") <- NULL
-    }
   }
   verbose(paste("model frame with", nrow(data), "observations created"),
           verbosity, 3L)
-  if (useyhat && length(y) != nrow(data))
-    stop("length of predictions doesn't match the number of rows in 'data'")
-  if (is.null(naai))
-    naai <- list(n.init = nrow(data), ids = seq_len(nrow(data)))
-  if (!useyhat) {
+  if (!use.yhat) {
     verbose("'model' not passed: response variable in 'data' is used",
             verbosity, level = 1L)
     y <- stats::model.response(data, "any")
     if (is.null(y))
-      stop("invalid formula: response variable can't be extracted from 'data'")
+      stop("response variable can't be extracted from 'data'")
+  } else {
+    y <- data[["(.yhat)"]]
+    data[["(.yhat)"]] <- NULL
   }
-  attr(y, "na.action") <- NULL
-  y <- do.call(na.action, list(y))
   if (anyNA(y))
-    stop(paste0("NA values found in ", yty))
-  if (!is.null(naa.y <- stats::na.action(y))) {
-    verbose(paste(length(naa.y), paste0("NA values in ", yty, " are omitted")),
-            verbosity, 3L)
-    data <- data[-naa.y, , drop = FALSE]
-    weights <- weights[-naa.y]
-    naai$ids <- naai$ids[-naa.y]
-    attr(y, "na.action") <- NULL
-  }
-  if (useyhat) {
-    ycl <- if (any(colnames(data) == "yhat")) ".yhat" else "yhat"
-    if (length(formula) == 2L)
-      formula[[3L]] <- formula[[2L]]
-    formula[[2L]] <- as.symbol(ycl)
+    stop(paste0("NA values found in ", ystr))
+  attr(y, "na.action") <- NULL
+  weights <- stats::model.weights(data)
+  data[["(weights)"]] <- NULL
+  if (use.yhat) {
+    ysymbol <- if (any(colnames(data) == "yhat")) "predicted" else "yhat"
+    if (length(formula) == 2L) formula[[3L]] <- formula[[2L]]
+    formula[[2L]] <- as.symbol(ysymbol)
   }
   tl <- attr(attr(data, "terms"), "term.labels")
   ret <- interpret.default(object = model, x = data, y = y, weights = weights,

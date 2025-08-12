@@ -17,36 +17,36 @@
 \alias{get.yhat.rpf}
 \title{Wrapper Prediction Function}
 \usage{
-get.yhat(X.model, newdata, ...)
+get.yhat(object, newdata, ...)
 
-\method{get.yhat}{default}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{default}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{mid}(X.model, newdata, ...)
+\method{get.yhat}{mid}(object, newdata, ...)
 
-\method{get.yhat}{lm}(X.model, newdata, ...)
+\method{get.yhat}{lm}(object, newdata, ...)
 
-\method{get.yhat}{glm}(X.model, newdata, ...)
+\method{get.yhat}{glm}(object, newdata, ...)
 
-\method{get.yhat}{rpart}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{rpart}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{randomForest}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{randomForest}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{ranger}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{ranger}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{svm}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{svm}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{ksvm}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{ksvm}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{AccurateGLM}(X.model, newdata, ...)
+\method{get.yhat}{AccurateGLM}(object, newdata, ...)
 
-\method{get.yhat}{glmnet}(X.model, newdata, ...)
+\method{get.yhat}{glmnet}(object, newdata, ...)
 
-\method{get.yhat}{model_fit}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{model_fit}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{rpf}(X.model, newdata, target = -1L, ...)
+\method{get.yhat}{rpf}(object, newdata, target = -1L, ...)
 }
 \arguments{
-\item{X.model}{a fitted model object.}
+\item{object}{a fitted model object.}
 
 \item{newdata}{a data.frame or matrix.}
 

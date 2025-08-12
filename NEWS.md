@@ -1,6 +1,11 @@
+# midr 0.5.0.905
+
+- Rewrote `interpret.formula()` and `factor.encoder()` to make `subset` and `drop.unused.levels` available.
+- Updated some methods of `get.yhat()` to enforce them to return predictions of the same length as the number of observations.
+
 # midr 0.5.0.904
 
-- Updated `interpret()` to imporove computational efficiency of interpolating parameters.
+- Updated `interpret()` to improve computational efficiency of interpolating parameters.
 
 # midr 0.5.0.903
 

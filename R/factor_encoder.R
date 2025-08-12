@@ -54,7 +54,6 @@ factor.encoder <- function(
       ord <- order(tbl, decreasing = TRUE)
       flvs <- flvs[ord][seq_len(k - 1L)]
     }
-    flvs <- flvs[flvs %in% x]
     if (use.catchall)
       flvs <- c(flvs, catchall)
   }
