@@ -620,7 +620,7 @@ interpret.formula <- function(
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
   if (is.null(weights)) weights <- attr(data, "weights")
-  use.yhat <- !missing(model)
+  use.yhat <- !is.null(model) && !is.null(pred.fun)
   ystr <- if (use.yhat) "predictions" else "response variable"
   if (use.yhat) {
     y <- do.call(pred.fun, c(list(model, data), pred.args))
@@ -653,7 +653,8 @@ interpret.formula <- function(
   verbose(paste("model frame with", nrow(data), "observations created"),
           verbosity, 3L)
   if (!use.yhat) {
-    verbose("'model' not passed: response variable in 'data' is used",
+    verbose(paste0(if (is.null(model)) "'model'" else "'pred.fun'",
+                   " not passed: response variable in 'data' is used"),
             verbosity, level = 1L)
     y <- stats::model.response(data, "any")
     if (is.null(y))
