@@ -152,8 +152,11 @@ numeric.encoder <- function(
     }
   }
   type <- switch(type + 2L, "null", "constant", "linear")
+  environment(encode) <- rlang::env(
+    rlang::ns_env("midr"),
+    n.rep = n.rep, reps = reps, br = br, encoding.digits = encoding.digits
+  )
   enc <- list(frame = frame, encode = encode, n = n.rep, type = type)
-  on.exit(remove(list = c("x", "weights", "enc", "encode")))
   structure(enc, class = "encoder")
 }
 
@@ -186,7 +189,7 @@ numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
   if (length(breaks) != n.rep + 1L)
     stop("the length of 'breaks' must be the length of 'reps' plus 1")
   frame <- data.frame(reps, breaks[1L:n.rep], breaks[2L:(n.rep + 1)])
-  ng <- c(frame[, 1L] <= frame[, 2L], frame[, 1L] > frame[, 3L])
+  ng <- c(frame[[1L]] <= frame[[2L]], frame[[1L]] > frame[[3L]])
   ng[1L] <- frame[1L, 1L] < frame[1L, 2L]
   if (any(ng))
     stop("representative values must be included in (min, max] of each bin")

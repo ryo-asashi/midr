@@ -91,8 +91,11 @@ factor.encoder <- function(
       mat
     }
   }
+  environment(encode) <- rlang::env(
+    rlang::ns_env("midr"),
+    nlvs = nlvs, flvs = flvs, use.catchall = use.catchall, catchall = catchall
+  )
   enc <- list(frame = frame, encode = encode, n = nlvs, type = type)
-  on.exit(remove(list = c("x", "weights", "enc", "encode")))
   structure(enc, class = "encoder")
 }
 
@@ -104,7 +107,7 @@ factor.encoder <- function(
 factor.frame <- function(levels, catchall = "(others)", tag = "x") {
   levels <- unique(c(levels, catchall))
   frame <- data.frame(factor(levels, levels = levels))
-  frame[, 2L] <- as.integer(frame[, 1L])
+  frame[[2L]] <- as.integer(frame[[1L]])
   colnames(frame) <- paste0(tag, c("", "_level"))
   class(frame) <- c("factor.frame", "data.frame")
   structure(frame, levels = levels, catchall = catchall)

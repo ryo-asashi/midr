@@ -240,15 +240,15 @@ interpret.default <- function(
     for (tag in mts) {
       mencs[[tag]] <-
         if (nuvs[tag]) {
-          numeric.encoder(x = x[, tag], k = k[1L], type = type[1L], tag = tag,
+          numeric.encoder(x = x[[tag]], k = k[1L], type = type[1L], tag = tag,
                           encoding.digits = encoding.digits, frame = f(tag, 1L),
                           weights = if (weighted.encoding) weights)
         } else {
-          factor.encoder(x = x[, tag], k = k[1L], use.catchall = use.catchall,
+          factor.encoder(x = x[[tag]], k = k[1L], use.catchall = use.catchall,
                          catchall = catchall, tag = tag, frame = f(tag, 1L),
                          weights = if (weighted.encoding) weights)
         }
-      mmats[[tag]] <- mencs[[tag]]$encode(x[, tag])
+      mmats[[tag]] <- mencs[[tag]]$encode(x[[tag]])
     }
     mlens <- sapply(mencs, function(x) x$n)
     mcumlens <- structure(cumsum(c(0L, mlens)), names = c(mts, NA))
@@ -262,15 +262,15 @@ interpret.default <- function(
     for (tag in unique(term.split(its))) {
       iencs[[tag]] <-
         if (nuvs[tag]) {
-          numeric.encoder(x = x[, tag], k = k[2L], type = type[2L], tag = tag,
+          numeric.encoder(x = x[[tag]], k = k[2L], type = type[2L], tag = tag,
                           encoding.digits = encoding.digits, frame = f(tag, 2L),
                           weights = if (weighted.encoding) weights)
         } else {
-          factor.encoder(x = x[, tag], k = k[2L], use.catchall = use.catchall,
+          factor.encoder(x = x[[tag]], k = k[2L], use.catchall = use.catchall,
                          catchall = catchall, tag = tag, frame = f(tag, 2L),
                          weights = if (weighted.encoding) weights)
         }
-      imats[[tag]] <- iencs[[tag]]$encode(x[, tag])
+      imats[[tag]] <- iencs[[tag]]$encode(x[[tag]])
     }
     ilens <- sapply(iencs, function(x) x$n)
     plens <- structure(integer(q), names = its)

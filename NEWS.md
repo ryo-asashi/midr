@@ -1,3 +1,7 @@
+# midr 0.5.0.906
+
+- Fixed the issue of `numeric.encoder()` and `factor.encoder()` that they holds a reference to the execution environment of the `interpret.default()` as their caller environment.
+
 # midr 0.5.0.905
 
 - Rewrote `interpret.formula()` and `factor.encoder()` to make `subset` and `drop.unused.levels` available.
