@@ -1,6 +1,7 @@
 # midr 0.5.0.906
 
-- Fixed the issue of `numeric.encoder()` and `factor.encoder()` that they holds a reference to the execution environment of the `interpret.default()` as their caller environment.
+- Updated hex logo and favicons.
+- Fixed the issue of `numeric.encoder()` and `factor.encoder()` that they hold a reference to the execution environment of `interpret.default()` in their call stacks.
 
 # midr 0.5.0.905
 
