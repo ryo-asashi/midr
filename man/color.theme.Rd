@@ -2,32 +2,57 @@
 % Please edit documentation in R/color_theme.R
 \name{color.theme}
 \alias{color.theme}
+\alias{make.color.theme}
+\alias{set.color.theme}
+\alias{get.color.theme}
 \alias{plot.color.theme}
 \alias{print.color.theme}
 \title{Color Themes for Graphics}
 \usage{
-color.theme(
-  colors,
-  type = c("sequential", "qualitative", "diverging"),
+color.theme(object, ...)
+
+make.color.theme(
+  kernel,
+  kernel.args = list(),
+  options = list(),
   name = NULL,
-  pkg = NULL,
-  ...
+  source = NULL,
+  type = c("sequential", "diverging", "qualitative")
 )
+
+set.color.theme(
+  kernel,
+  kernel.args = list(),
+  options = list(),
+  name = NULL,
+  source = NULL,
+  type = NULL
+)
+
+get.color.theme(name, source = NULL, type = NULL, reverse = FALSE)
 
 \method{plot}{color.theme}(x, n = NULL, text = x$name, ...)
 
 \method{print}{color.theme}(x, display = TRUE, ...)
 }
 \arguments{
-\item{colors}{one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
+\item{object}{one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
+
+\item{...}{optional arguments to be passed to palette or ramp functions.}
+
+\item{kernel}{a palette function, ramp function or color vector, which is used in the palette and ramp methods of the color theme.}
+
+\item{kernel.args}{a list containing the argument values to be passed to the kernel function.}
+
+\item{options}{a list of option values to control the color theme's behavior.}
+
+\item{name}{a character string for the color theme name.}
+
+\item{source}{a character string for the source name of the color theme.}
 
 \item{type}{a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".}
 
-\item{name}{an optional character string, specifying the name of the color theme.}
-
-\item{pkg}{an optional character string, specifying the package in which the palette is to be searched for. Available options include "viridisLite", "RColorBrewer", "khroma", "grDevices" and "midr".}
-
-\item{...}{optional arguments to be passed to palette or ramp functions.}
+\item{reverse}{logical. If \code{TRUE}, the reversed color theme is returned.}
 
 \item{x}{a "color.theme" object to be displayed.}
 
@@ -48,8 +73,7 @@ color.theme(
 \code{color.theme()} returns an object of class "color.theme" that provides two types of color functions.
 }
 \details{
-"color.theme" objects is a container of the two types of color functions: \code{palette(n)} returns a color name vector of length \code{n}, and \code{ramp(x)} returns color names for each values of \code{x} within [0, 1].
-Some color themes are "qualitative" and do not contain \code{ramp()} function.
+"color.theme" object is a container of the two types of color functions: \code{palette(n)} returns a color name vector of length \code{n}, and \code{ramp(x)} returns color names for each value of \code{x} within [0, 1].
 The color palettes implemented in the following packages are available: \code{grDevices}, \code{viridisLite}, \code{RColorBrewer} and \code{khroma}.
 }
 \examples{
@@ -61,7 +85,7 @@ ct$palette(5L)
 ct$ramp(seq.int(0, 1, 1/4))
 ct <- color.theme("Tableau 10")
 ct$palette(10L)
-pals <- c("midr", "grayscale", "bluescale", "HCL", "shap", "DALEX")
+pals <- c("midr", "grayscale", "bluescale", "HCL", "shap")
 pals <- unique(c(pals, hcl.pals(), palette.pals()))
 pals <- lapply(pals, color.theme)
 old.par <- par(no.readonly = TRUE)

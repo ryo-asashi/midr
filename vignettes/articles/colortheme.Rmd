@@ -34,7 +34,7 @@ nightfall <- color.theme("nightfall")
 print(nightfall)
 nightfall$palette(3)
 nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
-accent <- color.theme("Accent", pkg = "grDevices")
+accent <- color.theme("Accent", source = "grDevices")
 print(accent)
 accent$palette(5)
 viridis <- color.theme("viridis")
@@ -145,8 +145,8 @@ themes[[8L]] <- data.frame(
 
 themes[[9L]] <- data.frame(
   pack = "midr",
-  name = c("midr", "DALEX", "shap", "grayscale", "bluescale", "HCL"),
-  type = c("d", "q", "s", "s", "s", "q")
+  name = c("midr", "shap", "grayscale", "bluescale", "HCL"),
+  type = c("d", "s", "s", "s", "q")
 )
 
 .df <- unique(do.call(rbind, themes))
