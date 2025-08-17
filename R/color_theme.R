@@ -259,8 +259,7 @@ make.color.theme <- function(
     kcl <- kernel.class(kernel)
     if (kcl == "palette") {
     exec.args <- c(list(n = mks), kernel.args)
-    ret <- do.call(kernel, exec.args)
-    ret[!ng] <- as.ramp(ret)(x[!ng])
+    ret[!ng] <- as.ramp(do.call(kernel, exec.args))(x[!ng])
     } else if (kcl == "ramp") {
       exec.args <- c(list(x = x[!ng]), kernel.args)
       ret[!ng] <- do.call(kernel, exec.args)

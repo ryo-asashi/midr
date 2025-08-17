@@ -1,6 +1,6 @@
 ---
 title: "Interpretation of Regression Models"
-description: >
+description: |
   Demonstrates how to use the midr package to interpret regression models.
 ---
 
@@ -116,7 +116,7 @@ eval_plot <- function(model, mid, data = test, ...) {
   actual <- test$y
   rmse_vs_test <- rmse(pred, actual)
   rmse_vs_mid <-  rmse(pred, pred_mid)
-  ggplot() + scale_color_theme("DALEX") +
+  ggplot() + scale_color_theme("muted") +
     geom_point(aes(x = pred, y = actual, col = "vs test")) +
     geom_point(aes(x = pred, y = pred_mid, col = "vs mid")) +
     geom_abline(slope = 1, intercept = 0, col = "black", lty = 2) +
