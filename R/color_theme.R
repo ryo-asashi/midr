@@ -30,15 +30,24 @@ is.palette <- function(fun, n.test = 2L, ...) {
   !inherits(e, "try-error") && length(e) == n.test && is.color(e)
 }
 
-get.palette.max <- function(fun, ok = 2L, ng = 257L, ...) {
+get.kernel.size <- function(object, ok = 2L, ng = 256L, ...) {
+  if (!is.kernel(object))
+    stop("'object' must be a palette function, ramp function or color vector")
+  if (is.ramp(object))
+    return(Inf)
+  if (is.null(object))
+    return(0L)
+  if (is.color(object))
+    return(length(object))
+  init.ng <- ng
   while (abs(ok - ng) > 1) {
     m <- (ok + ng) %/% 2
-    if (is.palette(fun, n.test = m, ...))
+    if (is.palette(object, n.test = m, ...))
       ok <- m
     else
       ng <- m
   }
-  as.integer(ok)
+  if (ng < init.ng) as.integer(ok) else Inf
 }
 
 is.color.theme <- function(object) {
@@ -80,7 +89,7 @@ kernel.class <- function(object) {
   else if (is.ramp(object))
     "ramp"
   else if (is.color(object))
-    "colors"
+    "color"
   else if (is.null(object))
     "null"
   else
@@ -89,6 +98,15 @@ kernel.class <- function(object) {
 
 is.kernel <- function(object) {
   kernel.class(object) != "unknown"
+}
+
+lazy.load.kernel <- function(object) {
+  if (is.kernel(object))
+    return(object)
+  object <- eval(str2lang(object[[1L]]), envir = rlang::ns_env(object[[2L]]))
+  if (!is.kernel(object))
+    stop("'object' can't be loaded as a valid kernel")
+  object
 }
 
 #' Color Themes for Graphics
@@ -152,9 +170,7 @@ make.color.theme <- function(
     source = NULL, type = c("sequential", "diverging", "qualitative")
   ) {
   # environment --------
-  if (!is.kernel(kernel))
-    stop("'kernel' must be a palette function, ramp function or color vector")
-  kcl <- kernel.class(kernel)
+  kernel <- lazy.load.kernel(kernel)
   if (!is.list(kernel.args))
     stop("'kernel.args' must be a list")
   if (!is.list(options))
@@ -164,16 +180,18 @@ make.color.theme <- function(
   if (!is.null(source) && (!is.character(source) || length(source) != 1L))
     stop("'source' must be a character string or NULL")
   type <- match.arg(type)
-  options$palette.max <- ifnot.null(
-    options$palette.max,
-    switch(kcl, color = length(kernel), palette = get.palette.max(kernel), 256L)
-  )
+  kcl <- kernel.class(kernel)
+  if (kcl == "color") {
+    kernel.args$mode <- ifnot.null(kernel.args$mode, "palette")
+    kernel.args$alpha <- ifnot.null(kernel.args$alpha, NA)
+  }
+  options$kernel.size <- ifnot.null(options$kernel.size, get.kernel.size(kernel))
   options$palette.formatter <- ifnot.null(
     options$palette.formatter,
     switch(type, qualitative = "recycle", "interpolate")
   )
   options$palette.reverse <- ifnot.null(options$palette.reverse, FALSE)
-  options$ramp.rescaler <- ifnot.null(options$ramp.formatter, c(0, 1))
+  options$ramp.rescaler <- ifnot.null(options$ramp.rescaler, c(0, 1))
   options$na.color <- ifnot.null(options$na.color, NA)
   options$reverse.method <- ifnot.null(options$reverse.method, NA)
   env <- rlang::env(rlang::ns_env("midr"),
@@ -187,32 +205,40 @@ make.color.theme <- function(
       stop("'n' must be an integer")
     if ((n <- as.integer(n)) <= 0L)
       return(character(0L))
-    if (n > options$palette.max) {
-      colors <- do.call("palette", list(n = options$palette.max))
-      if (options$palette.formatter == "recycle") {
-        ret <- colors[rep_len(seq_len(options$palette.max), length.out = n)]
-      } else if (options$palette.formatter == "interpolate") {
-        x <- seq.int(0, 1, length.out = n)
-        ret <- as.ramp(colors)(x)
-      } else if (any(options$palette.formatter == c("fillna", "fill.na"))) {
-        ret <- c(colors, rep.int(options$na.color, n - length(colors)))
-      } else {
-        stop("'n' must be equal to or smaller than the 'palette.max' option")
-      }
-      return(ret)
-    }
+    nks <- min(n, options$kernel.size)
     kcl <- kernel.class(kernel)
     if (kcl == "palette") {
-      exec.args <- c(list(n = n), kernel.args)
+      exec.args <- c(list(n = nks), kernel.args)
       ret <- do.call(kernel, exec.args)
     } else if (kcl == "ramp") {
-      ret <- do.call("ramp", list(x = seq.int(0, 1, length.out = n)))
-    } else if (kcl == "colors") {
-      ret <- kernel[seq_len(n)]
+      exec.args <- c(list(x = seq.int(0, 1, length.out = n)), kernel.args)
+      ret <- do.call(kernel, exec.args)
+    } else if (kcl == "color") {
+      if (!is.null(kernel.args$alpha) && !is.na(kernel.args$alpha))
+        kernel <- grDevices::adjustcolor(kernel, alpha.f = kernel.args$alpha)
+      if (kernel.args$mode == "palette") {
+        ret <- kernel[seq_len(nks)]
+      } else if (kernel.args$mode == "ramp") {
+        mks <- min(256L, options$kernel.size)
+        ret <- as.ramp(kernel[seq_len(mks)])(x = seq.int(0, 1, length.out = n))
+      }
     } else {
       ret <- rep_len(NA, length.out = n)
     }
-    if (options$palette.reverse) ret <- rev(ret)
+    if (options$palette.reverse)
+      ret <- rev(ret)
+    if (length(ret) < n) {
+      if (options$palette.formatter == "recycle") {
+        ret <- rep_len(ret, length.out = n)
+      } else if (options$palette.formatter == "interpolate") {
+        ret <- as.ramp(ret)(x = seq.int(0, 1, length.out = n))
+      } else if (any(options$palette.formatter == c("fillna", "fill.na"))) {
+        ret <- ret[seq_len(n)]
+      } else {
+        stop("'n' must be equal to or smaller than the 'kernel.size' option")
+      }
+    }
+    ret[is.na(ret)] <- options$na.color
     ret
   }
   environment(env$palette) <- env
@@ -220,33 +246,32 @@ make.color.theme <- function(
   env$ramp <- function(x) {
     if (!is.numeric(x))
       stop("'x' must be a numeric vector")
-    rsc <- options$ramp.rescaler
-    if (!is.numeric(rsc) || length(rsc) != 2L)
-      stop("'ramp.rescaler' option must be a numeric vector of length 2")
-    x <- x * diff(rsc) + rsc[1L]
     eps <- .Machine$double.eps
     ng <- is.na(x) | x < (0 - eps) | (1 + eps) < x
-    if (any(ng)) {
-      ret <- character(length(x))
-      ret[ ng] <- options$na.color
-      ret[!ng] <- do.call("ramp", list(x = x[!ng]))
-      return(ret)
-    }
-    x <- pmax(pmin(x, 1), 0)
+    ret <- character(length(x))
+    ret[ng] <- NA
+    x[!ng] <- pmin(1, pmax(0, x[!ng]))
+    rsc <- ifnot.null(options$ramp.rescaler, c(0, 1))
+    if (!is.numeric(rsc) || length(rsc) != 2L)
+      stop("'ramp.rescaler' option must be a numeric vector of length 2")
+    x[!ng] <- x[!ng] * diff(rsc) + rsc[1L]
+    mks <- min(256L, options$kernel.size)
     kcl <- kernel.class(kernel)
-    if (kcl == "ramp") {
-      exec.args <- c(list(x = x), kernel.args)
-      ret <- do.call(kernel, exec.args)
-    } else if (kcl == "palette") {
-      colors <- do.call(
-        "palette", list(n = min(options$palette.max, 256L, na.rm = TRUE))
-      )
-      ret <- as.ramp(colors)(x)
-    } else if (kcl == "colors") {
-      ret <- as.ramp(kernel)(x)
+    if (kcl == "palette") {
+    exec.args <- c(list(n = mks), kernel.args)
+    ret <- do.call(kernel, exec.args)
+    ret[!ng] <- as.ramp(ret)(x[!ng])
+    } else if (kcl == "ramp") {
+      exec.args <- c(list(x = x[!ng]), kernel.args)
+      ret[!ng] <- do.call(kernel, exec.args)
+    } else if (kcl == "color") {
+      if (!is.null(kernel.args$alpha) && !is.na(kernel.args$alpha))
+        kernel <- grDevices::adjustcolor(kernel, alpha.f = kernel.args$alpha)
+      ret[!ng] <- as.ramp(kernel[seq_len(mks)])(x[!ng])
     } else {
-      ret <- rep_len(NA, length.out = length(x))
+      ret[!ng] <- NA
     }
+    ret[is.na(ret)] <- options$na.color
     ret
   }
   environment(env$ramp) <- env
@@ -260,10 +285,10 @@ make.color.theme <- function(
   env$reverse <- function() {
     expr <- ifnot.null(options$reverse.method, NA)
     if (is.na(expr)) {
-      expr <- switch(kernel.class(kernel), "invisible(NULL)",
-        palette = "options$palette.reverse <- !options$palette.reverse",
-        ramp = "options$ramp.rescaler <- rev(options$ramp.rescaler)",
-        color = "kernel <- rev(kernel)"
+      expr <- switch(
+        kernel.class(kernel), color = "kernel <- rev(kernel)",
+        c("options$palette.reverse <- !options$palette.reverse",
+          "options$ramp.rescaler <- rev(options$ramp.rescaler)")
       )
     }
     do.call("execute", list(expr = expr))
@@ -286,8 +311,7 @@ set.color.theme <- function(
     args$source <- ifnot.null(source, kernel$source)
     return(do.call(set.color.theme, args))
   }
-  if (!is.kernel(kernel))
-    stop("'kernel' must be a palette function, ramp function or color vector")
+  lazy.load.kernel(kernel)
   if (!is.list(kernel.args))
     stop("'kernel.args' must be a list")
   if (!is.list(options))
@@ -347,8 +371,17 @@ get.color.theme <- function(
 #' @exportS3Method base::plot
 #'
 plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
-  if (is.null(n))
-    n <- ifnot.null(x$options$palette.max, 12L)
+  if (!is.null(n)) {
+    colors <- x$palette(n)
+  } else {
+    if (x$type == "qualitative") {
+      n <- min(48L, x$options$kernel.size, na.rm = TRUE)
+      colors <- x$palette(n)
+    } else {
+      n <- 256L
+      colors <- x$ramp(seq.int(0, 1, length.out = n))
+    }
+  }
   opar <- graphics::par("mai", "mar")
   on.exit(graphics::par(opar))
   graphics::par(mar = c(1, 1, 1, 1))
@@ -356,7 +389,7 @@ plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
                  axes = FALSE, xlab = "", ylab = "")
   graphics::text(0.5, 0.7, text, pos = 3L)
   graphics::rect((seq_len(n) - 1L) / n, 0.3, seq_len(n) / n, 0.7,
-                 col = x$palette(n), border = NA)
+                 col = colors, border = NA)
 }
 
 #' @rdname color.theme

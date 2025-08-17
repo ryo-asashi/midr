@@ -81,7 +81,7 @@ The functions `scale_color_theme()` and `scale_fill_theme()` provide a pipeline 
 ```{r, fig.weight = 6, fig.height = 4}
 p <- ggplot(dataset) + geom_point(aes(carat, price, col = color))
 grid.arrange(
-  p + scale_color_theme("DALEX"),
+  p + scale_color_theme("muted"),
   p + scale_color_theme("discreterainbow"),
   p + scale_color_theme("Okabe-Ito"),
   p + scale_color_theme("plasma", discrete = TRUE)
@@ -159,8 +159,8 @@ themes[[9L]] <- data.frame(
 par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "d", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], pkg = df[i, 1L])
-  text <- sprintf("%s (%s)", df[i, 2L], df[i, 1L])
+  ct <- color.theme(df[i, 2L], source = df[i, 1L])
+  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
   plot(ct, text = text)
 }
 ```
@@ -171,8 +171,8 @@ for (i in seq_len(nrow(df))) {
 par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "q", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], pkg = df[i, 1L])
-  text <- sprintf("%s (%s)", df[i, 2L], df[i, 1L])
+  ct <- color.theme(df[i, 2L], source = df[i, 1L])
+  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
   plot(ct, text = text)
 }
 ```
@@ -183,8 +183,8 @@ for (i in seq_len(nrow(df))) {
 par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "s", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], pkg = df[i, 1L])
-  text <- sprintf("%s (%s)", df[i, 2L], df[i, 1L])
+  ct <- color.theme(df[i, 2L], source = df[i, 1L])
+  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
   plot(ct, text = text)
 }
 ```
