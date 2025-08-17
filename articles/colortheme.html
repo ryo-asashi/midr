@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,14 +120,14 @@ argument of the <code><a href="../reference/color.theme.html">color.theme()</a><
 <span><span class="co">#&gt; attr(,"missing")</span></span>
 <span><span class="co">#&gt; [1] "#FFFFFF"</span></span>
 <span><span class="va">nightfall</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.00</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "#125955" "#76B7D2" "#EBEAD9" "#F89645" "#9F1813"</span></span>
-<span><span class="va">accent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/color.theme.html">color.theme</a></span><span class="op">(</span><span class="st">"Accent"</span>, pkg <span class="op">=</span> <span class="st">"grDevices"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "#125955" "#5FBBE9" "#EBEAD9" "#FD9944" "#9F1813"</span></span>
+<span><span class="va">accent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/color.theme.html">color.theme</a></span><span class="op">(</span><span class="st">"Accent"</span>, source <span class="op">=</span> <span class="st">"grDevices"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">accent</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Qualitative Color Theme : "Accent"</span></span></code></pre></div>
 <p><img src="colortheme_files/figure-html/unnamed-chunk-2-2.png" width="576"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">accent</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "#7FC97F" "#BEAED4" "#FDC086" "#FFFF99" "#386CB0"</span></span>
+<span><span class="co">#&gt; [1] "#7FC97FFF" "#BEAED4FF" "#FDC086FF" "#FFFF99FF" "#386CB0FF"</span></span>
 <span><span class="va">viridis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/color.theme.html">color.theme</a></span><span class="op">(</span><span class="st">"viridis"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">viridis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Sequential Color Theme : "viridis"</span></span></code></pre></div>
@@ -136,7 +136,7 @@ argument of the <code><a href="../reference/color.theme.html">color.theme()</a><
 <code class="sourceCode R"><span><span class="va">viridis</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "#440154FF" "#21908CFF" "#FDE725FF"</span></span>
 <span><span class="va">viridis</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.00</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "#440053" "#3E5188" "#20908C" "#6AC661" "#FDE625"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "#440053" "#3B518B" "#21908C" "#5CC862" "#FDE625"</span></span></code></pre></div>
 <p>Alternatively, a new color theme can be created by passing a color
 vector or a color function (color ramp or color palette) to the
 <code><a href="../reference/color.theme.html">color.theme()</a></code> function.</p>
@@ -187,7 +187,7 @@ ggplot graphics.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">carat</span>, <span class="va">price</span>, col <span class="op">=</span> <span class="va">color</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"DALEX"</span><span class="op">)</span>,</span>
+<span>  <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"muted"</span><span class="op">)</span>,</span>
 <span>  <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"discreterainbow"</span><span class="op">)</span>,</span>
 <span>  <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"Okabe-Ito"</span><span class="op">)</span>,</span>
 <span>  <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"plasma"</span>, discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -201,7 +201,7 @@ ggplot graphics.</p>
 <div class="section level2">
 <h2 id="qualitative-color-themes">Qualitative Color Themes<a class="anchor" aria-label="anchor" href="#qualitative-color-themes"></a>
 </h2>
-<p><img src="colortheme_files/figure-html/unnamed-chunk-7-1.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-2.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-3.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-4.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-5.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-6.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-7.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-8.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-9.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-10.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-11.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-12.png" width="576"></p>
+<p><img src="colortheme_files/figure-html/unnamed-chunk-7-1.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-2.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-3.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-4.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-5.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-6.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-7.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-8.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-9.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-10.png" width="576"><img src="colortheme_files/figure-html/unnamed-chunk-7-11.png" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="sequential-color-themes">Sequential Color Themes<a class="anchor" aria-label="anchor" href="#sequential-color-themes"></a>

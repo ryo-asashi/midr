@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,13 +56,27 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">color.theme</span><span class="op">(</span></span>
-<span>  <span class="va">colors</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequential"</span>, <span class="st">"qualitative"</span>, <span class="st">"diverging"</span><span class="op">)</span>,</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">color.theme</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">make.color.theme</span><span class="op">(</span></span>
+<span>  <span class="va">kernel</span>,</span>
+<span>  kernel.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  pkg <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  source <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequential"</span>, <span class="st">"diverging"</span>, <span class="st">"qualitative"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">set.color.theme</span><span class="op">(</span></span>
+<span>  <span class="va">kernel</span>,</span>
+<span>  kernel.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">get.color.theme</span><span class="op">(</span><span class="va">name</span>, source <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="cn">NULL</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'color.theme'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, n <span class="op">=</span> <span class="cn">NULL</span>, text <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">name</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -75,24 +89,40 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-colors">colors<a class="anchor" aria-label="anchor" href="#arg-colors"></a></dt>
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>optional arguments to be passed to palette or ramp functions.</p></dd>
+
+
+<dt id="arg-kernel">kernel<a class="anchor" aria-label="anchor" href="#arg-kernel"></a></dt>
+<dd><p>a palette function, ramp function or color vector, which is used in the palette and ramp methods of the color theme.</p></dd>
+
+
+<dt id="arg-kernel-args">kernel.args<a class="anchor" aria-label="anchor" href="#arg-kernel-args"></a></dt>
+<dd><p>a list containing the argument values to be passed to the kernel function.</p></dd>
+
+
+<dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
+<dd><p>a list of option values to control the color theme's behavior.</p></dd>
+
+
+<dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
+<dd><p>a character string for the color theme name.</p></dd>
+
+
+<dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
+<dd><p>a character string for the source name of the color theme.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>a character string specifying the type of the color theme: One of "sequential", "qualitative" or "diverging".</p></dd>
 
 
-<dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>an optional character string, specifying the name of the color theme.</p></dd>
-
-
-<dt id="arg-pkg">pkg<a class="anchor" aria-label="anchor" href="#arg-pkg"></a></dt>
-<dd><p>an optional character string, specifying the package in which the palette is to be searched for. Available options include "viridisLite", "RColorBrewer", "khroma", "grDevices" and "midr".</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>optional arguments to be passed to palette or ramp functions.</p></dd>
+<dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, the reversed color theme is returned.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -129,8 +159,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>"color.theme" objects is a container of the two types of color functions: <code>palette(n)</code> returns a color name vector of length <code>n</code>, and <code>ramp(x)</code> returns color names for each values of <code>x</code> within [0, 1].
-Some color themes are "qualitative" and do not contain <code>ramp()</code> function.
+    <p>"color.theme" object is a container of the two types of color functions: <code>palette(n)</code> returns a color name vector of length <code>n</code>, and <code>ramp(x)</code> returns color names for each value of <code>x</code> within [0, 1].
 The color palettes implemented in the following packages are available: <code>grDevices</code>, <code>viridisLite</code>, <code>RColorBrewer</code> and <code>khroma</code>.</p>
     </div>
 
@@ -138,19 +167,19 @@ The color palettes implemented in the following packages are available: <code>gr
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Mako"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#070707" "#423460" "#007FA8" "#48C2B4" "#E0F7E1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#070707FF" "#423460FF" "#007FA8FF" "#48C2B4FF" "#E0F7E1FF"</span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#060606" "#3E365E" "#007FA7" "#5BC1B7" "#DFF7E0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#060606" "#42345F" "#007FA7" "#48C2B3" "#DFF7E0"</span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"RdBu"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#66001F" "#E58366" "#F7F7F7" "#6DABD0" "#053060"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#67001F" "#B2182B" "#D6604D" "#F4A582" "#FDDBC7"</span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#66001F" "#E58366" "#F7F7F7" "#6DABD0" "#053060"</span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Tableau 10"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#4E79A7" "#F28E2B" "#E15759" "#76B7B2" "#59A14F" "#EDC948" "#B07AA1"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#FF9DA7" "#9C755F" "#BAB0AC"</span>
-<span class="r-in"><span><span class="va">pals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"midr"</span>, <span class="st">"grayscale"</span>, <span class="st">"bluescale"</span>, <span class="st">"HCL"</span>, <span class="st">"shap"</span>, <span class="st">"DALEX"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#4E79A7FF" "#F28E2BFF" "#E15759FF" "#76B7B2FF" "#59A14FFF" "#EDC948FF"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "#B07AA1FF" "#FF9DA7FF" "#9C755FFF" "#BAB0ACFF"</span>
+<span class="r-in"><span><span class="va">pals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"midr"</span>, <span class="st">"grayscale"</span>, <span class="st">"bluescale"</span>, <span class="st">"HCL"</span>, <span class="st">"shap"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pals</span>, <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.pals</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette.pals</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pals</span>, <span class="va">color.theme</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">old.par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
