@@ -7,6 +7,7 @@
 \alias{get.color.theme}
 \alias{plot.color.theme}
 \alias{print.color.theme}
+\alias{color.theme.info}
 \title{Color Themes for Graphics}
 \usage{
 color.theme(object, ...)
@@ -34,11 +35,13 @@ get.color.theme(name, source = NULL, type = NULL, reverse = FALSE)
 \method{plot}{color.theme}(x, n = NULL, text = x$name, ...)
 
 \method{print}{color.theme}(x, display = TRUE, ...)
+
+color.theme.info()
 }
 \arguments{
-\item{object}{one of the following: a color theme name such as "Viridis" with the optional suffix: "_r" for color themes in reverse order ("Viridis_r"), "_q", "_d" and "_s" for color themes converted into another type, a character vector of color names, a palette function, or a ramp function to be used to create a color theme.}
+\item{object}{one of the following: (i) a color theme name with a prefix for the source (e.g., "grDevices#RdBu") and a suffix for the color theme options; "_r" for reversing (e.g., "RdBu_r"), "@q", "@qual", "@d", "@div", "@s", or "@seq" for type modification (e.g., "RdBu@qual"); (ii) a character vector of color names, a palette function, or a ramp function to be used as a color kernel to create a color theme; (iii) a "color.theme" object.}
 
-\item{...}{optional arguments to be passed to palette or ramp functions.}
+\item{...}{optional arguments to be passed to \code{make.color.theme()} or \code{get.color.theme()}.}
 
 \item{kernel}{a palette function, ramp function or color vector, which is used in the palette and ramp methods of the color theme.}
 

@@ -20,9 +20,13 @@ for (pkg in pkgs) {
 }
 ```
 
-The "color.theme" object is a container for two functions that generate colors from a specific theme: `palette()` and `ramp()`. The `palette()` function takes an integer $n$ and returns a vector of $n$ color names, and is typically used to generate discrete colors from a `qualitative` theme. The `ramp()` function takes a numeric vector of values in the $[0, 1]$ interval and returns a color vector of the same length. It is used to map values onto a continuous color gradient from `diverging` (which have a midpoint) and `sequential` theme.
+# Color themes
 
-You can create a color theme by specifying a theme name as the first argument of the `color.theme()` function.
+The "color.theme" object provides two color-generating functions: `palette()` and `ramp()`. The `palette()` function accepts an integer $n$ and returns a vector of $n$ discrete colors. It is primarily intended for **qualitative** themes, where distinct colors are used to represent categorical data. The `ramp()` function accepts a numeric vector $x$ with values in the $[0, 1]$ interval and returns a vector of corresponding colors. It maps numeric values onto a continuous color gradient, making it suitable for **sequential** and **diverging** themes.
+
+## Pre-defined themes
+
+You can get a pre-defined "color.theme" object by providing a theme name to the `color.theme()` or `get.color.theme()` functions.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-3, -4)}
 library(midr)
@@ -30,32 +34,92 @@ library(ggplot2)
 theme_set(theme_midr())
 par.midr()
 library(gridExtra)
+# diverging color theme "nightfall" (package:khroma)
 nightfall <- color.theme("nightfall")
 print(nightfall)
 nightfall$palette(3)
 nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
-accent <- color.theme("Accent", source = "grDevices")
-print(accent)
-accent$palette(5)
+```
+
+```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
+par.midr()
+# sequential color theme "viridis" (package:viridisLite)
 viridis <- color.theme("viridis")
 print(viridis)
 viridis$palette(3)
 viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 ```
 
-Alternatively, a new color theme can be created by passing a color vector or a color function (color ramp or color palette) to the `color.theme()` function.
+You can modify themes by **reversing** the color order or **changing** the theme type (e.g., from sequential to qualitative). These changes can be applied in two ways:
+
+1.  **Using Arguments** : provide the appropriate argument to the function, such as `reverse = TRUE` or `type = "qualitative"`.
+2.  **Using Suffixes** : for convenience, you can append a suffix directly to the theme's name. `_r` to reverse the theme, `@qual` / `@q` to make the theme qualitative (`@div` / `@d` for diverging, `@seq` / `@s` for sequential).
+
+```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
+par.midr()
+plot(color.theme("nightfall", reverse = TRUE),
+     text = "khroma#nightfall_r")
+plot(color.theme("nightfall", type = "qualitative"),
+     text = "khroma#nightfall@qual")
+plot(color.theme("viridis_r",),
+     text = "viridisLite#viridis_r")
+plot(color.theme("viridis@qual"),
+     text = "viridisLite#viridis@qual")
+```
+
+When multiple packages provide a theme with the same name (e.g., "Paired"), you must specify which one to use. You can do this in two ways:
+
+1.  **Using Argument** : provide the package name to the `source` argument (e.g., `source = "grDevices"`).
+2.  **Using Prefix** : append a prefix to the theme name with the package name and a hash (e.g., `"RColorBrewer#Paired"`).
+
+```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
+par.midr()
+# qualitative color theme "Paired" (package:grDevices)
+accent <- color.theme("Paired", source = "grDevices")
+print(accent)
+# qualitative color theme "Paired" (package:RColorBrewer)
+accent2 <- color.theme("RColorBrewer#Paired")
+print(accent2)
+```
+
+## Custom themes
+
+Alternatively, you can create a new "color.theme" object by passing a custom color vector or function to the first argument of `color.theme()` or `make.color.theme()`.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = -1}
 par.midr()
-divct <- color.theme(c("violetred", "white", "darkblue"), type = "diverging")
-print(divct)
-seqct <- color.theme(c("white", "steelblue", "darkblue", "violetred"))
-print(seqct)
-qualct <- color.theme(c("violetred", "steelblue", "gray50"), type = "qualitative")
-print(qualct)
+# create new color theme using a color vector
+mytheme <- color.theme(
+  c("#003f5c", "#7a5195", "#ef5675", "#ffa600"),
+  type = "sequential", name = "mytheme"
+)
+print(mytheme)
+mytheme$palette(5)
+mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 ```
 
-The color appearance of visualizations created with **midr** can be easily customized by passing a "color.theme" object or a color theme name implemented in **midr** (see below) to `ggmid()` or `plot()`.
+```{r, fig.height = 1.2, fig.width = 6, echo = -1}
+par.midr()
+# create new color theme using color function
+rainbow <- color.theme(grDevices::rainbow,
+                       name = "rainbow", source = "grDevices")
+print(rainbow)
+rainbow$palette(5)
+rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
+```
+
+You can register a custom theme to call it by name later in you current R session. To do so, use the `set.color.theme()` function.
+
+```{r, fig.height = 1.2, fig.width = 6, echo = -1}
+par.midr()
+set.color.theme(mytheme, name = "mytheme", source = "custom")
+color.theme("mytheme_r")
+color.theme("custom#mytheme@q")
+```
+
+## Using themes in **midr**
+
+The color appearance of visualizations created with **midr** can be easily customized by passing a "color.theme" object or a pre-defined color theme name (see below) to `ggmid()` or `plot()`.
 
 ```{r, fig.weight = 6, fig.height = 4}
 set.seed(42)
@@ -63,104 +127,74 @@ dataset <- diamonds[sample(nrow(diamonds), 5000L), ]
 mid <- interpret(price ~ (carat + color + clarity + cut) ^ 2, dataset)
 grid.arrange(
   ggmid(mid, "color:clarity", main.effect = TRUE),
-  ggmid(mid, "color:clarity", main.effect = TRUE, theme = divct),
-  ggmid(mid, "carat:color", main.effect = TRUE, theme = "viridis"),
-  ggmid(mid, "carat:color", main.effect = TRUE, theme = "viridis_r")
+  ggmid(mid, "color:clarity", main.effect = TRUE, theme = mytheme),
+  ggmid(mid, "carat:color", main.effect = TRUE, theme = "tokyo_r"),
+  ggmid(mid, "carat:color", main.effect = TRUE, theme = "bicolor")
 )
 imp <- mid.importance(mid)
 grid.arrange(
   ggmid(imp, "heatmap"),
-  ggmid(imp, "barplot", max = 10, theme = qualct),
-  ggmid(imp, "heatmap", theme = seqct),
-  ggmid(imp, "barplot", max = 10, theme = "dark")
+  ggmid(imp, "barplot", max = 10, theme = "mytheme@q"),
+  ggmid(imp, "heatmap", theme = "mytheme_r"),
+  ggmid(imp, "barplot", max = 10, theme = "highlight_r")
 )
 ```
 
-The functions `scale_color_theme()` and `scale_fill_theme()` provide a pipeline for customizing ggplot graphics.
+## Using themes with **ggplot2**
+
+To apply your color themes to `ggplot2` plots, use the `scale_color_theme()` and `scale_fill_theme()` functions. These scales integrate your themes directly into the plot's `color` and `fill` aesthetics.
 
 ```{r, fig.weight = 6, fig.height = 4}
 p <- ggplot(dataset) + geom_point(aes(carat, price, col = color))
 grid.arrange(
-  p + scale_color_theme("muted"),
   p + scale_color_theme("discreterainbow"),
-  p + scale_color_theme("Okabe-Ito"),
-  p + scale_color_theme("plasma", discrete = TRUE)
+  p + scale_color_theme("viridisLite#mako", discrete = TRUE),
+  p + scale_color_theme("tokyo@qual"),
+  p + scale_color_theme(color.theme(
+    "highlight", kernel.args = list(base = "#00000005", which = 3)
+  ))
 )
 ```
 
-```{r sequential, echo = FALSE}
-
-themes <- list()
-
-themes[[1L]] <- data.frame(
-  pack = "viridisLite",
-  name = c("magma", "inferno", "plasma", "viridis",
-            "cividis", "rocket", "mako", "turbo"),
-  type = "s"
+```{r, fig.weight = 6, fig.height = 4}
+p <- ggplot(dataset) +
+  geom_histogram(aes(x = carat, fill = cut), bins = 20)
+grid.arrange(
+  p + scale_fill_theme("muted_r"),
+  p + scale_fill_theme("khroma#discreterainbow"),
+  p + scale_fill_theme("mytheme@q"),
+  p + scale_fill_theme(color.theme(
+    "highlight", kernel.args = list(which = 3)
+  ))
 )
+```
 
-temp <- RColorBrewer::brewer.pal.info
-themes[[2L]] <- data.frame(
-  pack = "RColorBrewer",
-  name = rownames(temp),
-  type = substr(temp$category, 1L, 1L)
+# Pre-defined Color Themes
+
+The following color themes are available when the **midr** package is loaded. Some themes depend on other packages being installed, so for full functionality, please ensure you have already installed the **viridisLite**, **RColorBrewer**, and **khroma** packages.
+
+```{r sequential, echo = -2}
+.df <- color.theme.info()
+DT::datatable(
+  .df,
+  class = 'cell-border stripe hover',
+  rownames = FALSE,
+  options = list(
+    pageLength = 10,
+    lengthMenu = c(10, 20, 50, 100),
+    dom = 'Btip'
+  )
 )
-
-temp <- khroma::info()
-themes[[3L]] <- data.frame(
-  pack = "khroma",
-  name = temp$palette,
-  type = substr(temp$type, 1L, 1L)
-)
-
-themes[[4L]] <- data.frame(
-  pack = "grDevices",
-  name = hcl.pals(type = "divergingx"),
-  type = "d"
-)
-
-themes[[5L]] <- data.frame(
-  pack = "grDevices",
-  name = hcl.pals(type = "diverging"),
-  type = "d"
-)
-
-themes[[6L]] <- data.frame(
-  pack = "grDevices",
-  name = hcl.pals(type = "sequential"),
-  type = "s"
-)
-
-themes[[7L]] <- data.frame(
-  pack = "grDevices",
-  name = hcl.pals(type = "qualitative"),
-  type = "q"
-)
-
-themes[[8L]] <- data.frame(
-  pack = "grDevices",
-  name = grDevices::palette.pals(),
-  type = "q"
-)
-
-themes[[9L]] <- data.frame(
-  pack = "midr",
-  name = c("midr", "shap", "grayscale", "bluescale", "HCL"),
-  type = c("d", "s", "s", "s", "q")
-)
-
-.df <- unique(do.call(rbind, themes))
-.df <- .df[order(.df$type, .df$name, .df$pack),]
 ```
 
 ## Diverging Color Themes
 
 ```{r, echo = FALSE}
 par.midr(mfrow = c(2, 2))
-df <- .df[.df$type == "d", ]
+df <- .df[.df$type == "diverging", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], source = df[i, 1L])
-  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
+  ct <- color.theme(df[i, 1L], source = df[i, 2L])
+  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```
@@ -169,10 +203,10 @@ for (i in seq_len(nrow(df))) {
 
 ```{r, echo = FALSE}
 par.midr(mfrow = c(2, 2))
-df <- .df[.df$type == "q", ]
+df <- .df[.df$type == "qualitative", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], source = df[i, 1L])
-  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
+  ct <- color.theme(df[i, 1L], source = df[i, 2L])
+  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```
@@ -181,10 +215,10 @@ for (i in seq_len(nrow(df))) {
 
 ```{r, echo = FALSE}
 par.midr(mfrow = c(2, 2))
-df <- .df[.df$type == "s", ]
+df <- .df[.df$type == "sequential", ]
 for (i in seq_len(nrow(df))) {
-  ct <- color.theme(df[i, 2L], source = df[i, 1L])
-  text <- sprintf("%s#%s", df[i, 1L], df[i, 2L])
+  ct <- color.theme(df[i, 1L], source = df[i, 2L])
+  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```

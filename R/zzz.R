@@ -15,7 +15,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
   )
   set.color.theme(
     name = "grayscale", source = "midr", type = "sequential",
-    kernel = c("white", "black"),
+    kernel = c("#EFEFEF", "#1F1F1F"),
     kernel.args = list(mode = "ramp")
   )
   set.color.theme(
@@ -26,15 +26,29 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
   )
   set.color.theme(
     name = "HCL", source = "midr", type = "qualitative",
-    kernel = hcl.palette,
+    kernel = c(text = "hcl.palette", namespace = "midr"),
     kernel.args = list(direction = 1L, alpha = NULL, chroma = 100, luminance = 65)
+  )
+  set.color.theme(
+    name = "bicolor", source = "midr", type = "diverging",
+    kernel = c(text = "function(x, first, second) ifelse(x <= 0.5, first, second)",
+               namespace = "base"),
+    kernel.args = list(first = "#6A0DAD", second = "#00A0A0")
+  )
+  set.color.theme(
+    name = "highlight", source = "midr", type = "qualitative",
+    kernel = c(text = paste0("function(n, accent, base, which = 1L) {",
+                             "ret <- rep(base, n);",
+                             "if (which <= n) ret[which] <- accent;",
+                             "ret}"), namespace = "base"),
+    kernel.args = list(accent = "#55AAA5", base = "gray75", which = 1L)
   )
   # grDevices --------
   if (requireNamespace("grDevices", quietly = TRUE)) {
     for (x in grDevices::hcl.pals(type = "sequential")) {
       set.color.theme(
         name = x, source = "grDevices", type = "sequential",
-        kernel = c(fun = "hcl.colors", namespace = "grDevices"),
+        kernel = c(text = "hcl.colors", namespace = "grDevices"),
         kernel.args = list(palette = x, alpha = 1, rev = FALSE),
         options = list(
           kernel.size = Inf,
@@ -45,7 +59,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
     for (x in grDevices::hcl.pals(type = "diverging")) {
       set.color.theme(
         name = x, source = "grDevices", type = "diverging",
-        kernel = c(fun = "hcl.colors", namespace = "grDevices"),
+        kernel = c(text = "hcl.colors", namespace = "grDevices"),
         kernel.args = list(palette = x, alpha = 1, rev = FALSE),
         options = list(
           kernel.size = Inf,
@@ -56,7 +70,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
     for (x in grDevices::hcl.pals(type = "divergingx")) {
       set.color.theme(
         name = x, source = "grDevices", type = "diverging",
-        kernel = c(fun = "hcl.colors", namespace = "grDevices"),
+        kernel = c(text = "hcl.colors", namespace = "grDevices"),
         kernel.args = list(palette = x, alpha = 1, rev = FALSE),
         options = list(
           kernel.size = Inf,
@@ -67,7 +81,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
     for (x in grDevices::hcl.pals(type = "qualitative")) {
       set.color.theme(
         name = x, source = "grDevices", type = "qualitative",
-        kernel = c(fun = "hcl.colors", namespace = "grDevices"),
+        kernel = c(text = "hcl.colors", namespace = "grDevices"),
         kernel.args = list(palette = x, alpha = 1, rev = FALSE),
         options = list(
           kernel.size = Inf,
@@ -78,7 +92,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
     for (x in grDevices::palette.pals()) {
       set.color.theme(
         name = x, source = "grDevices", type = "qualitative",
-        kernel = c(fun = "palette.colors", namespace = "grDevices"),
+        kernel = c(text = "palette.colors", namespace = "grDevices"),
         kernel.args = list(palette = x, alpha = 1, recycle = FALSE),
         options = list(kernel.size = switch(
           x, 8L, Paird = 12L, "Pastel 1" = 9L, "Set 1" = 9L, "Set 3" = 12L,
@@ -94,7 +108,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
                 "mako", "turbo")) {
       set.color.theme(
         name = x, source = "viridisLite", type = "sequential",
-        kernel = c(fun = "viridis", namespace = "viridisLite"),
+        kernel = c(text = "viridis", namespace = "viridisLite"),
         kernel.args = list(option = x, alpha = 1, begin = 0, end = 1, direction = 1),
         options = list(
           kernel.size = Inf,
@@ -110,7 +124,10 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       x <- rownames(info)[i]
       set.color.theme(
         name = x, source = "RColorBrewer", type = info[i, 2L],
-        kernel = RColorBrewer::brewer.pal(n = info[i, 1L], name = x)
+        kernel = c(
+          text = sprintf("brewer.pal(n = %d, name = '%s')", info[i, 1L], x),
+          namespace = "RColorBrewer"
+        )
       )
     }
   }
@@ -121,7 +138,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       x <- info[i, 1L]
       set.color.theme(
         name = x, source = "khroma", type = info[i, 2L],
-        kernel = c(fun = sprintf("color(palette = '%s')", x),
+        kernel = c(text = sprintf("color(palette = '%s')", x),
                    namespace = "khroma"),
         kernel.args = list(range = c(0, 1)),
         options = list(kernel.size = info[i, 3L],
