@@ -30,7 +30,14 @@ set.color.theme(
   type = NULL
 )
 
-get.color.theme(name, source = NULL, type = NULL, reverse = FALSE)
+get.color.theme(
+  name,
+  source = NULL,
+  type = NULL,
+  kernel.args = NULL,
+  options = NULL,
+  reverse = FALSE
+)
 
 \method{plot}{color.theme}(x, n = NULL, text = x$name, ...)
 
@@ -43,9 +50,9 @@ color.theme.info()
 
 \item{...}{optional arguments to be passed to \code{make.color.theme()} or \code{get.color.theme()}.}
 
-\item{kernel}{a palette function, ramp function or color vector, which is used in the palette and ramp methods of the color theme.}
+\item{kernel}{a palette function, ramp function or color vector, which is used to generate colors.}
 
-\item{kernel.args}{a list containing the argument values to be passed to the kernel function.}
+\item{kernel.args}{a list containing the argument values to be passed to the color kernel.}
 
 \item{options}{a list of option values to control the color theme's behavior.}
 
