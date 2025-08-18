@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   fig.width = 6
 )
 
-pkgs <- c("khroma", "viridisLite", "RColorBrewer", "gridExtra", "ggplot2")
+pkgs <- c("khroma", "viridisLite", "RColorBrewer", "gridExtra", "ggplot2", "DT")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
     install.packages(pkg)
