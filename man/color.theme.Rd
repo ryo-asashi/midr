@@ -5,6 +5,7 @@
 \alias{make.color.theme}
 \alias{set.color.theme}
 \alias{get.color.theme}
+\alias{update.color.theme}
 \alias{plot.color.theme}
 \alias{print.color.theme}
 \alias{color.theme.info}
@@ -36,6 +37,16 @@ get.color.theme(
   type = NULL,
   kernel.args = NULL,
   options = NULL,
+  reverse = FALSE
+)
+
+\method{update}{color.theme}(
+  object,
+  kernel.args = NULL,
+  options = NULL,
+  name = NULL,
+  source = NULL,
+  type = NULL,
   reverse = FALSE
 )
 

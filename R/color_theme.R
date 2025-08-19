@@ -155,13 +155,16 @@ color.theme <- function(object, ...) {
   if (is.null(object)) {
     NULL
   } else if (is.color.theme(object)) {
-    object
+    ret <- as.list(object)
+    ret <- ret[c("kernel", "kernel.args", "options", "name", "source", "type")]
+    ret <- do.call(make.color.theme, ret)
+    update.color.theme(ret, ...)
   } else if (is.kernel(object, args = list(...)$kernel.args)) {
     make.color.theme(object, ...)
   } else if (is.character(object) && length(object) == 1L) {
     get.color.theme(object, ...)
   } else {
-    stop("passed object can't be converted to color theme")
+    stop("'object' can't be converted to a color theme")
   }
 }
 
@@ -210,7 +213,6 @@ make.color.theme <- function(
     kernel = kernel, kernel.args = kernel.args, options = options,
     name = name, source = source, type = type
   )
-  env$self <- env
   # palette --------
   env$palette <- function(n) {
     if (!is.numeric(n) || length(n) != 1L)
@@ -286,27 +288,6 @@ make.color.theme <- function(
     ret
   }
   environment(env$ramp) <- env
-  # execute --------
-  env$execute <- function(expr) {
-    if (is.character(expr)) expr <- str2expression(expr)
-    eval(expr, envir = eval(str2lang("self")), enclos = baseenv())
-  }
-  environment(env$execute) <- env
-  # reverse --------
-  env$reverse <- function() {
-    expr <- ifnot.null(options$reverse.method, NA)
-    if (is.na(expr)) {
-      expr <- switch(
-        kernel.class(kernel, args = kernel.args),
-        color = "kernel <- rev(kernel)",
-        c("options$palette.reverse <- !options$palette.reverse",
-          "options$ramp.rescaler <- rev(options$ramp.rescaler)")
-      )
-    }
-    do.call("execute", list(expr = expr))
-    return(invisible(eval(str2lang("self"))))
-  }
-  environment(env$reverse) <- env
   # return --------
   structure(env, class = c("environment", "color.theme"))
 }
@@ -376,22 +357,46 @@ get.color.theme <- function(
     stop(sprintf("'%s#%s' is not found in the color theme environment",
                  source, name))
   ret <- do.call(make.color.theme, args)
+  update.color.theme(ret, kernel.args = kernel.args, options = options,
+                     type = type, reverse = reverse)
+}
+
+#' @rdname color.theme
+#' @export update.color.theme
+#'
+update.color.theme <- function(
+    object, kernel.args = NULL, options = NULL, name = NULL, source = NULL,
+    type = NULL, reverse = FALSE
+  ) {
+  if (!is.color.theme(object))
+    stop("'object' must be a color theme")
   if (!is.null(type))
-    ret$type <- type
+    object$type <- type
   if (!is.null(kernel.args)) {
     for (item in names(kernel.args)) {
-      ret$kernel.args[[item]] <- kernel.args[[item]]
+      object$kernel.args[[item]] <- kernel.args[[item]]
     }
   }
   if (!is.null(options)) {
     for (item in names(options)) {
-      ret$options[[item]] <- options[[item]]
+      object$options[[item]] <- options[[item]]
     }
   }
-  if (reverse)
-    try(ret$reverse(), silent = TRUE)
-  ret
+  # reverse --------
+  if (reverse) {
+    method <- object$options$reverse.method
+    if (!is.null(method) && !is.na(method)) {
+      eval(str2expression(method), envir = object, enclos = baseenv())
+    } else if (kernel.class(object$kernel) == "color") {
+      object$kernel <- rev(object$kernel)
+    } else {
+      object$options$palette.reverse <- !object$options$palette.reverse
+      object$options$ramp.rescaler <- rev(object$options$ramp.rescaler)
+    }
+  }
+  object
 }
+
 
 #' @rdname color.theme
 #' @param x a "color.theme" object to be displayed.

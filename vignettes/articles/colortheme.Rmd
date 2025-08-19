@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   fig.width = 6
 )
 
-pkgs <- c("khroma", "viridisLite", "RColorBrewer", "gridExtra", "ggplot2", "DT")
+pkgs <- c("khroma", "viridisLite", "RColorBrewer", "gridExtra", "ggplot2", "DT", "colorspace")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
     install.packages(pkg)
@@ -31,14 +31,19 @@ You can get a pre-defined "color.theme" object by providing a theme name to the 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-3, -4)}
 library(midr)
 library(ggplot2)
+library(colorspace)
 theme_set(theme_midr())
 par.midr()
 library(gridExtra)
 # diverging color theme "nightfall" (package:khroma)
 nightfall <- color.theme("nightfall")
 print(nightfall)
-nightfall$palette(3)
-nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
+```
+
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+par.midr(mar = c(0, 1, 0, 1))
+swatchplot(nightfall$palette(5))
+swatchplot(nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
@@ -46,8 +51,12 @@ par.midr()
 # sequential color theme "viridis" (package:viridisLite)
 viridis <- color.theme("viridis")
 print(viridis)
-viridis$palette(3)
-viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
+```
+
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+par.midr(mar = c(0, 1, 0, 1))
+swatchplot(viridis$palette(5))
+swatchplot(viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
 You can modify themes by **reversing** the color order or **changing** the theme type (e.g., from sequential to qualitative). These changes can be applied in two ways:
@@ -75,11 +84,11 @@ When multiple packages provide a theme with the same name (e.g., "Paired"), you 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
 par.midr()
 # qualitative color theme "Paired" (package:grDevices)
-accent <- color.theme("Paired", source = "grDevices")
-print(accent)
+paired <- color.theme("Paired", source = "grDevices")
+plot(paired, text = "grDevices#Paired")
 # qualitative color theme "Paired" (package:RColorBrewer)
-accent2 <- color.theme("RColorBrewer#Paired")
-print(accent2)
+paired2 <- color.theme("RColorBrewer#Paired")
+plot(paired2, text = "RColorBrewer#Paired")
 ```
 
 ## Custom themes
@@ -94,13 +103,17 @@ mytheme <- color.theme(
   type = "sequential", name = "mytheme"
 )
 print(mytheme)
-mytheme$palette(5)
-mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
+```
+
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+par.midr(mar = c(0, 1, 0, 1))
+swatchplot(mytheme$palette(5))
+swatchplot(mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = -1}
 par.midr()
-# create new color theme using color function
+# create new color theme using a color function
 rainbow <- color.theme(grDevices::rainbow,
                        name = "rainbow", source = "grDevices")
 print(rainbow)
@@ -108,12 +121,18 @@ rainbow$palette(5)
 rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 ```
 
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+par.midr(mar = c(0, 1, 0, 1))
+swatchplot(rainbow$palette(5))
+swatchplot(rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
+```
+
 You can register a custom theme to call it by name later in you current R session. To do so, use the `set.color.theme()` function.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = -1}
 par.midr()
 set.color.theme(mytheme, name = "mytheme", source = "custom")
-color.theme("mytheme_r")
+color.theme("mytheme_r@div")
 color.theme("custom#mytheme@q")
 ```
 
@@ -164,7 +183,7 @@ grid.arrange(
   p + scale_fill_theme("khroma#discreterainbow"),
   p + scale_fill_theme("mytheme@q"),
   p + scale_fill_theme(color.theme(
-    "highlight", kernel.args = list(which = 3)
+    "highlight", kernel.args = list(accent = "#FF4565", which = 3)
   ))
 )
 ```
