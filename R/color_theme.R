@@ -382,7 +382,6 @@ update.color.theme <- function(
       object$options[[item]] <- options[[item]]
     }
   }
-  # reverse --------
   if (reverse) {
     method <- object$options$reverse.method
     if (!is.null(method) && !is.na(method)) {
