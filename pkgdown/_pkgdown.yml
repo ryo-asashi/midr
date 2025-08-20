@@ -50,12 +50,12 @@ reference:
 - subtitle: Methods
   contents:
   - ggmid
-  - mid.extract
-  - mid.plots
   - plot.mid
   - predict.mid
   - print.mid
   - summary.mid
+  - mid.plots
+  - mid.extract
 - title: Importance of effects
   contents:
   - mid.importance
