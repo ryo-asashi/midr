@@ -15,22 +15,17 @@ knitr::opts_chunk$set(
 pkgs <- c("khroma", "viridisLite", "RColorBrewer", "gridExtra", "ggplot2", "DT", "htmltools")
 install.packages(pkgs[!pkgs %in% list.files(.libPaths())])
 
-# HTMLで色を表示する関数
 show_colors_html <- function(colors, height = "25px") {
   div_tags <- lapply(colors, function(color) {
     htmltools::tags$div(
-      style = paste(
-        "background-color:", color, ";",
-        "width: 100%; height:", height, ";",
-        "display: inline-block;"
-      )
+      style = paste("background-color:", color, ";",
+                    "width: 100%; height:", height, ";",
+                    "display: inline-block;")
     )
   })
-  
-  # HTMLとして表示
-  htmltools::tagList(
-    htmltools::tags$div(style = "display: flex; width: 100%;", div_tags)
-  )
+  htmltools::tagList(htmltools::tags$div(
+      style = "display: flex; width: 100%;", div_tags
+  ))
 }
 ```
 
@@ -201,7 +196,7 @@ grid.arrange(
 )
 ```
 
-# Pre-defined Color Themes
+# Pre-defined color themes
 
 The following color themes are available when the **midr** package is loaded. Some themes depend on other packages being installed, so for full functionality, please ensure you have already installed the **viridisLite**, **RColorBrewer**, and **khroma** packages.
 

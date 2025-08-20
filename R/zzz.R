@@ -15,7 +15,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
   )
   set.color.theme(
     name = "grayscale", source = "midr", type = "sequential",
-    kernel = c("#EFEFEF", "#1F1F1F"),
+    kernel = c("#FEFEFE", "#0F0F0F"),
     kernel.args = list(mode = "ramp")
   )
   set.color.theme(

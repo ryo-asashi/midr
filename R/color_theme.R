@@ -155,6 +155,8 @@ color.theme <- function(object, ...) {
   if (is.null(object)) {
     NULL
   } else if (is.color.theme(object)) {
+    if (nargs() == 1L)
+      return(object)
     ret <- as.list(object)
     ret <- ret[c("kernel", "kernel.args", "options", "name", "source", "type")]
     ret <- do.call(make.color.theme, ret)
@@ -370,8 +372,10 @@ update.color.theme <- function(
   ) {
   if (!is.color.theme(object))
     stop("'object' must be a color theme")
-  if (!is.null(type))
+  if (!is.null(type)) {
+    type <- match.arg(type, c("sequential", "diverging", "qualitative"))
     object$type <- type
+  }
   if (!is.null(kernel.args)) {
     for (item in names(kernel.args)) {
       object$kernel.args[[item]] <- kernel.args[[item]]
@@ -489,13 +493,16 @@ color.theme.info <- function() {
 #'
 scale_color_theme <- function(
     theme, ..., discrete = NULL, middle = 0, aesthetics = "colour") {
+  args <- list(...)
+  args$aesthetics <- aesthetics
   theme <- color.theme(theme)
   if (is.null(discrete))
     discrete <- theme$type == "qualitative"
   if (discrete) {
-    scale <- ggplot2::discrete_scale(
-      aesthetics, palette = theme$palette,
-      guide = "legend", ...)
+    args$palette <- theme$palette
+    args$guide <- ifnot.null(args$guide, "legend")
+    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
+    scale <- do.call(ggplot2::discrete_scale, args)
   } else {
     if (theme$type == "qualitative")
       stop("qualitative color theme can't be used for continuous scales")
@@ -505,9 +512,11 @@ scale_color_theme <- function(
       function(x, to = c(0, 1), from = range(x, na.rm = TRUE))
         scales::rescale_mid(x, to, from, mid = middle)
     }
-    scale <- ggplot2::continuous_scale(
-      aesthetics, palette = theme$ramp,
-      guide = "colorbar", rescaler = rescale_fun, ...)
+    args$palette <- theme$ramp
+    args$rescaler <- rescale_fun
+    args$guide <- ifnot.null(args$guide, "colorbar")
+    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
+    scale <- do.call(ggplot2::continuous_scale, args)
   }
   scale
 }
@@ -552,8 +561,10 @@ rescale <- function(x, middle = NULL) {
 }
 
 
-to.colors <- function(x, theme, middle = 0, na.value = "gray50") {
+to.colors <- function(x, theme, middle = 0, na.value = NULL) {
   theme <- color.theme(theme)
+  if (is.null(na.value))
+    na.value <- ifnot.null(theme$options$na.color, NA)
   if (is.discrete(x)) {
     x <- as.integer(as.factor(x))
     cols <- theme$palette(max(x, na.rm = TRUE))[x]
