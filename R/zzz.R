@@ -38,10 +38,10 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
   set.color.theme(
     name = "highlight", source = "midr", type = "qualitative",
     kernel = c(text = paste0("function(n, accent, base, which = 1L) {",
-                             "ret <- rep(base, n);",
-                             "if (which <= n) ret[which] <- accent;",
-                             "ret}"), namespace = "base"),
-    kernel.args = list(accent = "#55AAA5", base = "gray75", which = 1L)
+                             "x <- rep.int(base, n);",
+                             "x[which] <- rep_len(accent, length(which));",
+                             "x[seq_len(n)]}"), namespace = "base"),
+    kernel.args = list(accent = "#A4136E", base = "gray80", which = 1L)
   )
   # grDevices --------
   if (requireNamespace("grDevices", quietly = TRUE)) {

@@ -1,3 +1,7 @@
+# midr 0.5.0.908
+
+- Rewrote `color.theme()` to enhance the functionality of the function.
+
 # midr 0.5.0.906
 
 - Updated hex logo and favicons.

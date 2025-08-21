@@ -70,33 +70,33 @@ show_colors_html(viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 You can modify themes by **reversing** the color order or **changing** the theme type (e.g., from sequential to qualitative). These changes can be applied in two ways:
 
 1.  **Using Arguments** : provide the appropriate argument to the function, such as `reverse = TRUE` or `type = "qualitative"`.
-2.  **Using Suffixes** : for convenience, you can append a suffix directly to the theme's name. `_r` to reverse the theme, `@qual` / `@q` to make the theme qualitative (`@div` / `@d` for diverging, `@seq` / `@s` for sequential).
+2.  **Using Suffixes** : for convenience, you can append a suffix directly to the theme's name. `_r` to reverse the theme, `@q` (or longer, such as `@qual`) to make the theme qualitative (`@d` for diverging, `@s` for sequential).
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
 par.midr()
 plot(color.theme("nightfall", reverse = TRUE),
-     text = "khroma#nightfall_r")
+     text = "khroma/nightfall_r")
 plot(color.theme("nightfall", type = "qualitative"),
-     text = "khroma#nightfall@qual")
+     text = "khroma/nightfall@qual")
 plot(color.theme("viridis_r",),
-     text = "viridisLite#viridis_r")
+     text = "viridisLite/viridis_r")
 plot(color.theme("viridis@qual"),
-     text = "viridisLite#viridis@qual")
+     text = "viridisLite/viridis@qual")
 ```
 
 When multiple packages provide a theme with the same name (e.g., "Paired"), you must specify which one to use. You can do this in two ways:
 
 1.  **Using Argument** : provide the package name to the `source` argument (e.g., `source = "grDevices"`).
-2.  **Using Prefix** : append a prefix to the theme name with the package name and a hash (e.g., `"RColorBrewer#Paired"`).
+2.  **Using Prefix** : append a prefix to the theme name with the package name and a forward slash (e.g., `"RColorBrewer/Paired"`).
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-1)}
 par.midr()
 # qualitative color theme "Paired" (package:grDevices)
 paired <- color.theme("Paired", source = "grDevices")
-plot(paired, text = "grDevices#Paired")
+plot(paired, text = "grDevices/Paired")
 # qualitative color theme "Paired" (package:RColorBrewer)
-paired2 <- color.theme("RColorBrewer#Paired")
-plot(paired2, text = "RColorBrewer#Paired")
+paired2 <- color.theme("RColorBrewer/Paired")
+plot(paired2, text = "RColorBrewer/Paired")
 ```
 
 ## Custom themes
@@ -141,7 +141,7 @@ You can register a custom theme to call it by name later in you current R sessio
 par.midr()
 set.color.theme(mytheme, name = "mytheme", source = "custom")
 color.theme("mytheme_r@div")
-color.theme("custom#mytheme@q")
+color.theme("custom/mytheme@q")
 ```
 
 ## Using themes in **midr**
@@ -175,11 +175,9 @@ To apply your color themes to `ggplot2` plots, use the `scale_color_theme()` and
 p <- ggplot(dataset) + geom_point(aes(carat, price, col = color))
 grid.arrange(
   p + scale_color_theme("discreterainbow"),
-  p + scale_color_theme("viridisLite#mako", discrete = TRUE),
+  p + scale_color_theme("viridisLite/mako", discrete = TRUE),
   p + scale_color_theme("tokyo@qual"),
-  p + scale_color_theme(color.theme(
-    "highlight", kernel.args = list(base = "#00000005", which = 3)
-  ))
+  p + scale_color_theme("highlight?base='#50505010'&which=6:7")
 )
 ```
 
@@ -188,11 +186,9 @@ p <- ggplot(dataset) +
   geom_histogram(aes(x = carat, fill = cut), bins = 20)
 grid.arrange(
   p + scale_fill_theme("muted_r"),
-  p + scale_fill_theme("khroma#discreterainbow"),
+  p + scale_fill_theme("khroma/discreterainbow"),
   p + scale_fill_theme("mytheme@q"),
-  p + scale_fill_theme(color.theme(
-    "highlight", kernel.args = list(accent = "#FF4565", which = 3)
-  ))
+  p + scale_fill_theme("highlight?which=1:3&accent='maroon'")
 )
 ```
 
@@ -221,7 +217,7 @@ par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "diverging", ]
 for (i in seq_len(nrow(df))) {
   ct <- color.theme(df[i, 1L], source = df[i, 2L])
-  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
+  text <- sprintf("%s/%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```
@@ -233,7 +229,7 @@ par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "qualitative", ]
 for (i in seq_len(nrow(df))) {
   ct <- color.theme(df[i, 1L], source = df[i, 2L])
-  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
+  text <- sprintf("%s/%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```
@@ -245,7 +241,7 @@ par.midr(mfrow = c(2, 2))
 df <- .df[.df$type == "sequential", ]
 for (i in seq_len(nrow(df))) {
   ct <- color.theme(df[i, 1L], source = df[i, 2L])
-  text <- sprintf("%s#%s", df[i, 2L], df[i, 1L])
+  text <- sprintf("%s/%s", df[i, 2L], df[i, 1L])
   plot(ct, text = text)
 }
 ```
