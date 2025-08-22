@@ -1,37 +1,59 @@
-#' Calculate MID Breakdown
+#' Calculate MID Breakdown for a Prediction
 #'
-#' \code{mid.breakdown()} calculates the MID breakdown of a prediction of the MID model.
+#' @description
+#' \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.
+#' It breaks down the total prediction into the effects of the intercept, main effects, and interactions.
 #'
-#' \code{mid.breakdown()} returns an object of class "mid.breakdown".
+#' @details
+#' \code{mid.breakdown()} is a method for local interpretability.
+#' For a given observation, it provides a clear answer to the question, "How much did each component of the MID model contribute to the final prediction?"
+#'
+#' The function calculates the value of each term in the MID model's additive structure for the specified observation.
+#' The total prediction is the sum of these individual contributions.
+#' The prediction, denoted \eqn{\mathcal{F}(\mathbf{x})}, is decomposed as:
+#' \deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
+#'
+#' The output data frame itemizes the numerical value of each main effect
+#' (\eqn{f_{j}(x_j)}) and interaction effect (\eqn{f_{jk}(x_j, x_k)}),
+#' along with the intercept (\eqn{f_\phi}). This makes the prediction transparent
+#' and easy to understand.
 #'
 #' @param object a "mid" object.
-#' @param data a data.frame containing a single observation to be used to calculate the MID breakdown. If \code{NULL}, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
-#' @param sort logical. If \code{TRUE}, the output data frame is sorted by MID .
-#' @param digits an integer specifying the minimum number of significant digits.
-#' @param format a character vector of length two to be used as the formats of the \code{sprintf()} function for each value or pair of values of predictor variables.
+#' @param data a data frame containing one or more observations for which to calculate the MID breakdown. If \code{NULL}, data is automatically extracted from the parent frame.
+#' @param row an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.
+#' @param sort logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.
+#' @param format a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.
+#'
 #' @examples
+#' # Calculate the breakdown for the first and third observation in the data
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-#' mbd <- mid.breakdown(mid, airquality[1L, ])
-#' mbd
+#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
+#' mbd <- mid.breakdown(mid, data = airquality, row = 1)
+#' print(mbd)
+#' mbd <- mid.breakdown(mid, data = airquality, row = 3)
+#' print(mbd)
 #' @returns
-#' \code{mid.breakdown()} returns an object of the class "mid.breakdown" containing the following components.
-#' \item{breakdown}{the data frame containing the breakdown of the prediction.}
-#' \item{data}{the data frame containing the values of predictor variables used for the prediction.}
+#' \code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:
+#' \item{breakdown}{a data frame containing the breakdown of the prediction.}
+#' \item{data}{the data frame containing the predictor variable values used for the prediction.}
 #' \item{intercept}{the intercept of the MID model.}
-#' \item{prediction}{the predicted value.}
+#' \item{prediction}{the predicted value from the MID model.}
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(
-    object, data = NULL, sort = TRUE, digits = 6L, format = c("%s", "%s, %s")) {
+    object, data = NULL, row = NULL, sort = TRUE, format = c("%s", "%s, %s")) {
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
     data <- data.frame(data)
+  if (!is.null(row))
+    data <- data[row, ]
   if (nrow(data) != 1L) {
     message("'data' contains multiple observations: the first observation is used")
     data <- data[1L, ]
   }
+  if (nrow(data) == 0L)
+    stop("'data' contains no observations to be used")
   preds <- predict.mid(object, data,
                        type = "terms", na.action = "na.pass")[1L, ]
   data <- model.reframe(object, data)
@@ -43,11 +65,11 @@ mid.breakdown <- function(
     term <- terms[i]
     tags <- term.split(term)
     if (length(tags) == 1L) {
-      u <- base::format(data[1L, tags[1L]], digits = digits)
+      u <- data[1L, tags[1L]]
       values[i] <- sprintf(format[1L], u)
     } else {
-      u <- base::format(data[1L, tags[1L]], digits = digits)
-      v <- base::format(data[1L, tags[2L]], digits = digits)
+      u <- data[1L, tags[1L]]
+      v <- data[1L, tags[2L]]
       values[i] <- sprintf(format[2L], u, v)
     }
   }
@@ -70,9 +92,6 @@ mid.breakdown <- function(
 }
 
 
-#' @rdname mid.breakdown
-#' @param x a "mid.importance" object to be printed.
-#' @param ... additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.
 #' @exportS3Method base::print
 #'
 print.mid.breakdown <- function(
@@ -89,4 +108,3 @@ print.mid.breakdown <- function(
   cat("\nBreakdown of Effects:\n")
   print.data.frame(x$breakdown, digits = digits, ...)
 }
-

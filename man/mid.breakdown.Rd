@@ -2,50 +2,58 @@
 % Please edit documentation in R/mid_breakdown.R
 \name{mid.breakdown}
 \alias{mid.breakdown}
-\alias{print.mid.breakdown}
-\title{Calculate MID Breakdown}
+\title{Calculate MID Breakdown for a Prediction}
 \usage{
 mid.breakdown(
   object,
   data = NULL,
+  row = NULL,
   sort = TRUE,
-  digits = 6L,
   format = c("\%s", "\%s, \%s")
 )
-
-\method{print}{mid.breakdown}(x, digits = max(3L, getOption("digits") - 2L), ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data.frame containing a single observation to be used to calculate the MID breakdown. If \code{NULL}, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
+\item{data}{a data frame containing one or more observations for which to calculate the MID breakdown. If \code{NULL}, data is automatically extracted from the parent frame.}
 
-\item{sort}{logical. If \code{TRUE}, the output data frame is sorted by MID .}
+\item{row}{an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.}
 
-\item{digits}{an integer specifying the minimum number of significant digits.}
+\item{sort}{logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.}
 
-\item{format}{a character vector of length two to be used as the formats of the \code{sprintf()} function for each value or pair of values of predictor variables.}
-
-\item{x}{a "mid.importance" object to be printed.}
-
-\item{...}{additional parameters to be passed to \code{print.data.frame()} to print the importance of component functions.}
+\item{format}{a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.}
 }
 \value{
-\code{mid.breakdown()} returns an object of the class "mid.breakdown" containing the following components.
-\item{breakdown}{the data frame containing the breakdown of the prediction.}
-\item{data}{the data frame containing the values of predictor variables used for the prediction.}
+\code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:
+\item{breakdown}{a data frame containing the breakdown of the prediction.}
+\item{data}{the data frame containing the predictor variable values used for the prediction.}
 \item{intercept}{the intercept of the MID model.}
-\item{prediction}{the predicted value.}
+\item{prediction}{the predicted value from the MID model.}
 }
 \description{
-\code{mid.breakdown()} calculates the MID breakdown of a prediction of the MID model.
+\code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.
+It breaks down the total prediction into the effects of the intercept, main effects, and interactions.
 }
 \details{
-\code{mid.breakdown()} returns an object of class "mid.breakdown".
+\code{mid.breakdown()} is a method for local interpretability.
+For a given observation, it provides a clear answer to the question, "How much did each component of the MID model contribute to the final prediction?"
+
+The function calculates the value of each term in the MID model's additive structure for the specified observation.
+The total prediction is the sum of these individual contributions.
+The prediction, denoted \eqn{\mathcal{F}(\mathbf{x})}, is decomposed as:
+\deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
+
+The output data frame itemizes the numerical value of each main effect
+(\eqn{f_{j}(x_j)}) and interaction effect (\eqn{f_{jk}(x_j, x_k)}),
+along with the intercept (\eqn{f_\phi}). This makes the prediction transparent
+and easy to understand.
 }
 \examples{
+# Calculate the breakdown for the first and third observation in the data
 data(airquality, package = "datasets")
-mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-mbd <- mid.breakdown(mid, airquality[1L, ])
-mbd
+mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
+mbd <- mid.breakdown(mid, data = airquality, row = 1)
+print(mbd)
+mbd <- mid.breakdown(mid, data = airquality, row = 3)
+print(mbd)
 }

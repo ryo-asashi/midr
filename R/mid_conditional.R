@@ -1,33 +1,38 @@
-#' Calculate ICE of MID Models
+#' Calculate ICE Curves for a MID Model
 #'
-#' \code{mid.conditional()} creates an object to draw ICE curves of a MID model.
+#' @description
+#' \code{mid.conditional()} calculates the data required to draw Individual Conditional Expectation (ICE) curves from a fitted MID model.
+#' ICE curves visualize how a single observation's prediction changes as a specified variable's value varies, while all other variable are held constant.
 #'
-#' \code{mid.conditional()} obtains predictions for hypothetical observations from a MID model and returns a "mid.conditional" object.
-#' The graphing functions \code{ggmid()} and \code{plot()} can be used to generate the ICE curve plots.
+#' @details
+#' The function generates a set of hypothetical observations by creating copies of the original data and varying the specified \code{variable} across a range of sample points.
+#' It then obtains a prediction for each of these hypothetical observations from the MID model. The returned object can be plotted to visualize the ICE curves.
 #'
 #' @param object a "mid" object.
-#' @param variable a character string or expression specifying the variable for the ICE calculation.
-#' @param data a data frame containing observations for which ICE values are calculated. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.
-#' @param keep.effects logical. If \code{TRUE}, the effects of component functions are stored in the output object.
-#' @param n.samples integer. The number of sample points for the calculation.
-#' @param max.nrow an integer specifying the maximum number of rows of the output data frames.
-#' @param type the type of prediction required. The default is "response". "link" is possible if the MID model uses a link function.
+#' @param variable a character string or expression specifying the singlue predictor variable for which to calculate ICE curves.
+#' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted from the parent frame.
+#' @param n.samples the number of sample points for the \code{varibale}'s range.
+#' @param max.nrow the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.
+#' @param type the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.
+#' @param keep.effects logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.
+#'
 #' @examples
+#' # Calculate the ICE curves for a fitted MID model
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
-#' mc <- mid.conditional(mid, "Wind", airquality)
-#' mc
+#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
+#' ice <- mid.conditional(mid, "Wind", airquality)
+#' print(ice)
 #' @returns
-#' \code{mid.conditional()} returns an object of class "mid.conditional" with the following components:
-#' \item{terms}{the character vector of relevant terms.}
-#' \item{observed}{the data frame of the actual observations and the corresponding predictions.}
-#' \item{conditional}{the data frame of the hypothetical observations and the corresponding predictions.}
-#' \item{values}{the sample points of the variable.}
+#' \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
+#' \item{terms}{a character vector of relevant terms for the \code{variable}.}
+#' \item{observed}{a data frame of the original observations used, along with their predictions.}
+#' \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
+#' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation}
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, variable, data = NULL, keep.effects = TRUE, n.samples = 100L,
-    max.nrow = 1e5L, type = c("response", "link")) {
+    object, variable, data = NULL, n.samples = 100L,
+    max.nrow = 1e5L, type = c("response", "link"), keep.effects = TRUE) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))
   rv <- length(tv <- mid.terms(object, require = variable))
@@ -104,10 +109,6 @@ mid.conditional <- function(
 }
 
 
-#' @rdname mid.conditional
-#' @param x a "mid.conditional" object to be printed.
-#' @param digits an integer specifying the minimum number of significant digits to be printed.
-#' @param ... additional parameters to be passed to \code{print.default()} to print the sample point vector.
 #' @exportS3Method base::print
 #'
 print.mid.conditional <- function(
