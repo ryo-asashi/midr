@@ -48,9 +48,11 @@ nightfall <- color.theme("nightfall")
 print(nightfall)
 ```
 
-```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1, -3, -5)}
 par.midr(mar = c(0, 1, 0, 1))
+nightfall$palette(5)
 show_colors_html(nightfall$palette(5))
+nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 show_colors_html(nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
@@ -61,9 +63,11 @@ viridis <- color.theme("viridis")
 print(viridis)
 ```
 
-```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1, -3, -5)}
 par.midr(mar = c(0, 1, 0, 1))
+nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 show_colors_html(viridis$palette(5))
+viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 show_colors_html(viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
@@ -113,9 +117,11 @@ mytheme <- color.theme(
 print(mytheme)
 ```
 
-```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1, -3, -5)}
 par.midr(mar = c(0, 1, 0, 1))
+mytheme$palette(5)
 show_colors_html(mytheme$palette(5))
+mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 show_colors_html(mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 
@@ -125,13 +131,13 @@ par.midr()
 rainbow <- color.theme(grDevices::rainbow,
                        name = "rainbow", source = "grDevices")
 print(rainbow)
-rainbow$palette(5)
-rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 ```
 
-```{r, fig.height = 0.35, fig.width = 6, echo = c(-1)}
+```{r, fig.height = 0.35, fig.width = 6, echo = c(-1, -3, -5)}
 par.midr(mar = c(0, 1, 0, 1))
+rainbow$palette(5)
 show_colors_html(rainbow$palette(5))
+rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 show_colors_html(rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00)))
 ```
 

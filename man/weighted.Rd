@@ -5,7 +5,6 @@
 \alias{augmented}
 \alias{shuffled}
 \alias{latticized}
-\alias{weights.weighted}
 \title{Weighted Data Frames}
 \usage{
 weighted(data, weights = NULL)
@@ -24,8 +23,6 @@ latticized(
   frames = list(),
   keep.mean = TRUE
 )
-
-\method{weights}{weighted}(object, ...)
 }
 \arguments{
 \item{data}{a data frame.}
@@ -47,10 +44,6 @@ latticized(
 \item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects).}
 
 \item{keep.mean}{logical. If \code{TRUE}, the representative values of each group is the average of the corresponding group.}
-
-\item{object}{a data frame with the attribute "weights".}
-
-\item{...}{not used.}
 }
 \value{
 \code{weighted()} returns a data frame with the attribute "weights".

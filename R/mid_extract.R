@@ -114,8 +114,7 @@ mid.terms <- function(
   terms
 }
 
-#' @rdname mid.extract
-#' @param x a "mid" or "mid.importance" object.
+
 #' @exportS3Method stats::terms
 #'
 terms.mid <- function(x, ...) {
@@ -123,7 +122,6 @@ terms.mid <- function(x, ...) {
 }
 
 
-#' @rdname mid.extract
 #' @exportS3Method stats::terms
 #'
 terms.mid.importance <- function(x, ...) {
@@ -131,7 +129,6 @@ terms.mid.importance <- function(x, ...) {
 }
 
 
-#' @rdname mid.extract
 #' @exportS3Method stats::formula
 #'
 formula.mid <- function(x, ...) {
@@ -139,7 +136,6 @@ formula.mid <- function(x, ...) {
 }
 
 
-#' @rdname mid.extract
 #' @exportS3Method stats::model.frame
 #'
 model.frame.mid <- function(object, ...) {

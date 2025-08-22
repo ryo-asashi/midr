@@ -49,7 +49,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "grDevices", type = "sequential",
         kernel = c(text = "hcl.colors", namespace = "grDevices"),
-        kernel.args = list(palette = x, alpha = 1, rev = FALSE),
+        kernel.args = list(palette = x, alpha = NULL, rev = FALSE),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$rev <- !kernel.args$rev"
@@ -60,7 +60,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "grDevices", type = "diverging",
         kernel = c(text = "hcl.colors", namespace = "grDevices"),
-        kernel.args = list(palette = x, alpha = 1, rev = FALSE),
+        kernel.args = list(palette = x, alpha = NULL, rev = FALSE),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$rev <- !kernel.args$rev"
@@ -71,7 +71,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "grDevices", type = "diverging",
         kernel = c(text = "hcl.colors", namespace = "grDevices"),
-        kernel.args = list(palette = x, alpha = 1, rev = FALSE),
+        kernel.args = list(palette = x, alpha = NULL, rev = FALSE),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$rev <- !kernel.args$rev"
@@ -82,7 +82,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "grDevices", type = "qualitative",
         kernel = c(text = "hcl.colors", namespace = "grDevices"),
-        kernel.args = list(palette = x, alpha = 1, rev = FALSE),
+        kernel.args = list(palette = x, alpha = NULL, rev = FALSE),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$rev <- !kernel.args$rev"
@@ -93,7 +93,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "grDevices", type = "qualitative",
         kernel = c(text = "palette.colors", namespace = "grDevices"),
-        kernel.args = list(palette = x, alpha = 1, recycle = FALSE),
+        kernel.args = list(palette = x, alpha = NULL, recycle = FALSE),
         options = list(kernel.size = switch(
           x, 8L, Paird = 12L, "Pastel 1" = 9L, "Set 1" = 9L, "Set 3" = 12L,
           "Tableau 10" = 10L, "Classic Tableau" = 10L, "Polychrome 36" = 36L,

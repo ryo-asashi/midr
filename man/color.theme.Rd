@@ -3,8 +3,6 @@
 \name{color.theme}
 \alias{color.theme}
 \alias{set.color.theme}
-\alias{plot.color.theme}
-\alias{print.color.theme}
 \alias{color.theme.info}
 \title{Color Themes for Graphics}
 \usage{
@@ -28,10 +26,6 @@ set.color.theme(
   type = NULL
 )
 
-\method{plot}{color.theme}(x, n = NULL, text = x$name, ...)
-
-\method{print}{color.theme}(x, display = TRUE, ...)
-
 color.theme.info()
 }
 \arguments{
@@ -52,14 +46,6 @@ color.theme.info()
 \item{...}{optional arguments to be passed on to \code{get.theme()}, \code{make.theme()} or \code{modify.theme()}.}
 
 \item{kernel}{a color vector, a palette function, or a ramp function that serves as the basis for generating colors.}
-
-\item{x}{a "color.theme" object to be displayed.}
-
-\item{n}{an integer specifying the number of colors to be displayed.}
-
-\item{text}{a character string to be displayed.}
-
-\item{display}{logical. If \code{TRUE}, colors are displayed in the plot area.}
 }
 \value{
 \code{color.theme()} returns a "color.theme" object containing the \code{palette()} and \code{ramp()} functions, along with other metadata about the theme.

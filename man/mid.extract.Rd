@@ -5,10 +5,6 @@
 \alias{mid.encoding.scheme}
 \alias{mid.frames}
 \alias{mid.terms}
-\alias{terms.mid}
-\alias{terms.mid.importance}
-\alias{formula.mid}
-\alias{model.frame.mid}
 \title{Extract Components from MID Models}
 \usage{
 mid.extract(object, component, ...)
@@ -25,14 +21,6 @@ mid.terms(
   remove = NULL,
   ...
 )
-
-\method{terms}{mid}(x, ...)
-
-\method{terms}{mid.importance}(x, ...)
-
-\method{formula}{mid}(x, ...)
-
-\method{model.frame}{mid}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -48,8 +36,6 @@ mid.terms(
 \item{require}{a character vector of variable names. The terms that are not related to any of the specified names are excluded.}
 
 \item{remove}{a character vector of variable names. The terms that are related to at least one of the specified names are excluded.}
-
-\item{x}{a "mid" or "mid.importance" object.}
 }
 \value{
 \code{mid.extract()} returns the \code{component} extracted from the \code{object},

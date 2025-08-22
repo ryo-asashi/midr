@@ -135,9 +135,6 @@ latticized <- function(
 }
 
 
-#' @rdname weighted
-#' @param object a data frame with the attribute "weights".
-#' @param ... not used.
 #' @exportS3Method stats::weights
 #'
 weights.weighted <- function(object, ...) {

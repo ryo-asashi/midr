@@ -448,11 +448,6 @@ modify.theme <- function(
   theme
 }
 
-
-#' @rdname color.theme
-#' @param x a "color.theme" object to be displayed.
-#' @param n an integer specifying the number of colors to be displayed.
-#' @param text a character string to be displayed.
 #' @exportS3Method base::plot
 #'
 plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
@@ -477,8 +472,6 @@ plot.color.theme <- function(x, n = NULL, text = x$name, ...) {
                  col = colors, border = NA)
 }
 
-#' @rdname color.theme
-#' @param display logical. If \code{TRUE}, colors are displayed in the plot area.
 #' @exportS3Method base::print
 #'
 print.color.theme <- function(x, display = TRUE, ...) {
@@ -489,7 +482,6 @@ print.color.theme <- function(x, display = TRUE, ...) {
   cat(text)
   if (display) plot.color.theme(x, text = text)
 }
-
 
 #' @rdname color.theme
 #' @export color.theme.info

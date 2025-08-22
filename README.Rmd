@@ -86,7 +86,7 @@ grid.arrange(
     ggtitle("main effect of dis"),
   ggmid(mid, "lstat:dis") +
     ggtitle("interaction of lstat:dis"),
-  ggmid(mid, "lstat:dis", main.effects = TRUE, theme = "Temps") +
+  ggmid(mid, "lstat:dis", main.effects = TRUE, type = "compound") +
     ggtitle("interaction + main effects")
 )
 # visualize all main effects
@@ -99,7 +99,7 @@ grid.arrange(grobs = mid.plots(mid), nrow = 3)
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, "dotchart", theme = "Okabe-Ito") +
+  ggmid(imp, "dotchart", theme = "highlight") +
     theme(legend.position = "bottom") +
     ggtitle("importance of variable effects"),
   ggmid(imp, "heatmap") +
@@ -115,10 +115,10 @@ grid.arrange(nrow = 1L,
 bd1 <- mid.breakdown(mid, data = train[1L, ])
 bd9 <- mid.breakdown(mid, data = train[9L, ])
 grid.arrange(nrow = 1L,
-  ggmid(bd1, "waterfall", theme = "Tableau 10", max.bars = 14L) +
+  ggmid(bd1, "waterfall", theme = "midr", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "Zissou 1", max.bars = 14L) +
+  ggmid(bd9, "waterfall", theme = "midr", max.bars = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )
@@ -132,11 +132,11 @@ ice <- mid.conditional(mid, "lstat")
 grid.arrange(
   ggmid(ice, alpha = .1) +
     ggtitle("ICE of lstat"),
-  ggmid(ice, "centered", alpha = .1, var.color = dis > 3) +
+  ggmid(ice, "centered", "mako", var.color = dis) +
     ggtitle("c-ICE of lstat"),
-  ggmid(ice, term = "lstat:dis", var.color = dis > 3, alpha = .1) +
+  ggmid(ice, term = "lstat:dis", theme = "mako", var.color = dis) +
     ggtitle("ICE of interaction with dis"),
-  ggmid(ice, term = "lstat:age", var.color = age, dots = FALSE) +
+  ggmid(ice, term = "lstat:age", theme = "mako", var.color = age) +
     ggtitle("ICE of interaction with age")
 )
 ```
