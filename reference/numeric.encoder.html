@@ -138,16 +138,17 @@ This encoder can then be used to convert a numeric vector into a design matrix u
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The primary purpose of the encoder is to transform a single numeric variable into a design matrix that can be used in the MID model's linear system formulation.
-The output of the encoder depends on the <code>type</code> argument:</p><ul><li><p>Piecewise Linear Encoding (<code>type = 1</code>):</p>
-<p>This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
-  For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
-  This results in a design matrix where each row has at most two non-zero values that sum to <code>1</code>.
-  This approach creates a smooth, continuous representation of the variable.</p></li>
-<li><p>One-Hot Interval Encoding (<code>type = 0</code>):</p>
-<p>This method models the effect of the variable as a step function by dividing its range into intervals (bins).
-  For each value, the encoder finds which interval it falls into and assigns a <code>1</code> to the corresponding column in the design matrix, with all other columns being <code>0</code>.
-  This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.</p></li>
-</ul></div>
+The output of the encoder depends on the <code>type</code> argument:</p>
+<p><b>Piecewise Linear Encoding</b> (<code>type = 1</code>):
+This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
+For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
+This results in a design matrix where each row has at most two non-zero values that sum to <code>1</code>.
+This approach creates a smooth, continuous representation of the variable.</p>
+<p><b>One-Hot Interval Encoding</b> (<code>type = 0</code>):
+This method models the effect of the variable as a step function by dividing its range into intervals (bins).
+For each value, the encoder finds which interval it falls into and assigns a <code>1</code> to the corresponding column in the design matrix, with all other columns being <code>0</code>.
+This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="factor.encoder.html">factor.encoder</a></code></p></div>
