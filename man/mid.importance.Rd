@@ -32,9 +32,10 @@ The MID importance of a component function (e.g., a main effect or an interactio
 Terms with higher importance have a larger average impact on the model's overall predictions.
 }
 \examples{
-# Calculate importance for a fitted MID model
 data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+
+# Calculate importance for a fitted MID model
 imp <- mid.importance(mid)
 print(imp)
 

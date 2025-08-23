@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_term.R
 \name{mid.terms}
 \alias{mid.terms}
-\title{Extract and Filter Terms from a MID Model}
+\title{Extract Terms from a MID Model}
 \usage{
 mid.terms(
   object,
@@ -59,4 +59,7 @@ mid.terms(mid, require = c("Wind", "Temp"), remove = "Day")
 # Get the predicted contributions of only the terms associated with "Wind"
 terms_in <- mid.terms(mid, require = "Wind")
 predict(mid, airquality[1:3,], terms = terms_in, type = "terms")
+}
+\seealso{
+\code{\link{interpret}}
 }

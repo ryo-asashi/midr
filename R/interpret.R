@@ -1,25 +1,54 @@
-#' Fit MID Models
+#' Fit a MID Model
 #'
-#' \code{interpret()} is used to fit a MID model specifically as an interpretable surrogate for black-box predictive models.
-#' A fitted MID model consists of a set of component functions, each with up to two variables.
+#' @description
+#' \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.
+#' MID models are additive, highly interpretable models composed of functions, each with up to two variables.
 #'
-#' \code{interpret()} returns a global surrogate model of the target predictive model.
-#' The prediction function of this surrogate model is derived from Maximum Interpretation
-#' Decomposition (MID) applied to the prediction function of the target model
-#' (denoted \eqn{f(\mathbf{x})}).
+#' @details
+#' The MID model approximates a target model's prediction function \eqn{f(\mathbf{x})}, or values of the response variable \eqn{\mathbf{y}}.
+#' This model, denoted as \eqn{\mathcal{F}(\mathbf{x})}, has the following structure: \deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
+#' where \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of feature \eqn{j}, and \eqn{f_{jk}(x_j, x_k)} is the second-order interaction effect between features \eqn{j} and \eqn{k}.
 #'
-#' The prediction function of the global surrogate model, denoted \eqn{\mathcal{F}(\mathbf{x})}, has the following structure:
-#' \deqn{\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j<k} f_{jk}(x_j, x_k)}
-#' where \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of feature \eqn{j},
-#' and \eqn{f_{jk}(x_j, x_k)} is the second-order interaction effect between features \eqn{j} and \eqn{k}.
+#' To ensure that the decomposed components are unique, they are fitted under the \emph{centering constraints}: each main effect's average is constrained to be zero, and each interaction effect's conditional averages are also constrained to be zero.
+#' The model is fitted by minimizing the squared error between the target, \eqn{f(\mathbf{x})} or \eqn{\mathbf{y}}, and the surrogate \eqn{\mathcal{F}(\mathbf{x})}, which is typically evaluated on a representative dataset.
 #'
-#' To ensure the identifiability (uniqueness) of these decomposed components, they are subject to centering constraints during the fitting process.
-#' Specifically, each main effect function \eqn{f_j(x_j)} is constrained such that its average over the data distribution of feature \eqn{X_j} is zero.
-#' Similarly, each second-order interaction effect function \eqn{f_{jk}(x_j, x_k)} is constrained such that its conditional average over \eqn{X_j} (for any fixed value \eqn{x_k}) is zero, and its conditional average over \eqn{X_k} (for any fixed value \eqn{x_j}) is also zero.
+#' @section Parameters:
+#' \strong{Main Inputs}:
+#' The main inputs for \code{interpret.default()} include:
+#' \code{object}, a fitted model object to be interpreted (for surrogate modeling);
+#' \code{x}, a data frame or matrix of predictor variables; and
+#' \code{y}, a numeric vector of the target values (either response values or predictions from a black-box model).
+#' The main inputs for \code{interpret.formula()} include:
+#' \code{formula}, a symbolic description of the MID model to be fit;
+#' \code{data}, a data frame or matrix containing the variables for the formula; and
+#' \code{model}, a fitted model object to be interpreted/
 #'
-#' The surrogate model is fitted using the least squares method, which minimizes the squared error between the predictions of the target model \eqn{f(\mathbf{x})} and the surrogate model \eqn{\mathcal{F}(\mathbf{x})} (typically evaluated on a representative dataset).
+#' \strong{Model Specification}:
+#' The model structure can be controlled with the following arguments:
+#' \code{k}, an integer or a vector of two integers specifying the maximum number of sample points for main effects and interactions, controlling model flexibility;
+#' \code{type}, an integer or a vector of two integers, specifying the encoding type (\code{1} for piecewise linear encoding, \code{0} for one-hot interval encoding;
+#' \code{terms}, a character vector specifying the exact main effects and interactions to include;
+#' \code{interactions}, a logical that, if \code{TRUE}, includes all pairwise interactions;
+#' \code{link}, a character string specifying a link function (e.g.,"logit"); and
+#' \code{frames}, a named list of pre-defined encoding frames.
 #'
+#' \strong{Fitting & Optimization}:
+#' These arguments control the fitting process:
+#' \code{lambda} is the penalty factor for pseudo-smoothing;
+#' \code{mode} is an integer (\code{1} or \code{2}) specifying the calculation method;
+#' \code{method} is an integer specifying the least squares solver to use;
+#' \code{kappa} is the penalty factor for centering constraints;
+#' \code{singular.ok} is a logical that determines if a singular fit is an error; and
+#' \code{...} accepts special aliases (e.g., "ok" for \code{singular.ok}) and advanced fitting options.
+#'
+#' \strong{Data Handling & Other}:
+#' Additional arguments include:
+#' \code{weights}, a numeric vector of sample weights;
+#' \code{subset}, a vector specifying a subset of observations;
+#' \code{na.action}, a function for handling \code{NA} values; and
+#' \code{pred.fun} and \code{pred.args}, a function and set of arguments to get predictions for \code{x} or \code{data} from \code{object} or \code{model}, respectively.
 #' @param object a fitted model object to be interpreted.
+#'
 #' @examples
 #' # fit a MID model as a surrogate model
 #' data(cars, package = "datasets")
@@ -50,7 +79,7 @@
 #' plot(mid, "Wind:Temp", theme = "RdBu")
 #' plot(mid, "Wind:Temp", main.effects = TRUE)
 #' @returns
-#' \code{interpret()} returns a "mid" object with the following components:
+#' \code{interpret()} returns an object of class "mid". This is a list with the following components:
 #' \item{weights}{a numeric vector of the sample weights.}
 #' \item{call}{the matched call.}
 #' \item{terms}{the term labels.}
@@ -65,6 +94,11 @@
 #' \item{fitted.values}{a numeric vector of the fitted values.}
 #' \item{residuals}{a numeric vector of the working residuals.}
 #' \item{na.action}{information about the special handlings of \code{NA}s.}
+#'
+#' @seealso \code{\link{predict.mid}}, \code{\link{summary.mid}}, \code{\link{print.mid}}, \code{\link{plot.mid}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
+#'
+#' @references Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, \url{https://arxiv.org/abs/2506.08338}.
+#'
 #' @export interpret
 #'
 interpret <- function(object, ...)
@@ -80,7 +114,7 @@ UseMethod("interpret")
 #' @param k an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
-#' @param interaction logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
+#' @param interactions logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
 #' @param terms a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all interactions if \code{interaction} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
@@ -96,12 +130,12 @@ UseMethod("interpret")
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
 #' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
-#' @param ... for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta} ("iterative" for iterative smoothing, "direct" for solving the linear system, or "none" to disable interpolation), \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interaction}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.
+#' @param ... for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta} ("iterative" for iterative smoothing, "direct" for solving the linear system, or "none" to disable interpolation), \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interactions}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.
 #' @exportS3Method midr::interpret
 #'
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
-    k = c(NA, NA), type = c(1L, 1L), frames = list(), interaction = FALSE,
+    k = c(NA, NA), type = c(1L, 1L), frames = list(), interactions = FALSE,
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0,
     kappa = 1e6, na.action = getOption("na.action"), verbosity = 1L,
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
@@ -112,7 +146,7 @@ interpret.default <- function(
   dots <- list(...)
   if (is.null(dots$internal.call) || !dots$internal.call)
     verbose("model fitting started", verbosity, 2L, TRUE)
-  if (missing(interaction) && !is.null(dots$ie)) interaction <- dots$ie
+  if (missing(interactions) && !is.null(dots$ie)) interactions <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
   fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
   interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
@@ -197,7 +231,7 @@ interpret.default <- function(
   if (is.null(terms)) {
     mts <- tags
     its <- NULL
-    if (interaction)
+    if (interactions)
       its <- utils::combn(mts, 2L, function(x) paste0(x, collapse = ":"))
   } else {
     spl <- sapply(strsplit(terms, ":"), length)
@@ -527,19 +561,19 @@ interpret.default <- function(
   attr(fm, "constant") <- intercept
   ## main effects
   if (me) {
-    main.effects <- list()
+    ret.main.effects <- list()
     for (i in seq_len(p)) {
       dat <- mencs[[mts[i]]]$frame
       indices <- (fi + mcumlens[i] + 1L):(fi + mcumlens[i + 1L])
       dat$density <- dens[indices]
       dat$mid <- beta[indices]
-      main.effects[[mts[i]]] <- dat
+      ret.main.effects[[mts[i]]] <- dat
       fm[, i] <- as.numeric(mmats[[mts[i]]] %*% dat$mid)
     }
   }
   ## interactions
   if (ie) {
-    interactions <- list()
+    ret.interactions <- list()
     for (i in seq_len(q)) {
       pcl <- term.split(its[i])
       nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
@@ -550,7 +584,7 @@ interpret.default <- function(
       dat$density <- dens[indices]
       dat$mid <- beta[indices]
       rownames(dat) <- NULL
-      interactions[[its[i]]] <- dat
+      ret.interactions[[its[i]]] <- dat
       fm[, p + i] <-
         as.numeric(X[seq_len(n), indices, drop = FALSE] %*% gamma[indices])
     }
@@ -565,11 +599,11 @@ interpret.default <- function(
   obj$intercept <- intercept
   obj$encoders <- list()
   if (me) {
-    obj$main.effects <- main.effects
+    obj$main.effects <- ret.main.effects
     obj$encoders[["main.effects"]] <- mencs
   }
   if (ie) {
-    obj$interactions <- interactions
+    obj$interactions <- ret.interactions
     obj$encoders[["interactions"]] <- iencs
   }
   obj$weights <- weights

@@ -15,9 +15,10 @@
 #' @param measure an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
 #'
 #' @examples
-#' # Calculate importance for a fitted MID model
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#'
+#' # Calculate importance for a fitted MID model
 #' imp <- mid.importance(mid)
 #' print(imp)
 #'
@@ -57,9 +58,9 @@ mid.importance <- function(
   out$importance <- df
   out$predictions <- preds
   out$measure <- switch(measure,
-                        "Mean Absolute Deviation",
-                        "Root Mean Square Deviation",
-                        "Median Absolute Deviation")
+                        "Mean Absolute Contribution",
+                        "Root Mean Square Contribution",
+                        "Median Absolute Contribution")
   attr(out, "terms") <- as.character(df$term)
   class(out) <- c("mid.importance")
   out

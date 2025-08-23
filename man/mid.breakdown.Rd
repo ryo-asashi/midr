@@ -49,11 +49,14 @@ along with the intercept (\eqn{f_\phi}). This makes the prediction transparent
 and easy to understand.
 }
 \examples{
-# Calculate the breakdown for the first and third observation in the data
 data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
+
+# Calculate the breakdown for the first observation in the data
 mbd <- mid.breakdown(mid, data = airquality, row = 1)
 print(mbd)
+
+# Calculate the breakdown for the third observation in the data
 mbd <- mid.breakdown(mid, data = airquality, row = 3)
 print(mbd)
 }

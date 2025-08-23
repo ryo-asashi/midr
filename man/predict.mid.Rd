@@ -2,7 +2,6 @@
 % Please edit documentation in R/predict_mid.R
 \name{predict.mid}
 \alias{predict.mid}
-\alias{mid.f}
 \title{Predict Method for fitted MID Models}
 \usage{
 \method{predict}{mid}(
@@ -13,46 +12,49 @@
   terms = object$terms,
   ...
 )
-
-mid.f(object, term, x, y = NULL)
 }
 \arguments{
 \item{object}{a "mid" object to be used to make predictions.}
 
-\item{newdata}{a data frame of the new observations.}
+\item{newdata}{a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.}
 
-\item{na.action}{a function or character string specifying what should happen when the data contain \code{NA}s.}
+\item{na.action}{a function or character string specifying what should happen when the data contain \code{NA} values.}
 
-\item{type}{the type of prediction required. The default is on the scale of the response varialbe. The alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.}
+\item{type}{the type of prediction required. One of "response", "link", or "terms".}
 
-\item{terms}{a character vector of term labels, specifying a subset of component functions to be used to make predictions.}
+\item{terms}{a character vector of term labels, specifying a subset of component functions to use for predictions.}
 
-\item{...}{not used.}
-
-\item{term}{a character string specifying the component function of a fitted MID model.}
-
-\item{x}{a matrix, data frame or vector to be used as the input to the first argument of the component function. If a matrix or data frame is passed, inputs for both \code{x} and \code{y} are extracted from it.}
-
-\item{y}{a vector to be used as the input to the second argument of the component function.}
+\item{...}{arguments to be passed to other methods (not used in this method).}
 }
 \value{
-\code{predict.mid()} returns a numeric vector of MID model predictions.
+\code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
 }
 \description{
-The method of \code{predict()} for "mid" objects obtains predictions from a fitted MID model.
+\code{predict.mid()} is an S3 method for "mid" objects that obtains predictions from a fitted MID model.
+It can be used to predict on new data or to retrieve the fitted values from the original data.
 }
 \details{
-The S3 method of \code{predict()} for MID models returns the model predictions.
-\code{mid.f()} works as a component function of a MID model.
+The \code{type} argument allows you to specify the scale of the prediction.
+By default (\code{type = "response"}), the function returns predictions on the original scale of the response variable.
+Alternatively, you can obtain predictions on the scale of the linear predictor by setting \code{type = "link"}.
+For a detailed breakdown, setting \code{type = "terms"} returns a matrix where each column represents the contribution of a specific model term on the linear predictor scale.
+
+The \code{terms} argument allows for predictions based on a subset of the model's component functions, excluding others.
 }
 \examples{
-data(trees, package = "datasets")
-idx <- c(5L, 10L, 15L, 20L, 25L, 30L)
-mid <- interpret(Volume ~ .^2, trees[-idx,], lambda = 1)
-trees[idx, "Volume"]
-predict(mid, trees[idx,])
-predict(mid, trees[idx,], type = "terms")
-mid.f(mid, "Girth", trees[idx,])
-mid.f(mid, "Girth:Height", trees[idx,])
-predict(mid, trees[idx,], terms = c("Girth", "Height"))
+data(airquality, package = "datasets")
+test <- 1:10
+mid <- interpret(Ozone ~ .^2, airquality[-test, ], lambda = 1, link = "log")
+
+# Predict on new data
+predict(mid, airquality[test, ])
+
+# Get predictions on the link scale
+predict(mid, airquality[test, ], type = "link")
+
+# Get the contributions of specific terms
+predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
+}
+\seealso{
+\code{\link{mid.f}}
 }

@@ -17,10 +17,11 @@
 #' @param keep.effects logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.
 #'
 #' @examples
-#' # Calculate the ICE curves for a fitted MID model
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
-#' ice <- mid.conditional(mid, "Wind", airquality)
+#'
+#' # Calculate the ICE values for a fitted MID model
+#' ice <- mid.conditional(mid, variable = "Wind", data = airquality)
 #' print(ice)
 #' @returns
 #' \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:

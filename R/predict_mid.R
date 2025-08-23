@@ -1,28 +1,42 @@
 #' Predict Method for fitted MID Models
 #'
-#' The method of \code{predict()} for "mid" objects obtains predictions from a fitted MID model.
+#' @description
+#' \code{predict.mid()} is an S3 method for "mid" objects that obtains predictions from a fitted MID model.
+#' It can be used to predict on new data or to retrieve the fitted values from the original data.
 #'
-#' The S3 method of \code{predict()} for MID models returns the model predictions.
-#' \code{mid.f()} works as a component function of a MID model.
+#' @details
+#' The \code{type} argument allows you to specify the scale of the prediction.
+#' By default (\code{type = "response"}), the function returns predictions on the original scale of the response variable.
+#' Alternatively, you can obtain predictions on the scale of the linear predictor by setting \code{type = "link"}.
+#' For a detailed breakdown, setting \code{type = "terms"} returns a matrix where each column represents the contribution of a specific model term on the linear predictor scale.
+#'
+#' The \code{terms} argument allows for predictions based on a subset of the model's component functions, excluding others.
 #'
 #' @param object a "mid" object to be used to make predictions.
-#' @param newdata a data frame of the new observations.
-#' @param na.action a function or character string specifying what should happen when the data contain \code{NA}s.
-#' @param type the type of prediction required. The default is on the scale of the response varialbe. The alternative "link" is on the scale of the linear predictors. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.
-#' @param terms a character vector of term labels, specifying a subset of component functions to be used to make predictions.
-#' @param ... not used.
+#' @param newdata a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.
+#' @param na.action a function or character string specifying what should happen when the data contain \code{NA} values.
+#' @param type the type of prediction required. One of "response", "link", or "terms".
+#' @param terms a character vector of term labels, specifying a subset of component functions to use for predictions.
+#' @param ... arguments to be passed to other methods (not used in this method).
+#'
 #' @examples
-#' data(trees, package = "datasets")
-#' idx <- c(5L, 10L, 15L, 20L, 25L, 30L)
-#' mid <- interpret(Volume ~ .^2, trees[-idx,], lambda = 1)
-#' trees[idx, "Volume"]
-#' predict(mid, trees[idx,])
-#' predict(mid, trees[idx,], type = "terms")
-#' mid.f(mid, "Girth", trees[idx,])
-#' mid.f(mid, "Girth:Height", trees[idx,])
-#' predict(mid, trees[idx,], terms = c("Girth", "Height"))
+#' data(airquality, package = "datasets")
+#' test <- 1:10
+#' mid <- interpret(Ozone ~ .^2, airquality[-test, ], lambda = 1, link = "log")
+#'
+#' # Predict on new data
+#' predict(mid, airquality[test, ])
+#'
+#' # Get predictions on the link scale
+#' predict(mid, airquality[test, ], type = "link")
+#'
+#' # Get the contributions of specific terms
+#' predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 #' @returns
-#' \code{predict.mid()} returns a numeric vector of MID model predictions.
+#' \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+#'
+#' @seealso \code{\link{mid.f}}
+#'
 #' @exportS3Method stats::predict
 #'
 predict.mid <- function(
@@ -38,8 +52,6 @@ predict.mid <- function(
     preds <- object$fitted.matrix[, terms, drop = FALSE]
     naa <- stats::na.action(object)
   } else {
-    if (any("mid" == colnames(newdata)))
-      colnames(newdata)[colnames(newdata) == "mid"] <- ".mid"
     newdata <- model.reframe(object, newdata)
     attr(newdata, "na.action") <- NULL
     newdata <- do.call(na.action, list(newdata))
@@ -53,10 +65,10 @@ predict.mid <- function(
     its <- unique(terms[spl == 2L])
     mmats <- list()
     for (tag in mts)
-      mmats[[tag]] <- object$encoders[["main.effects"]][[tag]]$encode(newdata[, tag])
+      mmats[[tag]] <- object$encoders$main.effects[[tag]]$encode(newdata[, tag])
     imats <- list()
     for (tag in unique(term.split(its)))
-      imats[[tag]] <- object$encoders[["interactions"]][[tag]]$encode(newdata[, tag])
+      imats[[tag]] <- object$encoders$interactions[[tag]]$encode(newdata[, tag])
     for (i in seq_len(r)) {
       term <- terms[i]
       tags <- term.split(term)
@@ -64,8 +76,8 @@ predict.mid <- function(
         X <- mmats[[term]]
         mid <- object$main.effects[[term]]$mid
       } else if (length(tags) == 2L) {
-        n1 <- object$encoders[["interactions"]][[tags[1L]]]$n
-        n2 <- object$encoders[["interactions"]][[tags[2L]]]$n
+        n1 <- object$encoders$interactions[[tags[1L]]]$n
+        n2 <- object$encoders$interactions[[tags[2L]]]$n
         uni <- as.matrix(expand.grid(1L:n1, 1L:n2))
         X <- matrix(0, nrow = n, ncol = nrow(uni))
         for (j in seq_len(nrow(uni))) {
@@ -88,54 +100,4 @@ predict.mid <- function(
   if (inherits(naa, "exclude"))
     return(stats::napredict(naa, preds))
   structure(as.numeric(preds), na.action = naa)
-}
-
-#' @param term a character string specifying the component function of a fitted MID model.
-#' @param x a matrix, data frame or vector to be used as the input to the first argument of the component function. If a matrix or data frame is passed, inputs for both \code{x} and \code{y} are extracted from it.
-#' @param y a vector to be used as the input to the second argument of the component function.
-#' @rdname predict.mid
-#' @export mid.f
-#'
-mid.f <- function(object, term, x, y = NULL) {
-  tags <- term.split(term)
-  ie <- length(tags) == 2L
-  if (is.matrix(x) || is.data.frame(x)) {
-    if (ie)
-      y <- x[, tags[2L]]
-    x <- x[, tags[1L]]
-  }
-  n <- length(x)
-  .term <- term.check(term, object$terms, stop = FALSE)
-  if (is.na(.term))
-    return(numeric(n))
-  if (!ie) {
-    enc <- object$encoders[["main.effects"]][[.term]]
-    X <- enc$encode(x)
-    mid <- object$main.effects[[.term]]$mid
-  } else {
-    ny <- length(y)
-    if (ny != n) {
-      if (n == 1L) {
-        x <- rep.int(x, ny)
-        n <- ny
-      } else if (ny == 1L) {
-        y <- rep.int(y, n)
-      } else {
-        stop("x and y must have the same length")
-      }
-    }
-    encs <- list(object$encoders[["interactions"]][[tags[1L]]],
-                 object$encoders[["interactions"]][[tags[2L]]])
-    mats <- list(encs[[1L]]$encode(x), encs[[2L]]$encode(y))
-    r <- if (term == .term) 0L else 1L
-    uni <- as.matrix(expand.grid(1L:encs[[1L + r]]$n, 1L:encs[[2L - r]]$n))
-    X <- matrix(0, nrow = n, ncol = nrow(uni))
-    for (j in seq_len(nrow(uni))) {
-      X[, j] <- as.numeric(mats[[1L + r]][, uni[j, 1L]] *
-                           mats[[2L - r]][, uni[j, 2L]])
-    }
-    mid <- object$interactions[[.term]]$mid
-  }
-  mid[is.na(mid)] <- 0
-  as.numeric(X %*% mid)
 }

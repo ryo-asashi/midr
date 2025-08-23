@@ -45,9 +45,10 @@ The function generates a set of hypothetical observations by creating copies of 
 It then obtains a prediction for each of these hypothetical observations from the MID model. The returned object can be plotted to visualize the ICE curves.
 }
 \examples{
-# Calculate the ICE curves for a fitted MID model
 data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
-ice <- mid.conditional(mid, "Wind", airquality)
+
+# Calculate the ICE values for a fitted MID model
+ice <- mid.conditional(mid, variable = "Wind", data = airquality)
 print(ice)
 }

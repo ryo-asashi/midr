@@ -1,4 +1,4 @@
-#' Extract and Filter Terms from a MID Model
+#' Extract Terms from a MID Model
 #'
 #' @description
 #' \code{mid.terms()} extracts term labels from a fitted MID model or derivative objects.
@@ -17,6 +17,8 @@
 #'
 #' @note
 #' This function provides the common underlying logic for the \code{stats::terms()} S3 methods for "mid", "mid.importance", "mid.conditional", and "mid.breakdown" objects.
+#'
+#' @seealso \code{\link{interpret}}
 #'
 #' @examples
 #' data(airquality, package = "datasets")

@@ -25,11 +25,14 @@
 #' @param format a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.
 #'
 #' @examples
-#' # Calculate the breakdown for the first and third observation in the data
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
+#'
+#' # Calculate the breakdown for the first observation in the data
 #' mbd <- mid.breakdown(mid, data = airquality, row = 1)
 #' print(mbd)
+#'
+#' # Calculate the breakdown for the third observation in the data
 #' mbd <- mid.breakdown(mid, data = airquality, row = 3)
 #' print(mbd)
 #' @returns
