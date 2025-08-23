@@ -55,7 +55,7 @@ reference:
   - print.mid
   - summary.mid
   - mid.plots
-  - mid.extract
+  - mid.terms
 - title: Importance of effects
   contents:
   - mid.importance
