@@ -3,7 +3,6 @@
 \name{numeric.encoder}
 \alias{numeric.encoder}
 \alias{numeric.frame}
-\alias{print.encoder}
 \title{Encoder for Quantitative Variables}
 \usage{
 numeric.encoder(
@@ -23,58 +22,69 @@ numeric.frame(
   encoding.digits = NULL,
   tag = "x"
 )
-
-\method{print}{encoder}(x, digits = NULL, ...)
 }
 \arguments{
 \item{x}{a numeric vector to be encoded.}
 
-\item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of x are used as sample points.}
+\item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of \code{x} are used as knots or bins.}
 
-\item{type}{an integer specifying the encoding method. If \code{1}, values are encoded to a \code{[0, 1]} scale based on linear interpolation of the knots. If \code{0}, values are encoded to \code{0} or \code{1} using ont-hot encoding on the intervals.}
+\item{type}{an integer (\code{1} or \code{0}) specifying the encoding method (see the "details" section).}
 
-\item{encoding.digits}{an integer specifying the rounding digits for the encoding in case \code{type} is \code{1}.}
+\item{encoding.digits}{an integer specifying the rounding digits for the piecewise linear encoding (\code{type = 1}).}
 
-\item{tag}{character string. The name of the variable.}
+\item{tag}{the name of the variable.}
 
-\item{frame}{a "numeric.frame" object or a numeric vector that defines the sample points of the binning.}
+\item{frame}{a "numeric.frame" object or a numeric vector that explicitly defines the knots or breakes for the encoding.}
 
-\item{weights}{optional. A numeric vector of sample weights for each value of \code{x}.}
+\item{weights}{an optional numeric vector of sample weights for \code{x}.}
 
 \item{reps}{a numeric vector to be used as the representative values (knots).}
 
 \item{breaks}{a numeric vector to be used as the binning breaks.}
-
-\item{digits}{the minimum number of significant digits to be used.}
-
-\item{...}{not used.}
 }
 \value{
-\code{numeric.encoder()} returns a list containing the following components:
-\item{frame}{an object of class "numeric.frame".}
-\item{encode}{a function to encode \code{x} into a dummy matrix.}
-\item{n}{the number of encoding levels.}
-\item{type}{the type of encoding, "linear" or "constant".}
+\code{numeric.encoder()} returns an object of class "encoder". This is a list containing the following components:
+\item{frame}{a "numeric.frame" object containing the encoding information.}
+\item{encode}{a function to convert a numeric vector \code{x} into a dummy matrix.}
+\item{n}{the number of encoding levels (i.e., columns in the design matrix).}
+\item{type}{a character string describing the encoding type: "linear", "constant", or "null".}
 \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 }
 \description{
-\code{numeric.encoder()} returns an encoder for a quantitative variable.
+\code{numeric.encoder()} creates an encoder function for a quantitative variable.
+This encoder can then be used to convert a numeric vector into a design matrix using either piecewise linear or one-hot interval encoding, which are core components for modeling effects in a MID model.
 }
 \details{
-\code{numeric.encoder()} selects sample points from the variable \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix.
-If \code{type} is \code{1}, \code{k} is considered the maximum number of knots, and the values between two knots are encoded as two decimals, reflecting the relative position to the knots.
-If \code{type} is \code{0}, \code{k} is considered the maximum number of intervals, and the values are converted using one-hot encoding on the intervals.
+The primary purpose of the encoder is to transform a single numeric variable into a design matrix that can be used in the MID model's linear system formulation.
+The output of the encoder depends on the \code{type} argument:
+\itemize{
+  \item Piecewise Linear Encoding (\code{type = 1}):
+
+  This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
+  For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
+  This results in a design matrix where each row has at most two non-zero values that sum to \code{1}.
+  This approach creates a smooth, continuous representation of the variable.
+  \item One-Hot Interval Encoding (\code{type = 0}):
+
+  This method models the effect of the variable as a step function by dividing its range into intervals (bins).
+  For each value, the encoder finds which interval it falls into and assigns a \code{1} to the corresponding column in the design matrix, with all other columns being \code{0}.
+  This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.
+}
 }
 \examples{
+# Encode a numeric vector with NA and Inf
 data(iris, package = "datasets")
 enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
-enc$frame
-enc$encode(x = c(4:8, NA))
+enc
+enc$encode(x = c(4:8, NA, Inf))
 
-frm <- numeric.frame(breaks = seq(3, 9, 2), type = 0L)
+frm <- numeric.frame(breaks = c(3, 5, 7, 9), type = 0L)
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
-enc$encode(x = c(4:8, NA))
+enc$encode(x = c(4:8, NA, Inf))
 
-enc <- numeric.encoder(x = iris$Sepal.Length, frame = seq(3, 9, 2))
-enc$encode(x = c(4:8, NA))
+enc <- numeric.encoder(x = iris$Sepal.Length, frame = c(3, 5, 7, 9))
+enc$encode(x = c(4:8, NA, Inf))
+}
+\seealso{
+\code{\link{factor.encoder}}
 }

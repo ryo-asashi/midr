@@ -1,3 +1,8 @@
+# midr 0.5.0.909
+
+- Updated `factor.encoder()` and `numeric.encoder()` to vectorize the design-matrix encoding. 
+- Updated the documents for some functions.
+
 # midr 0.5.0.908
 
 - Rewrote `color.theme()` to enhance the functionality of the function.

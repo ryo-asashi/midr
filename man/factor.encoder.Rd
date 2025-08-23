@@ -20,45 +20,63 @@ factor.frame(levels, catchall = "(others)", tag = "x")
 \arguments{
 \item{x}{a vector to be encoded as a qualitative variable.}
 
-\item{k}{an integer specifying the maximum number of distinct levels. If not positive, all unique values of \code{x} are used as levels.}
+\item{k}{an integer specifying the maximum number of distinct levels to retain (including the catch-all level). If not positive, all unique values of \code{x} are used.}
 
-\item{use.catchall}{logical. If \code{TRUE}, less frequent levels are dropped and replaced by the catchall level.}
+\item{use.catchall}{logical. If \code{TRUE}, less frequent levels are grouped into the catch-all level.}
 
-\item{catchall}{a character string to be used as the catchall level.}
+\item{catchall}{a character string for the catch-all level.}
 
-\item{tag}{character string. The name of the variable.}
+\item{tag}{the name of the variable.}
 
-\item{frame}{a "factor.frame" object or a character vector that defines the levels of the variable.}
+\item{frame}{a "factor.frame" object or a character vector that explicitly defines the levels of the variable.}
 
-\item{weights}{optional. A numeric vector of sample weights for each value of \code{x}.}
+\item{weights}{an optional numeric vector of sample weights for \code{x}.}
 
 \item{levels}{a vector to be used as the levels of the variable.}
 }
 \value{
-\code{factor.encoder()} returns a list containing the following components:
-\item{frame}{an object of class "factor.frame".}
-\item{encode}{a function to encode \code{x} into a dummy matrix.}
-\item{n}{the number of encoding levels.}
-\item{type}{the type of encoding.}
+\code{factor.encoder()} returns an object of class "encoder". This is a list containing the following components:
+\item{frame}{a "factor.frame" object containing the encoding information (levels).}
+\item{encode}{a function to convert a vector \code{x} into a one-hot encoded matrix.}
+\item{n}{the number of encoding levels (i.e., columns in the design matrix).}
+\item{type}{a character string describing the encoding type: "factor" or "null".}
 \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 }
 \description{
-\code{factor.encoder()} returns an encoder for a qualitative variable.
+\code{factor.encoder()} creates an encoder function for a qualitative (factor or character) variable.
+This encoder converts the variable into a one-hot encoded (dummy) design matrix.
 }
 \details{
-\code{factor.encoder()} extracts the unique values (levels) from the vector \code{x} and returns a list containing the \code{encode()} function to convert a vector into a dummy matrix using one-hot encoding.
-If \code{use.catchall} is \code{TRUE} and the number of levels exceeds \code{k}, only the most frequent k - 1 levels are used and the other values are replaced by the \code{catchall}.
+This function is designed to handle qualitative data for use in the MID model's linear system formulation.
+It has two key features:
+\itemize{
+  \item One-Hot Encoding:
+
+  The primary mechanism is one-hot encoding.
+  Each unique level of the input variable becomes a column in the output matrix.
+  For a given observation, the column corresponding to its level is assigned a \code{1}, and all other columns are assigned \code{0}.
+  \item Catch-All Mechanism for High Cardinality:
+
+  When a variable has many unique levels (high cardinality), you can use the \code{use.catchall = TRUE} and \code{k} arguments.
+  This will group the \code{k - 1} most frequent levels into their own columns, while all other less frequent levels are consolidated into a single \code{catchall} level (e.g., "(others)" by default).
+  This is crucial for preventing MID models from becoming overly complex.
+}
 }
 \examples{
+# Encode a character vector with NA
 data(iris, package = "datasets")
 enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
-enc$frame
+enc
 enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 
 frm <- factor.frame(c("setosa", "virginica"), "other iris")
 enc <- factor.encoder(x = iris$Species, frame = frm)
+enc
 enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 
 enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
 enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+}
+\seealso{
+\code{\link{numeric.encoder}}
 }
