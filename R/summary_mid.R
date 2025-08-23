@@ -1,18 +1,32 @@
 #' Summarize MID Models
 #'
-#' For "mid" objects, \code{summary()} prints information about the fitted MID model.
+#' @description
+#' For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID Model.
 #'
-#' The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted variation ratio, residuals, encoding schemes, and MID importance.
+#' @details
+#' The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
+#' The output includes the following components:
+#' (1) "Call" - the function call used to fit the MID model.
+#' (2) "Uninterpreted Variation Ratio" - a key metric indicating the proportion of the target model's variance that is not explained by the MID model.
+#' Lower values suggest a better fit.
+#' (3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
+#' This aids in assessing model fit and identifying potential biases.
+#' (4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
+#' (5) "Importance" - a list of the top terms ranked by their MID importance, which quantifies their average contribution to the model's predictions.
 #'
 #' @param object a "mid" object to be summarized.
-#' @param digits an integer specifying the number of significant digits.
-#' @param top.n an integer specifying the maximum number of terms to be printed with the MID importance values.
-#' @param ... not used.
+#' @param digits the number of significant digits for printing numeric values.
+#' @param top.n the maximum number of top-ranked terms to be printed in the MID importance table.
+#' @param ... arguments to be passed to other methods (not used in this method).
+#'
 #' @examples
+#' # Summarize a fitted MID model
 #' data(cars, package = "datasets")
-#' summary(interpret(dist ~ speed, cars))
+#' mid <- interpret(dist ~ speed, cars)
+#' summary(mid)
 #' @returns
-#' \code{summary.mid()} returns the "mid" object passed to the function without any modification.
+#' \code{summary.mid()} returns the original "mid" object invisibly.
+#'
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(
@@ -56,3 +70,21 @@ summary.mid <- function(
   invisible(object)
 }
 
+mid.encoding.scheme <- function(object, ...) {
+  fun <- function(enc) paste0(enc$type, "(", enc$n, ")")
+  mencs <- sapply(object$encoders[["main.effects"]], fun)
+  iencs <- sapply(object$encoders[["interactions"]], fun)
+  tags <- unique(c(mtags <- names(mencs), itags <- names(iencs)))
+  df <- data.frame(row.names = tags)
+  if (length(mtags) > 0L) {
+    df[["main.effect"]] <- character(1L)
+    for (tag in mtags)
+      df[tag, "main.effect"] <- mencs[tag]
+  }
+  if (length(itags) > 0L) {
+    df[["interaction"]] <- character(1L)
+    for (tag in itags)
+      df[tag, "interaction"] <- iencs[tag]
+  }
+  df
+}

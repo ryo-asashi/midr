@@ -535,3 +535,34 @@ examples <- function(x, n = 3L, ...) {
   n <- min(length(x), n)
   paste0(paste(trimws(format(x[seq_len(n)]), ...), collapse = ", "), dts)
 }
+
+
+mid.frames <- function(object, ...) {
+  mfl <- lapply(object$encoders[["main.effects"]], function(enc) enc$frame)
+  ifl <- lapply(object$encoders[["interactions"]], function(enc) enc$frame)
+  tags <- unique(c(names(mfl), names(ifl)))
+  res <- list()
+  for (tag in tags) {
+    if (identical(mfl[[tag]], ifl[[tag]])) {
+      res[[tag]] <- mfl[[tag]]
+    } else {
+      res[[paste0("|", tag)]] <- mfl[[tag]]
+      res[[paste0(":", tag)]] <- ifl[[tag]]
+    }
+  }
+  res
+}
+
+
+#' @exportS3Method stats::formula
+#'
+formula.mid <- function(x, ...) {
+  x$call$formula
+}
+
+#' @exportS3Method stats::model.frame
+#'
+model.frame.mid <- function(object, ...) {
+  data <- model.data(object)
+  model.reframe(object, data)
+}

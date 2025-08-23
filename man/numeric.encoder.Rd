@@ -57,19 +57,17 @@ This encoder can then be used to convert a numeric vector into a design matrix u
 \details{
 The primary purpose of the encoder is to transform a single numeric variable into a design matrix that can be used in the MID model's linear system formulation.
 The output of the encoder depends on the \code{type} argument:
-\itemize{
-  \item Piecewise Linear Encoding (\code{type = 1}):
 
-  This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
-  For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
-  This results in a design matrix where each row has at most two non-zero values that sum to \code{1}.
-  This approach creates a smooth, continuous representation of the variable.
-  \item One-Hot Interval Encoding (\code{type = 0}):
+\bold{Piecewise Linear Encoding} (\code{type = 1}):
+This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
+For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
+This results in a design matrix where each row has at most two non-zero values that sum to \code{1}.
+This approach creates a smooth, continuous representation of the variable.
 
-  This method models the effect of the variable as a step function by dividing its range into intervals (bins).
-  For each value, the encoder finds which interval it falls into and assigns a \code{1} to the corresponding column in the design matrix, with all other columns being \code{0}.
-  This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.
-}
+\bold{One-Hot Interval Encoding} (\code{type = 0}):
+This method models the effect of the variable as a step function by dividing its range into intervals (bins).
+For each value, the encoder finds which interval it falls into and assigns a \code{1} to the corresponding column in the design matrix, with all other columns being \code{0}.
+This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.
 }
 \examples{
 # Encode a numeric vector with NA and Inf

@@ -9,22 +9,32 @@
 \arguments{
 \item{object}{a "mid" object to be summarized.}
 
-\item{digits}{an integer specifying the number of significant digits.}
+\item{digits}{the number of significant digits for printing numeric values.}
 
-\item{top.n}{an integer specifying the maximum number of terms to be printed with the MID importance values.}
+\item{top.n}{the maximum number of top-ranked terms to be printed in the MID importance table.}
 
-\item{...}{not used.}
+\item{...}{arguments to be passed to other methods (not used in this method).}
 }
 \value{
-\code{summary.mid()} returns the "mid" object passed to the function without any modification.
+\code{summary.mid()} returns the original "mid" object invisibly.
 }
 \description{
-For "mid" objects, \code{summary()} prints information about the fitted MID model.
+For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID Model.
 }
 \details{
-The S3 method of \code{summary()} for "mid" objects prints basic information about the MID model including the uninterpreted variation ratio, residuals, encoding schemes, and MID importance.
+The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
+The output includes the following components:
+(1) "Call" - the function call used to fit the MID model.
+(2) "Uninterpreted Variation Ratio" - a key metric indicating the proportion of the target model's variance that is not explained by the MID model.
+Lower values suggest a better fit.
+(3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
+This aids in assessing model fit and identifying potential biases.
+(4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
+(5) "Importance" - a list of the top terms ranked by their MID importance, which quantifies their average contribution to the model's predictions.
 }
 \examples{
+# Summarize a fitted MID model
 data(cars, package = "datasets")
-summary(interpret(dist ~ speed, cars))
+mid <- interpret(dist ~ speed, cars)
+summary(mid)
 }
