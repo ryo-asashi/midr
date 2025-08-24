@@ -198,6 +198,10 @@ grid.arrange(
 )
 ```
 
+```{r}
+remove(mytheme, envir = midr:::kernel.env)
+```
+
 # Pre-defined color themes
 
 The following color themes are available when the **midr** package is loaded. Some themes depend on other packages being installed, so for full functionality, please ensure you have already installed the **viridisLite**, **RColorBrewer**, and **khroma** packages.

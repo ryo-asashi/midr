@@ -1,12 +1,14 @@
-#' Calculate Contribution of a Single MID Component
+#' Calculate Single Effect of a MID Model
 #'
 #' @description
-#' \code{mid.f()} calculates the contribution of a single component function of a fitted MID model.
+#' \code{mid.effect()} calculates the contribution of a single component function of a fitted MID model.
 #' It serves as a low-level helper function for making predictions or for direct analysis of a term's effect.
 #'
+#' \code{mid.f()} is a convenient shorthand for \code{mid.effect()}.
+#'
 #' @details
-#' \code{mid.f()} is a low-level function designed to calculate the contribution of a single component function.
-#' Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{mid.f()} is more flexible.
+#' \code{mid.effect()} is a low-level function designed to calculate the contribution of a single component function.
+#' Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{mid.effect()} is more flexible.
 #' It accepts vectors, as well as data frames, as input for \code{x} and \code{y}, making it particularly useful for visualizing a component's effect in combination with other functions, such as \code{curve()} or a base \bold{R} plotting routine.
 #'
 #' For a main effect, the function evaluates the component function \eqn{f_j(x_j)} for a vector of values \eqn{x_j}.
@@ -22,22 +24,20 @@
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #'
 #' # Visualize the main effect of "Wind"
-#' curve(mid.f(mid, term = "Wind", x), from = 0, to = 25)
+#' curve(mid.effect(mid, term = "Wind", x), from = 0, to = 25)
 #'
 #' # Visualize the interaction of "Wind" and "Temp"
-#' curve(mid.f(mid, term = "Wind:Temp", x, 40), 0, 25)
-#' curve(mid.f(mid, term = "Wind:Temp", x, 60), 0, 25, add = TRUE, lty = 2)
-#' curve(mid.f(mid, term = "Wind:Temp", x, 70), 0, 25, add = TRUE, lty = 3)
+#' curve(mid.f(mid, "Wind:Temp", x, 50), 0, 25)
+#' curve(mid.f(mid, "Wind:Temp", x, 60), 0, 25, add = TRUE, lty = 2)
+#' curve(mid.f(mid, "Wind:Temp", x, 70), 0, 25, add = TRUE, lty = 3)
 #' @returns
-#' \code{mid.f()} returns a numeric vector of the calculated term contributions, Wwith the same length as \code{x} and \code{y}.
+#' \code{mid.effect()} returns a numeric vector of the calculated term contributions, Wwith the same length as \code{x} and \code{y}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
 #'
-#' @aliases mid_f mid_effect
+#' @export mid.effect
 #'
-#' @export mid.f
-#'
-mid.f <- function(object, term, x, y = NULL) {
+mid.effect <- function(object, term, x, y = NULL) {
   tags <- term.split(term)
   ie <- length(tags) == 2L
   if (is.matrix(x) || is.data.frame(x)) {
@@ -80,3 +80,9 @@ mid.f <- function(object, term, x, y = NULL) {
   mid[is.na(mid)] <- 0
   as.numeric(X %*% mid)
 }
+
+#' @rdname mid.effect
+#'
+#' @export mid.f
+#'
+mid.f <- mid.effect

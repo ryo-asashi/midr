@@ -144,44 +144,6 @@ where \eqn{f_\phi} is the intercept, \eqn{f_{j}(x_j)} is the main effect of feat
 To ensure that the decomposed components are unique, they are fitted under the \emph{centering constraints}: each main effect's average is constrained to be zero, and each interaction effect's conditional averages are also constrained to be zero.
 The model is fitted by minimizing the squared error between the target, \eqn{f(\mathbf{x})} or \eqn{\mathbf{y}}, and the surrogate \eqn{\mathcal{F}(\mathbf{x})}, which is typically evaluated on a representative dataset.
 }
-\section{Parameters}{
-
-\strong{Main Inputs}:
-The main inputs for \code{interpret.default()} include:
-\code{object}, a fitted model object to be interpreted (for surrogate modeling);
-\code{x}, a data frame or matrix of predictor variables; and
-\code{y}, a numeric vector of the target values (either response values or predictions from a black-box model).
-The main inputs for \code{interpret.formula()} include:
-\code{formula}, a symbolic description of the MID model to be fit;
-\code{data}, a data frame or matrix containing the variables for the formula; and
-\code{model}, a fitted model object to be interpreted/
-
-\strong{Model Specification}:
-The model structure can be controlled with the following arguments:
-\code{k}, an integer or a vector of two integers specifying the maximum number of sample points for main effects and interactions, controlling model flexibility;
-\code{type}, an integer or a vector of two integers, specifying the encoding type (\code{1} for piecewise linear encoding, \code{0} for one-hot interval encoding;
-\code{terms}, a character vector specifying the exact main effects and interactions to include;
-\code{interactions}, a logical that, if \code{TRUE}, includes all pairwise interactions;
-\code{link}, a character string specifying a link function (e.g.,"logit"); and
-\code{frames}, a named list of pre-defined encoding frames.
-
-\strong{Fitting & Optimization}:
-These arguments control the fitting process:
-\code{lambda} is the penalty factor for pseudo-smoothing;
-\code{mode} is an integer (\code{1} or \code{2}) specifying the calculation method;
-\code{method} is an integer specifying the least squares solver to use;
-\code{kappa} is the penalty factor for centering constraints;
-\code{singular.ok} is a logical that determines if a singular fit is an error; and
-\code{...} accepts special aliases (e.g., "ok" for \code{singular.ok}) and advanced fitting options.
-
-\strong{Data Handling & Other}:
-Additional arguments include:
-\code{weights}, a numeric vector of sample weights;
-\code{subset}, a vector specifying a subset of observations;
-\code{na.action}, a function for handling \code{NA} values; and
-\code{pred.fun} and \code{pred.args}, a function and set of arguments to get predictions for \code{x} or \code{data} from \code{object} or \code{model}, respectively.
-}
-
 \examples{
 # fit a MID model as a surrogate model
 data(cars, package = "datasets")

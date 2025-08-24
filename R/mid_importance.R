@@ -16,13 +16,13 @@
 #'
 #' @examples
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
+#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #'
-#' # Calculate importance for a fitted MID model
+#' # Calculate MID importance using median absolute contribution
 #' imp <- mid.importance(mid)
 #' print(imp)
 #'
-#' # Calculate importance using Root Mean Square Effect
+#' # Calculate MID importance using root mean square contribution
 #' imp <- mid.importance(mid, measure = 2)
 #' print(imp)
 #' @returns

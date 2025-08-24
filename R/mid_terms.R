@@ -5,7 +5,7 @@
 #' Its primary strength is the ability to filter terms based on their type (main effects vs. interactions) or their associated variable names.
 #'
 #' @details
-#' A "term" in a MID model refers to either a main effect (e.g., "speed") or an interactions effect (e.g., "speed:dist").
+#' A "term" in a MID model refers to either a main effect (e.g., "Wind") or an interactions effect (e.g., "Wind:Temp").
 #' This function provides a flexible way to select a subset of these terms, which is useful for plotting, summarizing, or other downstream analyses.
 #'
 #' @param object a "mid" object or another object from the \bold{midr} package that contains model terms (i.e., "mid.importance", "mid.conditional", or "mid.breakdown").
@@ -24,9 +24,6 @@
 #' data(airquality, package = "datasets")
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #'
-#' # Get all terms using the S3 method
-#' terms(mid)
-#'
 #' # Get only main effect terms
 #' mid.terms(mid, interactions = FALSE)
 #'
@@ -37,8 +34,8 @@
 #' mid.terms(mid, require = c("Wind", "Temp"), remove = "Day")
 #'
 #' # Get the predicted contributions of only the terms associated with "Wind"
-#' terms_in <- mid.terms(mid, require = "Wind")
-#' predict(mid, airquality[1:3,], terms = terms_in, type = "terms")
+#' terms_wind <- mid.terms(mid, require = "Wind")
+#' predict(mid, airquality[1:3,], terms = terms_wind, type = "terms")
 #' @returns
 #' \code{mid.terms()} returns a character vector of the selected term labels.
 #' @export mid.terms

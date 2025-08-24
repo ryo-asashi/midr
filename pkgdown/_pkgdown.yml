@@ -49,35 +49,35 @@ reference:
   - interpret
 - subtitle: Methods
   contents:
-  - ggmid
   - plot.mid
+  - ggmid
+  - mid.plots
   - predict.mid
+  - mid.effect
   - print.mid
   - summary.mid
-  - mid.plots
   - mid.terms
-  - mid.f
 - title: Importance of effects
   contents:
   - mid.importance
 - subtitle: Methods
   contents:
-  - ggmid.mid.importance
   - plot.mid.importance
+  - ggmid.mid.importance
 - title: Breakdown of predictions
   contents:
   - mid.breakdown
 - subtitle: Methods
   contents:
-  - ggmid.mid.breakdown
   - plot.mid.breakdown
+  - ggmid.mid.breakdown
 - title: Conditional expectations
   contents:
   - mid.conditional
 - subtitle: Methods
   contents:
-  - ggmid.mid.conditional
   - plot.mid.conditional
+  - ggmid.mid.conditional
 - title: Other functions
 - subtitle: Variable encoders
   contents:
@@ -94,7 +94,5 @@ reference:
   contents:
   - get.yhat
   - theme_midr
-  - weighted.tabulate
-  - weighted.quantile
-  - weighted.mse
+  - weighted.loss
   - shapviz.mid

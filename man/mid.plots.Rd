@@ -6,7 +6,7 @@
 \usage{
 mid.plots(
   object,
-  terms = mid.terms(object, interaction = FALSE),
+  terms = mid.terms(object, interactions = FALSE),
   limits = c(NA, NA),
   intercept = FALSE,
   main.effects = FALSE,
@@ -18,30 +18,37 @@ mid.plots(
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{terms}{a character vector. The names of the terms to be visualized.}
+\item{terms}{a character vector of the terms to be visualized. By default, only the main effect terms are used.}
 
-\item{limits}{\code{NULL} or a numeric vector of length two specifying the limits of the plotting scale. \code{NA}s are replaced by the minimum and/or maximum MID values.}
+\item{limits}{a numeric vector of length two specifying the y-axis limits. \code{NA} values are replaced by the minimum and/or maximum of the plotted MID values. If \code{intercept = TRUE} is set, the intercept is also included in the limit calculation.}
 
-\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted.}
+\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted accordingly.}
 
-\item{main.effects}{logical. If \code{TRUE}, the main effects are included in the interaction plot.}
+\item{main.effects}{logical. If \code{TRUE}, main effects are added to the interaction plots to show conditional effects. This argument disables automatic limit calculations.}
 
-\item{max.plots}{an integer specifying the number of maximum number of plots.}
+\item{max.plots}{an integer specifying the maximum number of plots to be generated.}
 
-\item{engine}{character string. One of "ggplot2" or "graphics".}
+\item{engine}{the plotting engine to use, either "ggplot2" or "graphics".}
 
-\item{...}{optional parameters to be passed to \code{ggmid()} or \code{plot()}.}
+\item{...}{optional parameters passed on to \code{plot.mid()} or \code{ggmid()}.}
 }
 \value{
-If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of "ggplot" objects. Otherwise \code{mid.plots()} produces plots and returns \code{NULL}.
+If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of "ggplot" objects.
+Otherwise (i.e., if \code{engine} is "graphics"), \code{mid.plots()} produces plots as side-effects and returns \code{NULL} invisibly.
 }
 \description{
-\code{mid.plots()} applies \code{ggmid()} or \code{plot()} to the component functions of a "mid" object.
+\code{mid.plots()} is a convenience function for applying \code{ggmid()} or \code{plot()} to multiple component functions of a "mid" object at once.
+It can automatically determine common plotting scales and manage the layout.
 }
 \examples{
 data(diamonds, package = "ggplot2")
 set.seed(42)
 idx <- sample(nrow(diamonds), 1e4L)
 mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds[idx, ])
-mid.plots(mid, c("carat", "color", "carat:color", "clarity:color"), limits = NULL)
+
+# Plot selected main effects and interaction using the ggplot2 engine
+mid.plots(mid, mid.terms(mid, require = "color", remove = "cut"), limits = NULL)
+}
+\seealso{
+\code{\link{plot.mid}}, \code{\link{ggmid}}
 }
