@@ -22,7 +22,7 @@
 <url><loc>https://ryo-asashi.github.io/midr/reference/interpret.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/mid.breakdown.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/mid.conditional.html</loc></url>
-<url><loc>https://ryo-asashi.github.io/midr/reference/mid.f.html</loc></url>
+<url><loc>https://ryo-asashi.github.io/midr/reference/mid.effect.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/mid.importance.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/mid.plots.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/mid.terms.html</loc></url>
@@ -39,7 +39,7 @@
 <url><loc>https://ryo-asashi.github.io/midr/reference/summary.mid.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/theme_midr.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/weighted.html</loc></url>
-<url><loc>https://ryo-asashi.github.io/midr/reference/weighted.mse.html</loc></url>
+<url><loc>https://ryo-asashi.github.io/midr/reference/weighted.loss.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/weighted.quantile.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/weighted.tabulate.html</loc></url>
 </urlset>

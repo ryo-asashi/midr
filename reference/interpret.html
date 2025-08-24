@@ -291,42 +291,6 @@ where \(f_\phi\) is the intercept, \(f_{j}(x_j)\) is the main effect of feature 
 The model is fitted by minimizing the squared error between the target, \(f(\mathbf{x})\) or \(\mathbf{y}\), and the surrogate \(\mathcal{F}(\mathbf{x})\), which is typically evaluated on a representative dataset.</p>
     </div>
     <div class="section level2">
-    <h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a></h2>
-
-
-<p><strong>Main Inputs</strong>:
-The main inputs for <code>interpret.default()</code> include:
-<code>object</code>, a fitted model object to be interpreted (for surrogate modeling);
-<code>x</code>, a data frame or matrix of predictor variables; and
-<code>y</code>, a numeric vector of the target values (either response values or predictions from a black-box model).
-The main inputs for <code>interpret.formula()</code> include:
-<code>formula</code>, a symbolic description of the MID model to be fit;
-<code>data</code>, a data frame or matrix containing the variables for the formula; and
-<code>model</code>, a fitted model object to be interpreted/</p>
-<p><strong>Model Specification</strong>:
-The model structure can be controlled with the following arguments:
-<code>k</code>, an integer or a vector of two integers specifying the maximum number of sample points for main effects and interactions, controlling model flexibility;
-<code>type</code>, an integer or a vector of two integers, specifying the encoding type (<code>1</code> for piecewise linear encoding, <code>0</code> for one-hot interval encoding;
-<code>terms</code>, a character vector specifying the exact main effects and interactions to include;
-<code>interactions</code>, a logical that, if <code>TRUE</code>, includes all pairwise interactions;
-<code>link</code>, a character string specifying a link function (e.g.,"logit"); and
-<code>frames</code>, a named list of pre-defined encoding frames.</p>
-<p><strong>Fitting &amp; Optimization</strong>:
-These arguments control the fitting process:
-<code>lambda</code> is the penalty factor for pseudo-smoothing;
-<code>mode</code> is an integer (<code>1</code> or <code>2</code>) specifying the calculation method;
-<code>method</code> is an integer specifying the least squares solver to use;
-<code>kappa</code> is the penalty factor for centering constraints;
-<code>singular.ok</code> is a logical that determines if a singular fit is an error; and
-<code>...</code> accepts special aliases (e.g., "ok" for <code>singular.ok</code>) and advanced fitting options.</p>
-<p><strong>Data Handling &amp; Other</strong>:
-Additional arguments include:
-<code>weights</code>, a numeric vector of sample weights;
-<code>subset</code>, a vector specifying a subset of observations;
-<code>na.action</code>, a function for handling <code>NA</code> values; and
-<code>pred.fun</code> and <code>pred.args</code>, a function and set of arguments to get predictions for <code>x</code> or <code>data</code> from <code>object</code> or <code>model</code>, respectively.</p>
-    </div>
-    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, <a href="https://arxiv.org/abs/2506.08338" class="external-link">https://arxiv.org/abs/2506.08338</a>.</p>
     </div>

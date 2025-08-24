@@ -108,10 +108,10 @@ Terms with higher importance have a larger average impact on the model's overall
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">airquality</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">airquality</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, data <span class="op">=</span> <span class="va">airquality</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate importance for a fitted MID model</span></span></span>
+<span class="r-in"><span><span class="co"># Calculate MID importance using median absolute contribution</span></span></span>
 <span class="r-in"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu">mid.importance</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -137,7 +137,7 @@ Terms with higher importance have a larger average impact on the model's overall
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.23464     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.12076     2</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate importance using Root Mean Square Effect</span></span></span>
+<span class="r-in"><span><span class="co"># Calculate MID importance using root mean square contribution</span></span></span>
 <span class="r-in"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu">mid.importance</span><span class="op">(</span><span class="va">mid</span>, measure <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

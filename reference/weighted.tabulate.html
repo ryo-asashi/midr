@@ -46,7 +46,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Weighted Tabulation for Vectors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/misc_functions.R" class="external-link"><code>R/misc_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/weighted_quantile.R" class="external-link"><code>R/weighted_quantile.R</code></a></small>
       <div class="d-none name"><code>weighted.tabulate.Rd</code></div>
     </div>
 
@@ -81,17 +81,14 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>weighted.tabulate()</code> is a wrapper function of <code><a href="https://rdrr.io/r/base/tabulate.html" class="external-link">tabulate()</a></code> to reflect sample weights.</p>
+    <p><code>weighted.tabulate()</code> is a wrapper function of <code><a href="https://rdrr.io/r/base/tabulate.html" class="external-link">tabulate()</a></code> to reflect sample weights.
+This function is used in <code><a href="factor.encoder.html">factor.encoder()</a></code> to enable weights-based encoding.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="weighted.quantile.html">weighted.quantile</a></code></p></div>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/tabulate.html" class="external-link">tabulate</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 2 1 0 1</span>
-<span class="r-in"><span><span class="fu">weighted.tabulate</span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>, w <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 3 3 0 4</span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

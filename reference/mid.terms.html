@@ -48,7 +48,7 @@ Its primary strength is the ability to filter terms based on their type (main ef
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Extract Terms from a MID Model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/mid_term.R" class="external-link"><code>R/mid_term.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/mid_terms.R" class="external-link"><code>R/mid_terms.R</code></a></small>
       <div class="d-none name"><code>mid.terms.Rd</code></div>
     </div>
 
@@ -103,7 +103,7 @@ Its primary strength is the ability to filter terms based on their type (main ef
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A "term" in a MID model refers to either a main effect (e.g., "speed") or an interactions effect (e.g., "speed:dist").
+    <p>A "term" in a MID model refers to either a main effect (e.g., "Wind") or an interactions effect (e.g., "Wind:Temp").
 This function provides a flexible way to select a subset of these terms, which is useful for plotting, summarizing, or other downstream analyses.</p>
     </div>
     <div class="section level2">
@@ -121,13 +121,6 @@ This function provides a flexible way to select a subset of these terms, which i
 <span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">airquality</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Get all terms using the S3 method</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/terms.html" class="external-link">terms</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Solar.R"       "Wind"          "Temp"          "Month"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Day"           "Solar.R:Wind"  "Solar.R:Temp"  "Solar.R:Month"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Solar.R:Day"   "Wind:Temp"     "Wind:Month"    "Wind:Day"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Temp:Month"    "Temp:Day"      "Month:Day"    </span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get only main effect terms</span></span></span>
 <span class="r-in"><span><span class="fu">mid.terms</span><span class="op">(</span><span class="va">mid</span>, interactions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Solar.R" "Wind"    "Temp"    "Month"   "Day"    </span>
@@ -143,8 +136,8 @@ This function provides a flexible way to select a subset of these terms, which i
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "Wind:Month"   "Temp:Month"  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get the predicted contributions of only the terms associated with "Wind"</span></span></span>
-<span class="r-in"><span><span class="va">terms_in</span> <span class="op">&lt;-</span> <span class="fu">mid.terms</span><span class="op">(</span><span class="va">mid</span>, require <span class="op">=</span> <span class="st">"Wind"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">airquality</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="op">]</span>, terms <span class="op">=</span> <span class="va">terms_in</span>, type <span class="op">=</span> <span class="st">"terms"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">terms_wind</span> <span class="op">&lt;-</span> <span class="fu">mid.terms</span><span class="op">(</span><span class="va">mid</span>, require <span class="op">=</span> <span class="st">"Wind"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">airquality</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="op">]</span>, terms <span class="op">=</span> <span class="va">terms_wind</span>, type <span class="op">=</span> <span class="st">"terms"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Wind  Solar.R:Wind   Wind:Temp Wind:Month   Wind:Day</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.022674 -0.0003480335 -0.62914150  2.0403924 0.04277067</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.592088 -0.3299065460 -0.26756774  1.3537671 0.03546630</span>
