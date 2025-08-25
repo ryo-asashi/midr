@@ -12,6 +12,7 @@
 <url><loc>https://ryo-asashi.github.io/midr/index.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/news/index.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/color.theme.html</loc></url>
+<url><loc>https://ryo-asashi.github.io/midr/reference/color.theme.info.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/factor.encoder.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/get.yhat.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/ggmid.html</loc></url>
@@ -35,6 +36,7 @@
 <url><loc>https://ryo-asashi.github.io/midr/reference/predict.mid.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/print.mid.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/scale_color_theme.html</loc></url>
+<url><loc>https://ryo-asashi.github.io/midr/reference/set.color.theme.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/shapviz.mid.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/summary.mid.html</loc></url>
 <url><loc>https://ryo-asashi.github.io/midr/reference/theme_midr.html</loc></url>
