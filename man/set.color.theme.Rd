@@ -36,8 +36,11 @@ set.color.theme(
 This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom").
 The registered color theme can then be easily retrieved using the "Theme Name Syntax" (see \code{?color.theme}).
 
-To keep the size of "color.theme" objects small, the \code{kernel} argument supports a form of lazy loading.
-By providing a character vector of length two or a list of two character strings, you can specify an R expression to be evaluated at loading and to return a color kernel, and the namespace in which the expression is evaluated (e.g., \code{kernel = list(text = "rainbow", namespace = "grDevices")}).
+To keep the registry environment size small, the \code{kernel} argument supports a form of lazy loading.
+To use this feature, provide a vector or list containing two character strings:
+(1) an R expression that returns a color kernel (e.g., "rainbow"); and
+(2) the namespace in which to evaluate the expression (e.g., "grDevices").
+The expression is evaluated only when the color theme is loaded by \code{color.theme()}.
 }
 \seealso{
 \code{\link{color.theme}}, \code{\link{color.theme.info}}

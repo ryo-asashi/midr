@@ -50,25 +50,40 @@ get.yhat(object, newdata, ...)
 
 \item{newdata}{a data.frame or matrix.}
 
-\item{...}{optional parameters that are passed to the prediction method for the model.}
+\item{...}{optional arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.}
 
-\item{target}{an integer or character vector specifying the target levels for the prediction, used for the models that returns a matrix or data.frame of class probabilities. Default is \code{-1}, representing the probability of not being the base level.}
+\item{target}{an integer or character vector specifying the target levels used for the classification models that return a matrix or data frame of class probabilities. The default, \code{-1}, represents the probability of not being the base level.}
 }
 \value{
-\code{get.yhat()} returns a numeric vector of model predictions for the \code{newdata}.
+\code{get.yhat()} returns a numeric vector of model predictions for \code{newdata}.
 }
 \description{
-\code{get.yhat()} works as a proxy prediction function for many classes of fitted models.
+\code{get.yhat()} is a generic function that provides a unified interface for obtaining predictions from various fitted model objects.
 }
 \details{
-\code{get.yhat()} is a wrapper prediction function for many classes of models.
-Although many predictive models have their own method of \code{stats::predict()}, the structure and the type of the output of these methods are not uniform.
-\code{get.yhat()} is designed to always return a simple numeric vector of model predictions.
+While many predictive models have a \code{stats::predict()} method, the structure and type of their outputs are not uniform.
+For example, some return a numeric vector, others a matrix of class probabilities, and some a list.
+This function, \code{get.yhat()}, abstracts away this complexity.
+
+For regression models, it returns the numeric prediction in the original scale of the response variable.
+For classification models, it returns the sum of class probabilities for the classes specified by the \code{target} argument.
+
+Furthermore, \code{get.yhat()} provides more consistent handling of missing values.
+While some \code{stats::predict()} methods may return a shorter vector by omitting \code{NA}s, \code{get.yhat()} is designed to return a vector of the same length as \code{newdata}, preserving \code{NA}s in their original positions.
+
 The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
 }
 \examples{
 data(trees, package = "datasets")
 model <- glm(Volume ~ ., trees, family = Gamma(log))
-predict(model, trees[1:5, ], type = "response")
+
+# The output of stats::predict() might not be in the scale of the response variable
+predict(model, trees[1:5, ])
+
+# get.yhat() returns a numeric vector in the original scale of the response variable
 get.yhat(model, trees[1:5, ])
+predict(model, trees[1:5, ], type = "response")
+}
+\seealso{
+\code{\link{predict.mid}}
 }

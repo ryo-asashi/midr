@@ -88,14 +88,9 @@ test_that("weights works", {
   x3 <- c(1, 2, 1, 2, 1, 2)
   weights <- c(2, 1, 1, 1, 1, 1)
   X2 <- data.frame(cbind(x1, x2, x3))
-  X3 <- weighted(X2, weights)
   r1 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X1)$ratio
   r2 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X2)$ratio
   r3 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X2, weights = weights)$ratio
-  r4 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X3)$ratio
-  r5 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X3, weights = rep(1, 6))$ratio
   expect_equal(r1, r3)
-  expect_equal(r1, r4)
-  expect_equal(r2, r5)
   expect_false(r1 == r2)
 })

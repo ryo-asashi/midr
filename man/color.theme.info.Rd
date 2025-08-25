@@ -3,7 +3,7 @@
 \name{color.theme.info}
 \alias{color.theme.info}
 \alias{color.theme.env}
-\title{Available Color Themes and Registry Environment}
+\title{Retrieve Color Theme Information}
 \usage{
 color.theme.info()
 

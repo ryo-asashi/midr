@@ -1,4 +1,4 @@
-#' Available Color Themes and Registry Environment
+#' Retrieve Color Theme Information
 #'
 #' @description
 #' \code{color.theme.info()} returns a data frame listing all available color themes.

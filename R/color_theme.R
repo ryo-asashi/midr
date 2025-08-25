@@ -22,7 +22,7 @@
 #'   \item type: (optional) the desired theme type, which will be matched with "sequential", "diverging" or "qualitative" (i.e., "s", "d", and "q" are sufficient, but longer character strings such as "seq", "div", "qual" are also possible).
 #'   \item query: (optional) a query string to overwrite the color theme's metadata including specific theme options or kernel arguments. Pairs are in \code{key=value} format and separated by \code{;} or \code{&} (e.g., "...?alpha=0.5;na.color='gray50'"). Possible keys include "name", "source", "type", "reverse" and any item of the theme's \code{options} and \code{kernel.args}.
 #' }
-#'0
+#'
 #' @param object one of the following items: (i) a character string following the theme name syntax (e.g., "grDevices/RdBu@seq", see the "Theme Name Syntax" section), (ii) a character vector of color names, a palette function, or a ramp function to be used as a color kernel to create a color theme, or (iii) a "color.theme" object.
 #' @param ... optional arguments to be passed on to \code{get.theme()}, \code{make.theme()} or \code{modify.theme()}.
 #' @param kernel a color vector, a palette function, or a ramp function that serves as the basis for generating colors.

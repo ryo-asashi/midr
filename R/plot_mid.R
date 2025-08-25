@@ -40,7 +40,7 @@
 #' # Plot an interaction effect with data points and a raster layer
 #' plot(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
 #'
-#' # Use a different colot theme
+#' # Use a different color theme
 #' plot(mid, "clarity:color", theme = "RdBu")
 #' @returns
 #' \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.

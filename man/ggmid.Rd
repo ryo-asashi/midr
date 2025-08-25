@@ -78,7 +78,7 @@ ggmid(mid, "clarity")
 # Plot an interaction effect with data points and a raster layer
 ggmid(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
 
-# Use a different colot theme
+# Use a different color theme
 ggmid(mid, "clarity:color", theme = "RdBu")
 }
 \seealso{

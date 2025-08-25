@@ -42,7 +42,7 @@ model.reframe <- function(object, data) {
                silent = TRUE)
     if (inherits(res, "try-error")) {
       formula[[2L]] <- NULL
-      res <- stats::model.frame(formula, data, na.action = "na.pass")
+      res <- stats::model.frame.default(formula, data, na.action = "na.pass")
     }
     return(res)
   }
@@ -54,13 +54,13 @@ model.data <- function(object, env = parent.frame()) {
   if (!is.null(fcl$data))
     return(eval(fcl$data, envir = env))
   if (!is.null(fml <- fcl$formula)) {
-    env <- ifnot.null(environment(fml), parent.frame())
+    env <- ifnot.null(environment(fml), env)
     return(env)
   }
   if (!is.null(fcl$x)) {
     x <- eval(fcl$x, envir = env)
-    if (!is.null(dim(x)[2]) && is.null(colnames(x)))
-      colnames(x) <- paste0("x", seq_len(dim(x)[2]))
+    if (!is.null(dim(x)[2L]) && is.null(colnames(x)))
+      colnames(x) <- paste0("x", seq_len(dim(x)[2L]))
     if (!is.data.frame(x))
       x <- as.data.frame(x)
     if (!is.null(fcl$y)) {

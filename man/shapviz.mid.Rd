@@ -9,14 +9,16 @@
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing observations for which SHAP values are calculated. If not passed, data is extracted from \code{parent.env()} based on the function call of the "mid" object.}
+\item{data}{a data frame containing the observations for which to calculate MID-derived Shapley values. If not passed, data is automatically extracted based on the function call of the fitted MID model.}
 }
 \value{
 \code{shapviz.mid()} returns an object of class "shapviz".
 }
 \description{
-\code{shapviz.mid()} is a S3 method of \code{shapviz::shapviz()} for the fitted MID models.
+\code{shapviz.mid()} is an S3 method for the \code{shapviz::shapviz()} generic, which calculates MID-derived Shapley values from a fitted MID model.
 }
 \details{
-The S3 method of \code{shapviz()} for the "mid" objects returns an object of class "shapviz" to be used to create SHAP plots with the functions of the shapviz package such as \code{sv_waterfall()} and \code{sv_importance()}.
+The function calculates MID-derived Shapley values by attributing the contribution of each component function to its respective variables as follows:
+(1) each main effect is fully attributed to its corresponding variable; and
+(2) each second-order interaction effect is split equally between the two variables involved.
 }
