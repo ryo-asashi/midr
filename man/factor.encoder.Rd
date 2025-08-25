@@ -40,11 +40,14 @@ factor.frame(levels, catchall = "(others)", tag = "x")
 \item{encode}{a function to convert a vector \code{x} into a one-hot encoded matrix.}
 \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 \item{type}{a character string describing the encoding type: "factor" or "null".}
+
 \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 }
 \description{
 \code{factor.encoder()} creates an encoder function for a qualitative (factor or character) variable.
 This encoder converts the variable into a one-hot encoded (dummy) design matrix.
+
+\code{factor.frame()} is a helper function to create a "factor.frame" object that defines the encoding scheme.
 }
 \details{
 This function is designed to handle qualitative data for use in the MID model's linear system formulation.
@@ -61,17 +64,21 @@ This will group the \code{k - 1} most frequent levels into their own columns, wh
 This is crucial for preventing MID models from becoming overly complex.
 }
 \examples{
-# Encode a character vector with NA
+# Create an encoder for a qualitative variable
 data(iris, package = "datasets")
 enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 enc
+
+# Encode a vector with NA
 enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 
+# Create an encoder with a pre-defined encoding frame
 frm <- factor.frame(c("setosa", "virginica"), "other iris")
 enc <- factor.encoder(x = iris$Species, frame = frm)
 enc
 enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 
+# Create an encoder with a character vector specifying the levels
 enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
 enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 }

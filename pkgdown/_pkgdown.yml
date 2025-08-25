@@ -79,20 +79,22 @@ reference:
   - plot.mid.conditional
   - ggmid.mid.conditional
 - title: Other functions
+- subtitle: Prediction Function
+  contents:
+  - get.yhat
 - subtitle: Variable encoders
   contents:
   - factor.encoder
   - numeric.encoder
-- subtitle: Weighted data frames
-  contents:
-  - weighted
 - subtitle: Color themes
   contents:
   - color.theme
   - scale_color_theme
+  - set.color.theme
+  - color.theme.info
 - subtitle: Miscellaneous
   contents:
-  - get.yhat
   - theme_midr
+  - weighted
   - weighted.loss
   - shapviz.mid

@@ -48,11 +48,14 @@ numeric.frame(
 \item{encode}{a function to convert a numeric vector \code{x} into a dummy matrix.}
 \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 \item{type}{a character string describing the encoding type: "linear", "constant", or "null".}
+
 \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 }
 \description{
 \code{numeric.encoder()} creates an encoder function for a quantitative variable.
 This encoder can then be used to convert a numeric vector into a design matrix using either piecewise linear or one-hot interval encoding, which are core components for modeling effects in a MID model.
+
+\code{numeric.frame()} is a helper function to create a "numeric.frame" object that defines the encoding scheme.
 }
 \details{
 The primary purpose of the encoder is to transform a single numeric variable into a design matrix that can be used in the MID model's linear system formulation.
@@ -70,16 +73,20 @@ For each value, the encoder finds which interval it falls into and assigns a \co
 This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.
 }
 \examples{
-# Encode a numeric vector with NA and Inf
+# Create an encoder for a quantitative variable
 data(iris, package = "datasets")
 enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 enc
+
+# Encode a numeric vector with NA and Inf
 enc$encode(x = c(4:8, NA, Inf))
 
+# Create an encoder with a pre-defined encoding frame
 frm <- numeric.frame(breaks = c(3, 5, 7, 9), type = 0L)
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
 enc$encode(x = c(4:8, NA, Inf))
 
+# Create an encoder with a numeric vector specifying the knots
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = c(3, 5, 7, 9))
 enc$encode(x = c(4:8, NA, Inf))
 }

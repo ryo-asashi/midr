@@ -27,17 +27,21 @@
 #' @param weights an optional numeric vector of sample weights for \code{x}.
 #'
 #' @examples
-#' # Encode a character vector with NA
+#' # Create an encoder for a qualitative variable
 #' data(iris, package = "datasets")
 #' enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
 #' enc
+#'
+#' # Encode a vector with NA
 #' enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 #'
+#' # Create an encoder with a pre-defined encoding frame
 #' frm <- factor.frame(c("setosa", "virginica"), "other iris")
 #' enc <- factor.encoder(x = iris$Species, frame = frm)
 #' enc
 #' enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 #'
+#' # Create an encoder with a character vector specifying the levels
 #' enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
 #' enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
 #' @returns
@@ -46,7 +50,6 @@
 #' \item{encode}{a function to convert a vector \code{x} into a one-hot encoded matrix.}
 #' \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 #' \item{type}{a character string describing the encoding type: "factor" or "null".}
-#' \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 #'
 #' @seealso \code{\link{numeric.encoder}}
 #'
@@ -115,7 +118,14 @@ factor.encoder <- function(
 }
 
 #' @rdname factor.encoder
+#'
+#' @description
+#' \code{factor.frame()} is a helper function to create a "factor.frame" object that defines the encoding scheme.
+#'
 #' @param levels a vector to be used as the levels of the variable.
+#'
+#' @returns
+#' \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 #'
 #' @export factor.frame
 #'

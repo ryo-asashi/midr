@@ -9,22 +9,32 @@
 \arguments{
 \item{x}{a "mid" object to be printed.}
 
-\item{digits}{an integer specifying the number of significant digits.}
+\item{digits}{an integer specifying the number of significant digits for printing.}
 
-\item{main.effects}{logical. If \code{TRUE}, MID values of the main effects are printed.}
+\item{main.effects}{logical. If \code{TRUE}, the MID values of each main effect are also printed.}
 
-\item{...}{not used.}
+\item{...}{arguments to be passed to other methods (not used in this method).}
 }
 \value{
-\code{print.mid()} returns the "mid" object passed to the function without any modification.
+\code{print.mid()} returns the original "mid" object invisibly.
 }
 \description{
-For "mid" objects, \code{print()} prints the MID values and the uninterpreted rate.
+\code{print.mid()} is an S3 method for "mid" objects that prints a concise summary of a fitted MID model.
 }
 \details{
-The S3 method of \code{print()} for "mid" objects prints the MID values of a fitted MID model and its uninterpreted rate.
+By default, the \code{print()} method for "mid" objects provides a quick overview of the model structure by listing the number of main effect and interaction terms.
+If \code{main.effects = TRUE} is specified, the method will also print the contribution of each main effect at its sample points, providing a more detailed look at the model's components.
 }
 \examples{
 data(cars, package = "datasets")
-print(interpret(dist ~ speed, cars))
+mid <- interpret(dist ~ speed, cars)
+
+# Default print provides a concise summary
+print(mid)
+
+# Setting main.effects = TRUE prints the contributions of each main effect
+print(mid, main.effects = TRUE)
+}
+\seealso{
+\code{\link{interpret}}, \code{\link{summary.mid}}
 }

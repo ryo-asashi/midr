@@ -1,18 +1,31 @@
 #' Print MID Models
 #'
-#' For "mid" objects, \code{print()} prints the MID values and the uninterpreted rate.
+#' @description
+#' \code{print.mid()} is an S3 method for "mid" objects that prints a concise summary of a fitted MID model.
 #'
-#' The S3 method of \code{print()} for "mid" objects prints the MID values of a fitted MID model and its uninterpreted rate.
+#' @details
+#' By default, the \code{print()} method for "mid" objects provides a quick overview of the model structure by listing the number of main effect and interaction terms.
+#' If \code{main.effects = TRUE} is specified, the method will also print the contribution of each main effect at its sample points, providing a more detailed look at the model's components.
 #'
 #' @param x a "mid" object to be printed.
-#' @param digits an integer specifying the number of significant digits.
-#' @param main.effects logical. If \code{TRUE}, MID values of the main effects are printed.
-#' @param ... not used.
+#' @param digits an integer specifying the number of significant digits for printing.
+#' @param main.effects logical. If \code{TRUE}, the MID values of each main effect are also printed.
+#' @param ... arguments to be passed to other methods (not used in this method).
+#'
 #' @examples
 #' data(cars, package = "datasets")
-#' print(interpret(dist ~ speed, cars))
+#' mid <- interpret(dist ~ speed, cars)
+#'
+#' # Default print provides a concise summary
+#' print(mid)
+#'
+#' # Setting main.effects = TRUE prints the contributions of each main effect
+#' print(mid, main.effects = TRUE)
 #' @returns
-#' \code{print.mid()} returns the "mid" object passed to the function without any modification.
+#' \code{print.mid()} returns the original "mid" object invisibly.
+#'
+#' @seealso \code{\link{interpret}}, \code{\link{summary.mid}}
+#'
 #' @exportS3Method base::print
 #'
 print.mid <- function(

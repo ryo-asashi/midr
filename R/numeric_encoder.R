@@ -28,16 +28,20 @@
 #' @param weights an optional numeric vector of sample weights for \code{x}.
 #'
 #' @examples
-#' # Encode a numeric vector with NA and Inf
+#' # Create an encoder for a quantitative variable
 #' data(iris, package = "datasets")
 #' enc <- numeric.encoder(x = iris$Sepal.Length, k = 5L, tag = "Sepal.Length")
 #' enc
+#'
+#' # Encode a numeric vector with NA and Inf
 #' enc$encode(x = c(4:8, NA, Inf))
 #'
+#' # Create an encoder with a pre-defined encoding frame
 #' frm <- numeric.frame(breaks = c(3, 5, 7, 9), type = 0L)
 #' enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
 #' enc$encode(x = c(4:8, NA, Inf))
 #'
+#' # Create an encoder with a numeric vector specifying the knots
 #' enc <- numeric.encoder(x = iris$Sepal.Length, frame = c(3, 5, 7, 9))
 #' enc$encode(x = c(4:8, NA, Inf))
 #' @returns
@@ -46,7 +50,6 @@
 #' \item{encode}{a function to convert a numeric vector \code{x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 #' \item{type}{a character string describing the encoding type: "linear", "constant", or "null".}
-#' \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 #'
 #' @seealso \code{\link{factor.encoder}}
 #'
@@ -170,8 +173,15 @@ numeric.encoder <- function(
 
 
 #' @rdname numeric.encoder
+#'
+#' @description
+#' \code{numeric.frame()} is a helper function to create a "numeric.frame" object that defines the encoding scheme.
+#'
 #' @param reps a numeric vector to be used as the representative values (knots).
 #' @param breaks a numeric vector to be used as the binning breaks.
+#'
+#' @returns
+#' \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 #'
 #' @export numeric.frame
 #'

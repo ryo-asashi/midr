@@ -1,3 +1,95 @@
+#' Color Themes for Graphics
+#'
+#' @description
+#' The \code{color.theme()} function is the main interface for working with "color.theme" objects. It acts as a dispatcher that, depending on the class of \code{object}, can retrieve a pre-defined theme by name (see the "Theme Name Syntax" section), create a new theme from a vector of colors or a color-generating function, and modify an existing "color.theme" object.
+#'
+#' @details
+#' The "color.theme" object is a special environment that provides two color-generating functions: \code{palette()} and \code{ramp()}.
+#'
+#' \code{palette()} takes an integer \code{n} and returns a vector of \code{n} discrete colors. It is primarily intended for qualitative themes, where distinct colors are used to represent categorical data.
+#'
+#' \code{ramp()} takes a numeric vector \code{x} with values in the [0, 1] interval, and returns a vector of corresponding colors. It maps numeric values onto a continuous color gradient, making it suitable for sequential and diverging themes.
+#'
+#' @section Theme Name Syntax:
+#' When retrieving a theme using a character string, you can use a special syntax to specify the source and apply modifications:
+#'
+#' "\code{[source/](name)[_r][@type][?query]}"
+#'
+#' \itemize{
+#'   \item source: (optional) the source package or collection of the theme (e.g., "grDevices").
+#'   \item name: the name of the theme (e.g., "RdBu").
+#'   \item "_r": (optional) a suffix to reverse the color order.
+#'   \item type: (optional) the desired theme type, which will be matched with "sequential", "diverging" or "qualitative" (i.e., "s", "d", and "q" are sufficient, but longer character strings such as "seq", "div", "qual" are also possible).
+#'   \item query: (optional) a query string to overwrite the color theme's metadata including specific theme options or kernel arguments. Pairs are in \code{key=value} format and separated by \code{;} or \code{&} (e.g., "...?alpha=0.5;na.color='gray50'"). Possible keys include "name", "source", "type", "reverse" and any item of the theme's \code{options} and \code{kernel.args}.
+#' }
+#'0
+#' @param object one of the following items: (i) a character string following the theme name syntax (e.g., "grDevices/RdBu@seq", see the "Theme Name Syntax" section), (ii) a character vector of color names, a palette function, or a ramp function to be used as a color kernel to create a color theme, or (iii) a "color.theme" object.
+#' @param ... optional arguments to be passed on to \code{get.theme()}, \code{make.theme()} or \code{modify.theme()}.
+#' @param kernel a color vector, a palette function, or a ramp function that serves as the basis for generating colors.
+#' @param kernel.args a list of arguments to be passed to the color kernel.
+#' @param options a list of option values to control the color theme's behavior.
+#' @param name a character string for the color theme name.
+#' @param source a character string for the source name of the color theme.
+#' @param type a character string specifying the type of the color theme. One of "sequential", "diverging", or "qualitative".
+#' @param reverse logical. If \code{TRUE}, the order of colors is reversed.
+#'
+#' @examples
+#' # Retrieve a pre-defined theme
+#' ct <- color.theme("Mako")
+#' ct$palette(5L)
+#' ct$ramp(seq.int(0, 1, 1/4))
+#'
+#' # Use special syntax to get a reversed, qualitative theme with alpha value
+#' ct <- color.theme("grDevices/Zissou 1_r@qual?alpha=0.75")
+#' ct$palette(5L)
+#' ct$ramp(seq.int(0, 1, 1/4))
+#'
+#' # Create a new theme from a vector of colors
+#' ct <- color.theme(c("#003f5c", "#7a5195", "#ef5675", "#ffa600"))
+#' ct$palette(10L)
+#'
+#' # Create a new theme from a palette function
+#' ct <- color.theme(grDevices::rainbow)
+#' ct$palette(10L)
+#' @returns
+#' \code{color.theme()} returns a "color.theme" object, which is an environment with the special class attribute, containing the \code{palette()} and \code{ramp()} functions, along with other metadata about the theme.
+#'
+#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{scale_color_theme}}, \code{\link{set.color.theme}}, \code{\link{color.theme.info}}
+#'
+#' @export color.theme
+#'
+color.theme <- function(
+    object, kernel.args = list(), options = list(),
+    name = NULL, source = NULL, type = NULL, reverse = FALSE, ...
+) {
+  if (is.null(object)) {
+    NULL
+  } else if (is.color.theme(object)) {
+    if (nargs() == 1L)
+      return(object)
+    args <- as.list(object)
+    args <- args[c("kernel", "kernel.args", "options", "name", "source", "type")]
+    theme <- do.call(make.theme, args)
+    modify.theme(theme, kernel.args, options, name, source, type, reverse, ...)
+  } else if (is.kernel(object, args = kernel.args)) {
+    make.theme(object, kernel.args, options, name, source, type)
+  } else if (is.character(object) && length(object) == 1L) {
+    parsed <- try(parse.theme.name(object), silent = TRUE)
+    if (inherits(parsed, "try-error"))
+      stop(paste0(object, " can't be parsed"))
+    args <- get.theme(parsed$name, ifnot.null(parsed$source, source))
+    args <- list(theme = do.call(make.theme, args), kernel.args = kernel.args,
+                 options = options, name = name, source = source, type = type,
+                 reverse = reverse, ...)
+    for (item in names(parsed$args))
+      args[[item]] <- parsed$args[[item]]
+    do.call(modify.theme, args)
+  } else {
+    stop("'object' can't be converted to a color theme")
+  }
+}
+
+
 is.color <- function(x) {
   if (!is.character(x))
     return(FALSE)
@@ -30,7 +122,28 @@ is.palette <- function(fun, n.test = 2L, args = list()) {
   !inherits(e, "try-error") && length(e) == n.test && is.color(e)
 }
 
-get.kernel.size <- function(object, args = list(), ok = 1L, ng = 256L) {
+is.color.theme <- function(object) {
+  inherits(object, "color.theme")
+}
+
+is.kernel <- function(object, args = list()) {
+  kernel.class(object, args = args) != "unknown"
+}
+
+kernel.class <- function(object, args = list()) {
+  if (is.palette(object, args = args))
+    "palette"
+  else if (is.ramp(object, args = args))
+    "ramp"
+  else if (is.color(object))
+    "color"
+  else if (is.null(object))
+    "null"
+  else
+    "unknown"
+}
+
+kernel.size <- function(object, args = list(), ok = 1L, ng = 256L) {
   if (!is.kernel(object, args = args))
     stop("'object' must be a palette function, ramp function or color vector")
   if (is.ramp(object, args = args))
@@ -50,8 +163,17 @@ get.kernel.size <- function(object, args = list(), ok = 1L, ng = 256L) {
   if (ng < init.ng) as.integer(ok) else Inf
 }
 
-is.color.theme <- function(object) {
-  inherits(object, "color.theme")
+lazy.load.kernel <- function(object, args = list()) {
+  if (is.kernel(object, args = args))
+    return(object)
+  if (!(is.character(object) || is.list(object)))
+    stop("'object' must be a kernel or a character vector/list specifying expression and namespace")
+  text <- object[[1L]]
+  namespace <- if (length(object) == 1L) "base" else object[[2L]]
+  object <- eval(str2expression(text), envir = rlang::ns_env(namespace))
+  if (!is.kernel(object, args = args))
+    stop("'object' can't be loaded as a valid kernel")
+  object
 }
 
 as.ramp <- function(colors) {
@@ -83,164 +205,8 @@ as.ramp <- function(colors) {
   structure(ramp, class = c("function", "ramp"))
 }
 
-kernel.class <- function(object, args = list()) {
-  if (is.palette(object, args = args))
-    "palette"
-  else if (is.ramp(object, args = args))
-    "ramp"
-  else if (is.color(object))
-    "color"
-  else if (is.null(object))
-    "null"
-  else
-    "unknown"
-}
-
-is.kernel <- function(object, args = list()) {
-  kernel.class(object, args = args) != "unknown"
-}
-
-lazy.load.kernel <- function(object, args = list()) {
-  if (is.kernel(object, args = args))
-    return(object)
-  if (!(is.character(object) || is.list(object)))
-    stop("'object' must be a kernel or a character vector/list specifying expression and namespace")
-  text <- object[[1L]]
-  namespace <- if (length(object) == 1L) "base" else object[[2L]]
-  object <- eval(str2expression(text), envir = rlang::ns_env(namespace))
-  if (!is.kernel(object, args = args))
-    stop("'object' can't be loaded as a valid kernel")
-  object
-}
-
-get.theme.env <- function()
-  getOption("midr.color.theme.env", kernel.env)
-
-
-
-#' Color Themes for Graphics
-#'
-#' The \code{color.theme()} function is the main interface for working with "color.theme" objects. It acts as a dispatcher that, depending on the class of 'object', can retrieve a pre-defined theme by name (see the "Theme Name Syntax" section), create a new theme from a vector of colors or a color-generating function, and modify an existing "color.theme" object.
-#'
-#' The "color.theme" object is a special environment that provides two color-generating functions: \code{palette()} and \code{ramp()}.
-#' \itemize{
-#'   \item \code{palette()} takes an integer \code{n} and returns a vector of \code{n} discrete colors. It is primarily intended for qualitative themes, where distinct colors are used to represent categorical data.
-#'   \item \code{ramp()} takes a numeric vector \code{x} with values in the [0, 1] interval, and returns a vector of corresponding colors. It maps numeric values onto a continuous color gradient, making it suitable for sequential and diverging themes.
-#' }
-#'
-#' @section Theme Name Syntax:
-#' When retrieving a theme using a character string, you can use a special syntax to specify the source and apply modifications:
-#'
-#' "\code{[(source)/](name)[_r][@(type)][?(query)]}"
-#'
-#' \itemize{
-#'   \item source: (Optional) The source package or collection of the theme
-#'     (e.g., "grDevices").
-#'   \item name: the name of the theme (e.g., "RdBu").
-#'   \item "_r": (Optional) a suffix to reverse the color order.
-#'   \item type: (Optional) the desired theme type, which will be matched with "sequential", "diverging" or "qualitative".
-#'   \item query: (Optional) a query string to overwrite the color theme's metadata including specific theme options or kernel arguments. Pairs are in \code{key=value} format and separated by \code{;} or \code{&} (e.g., "...?alpha=0.5;na.color='gray50'"). Possible keys include "name", "source", "type", "reverse" and any item in theme's \code{options} and \code{kernel.args}.
-#' }
-#'
-#' @param object one of the following items: (i) a character string following the theme name syntax (e.g., "grDevices/RdBu@seq", see the "Theme Name Syntax" section), (ii) a character vector of color names, a palette function, or a ramp function to be used as a color kernel to create a color theme, or (iii) a "color.theme" object.
-#' @param ... optional arguments to be passed on to \code{get.theme()}, \code{make.theme()} or \code{modify.theme()}.
-#' @param kernel a color vector, a palette function, or a ramp function that serves as the basis for generating colors.
-#' @param kernel.args a list containing the argument values to be passed to the color kernel.
-#' @param options a list of option values to control the color theme's behavior (e.g., "palette.reverse", "na.color").
-#' @param name a character string naming the color theme.
-#' @param source a character string for the source of the color theme (e.g., a package name).
-#' @param type a character string specifying the type of the color theme. One of "sequential", "diverging", or "qualitative".
-#' @param reverse logical. If \code{TRUE}, the order of colors is reversed.
-#' @examples
-#' # Retrieve a pre-defined theme
-#' ct <- color.theme("Mako")
-#' ct$palette(5L)
-#' ct$ramp(seq.int(0, 1, 1/4))
-#'
-#' # Use special syntax to get a reversed, qualitative theme with alpha value
-#' ct <- color.theme("grDevices/Zissou 1_r@qual?alpha=0.75")
-#' ct$palette(5L)
-#' ct$ramp(seq.int(0, 1, 1/4))
-#'
-#' # Create a new theme from a vector of colors
-#' ct <- color.theme(c("#003f5c", "#7a5195", "#ef5675", "#ffa600"))
-#' ct$palette(10L)
-#'
-#' # Create a new theme from a palette function
-#' ct <- color.theme(grDevices::rainbow)
-#' ct$palette(10L)
-#' @returns
-#' \code{color.theme()} returns a "color.theme" object containing the \code{palette()} and \code{ramp()} functions, along with other metadata about the theme.
-#' @export color.theme
-#'
-color.theme <- function(
-    object, kernel.args = list(), options = list(),
-    name = NULL, source = NULL, type = NULL, reverse = FALSE, ...
-  ) {
-  if (is.null(object)) {
-    NULL
-  } else if (is.color.theme(object)) {
-    if (nargs() == 1L)
-      return(object)
-    args <- as.list(object)
-    args <- args[c("kernel", "kernel.args", "options", "name", "source", "type")]
-    theme <- do.call(make.theme, args)
-    modify.theme(theme, kernel.args, options, name, source, type, reverse, ...)
-  } else if (is.kernel(object, args = kernel.args)) {
-    make.theme(object, kernel.args, options, name, source, type)
-  } else if (is.character(object) && length(object) == 1L) {
-    parsed <- try(parse.theme.name(object), silent = TRUE)
-    if (inherits(parsed, "try-error"))
-      stop(paste0(object, " can't be parsed"))
-    args <- get.theme(parsed$name, ifnot.null(parsed$source, source))
-    args <- list(theme = do.call(make.theme, args), kernel.args = kernel.args,
-                 options = options, name = name, source = source, type = type,
-                 reverse = reverse, ...)
-    for (item in names(parsed$args))
-      args[[item]] <- parsed$args[[item]]
-    do.call(modify.theme, args)
-  } else {
-    stop("'object' can't be converted to a color theme")
-  }
-}
-
-
-#' @rdname color.theme
-#' @export set.color.theme
-#'
-set.color.theme <- function(
-    kernel, kernel.args = list(), options = list(),
-    name = NULL, source = "custom", type = NULL
-) {
-  if (is.color.theme(kernel)) {
-    args <- as.list(kernel)[c("kernel", "kernel.args", "options", "type")]
-    args$name <- ifnot.null(name, kernel$name)
-    args$source <- ifnot.null(source, kernel$source)
-    return(do.call(set.color.theme, args))
-  }
-  lazy.load.kernel(kernel, args = kernel.args)
-  if (!is.list(kernel.args))
-    stop("'kernel.args' must be a list")
-  if (!is.list(options))
-    stop("'options' must be a list")
-  if (!is.character(name) || length(name) != 1L)
-    stop("'name' must be a character string of length 1")
-  if (grepl("(/|_r$|@|\\?)", name))
-    stop("'name' must not contain the reserved characters: '/', '_r', '@', or '?'")
-  if (!is.character(source) || length(source) != 1L)
-    stop("'source' must be a character string of length 1")
-  type <- match.arg(type, c("sequential", "diverging", "qualitative"))
-  new <- list(kernel = kernel, kernel.args = kernel.args,
-              options = options, name = name, source = source, type = type)
-  env <- get.theme.env()
-  old <- env[[name]][[source]]
-  env[[name]][[source]] <- new
-  invisible(ifnot.null(old, new))
-}
-
-
 get.theme <- function(name, source = NULL) {
-  env <- get.theme.env()
+  env <- color.theme.env()
   if (!exists(name, env))
     stop(sprintf("'%s' is not found in the color theme environment", name))
   if (is.null(source))
@@ -251,7 +217,6 @@ get.theme <- function(name, source = NULL) {
                  source, name))
   args
 }
-
 
 parse.theme.name <- function(name) {
   args <- new.env(parent = baseenv())
@@ -284,7 +249,6 @@ parse.theme.name <- function(name) {
   list(name = name, source = source, args = args)
 }
 
-
 make.theme <- function(
     kernel, kernel.args = list(), options = list(),
     name = NULL, source = NULL, type = NULL
@@ -308,7 +272,7 @@ make.theme <- function(
     kernel.args$alpha <- ifnot.null(kernel.args$alpha, NA)
   }
   options$kernel.size <- ifnot.null(options$kernel.size,
-                                    get.kernel.size(kernel, args = kernel.args))
+                                    kernel.size(kernel, args = kernel.args))
   options$palette.formatter <- ifnot.null(
     options$palette.formatter,
     switch(type, qualitative = "recycle", "interpolate")
@@ -400,7 +364,6 @@ make.theme <- function(
   structure(env, class = c("environment", "color.theme"))
 }
 
-
 modify.theme <- function(
     theme, kernel.args = NULL, options = NULL,
     name = NULL, source = NULL, type = NULL, reverse = FALSE, ...
@@ -483,103 +446,6 @@ print.color.theme <- function(x, display = TRUE, ...) {
   if (display) plot.color.theme(x, text = text)
 }
 
-#' @rdname color.theme
-#' @export color.theme.info
-#'
-color.theme.info <- function() {
-  env <- get.theme.env()
-  info.byname <- function(x) {
-    data.frame(name = sapply(x, function(y) y$name),
-               source = sapply(x, function(y) y$source),
-               type = sapply(x, function(y) y$type))
-  }
-  info <- do.call(rbind, lapply(env, info.byname))
-  info <- info[order(info$type, info$name, info$source), ]
-  rownames(info) <- NULL
-  info
-}
-
-
-
-#' Color Scales for ggplot2 Graphics based on Color Themes
-#'
-#' \code{scale_color_theme()} and family functions returns color scales for the "colour" and "fill" aesthetics of ggplot objects.
-#'
-#' @param theme one of the following: a color theme name such as "Viridis", a character vector of color names, a palette function, or a ramp function to be used to create a color theme.
-#' @param ... optional arguments to be passed to \code{ggplot2::continuous_scale()} or \code{ggplot2::discrete_scale()}.
-#' @param discrete logical. If \code{TRUE}, a discrete scale is returned.
-#' @param middle a numeric value specifying the middle point for the diverging color themes.
-#' @param aesthetics character string: "fill" or "color".
-#' @examples
-#' data(txhousing, package = "ggplot2")
-#' cities <- c("Houston", "Fort Worth", "San Antonio", "Dallas", "Austin")
-#' df <- subset(txhousing, city %in% cities)
-#' d <- ggplot2::ggplot(data = df, ggplot2::aes(x = sales, y = median)) +
-#'   ggplot2::geom_point(ggplot2::aes(colour = city))
-#' d + scale_color_theme("Set 1")
-#' d + scale_color_theme("R3")
-#' d + scale_color_theme("Blues", discrete = TRUE)
-#' d + scale_color_theme("SunsetDark", discrete = TRUE)
-#' data(faithfuld, package = "ggplot2")
-#' v <- ggplot2::ggplot(faithfuld) +
-#'   ggplot2::geom_tile(ggplot2::aes(waiting, eruptions, fill = density))
-#' v + scale_fill_theme("Plasma")
-#' v + scale_fill_theme("Spectral")
-#' v + scale_fill_theme("Spectral_r")
-#' v + scale_fill_theme("midr", middle = 0.017)
-#' @returns
-#' \code{scale_color_theme()} returns a "ScaleContinuous" or "ScaleDiscrete" object that can be added to a "ggplot" object.
-#' @export scale_color_theme
-#'
-scale_color_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "colour") {
-  args <- list(...)
-  args$aesthetics <- aesthetics
-  theme <- color.theme(theme)
-  if (is.null(discrete))
-    discrete <- theme$type == "qualitative"
-  if (discrete) {
-    args$palette <- theme$palette
-    args$guide <- ifnot.null(args$guide, "legend")
-    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
-    scale <- do.call(ggplot2::discrete_scale, args)
-  } else {
-    if (theme$type == "qualitative")
-      stop("qualitative color theme can't be used for continuous scales")
-    rescale_fun <- if (theme$type == "sequential") {
-      scales::rescale
-    } else if (theme$type == "diverging") {
-      function(x, to = c(0, 1), from = range(x, na.rm = TRUE))
-        scales::rescale_mid(x, to, from, mid = middle)
-    }
-    args$palette <- theme$ramp
-    args$rescaler <- rescale_fun
-    args$guide <- ifnot.null(args$guide, "colorbar")
-    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
-    scale <- do.call(ggplot2::continuous_scale, args)
-  }
-  scale
-}
-
-#' @rdname scale_color_theme
-#' @export scale_colour_theme
-#'
-scale_colour_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "colour") {
-  scale_color_theme(theme = theme, ..., discrete = discrete,
-                    middle = middle, aesthetics = aesthetics)
-}
-
-#' @rdname scale_color_theme
-#' @export scale_fill_theme
-#'
-scale_fill_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "fill") {
-  scale_color_theme(theme = theme, ..., discrete = discrete,
-                    middle = middle, aesthetics = aesthetics)
-}
-
-
 rescale <- function(x, middle = NULL) {
   if (is.character(x))
     x <- as.factor(x)
@@ -599,7 +465,6 @@ rescale <- function(x, middle = NULL) {
   }
   pmax(0, pmin(1, res))
 }
-
 
 to.colors <- function(x, theme, middle = 0, na.value = NULL) {
   theme <- color.theme(theme)
@@ -621,7 +486,6 @@ to.colors <- function(x, theme, middle = 0, na.value = NULL) {
   cols[is.na(cols)] <- na.value
   cols
 }
-
 
 hcl.palette <- function(
     n, direction = 1L, alpha = NULL, chroma = 100, luminance = 65
