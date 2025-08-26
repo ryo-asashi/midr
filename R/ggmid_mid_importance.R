@@ -1,15 +1,23 @@
-#' Plot MID Importance with ggplot2 Package
+#' Plot MID Importance with ggplot2
 #'
-#' For "mid.importance" objects, \code{ggmid()} visualizes the importance of MID component functions.
+#' @description
+#' For "mid.importance" objects, \code{ggmid()} visualizes the importance of component functions of the fitted MID model.
 #'
-#' The S3 method of \code{ggmid()} for "mid.importance" objects creates a "ggplot" object that visualizes the term importance of a fitted MID model.
-#' The main layer is drawn using \code{geom_col()}, \code{geom_tile()}, \code{geom_point()} or \code{geom_boxplot()}.
+#' @details
+#' This is an S3 method for the \code{ggmid()} generic that creates an importance plot from a "mid.importance" object, visualizing the average contribution of component functions to the fitted MID model.
+#'
+#' The \code{type} argument controls the visualization style.
+#' The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
+#' The \code{type = "dotchart"} option creates a dot plot, offering a clean alternative to the bar plot for visualizing term importance.
+#' The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
+#' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the varibability of each term's effect.
 #'
 #' @param object a "mid.importance" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".
 #' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
 #' @param max.bars an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.
 #' @param ... optional parameters to be passed to the main layer.
+#'
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
@@ -22,6 +30,9 @@
 #' ggmid(imp, type = "boxplot", theme = "Accent")
 #' @returns
 #' \code{ggmid.mid.importance()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid}}, \code{\link{plot.mid.importance}}
+#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.importance <- function(

@@ -1,4 +1,4 @@
-#' Color Scales for ggplot2 Graphics based on Color Themes
+#' Color Theme Scales for ggplot2 Graphics
 #'
 #' @description
 #' \code{scale_color_theme()} and its family of functions provide a unified interface to apply custom color themes to the "colour" and "fill" aesthetics of ggplot objects.

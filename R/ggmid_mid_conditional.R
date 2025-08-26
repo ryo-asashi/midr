@@ -1,8 +1,18 @@
-#' Plot ICE of MID Model with ggplot2 Package
+#' Plot MID Conditional Expectations with ggplot2
 #'
-#' For "mid.conditional" objects, \code{ggmid()} visualizes ICE curves of a MID model.
+#' @description
+#' For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
 #'
-#' The S3 method of \code{ggmid()} for "mid.conditional" objects creates a "ggplot" object that visualizes ICE curves of a fitted MID model using \code{geom_line()}.
+#' @details
+#' This is an S3 method for the \code{ggmid()} generic that produces ICE curves from a "mid.conditional" object.
+#' ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
+#' This function plots one line for each observation in the data.
+#'
+#' The \code{type} argument controls the visualization style:
+#' The default, \code{type = "iceplot"}, plots the row ICE curves.
+#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted so start at zero, which makes it easier to compare the slopes of the curves.
+#'
+#' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
 #' @param object a "mid.conditional" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.
@@ -16,16 +26,24 @@
 #' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters to be passed to the main layer.
+#'
 #' @examples
 #' data(airquality, package = "datasets")
 #' library(midr)
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.1)
 #' ice <- mid.conditional(mid, "Temp", data = airquality)
+#'
+#' # Create an ICE plot, coloring lines by 'Wind'
 #' ggmid(ice, var.color = "Wind")
+#'
+#' # Create a centered ICE plot, mapping color and linetype to other variables
 #' ggmid(ice, type = "centered", theme = "Purple-Yellow",
 #'       var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
 #' \code{ggmid.mid.conditional()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
+#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.conditional <- function(

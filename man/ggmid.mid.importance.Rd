@@ -3,7 +3,7 @@
 \name{ggmid.mid.importance}
 \alias{ggmid.mid.importance}
 \alias{autoplot.mid.importance}
-\title{Plot MID Importance with ggplot2 Package}
+\title{Plot MID Importance with ggplot2}
 \usage{
 \method{ggmid}{mid.importance}(
   object,
@@ -30,11 +30,16 @@
 \code{ggmid.mid.importance()} returns a "ggplot" object.
 }
 \description{
-For "mid.importance" objects, \code{ggmid()} visualizes the importance of MID component functions.
+For "mid.importance" objects, \code{ggmid()} visualizes the importance of component functions of the fitted MID model.
 }
 \details{
-The S3 method of \code{ggmid()} for "mid.importance" objects creates a "ggplot" object that visualizes the term importance of a fitted MID model.
-The main layer is drawn using \code{geom_col()}, \code{geom_tile()}, \code{geom_point()} or \code{geom_boxplot()}.
+This is an S3 method for the \code{ggmid()} generic that creates an importance plot from a "mid.importance" object, visualizing the average contribution of component functions to the fitted MID model.
+
+The \code{type} argument controls the visualization style.
+The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
+The \code{type = "dotchart"} option creates a dot plot, offering a clean alternative to the bar plot for visualizing term importance.
+The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
+The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the varibability of each term's effect.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -46,4 +51,7 @@ ggmid(imp, theme = "Tableau 10")
 ggmid(imp, type = "dotchart", theme = "Okabe-Ito", size = 3)
 ggmid(imp, type = "heatmap", theme = "Blues")
 ggmid(imp, type = "boxplot", theme = "Accent")
+}
+\seealso{
+\code{\link{ggmid}}, \code{\link{plot.mid.importance}}
 }

@@ -4,7 +4,7 @@
 \alias{scale_color_theme}
 \alias{scale_colour_theme}
 \alias{scale_fill_theme}
-\title{Color Scales for ggplot2 Graphics based on Color Themes}
+\title{Color Theme Scales for ggplot2 Graphics}
 \usage{
 scale_color_theme(
   theme,

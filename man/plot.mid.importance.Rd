@@ -2,35 +2,41 @@
 % Please edit documentation in R/plot_mid_importance.R
 \name{plot.mid.importance}
 \alias{plot.mid.importance}
-\title{Plot MID Importance with graphics Package}
+\title{Plot MID Importance}
 \usage{
 \method{plot}{mid.importance}(
   x,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
-  max.bars = 30L,
+  max.terms = 30L,
   ...
 )
 }
 \arguments{
 \item{x}{a "mid.importance" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
+\item{type}{the type of the plot. One of "barplot", "dotchart", "heatmap", or "boxplot".}
 
-\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
+\item{theme}{a character string or object defining the color theme (see \code{\link{color.theme}}).}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
+\item{max.terms}{the maximum number of terms to display in the bar, dot and box plots.}
 
-\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{...}{optional parameters passed on to the underlying graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
-\code{plot.mid.importance()} produces a plot and returns \code{NULL}.
+\code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mid.importance" objects, \code{plot()} visualizes the importance of MID component functions.
+For "mid.importance" objects, \code{plot()} visualizes the importance of component functions of the fitted MID model.
 }
 \details{
-The S3 method of \code{plot()} for "mid.importance" objects creates a visualization of the MID importance using the functions of the graphics package.
+This is an S3 method for the \code{plot()} generic that produces an importance plot from a "mid.importance" object, visualizing the average contribution of component functions to the fitted MID model.
+
+The \code{type} argument controls the visualization style.
+The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
+The \code{type = "dotchart"} option creates a dot plot, offering a clean alternative to the bar plot for visualizing term importance.
+The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
+The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the varibability of each term's effect.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -38,8 +44,19 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
-plot(imp, theme = "Tableau 10")
-plot(imp, type = "dotchart", theme = "Okabe-Ito")
-plot(imp, type = "heatmap", theme = "Blues")
-plot(imp, type = "boxplot", theme = "Accent")
+
+# Create a bar plot (default)
+plot(imp)
+
+# Create a dot chart
+plot(imp, type = "dotchart", theme = "highlight", size = 1.5)
+
+# Create a heatmap
+plot(imp, type = "heatmap")
+
+# Create a boxplot to see the distribution of effects
+plot(imp, type = "boxplot")
+}
+\seealso{
+\code{\link{plot.mid}}, \code{\link{ggmid.mid.importance}}
 }

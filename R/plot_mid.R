@@ -1,17 +1,17 @@
 #' Plot MID Component Functions
 #'
 #' @description
-#' \code{plot.mid()} is an S3 method for "mid" objects that visualizes a single component function using base R's graphing functions.
+#' For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.
 #'
 #' @details
-#' The \code{type} argument controls the plotting mode.
-#' When \code{type = "effect"} (default), the component function itself is plotted.
-#' The plotting type is automatically selected based on the effect's type:
-#' for a quantitative main effect, a line plot is drawn;
-#' for a qualitative main effect, a bar plot is drawn; and
-#' for an interaction effect, a raster plot is drawn.
-#' If \code{type = "data"}, only the values of the component function at the raw data points are plotted, which requires the \code{data} argument to be supplied.
-#' Finally, \code{type = "compound"} combines both modes, plotting the component function as well as the raw data points.
+#' This is an S3 method for the \code{plot()} generic that produces a plot from a "mid" object, visualizing a component function of the fitted MID model.
+#'
+#' The \code{type} argument controls the visualization style.
+#' The default, \code{type = "effect"}, plots the component function itself.
+#' In this style, the plotting method is automatically selected based on the effect's type:
+#' a line plot for quantitative main effects; a bar plot for qualitative main effects; and a filled contour (level) plot for interactions.
+#' The \code{type = "data"} option creates a scatter plot of \code{data}, colored by the values of the component function.
+#' The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
 #'
 #' @param x a "mid" object to be visualized.
 #' @param term a character string specifying the component function to be plotted.
@@ -22,7 +22,7 @@
 #' @param data a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the "mid" object.
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
-#' @param cells.count an integer or vector of two integers specifying the resolution of the raster plot for interactions.
+#' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -52,7 +52,7 @@
 plot.mid <- function(
     x, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
-    jitter = .3, cells.count = c(100L, 100L), ...) {
+    jitter = .3, resolution = c(100L, 100L), ...) {
   dots <- list(...)
   tags <- term.split(term)
   term <- term.check(term, x$terms, stop = TRUE)
@@ -139,7 +139,7 @@ plot.mid <- function(
     }
   # interaction
   } else if (len == 2L) {
-    ms <- cells.count
+    ms <- resolution
     if (length(ms) == 1L)
       ms <- c(ms, ms)
     xy <- list(NULL, NULL)

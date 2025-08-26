@@ -1,37 +1,52 @@
-#' Plot MID Breakdown with ggplot2 Package
+#' Plot MID Breakdowns with ggplot2
 #'
+#' @description
 #' For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
 #'
-#' The S3 method of \code{ggmid()} for "mid.breakdown" objects creates a "ggplot" object that visualizes the breakdown of a single model prediction.
-#' The main layer is drawn using \code{geom_col()}.
+#' @details
+#' This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction using the \strong{ggplot2} package.
+#'
+#' The \code{type} argument controls the visualization style.
+#' The default, \code{type = "waterfall"} (default), creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.
+#' The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
+#' The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
 #'
 #' @param object a "mid.breakdown" object to be visualized.
 #' @param type a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".
 #' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
-#' @param terms an optional character vector specifying the terms to be displayed.
-#' @param max.bars an integer specifying the maximum number of bars in the plot.
+#' @param terms an optional character vector specifying which terms to display.
+#' @param max.terms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
 #' @param width a numeric value specifying the width of the bars.
-#' @param vline logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.
-#' @param catchall a character string to be used as the catchall label.
-#' @param format a character string or character vector of length two to be used as the format of the axis labels. "t" and "v" immediately after the percent sign are replaced with the corresponding term and value.
-#' @param ... optional parameters to be passed to the main layer.
+#' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
+#' @param catchall a character string for the catchall label.
+#' @param format a character string or character vector of length two to be used as the format of the axis labels. Use "\%t" for the term name (e.g., "Wind") and "\%v" for the values (e.g., "30").
+#' @param ... optional parameters passed on to the main layer.
+#'
 #' @examples
 #' data(diamonds, package = "ggplot2")
 #' set.seed(42)
 #' idx <- sample(nrow(diamonds), 1e4)
 #' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #' mbd <- mid.breakdown(mid, diamonds[1L, ])
+#'
+#' # Create a waterfall plot
 #' ggmid(mbd, type = "waterfall")
-#' ggmid(mbd, type = "waterfall", theme = "midr")
-#' ggmid(mbd, type = "barplot", theme = "Set 1")
-#' ggmid(mbd, type = "dotchart", size = 3, theme = "Cividis")
+#'
+#' # Create a bar plot with a different theme
+#' ggmid(mbd, type = "barplot", theme = "highlight")
+#'
+#' # Create a dot chart
+#' ggmid(mbd, type = "dotchart", size = 3)
 #' @returns
 #' \code{ggmid.mid.breakdown()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
+#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid.breakdown <- function(
     object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
-    terms = NULL, max.bars = 15L, width = NULL, vline = TRUE,
+    terms = NULL, max.terms = 15L, width = NULL, vline = TRUE,
     catchall = "others", format = c("%t=%v", "%t"), ...) {
   dots <- list(...)
   type <- match.arg(type)
@@ -42,7 +57,7 @@ ggmid.mid.breakdown <- function(
   bd <- object$breakdown
   bd$term <- as.character(bd$term)
   if (any(!grepl("%t", format) & !grepl("%v", format)))
-    stop("all format strings must contain '%t' or '%v'")
+    stop("all format strings must contain at least one of '%t' and '%v'")
   if (length(format) == 1L)
     format <- c(format, format)
   use.catchall <- FALSE
@@ -53,7 +68,7 @@ ggmid.mid.breakdown <- function(
     bd[nrow(bd) + 1L, "mid"] <- resid
     use.catchall <- TRUE
   }
-  nmax <- min(max.bars, nrow(bd), na.rm = TRUE)
+  nmax <- min(max.terms, nrow(bd), na.rm = TRUE)
   if (nmax < nrow(bd)) {
     resid <- sum(bd[nmax:nrow(bd), "mid"])
     bd <- bd[1L:(nmax - 1L), ]

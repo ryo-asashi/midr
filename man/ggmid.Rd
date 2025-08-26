@@ -18,7 +18,7 @@ ggmid(object, ...)
   data = NULL,
   limits = c(NA, NA),
   jitter = 0.3,
-  cells.count = c(100L, 100L),
+  resolution = c(100L, 100L),
   ...
 )
 
@@ -45,23 +45,24 @@ ggmid(object, ...)
 
 \item{jitter}{a numeric value specifying the amount of jitter for the data points.}
 
-\item{cells.count}{an integer or vector of two integers specifying the resolution of the raster plot for interactions.}
+\item{resolution}{an integer or vector of two integers specifying the resolution of the raster plot for interactions.}
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.
 }
 \description{
-\code{ggmid()} is a plotting function for "mid" objects, creating a "ggplot" object to visualize a single component function.
+\code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects.
+For "mid" objects (i.e., fitted MID models), it visualizes a single component function specified by the \code{term} argument.
 }
 \details{
-The \code{type} argument controls the plotting mode.
-When \code{type = "effect"} (default), the component function itself is plotted.
-The main layer is automatically selected based on the effect's type:
-for a quantitative main effect, a line plot is drawn with \code{geom_line()} or \code{geom_path()};
-for a qualitative main effect, a bar plot is drawn with \code{geom_col()}; and
-for an interaction effect, a raster plot or rectangle plot is drawn with \code{geom_raster()} or \code{geom_rect}.
-If \code{type = "data"}, only the values of the component function at the raw data points are plotted, which requires the \code{data} argument to be supplied.
-Finally, \code{type = "compound"} combines both modes, plotting the component function as well as the raw data points.
+For "mid" objects, \code{ggmid()} creates a "ggplot" object that visualizes a component function of the fitted MID model using the \strong{ggplot2} package.
+
+The \code{type} argument controls the visualization style.
+The default, \code{type = "effect"}, plots the component function itself.
+In this style, the plotting method is automatically selected based on the effect's type:
+a line plot for quantitative main effects; a bar plot for qualitative main effects; and a raster plot for interactions.
+The \code{type = "data"} option creates a scatter plot of \code{data}, colored by the values of the component function.
+The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -82,5 +83,5 @@ ggmid(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
 ggmid(mid, "clarity:color", theme = "RdBu")
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{ggmid.mid.importance}}, \code{\link{ggmid.mid.conditional}}, \code{\link{ggmid.mid.breakdown}}
+\code{\link{interpret}}, \code{\link{ggmid.mid.importance}}, \code{\link{ggmid.mid.conditional}}, \code{\link{ggmid.mid.breakdown}}, \code{\link{plot.mid}}
 }

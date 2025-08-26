@@ -2,14 +2,14 @@
 % Please edit documentation in R/plot_mid_breakdown.R
 \name{plot.mid.breakdown}
 \alias{plot.mid.breakdown}
-\title{Plot MID Breakdown with graphics Package}
+\title{Plot MID Breakdowns}
 \usage{
 \method{plot}{mid.breakdown}(
   x,
   type = c("waterfall", "barplot", "dotchart"),
   theme = NULL,
   terms = NULL,
-  max.bars = 15L,
+  max.terms = 15L,
   width = NULL,
   vline = TRUE,
   catchall = "others",
@@ -20,32 +20,37 @@
 \arguments{
 \item{x}{a "mid.breakdown" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot" or "dotchart".}
+\item{type}{a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".}
 
 \item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
-\item{terms}{an optional character vector specifying the terms to be displayed.}
+\item{terms}{an optional character vector specifying which terms to display.}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
+\item{max.terms}{the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.}
 
 \item{width}{a numeric value specifying the width of the bars.}
 
-\item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
+\item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
 
-\item{catchall}{a character string to be used as the catchall label.}
+\item{catchall}{a character string for the catchall label.}
 
-\item{format}{a character string or character vector of length two to be used as the format of the axis labels. "t" and "v" immediately after the percent sign are replaced with the corresponding term and value.}
+\item{format}{a character string or character vector of length two to be used as the format of the axis labels. Use "\%t" for the term name (e.g., "carat") and "\%v" for the values (e.g., "0.23").}
 
-\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{...}{optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
-\code{plot.mid.breakdown()} produces a plot and returns \code{NULL}.
+\code{plot.mid.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
 }
 \description{
 For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
 }
 \details{
-The S3 method of \code{plot()} for "mid.breakdown" objects creates a visualization of the MID breakdown using the functions of the graphics package.
+This is an S3 method for the \code{plot()} generic that produces a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction.
+
+The \code{type} argument controls the visualization style.
+The default, \code{type = "waterfall"}, creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.
+The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
+The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -53,8 +58,16 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 mbd <- mid.breakdown(mid, diamonds[1L, ])
+
+# Create a waterfall plot
 plot(mbd, type = "waterfall")
-plot(mbd, type = "waterfall", theme = "midr")
-plot(mbd, type = "barplot", theme = "Set 1")
-plot(mbd, type = "dotchart", theme = "Cividis")
+
+# Create a bar plot with a different theme
+plot(mbd, type = "barplot", theme = "highlight")
+
+# Create a dot chart
+plot(mbd, type = "dotchart")
+}
+\seealso{
+\code{\link{plot.mid}}, \code{\link{ggmid.mid.breakdown}}
 }

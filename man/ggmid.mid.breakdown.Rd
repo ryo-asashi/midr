@@ -3,14 +3,14 @@
 \name{ggmid.mid.breakdown}
 \alias{ggmid.mid.breakdown}
 \alias{autoplot.mid.breakdown}
-\title{Plot MID Breakdown with ggplot2 Package}
+\title{Plot MID Breakdowns with ggplot2}
 \usage{
 \method{ggmid}{mid.breakdown}(
   object,
   type = c("waterfall", "barplot", "dotchart"),
   theme = NULL,
   terms = NULL,
-  max.bars = 15L,
+  max.terms = 15L,
   width = NULL,
   vline = TRUE,
   catchall = "others",
@@ -27,19 +27,19 @@
 
 \item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
 
-\item{terms}{an optional character vector specifying the terms to be displayed.}
+\item{terms}{an optional character vector specifying which terms to display.}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the plot.}
+\item{max.terms}{the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.}
 
 \item{width}{a numeric value specifying the width of the bars.}
 
-\item{vline}{logical. If \code{TRUE}, the vertical line is drawn at zero or the intercept.}
+\item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
 
-\item{catchall}{a character string to be used as the catchall label.}
+\item{catchall}{a character string for the catchall label.}
 
-\item{format}{a character string or character vector of length two to be used as the format of the axis labels. "t" and "v" immediately after the percent sign are replaced with the corresponding term and value.}
+\item{format}{a character string or character vector of length two to be used as the format of the axis labels. Use "\%t" for the term name (e.g., "Wind") and "\%v" for the values (e.g., "30").}
 
-\item{...}{optional parameters to be passed to the main layer.}
+\item{...}{optional parameters passed on to the main layer.}
 }
 \value{
 \code{ggmid.mid.breakdown()} returns a "ggplot" object.
@@ -48,8 +48,12 @@
 For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
 }
 \details{
-The S3 method of \code{ggmid()} for "mid.breakdown" objects creates a "ggplot" object that visualizes the breakdown of a single model prediction.
-The main layer is drawn using \code{geom_col()}.
+This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction using the \strong{ggplot2} package.
+
+The \code{type} argument controls the visualization style.
+The default, \code{type = "waterfall"} (default), creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.
+The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
+The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
 }
 \examples{
 data(diamonds, package = "ggplot2")
@@ -57,8 +61,16 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 mbd <- mid.breakdown(mid, diamonds[1L, ])
+
+# Create a waterfall plot
 ggmid(mbd, type = "waterfall")
-ggmid(mbd, type = "waterfall", theme = "midr")
-ggmid(mbd, type = "barplot", theme = "Set 1")
-ggmid(mbd, type = "dotchart", size = 3, theme = "Cividis")
+
+# Create a bar plot with a different theme
+ggmid(mbd, type = "barplot", theme = "highlight")
+
+# Create a dot chart
+ggmid(mbd, type = "dotchart", size = 3)
+}
+\seealso{
+\code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
 }
