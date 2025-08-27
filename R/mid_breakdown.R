@@ -1,4 +1,4 @@
-#' Calculate MID Breakdown for a Prediction
+#' Calculate MID Breakdowns
 #'
 #' @description
 #' \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.
@@ -41,6 +41,9 @@
 #' \item{data}{the data frame containing the predictor variable values used for the prediction.}
 #' \item{intercept}{the intercept of the MID model.}
 #' \item{prediction}{the predicted value from the MID model.}
+#'
+#' @seealso \code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
+#'
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(

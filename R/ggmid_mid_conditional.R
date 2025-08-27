@@ -42,7 +42,7 @@
 #' @returns
 #' \code{ggmid.mid.conditional()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
+#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
 #'
 #' @exportS3Method midr::ggmid
 #'

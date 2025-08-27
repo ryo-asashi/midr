@@ -69,5 +69,5 @@ plot(mbd, type = "barplot", theme = "highlight")
 plot(mbd, type = "dotchart")
 }
 \seealso{
-\code{\link{plot.mid}}, \code{\link{ggmid.mid.breakdown}}
+\code{\link{mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
 }

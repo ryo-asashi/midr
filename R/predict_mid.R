@@ -35,7 +35,7 @@
 #' @returns
 #' \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
 #'
-#' @seealso \code{\link{mid.f}}
+#' @seealso \code{\link{interpret}}, \code{\link{mid.effect}}
 #'
 #' @exportS3Method stats::predict
 #'

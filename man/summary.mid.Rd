@@ -38,3 +38,6 @@ data(cars, package = "datasets")
 mid <- interpret(dist ~ speed, cars)
 summary(mid)
 }
+\seealso{
+\code{\link{interpret}}, \code{\link{print.mid}}
+}

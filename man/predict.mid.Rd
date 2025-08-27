@@ -56,5 +56,5 @@ predict(mid, airquality[test, ], type = "link")
 predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 }
 \seealso{
-\code{\link{mid.f}}
+\code{\link{interpret}}, \code{\link{mid.effect}}
 }

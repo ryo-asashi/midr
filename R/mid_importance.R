@@ -30,6 +30,9 @@
 #' \item{importance}{a data frame with the calculated importance values, sorted by default.}
 #' \item{predictions}{the matrix of the fitted or predicted MID values.}
 #' \item{measure}{a character string describing the type of the importance measure used.}
+#'
+#' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
+#'
 #' @export mid.importance
 #'
 mid.importance <- function(

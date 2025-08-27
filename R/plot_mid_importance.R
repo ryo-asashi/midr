@@ -29,7 +29,7 @@
 #' plot(imp)
 #'
 #' # Create a dot chart
-#' plot(imp, type = "dotchart", theme = "highlight", size = 1.5)
+#' plot(imp, type = "dotchart", theme = "Okabe-Ito", size = 1.5)
 #'
 #' # Create a heatmap
 #' plot(imp, type = "heatmap")
@@ -39,7 +39,7 @@
 #' @returns
 #' \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid.mid.importance}}
+#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.mid.importance}}
 #'
 #' @exportS3Method base::plot
 #'

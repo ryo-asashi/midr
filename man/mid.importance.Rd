@@ -43,3 +43,6 @@ print(imp)
 imp <- mid.importance(mid, measure = 2)
 print(imp)
 }
+\seealso{
+\code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
+}

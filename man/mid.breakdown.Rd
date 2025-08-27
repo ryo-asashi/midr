@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_breakdown.R
 \name{mid.breakdown}
 \alias{mid.breakdown}
-\title{Calculate MID Breakdown for a Prediction}
+\title{Calculate MID Breakdowns}
 \usage{
 mid.breakdown(
   object,
@@ -59,4 +59,7 @@ print(mbd)
 # Calculate the breakdown for the third observation in the data
 mbd <- mid.breakdown(mid, data = airquality, row = 3)
 print(mbd)
+}
+\seealso{
+\code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
 }

@@ -9,7 +9,7 @@
   object,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
-  max.bars = 30L,
+  max.terms = 30L,
   ...
 )
 
@@ -18,11 +18,11 @@
 \arguments{
 \item{object}{a "mid.importance" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "barplot", "heatmap", "dotchart" or "boxplot".}
+\item{type}{the type of the plot. One of "barplot", "dotchart", "heatmap", or "boxplot".}
 
-\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
+\item{theme}{a character string or object defining the color theme (see \code{\link{color.theme}}).}
 
-\item{max.bars}{an integer specifying the maximum number of bars in the barplot, boxplot and dotchart.}
+\item{max.terms}{the maximum number of terms to display in the bar, dot and box plots.}
 
 \item{...}{optional parameters to be passed to the main layer.}
 }
@@ -47,11 +47,19 @@ set.seed(42)
 idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 imp <- mid.importance(mid)
-ggmid(imp, theme = "Tableau 10")
+
+# Create a bar plot (default)
+ggmid(imp)
+
+# Create a dot chart
 ggmid(imp, type = "dotchart", theme = "Okabe-Ito", size = 3)
-ggmid(imp, type = "heatmap", theme = "Blues")
-ggmid(imp, type = "boxplot", theme = "Accent")
+
+# Create a heatmap
+ggmid(imp, type = "heatmap")
+
+# Create a boxplot to see the distribution of effects
+ggmid(imp, type = "boxplot")
 }
 \seealso{
-\code{\link{ggmid}}, \code{\link{plot.mid.importance}}
+\code{\link{mid.importance}}, \code{\link{ggmid}}, \code{\link{plot.mid.importance}}
 }

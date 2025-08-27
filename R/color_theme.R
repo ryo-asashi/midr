@@ -13,7 +13,7 @@
 #' @section Theme Name Syntax:
 #' When retrieving a theme using a character string, you can use a special syntax to specify the source and apply modifications:
 #'
-#' "\code{[source/](name)[_r][@type][?query]}"
+#' "\code{[(source)/](name)[_r][@(type)][?(query)]}"
 #'
 #' \itemize{
 #'   \item source: (optional) the source package or collection of the theme (e.g., "grDevices").

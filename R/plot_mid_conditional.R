@@ -42,7 +42,7 @@
 #' @returns
 #' \code{plot.mid.conditional()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
 #'
-#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid.mid.conditional}}
+#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.mid.conditional}}
 #'
 #' @exportS3Method base::plot
 #'

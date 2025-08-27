@@ -4,7 +4,7 @@
 \alias{interpret}
 \alias{interpret.default}
 \alias{interpret.formula}
-\title{Fit a MID Model}
+\title{Fit MID Models}
 \usage{
 interpret(object, ...)
 
@@ -145,34 +145,37 @@ To ensure that the decomposed components are unique, they are fitted under the \
 The model is fitted by minimizing the squared error between the target, \eqn{f(\mathbf{x})} or \eqn{\mathbf{y}}, and the surrogate \eqn{\mathcal{F}(\mathbf{x})}, which is typically evaluated on a representative dataset.
 }
 \examples{
-# fit a MID model as a surrogate model
+# Fit a MID model as a surrogate for another model
 data(cars, package = "datasets")
 model <- lm(dist ~ I(speed^2) + speed, cars)
 mid <- interpret(dist ~ speed, cars, model)
 plot(mid, "speed", intercept = TRUE)
 points(cars)
 
-# customize the flexibility of a MID model
-data(Nile, package = "datasets")
-mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-points(x = 1L:100L, y = Nile)
-# reduce the number of knots by setting the 'k' parameter
-mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-points(x = 1L:100L, y = Nile)
-# perform a pseudo smoothing by setting the 'lambda' parameter
-mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-points(x = 1L:100L, y = Nile)
-
-# fit a MID model as a predictive model
+# Fit a MID model as a standalone predictive model
 data(airquality, package = "datasets")
-mid <- interpret(Ozone ~ .^2, na.omit(airquality), lambda = .4)
+mid <- interpret(Ozone ~ .^2, data = airquality, lambda = .5)
 plot(mid, "Wind")
 plot(mid, "Temp")
-plot(mid, "Wind:Temp", theme = "RdBu")
 plot(mid, "Wind:Temp", main.effects = TRUE)
+
+data(Nile, package = "datasets")
+nile <- data.frame(time = 1:length(Nile), flow = as.numeric(Nile))
+
+# A flexible fit with many knots
+mid <- interpret(flow ~ time, data = nile, k = 100L)
+plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
+
+# A smoother fit with fewer knots
+mid <- interpret(flow ~ time, data = nile, k = 10L)
+plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
+
+# A pseudo-smoothed fit using a penalty
+mid <- interpret(flow ~ time, data = nile, k = 100L, lambda = 100L)
+plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+points(x = 1L:100L, y = Nile)
 }
 \references{
 Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, \url{https://arxiv.org/abs/2506.08338}.

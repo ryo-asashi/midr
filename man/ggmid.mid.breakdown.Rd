@@ -72,5 +72,5 @@ ggmid(mbd, type = "barplot", theme = "highlight")
 ggmid(mbd, type = "dotchart", size = 3)
 }
 \seealso{
-\code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
+\code{\link{mid.breakdown}}, \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
 }

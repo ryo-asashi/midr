@@ -3,7 +3,7 @@
 \name{mid.effect}
 \alias{mid.effect}
 \alias{mid.f}
-\title{Calculate Single Effect of a MID Model}
+\title{Evaluate Single MID Component Functions}
 \usage{
 mid.effect(object, term, x, y = NULL)
 

@@ -78,5 +78,5 @@ ggmid(ice, type = "centered", theme = "Purple-Yellow",
       var.color = factor(Month), var.linetype = Wind > 10)
 }
 \seealso{
-\code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
+\code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
 }

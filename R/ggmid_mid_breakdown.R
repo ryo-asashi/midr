@@ -40,7 +40,7 @@
 #' @returns
 #' \code{ggmid.mid.breakdown()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
+#' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
 #'
 #' @exportS3Method midr::ggmid
 #'

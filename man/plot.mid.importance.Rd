@@ -49,7 +49,7 @@ imp <- mid.importance(mid)
 plot(imp)
 
 # Create a dot chart
-plot(imp, type = "dotchart", theme = "highlight", size = 1.5)
+plot(imp, type = "dotchart", theme = "Okabe-Ito", size = 1.5)
 
 # Create a heatmap
 plot(imp, type = "heatmap")
@@ -58,5 +58,5 @@ plot(imp, type = "heatmap")
 plot(imp, type = "boxplot")
 }
 \seealso{
-\code{\link{plot.mid}}, \code{\link{ggmid.mid.importance}}
+\code{\link{mid.importance}}, \code{\link{ggmid.mid.importance}}
 }

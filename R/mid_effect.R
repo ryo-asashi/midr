@@ -1,4 +1,4 @@
-#' Calculate Single Effect of a MID Model
+#' Evaluate Single MID Component Functions
 #'
 #' @description
 #' \code{mid.effect()} calculates the contribution of a single component function of a fitted MID model.

@@ -1,4 +1,4 @@
-#' Fit a MID Model
+#' Fit MID Models
 #'
 #' @description
 #' \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.
@@ -15,34 +15,37 @@
 #' @param object a fitted model object to be interpreted.
 #'
 #' @examples
-#' # fit a MID model as a surrogate model
+#' # Fit a MID model as a surrogate for another model
 #' data(cars, package = "datasets")
 #' model <- lm(dist ~ I(speed^2) + speed, cars)
 #' mid <- interpret(dist ~ speed, cars, model)
 #' plot(mid, "speed", intercept = TRUE)
 #' points(cars)
 #'
-#' # customize the flexibility of a MID model
-#' data(Nile, package = "datasets")
-#' mid <- interpret(x = 1L:100L, y = Nile, k = 100L)
-#' plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
-#' # reduce the number of knots by setting the 'k' parameter
-#' mid <- interpret(x = 1L:100L, y = Nile, k = 10L)
-#' plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
-#' # perform a pseudo smoothing by setting the 'lambda' parameter
-#' mid <- interpret(x = 1L:100L, y = Nile, k = 100L, lambda = 100L)
-#' plot(mid, "x", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
-#'
-#' # fit a MID model as a predictive model
+#' # Fit a MID model as a standalone predictive model
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, na.omit(airquality), lambda = .4)
+#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = .5)
 #' plot(mid, "Wind")
 #' plot(mid, "Temp")
-#' plot(mid, "Wind:Temp", theme = "RdBu")
 #' plot(mid, "Wind:Temp", main.effects = TRUE)
+#'
+#' data(Nile, package = "datasets")
+#' nile <- data.frame(time = 1:length(Nile), flow = as.numeric(Nile))
+#'
+#' # A flexible fit with many knots
+#' mid <- interpret(flow ~ time, data = nile, k = 100L)
+#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
+#'
+#' # A smoother fit with fewer knots
+#' mid <- interpret(flow ~ time, data = nile, k = 10L)
+#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
+#'
+#' # A pseudo-smoothed fit using a penalty
+#' mid <- interpret(flow ~ time, data = nile, k = 100L, lambda = 100L)
+#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
+#' points(x = 1L:100L, y = Nile)
 #' @returns
 #' \code{interpret()} returns an object of class "mid". This is a list with the following components:
 #' \item{weights}{a numeric vector of the sample weights.}

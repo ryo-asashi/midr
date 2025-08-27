@@ -40,7 +40,7 @@
 #' @returns
 #' \code{plot.mid.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid.mid.breakdown}}
+#' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
 #'
 #' @exportS3Method base::plot
 #'

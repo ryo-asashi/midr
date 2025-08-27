@@ -2,14 +2,14 @@
 % Please edit documentation in R/mid_conditional.R
 \name{mid.conditional}
 \alias{mid.conditional}
-\title{Calculate ICE Curves for a MID Model}
+\title{Calculate MID Conditional Expectations}
 \usage{
 mid.conditional(
   object,
   variable,
   data = NULL,
   n.samples = 100L,
-  max.nrow = 100000L,
+  max.rows = 100000L,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -23,7 +23,7 @@ mid.conditional(
 
 \item{n.samples}{the number of sample points for the \code{varibale}'s range.}
 
-\item{max.nrow}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
+\item{max.rows}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
 
 \item{type}{the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.}
 
@@ -51,4 +51,7 @@ mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 # Calculate the ICE values for a fitted MID model
 ice <- mid.conditional(mid, variable = "Wind", data = airquality)
 print(ice)
+}
+\seealso{
+\code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}
 }

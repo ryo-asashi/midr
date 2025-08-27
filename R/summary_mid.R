@@ -27,6 +27,8 @@
 #' @returns
 #' \code{summary.mid()} returns the original "mid" object invisibly.
 #'
+#' @seealso \code{\link{interpret}}, \code{\link{print.mid}}
+#'
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(
