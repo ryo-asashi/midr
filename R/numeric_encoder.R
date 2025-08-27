@@ -5,19 +5,17 @@
 #' This encoder can then be used to convert a numeric vector into a design matrix using either piecewise linear or one-hot interval encoding, which are core components for modeling effects in a MID model.
 #'
 #' @details
-#' The primary purpose of the encoder is to transform a single numeric variable into a design matrix that can be used in the MID model's linear system formulation.
-#' The output of the encoder depends on the \code{type} argument:
+#' The primary purpose of the encoder is to transform a single numeric variable into a design matrix for the MID model's linear system formulation.
+#' The output of the encoder depends on the \code{type} argument.
 #'
-#' \bold{Piecewise Linear Encoding} (\code{type = 1}):
-#' This method models the effect of the variable as a piecewise linear function with knots at predefined sample points.
+#' When \code{type = 1}, the variable's effect is modeled as a piecewise linear function with \code{k} knots including both ends.
 #' For each value, the encoder finds the two nearest knots and assigns a weight to each, based on its relative position.
 #' This results in a design matrix where each row has at most two non-zero values that sum to \code{1}.
-#' This approach creates a smooth, continuous representation of the variable.
+#' This approach creates a smooth, continuous representation of the effect.
 #'
-#' \bold{One-Hot Interval Encoding} (\code{type = 0}):
-#' This method models the effect of the variable as a step function by dividing its range into intervals (bins).
-#' For each value, the encoder finds which interval it falls into and assigns a \code{1} to the corresponding column in the design matrix, with all other columns being \code{0}.
-#' This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation.
+#' When \code{type = 0}, the variable's effect is modeled as a step function by dividing its range into \code{k} intervals (bins).
+#' The encoder determines which interval each value falls into and assigns a \code{1} to the corresponding column in the design matrix, with all other columns being \code{0}.
+#' This results in a standard one-hot encoded matrix and creates a discrete, bin-based representation of the effect.
 #'
 #' @param x a numeric vector to be encoded.
 #' @param k an integer specifying the coarseness of the encoding. If not positive, all unique values of \code{x} are used as knots or bins.

@@ -1,7 +1,7 @@
 #' Default Plotting Themes
 #'
 #' @description
-#' \code{theme_midr()} returns a complete theme for "ggplot" objects, providing a consistent visual style for ggplot2 plots.
+#' \code{theme_midr()} returns a complete theme for "ggplot" objects, providing a consistent visual style for \strong{ggplot2} plots.
 #'
 #' @param grid_type the type of grid lines to display, one of "none", "x", "y" or "xy".
 #' @param base_size base font size, given in pts.
@@ -27,7 +27,7 @@
 #' plot(y ~ x, data = X)
 #' par(old.par)
 #' @returns
-#' \code{theme_midr()} provides a ggplot2 theme customized for the \strong{midr} package.
+#' \code{theme_midr()} provides a \strong{ggplot2} theme customized for the \strong{midr} package.
 #'
 #' @export theme_midr
 #'

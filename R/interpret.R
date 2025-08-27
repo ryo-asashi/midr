@@ -12,7 +12,18 @@
 #' To ensure that the decomposed components are unique, they are fitted under the \emph{centering constraints}: each main effect's average is constrained to be zero, and each interaction effect's conditional averages are also constrained to be zero.
 #' The model is fitted by minimizing the squared error between the target, \eqn{f(\mathbf{x})} or \eqn{\mathbf{y}}, and the surrogate \eqn{\mathcal{F}(\mathbf{x})}, which is typically evaluated on a representative dataset.
 #'
+#' @section Advanced Fitting Options:
+#' The \code{...} argument can be used to pass several advanced fitting options:
+#' \describe{
+#'   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
+#'   \item{interpolate.beta}{a character string specifying the method for interpolating unestimable coefficients (betas) that arise from sparse deta regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+#'   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
+#'   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
+#'   \item{weighted.endoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}
+#' }
+#'
 #' @param object a fitted model object to be interpreted.
+#' @param ... optional arguments. For \code{interpret.formula()}, arguments to be passed on to \code{interpret.default()}. For \code{interpret.default()}, \code{...} can include convenient aliases (e.g., "ok" for \code{singular.ok}, "ie" for \code{interaction}) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).
 #'
 #' @examples
 #' # Fit a MID model as a surrogate for another model
@@ -98,7 +109,6 @@ UseMethod("interpret")
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
 #' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
-#' @param ... for \code{interpret.default()}, optional arguments can be provided, including \code{fit.intercept}, \code{interpolate.beta} ("iterative" for iterative smoothing, "direct" for solving the linear system, or "none" to disable interpolation), \code{weighted.norm}, and \code{weighted.encoding}. Special character aliases are also supported, such as \code{ok} for \code{singular.ok} and \code{ie} for \code{interactions}. For \code{interpret.formula()}, any arguments to be passed on to \code{interpret.default()}.
 #' @exportS3Method midr::interpret
 #'
 interpret.default <- function(

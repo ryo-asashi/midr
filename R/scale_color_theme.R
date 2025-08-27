@@ -1,10 +1,10 @@
 #' Color Theme Scales for ggplot2 Graphics
 #'
 #' @description
-#' \code{scale_color_theme()} and its family of functions provide a unified interface to apply custom color themes to the "colour" and "fill" aesthetics of ggplot objects.
+#' \code{scale_color_theme()} and its family of functions provide a unified interface to apply custom color themes to the \code{colour} and \code{fill} aesthetics of "ggplot" objects.
 #'
 #' @details
-#' This function automatically determines the appropriate ggplot2 scale based on the theme's type.
+#' This function automatically determines the appropriate \strong{ggplot2} scale based on the theme's type.
 #' If the theme is "qualitative", a discrete scale is used by default to assign distinct colors to categorical data.
 #' The \code{discrete} argument is automatically set to \code{TRUE} if not specified.
 #' If the theme is "sequential" or "diverging", a continuous scale is used by default.

@@ -66,7 +66,7 @@ plot(mbd, type = "waterfall")
 plot(mbd, type = "barplot", theme = "highlight")
 
 # Create a dot chart
-plot(mbd, type = "dotchart")
+plot(mbd, type = "dotchart", size = 1.5)
 }
 \seealso{
 \code{\link{mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}

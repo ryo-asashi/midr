@@ -51,11 +51,11 @@ ggmid(object, ...)
 \code{ggmid.mid()} returns a "ggplot" object.
 }
 \description{
-\code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects.
+\code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.
 For "mid" objects (i.e., fitted MID models), it visualizes a single component function specified by the \code{term} argument.
 }
 \details{
-For "mid" objects, \code{ggmid()} creates a "ggplot" object that visualizes a component function of the fitted MID model using the \strong{ggplot2} package.
+For "mid" objects, \code{ggmid()} creates a "ggplot" object that visualizes a component function of the fitted MID model.
 
 The \code{type} argument controls the visualization style.
 The default, \code{type = "effect"}, plots the component function itself.

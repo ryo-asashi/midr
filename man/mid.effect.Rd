@@ -30,7 +30,7 @@ It serves as a low-level helper function for making predictions or for direct an
 \details{
 \code{mid.effect()} is a low-level function designed to calculate the contribution of a single component function.
 Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{mid.effect()} is more flexible.
-It accepts vectors, as well as data frames, as input for \code{x} and \code{y}, making it particularly useful for visualizing a component's effect in combination with other functions, such as \code{curve()} or a base \bold{R} plotting routine.
+It accepts vectors, as well as data frames, as input for \code{x} and \code{y}, making it particularly useful for visualizing a component's effect in combination with other functions, such as \code{graphics::curve()}.
 
 For a main effect, the function evaluates the component function \eqn{f_j(x_j)} for a vector of values \eqn{x_j}.
 For an interaction, it evaluates \eqn{f_{jk}(x_j, x_k)} using vectors \eqn{x_j} and \eqn{x_k}.

@@ -6,14 +6,11 @@
 #'
 #' @details
 #' This function is designed to handle qualitative data for use in the MID model's linear system formulation.
-#' It has two key features:
 #'
-#' \bold{One-Hot Encoding}:
 #' The primary mechanism is one-hot encoding.
 #' Each unique level of the input variable becomes a column in the output matrix.
 #' For a given observation, the column corresponding to its level is assigned a \code{1}, and all other columns are assigned \code{0}.
 #'
-#' \bold{Catch-All Mechanism for High Cardinality}:
 #' When a variable has many unique levels (high cardinality), you can use the \code{use.catchall = TRUE} and \code{k} arguments.
 #' This will group the \code{k - 1} most frequent levels into their own columns, while all other less frequent levels are consolidated into a single \code{catchall} level (e.g., "(others)" by default).
 #' This is crucial for preventing MID models from becoming overly complex.

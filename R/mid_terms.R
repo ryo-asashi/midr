@@ -5,10 +5,10 @@
 #' Its primary strength is the ability to filter terms based on their type (main effects vs. interactions) or their associated variable names.
 #'
 #' @details
-#' A "term" in a MID model refers to either a main effect (e.g., "Wind") or an interactions effect (e.g., "Wind:Temp").
+#' A "term" in a MID model refers to either a main effect (e.g., "Wind") or an interaction effect (e.g., "Wind:Temp").
 #' This function provides a flexible way to select a subset of these terms, which is useful for plotting, summarizing, or other downstream analyses.
 #'
-#' @param object a "mid" object or another object from the \bold{midr} package that contains model terms (i.e., "mid.importance", "mid.conditional", or "mid.breakdown").
+#' @param object a "mid" object or another object that contains model terms. Can be a "mid.importance", "mid.conditional", or "mid.breakdown" object.
 #' @param main.effects logical. If \code{FALSE}, the main effect terms are excluded.
 #' @param interactions logical. If \code{FALSE}, the interactions terms are excluded.
 #' @param require a character vector of variable names. Only terms related to at least one of these variables are returned.

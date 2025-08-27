@@ -29,12 +29,12 @@ par.midr(...)
 \item{...}{for \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.}
 }
 \value{
-\code{theme_midr()} provides a ggplot2 theme customized for the \strong{midr} package.
+\code{theme_midr()} provides a \strong{ggplot2} theme customized for the \strong{midr} package.
 
 \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
 }
 \description{
-\code{theme_midr()} returns a complete theme for "ggplot" objects, providing a consistent visual style for ggplot2 plots.
+\code{theme_midr()} returns a complete theme for "ggplot" objects, providing a consistent visual style for \strong{ggplot2} plots.
 
 \code{par.midr()} can be used to set graphical parameters for base R graphics.
 }

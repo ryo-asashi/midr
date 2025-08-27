@@ -4,7 +4,7 @@
 #' For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
 #'
 #' @details
-#' This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction using the \strong{ggplot2} package.
+#' This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction.
 #'
 #' The \code{type} argument controls the visualization style.
 #' The default, \code{type = "waterfall"} (default), creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.

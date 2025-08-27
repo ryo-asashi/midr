@@ -36,7 +36,7 @@
 #' plot(mbd, type = "barplot", theme = "highlight")
 #'
 #' # Create a dot chart
-#' plot(mbd, type = "dotchart")
+#' plot(mbd, type = "dotchart", size = 1.5)
 #' @returns
 #' \code{plot.mid.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
