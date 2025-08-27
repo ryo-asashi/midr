@@ -59,22 +59,31 @@ color.theme.env() provides direct access to the environment where the color them
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">color.theme.info</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">color.theme.info</span><span class="op">(</span>env <span class="op">=</span> <span class="fu">color.theme.env</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">color.theme.env</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
+<dl><dt id="arg-env">env<a class="anchor" aria-label="anchor" href="#arg-env"></a></dt>
+<dd><p>an environment where the color themes are registered.</p></dd>
+
+</dl></div>
+    <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>color.theme.info()</code> returns a data frame with columns "name", "source", and "type".</p>
-<p><code>color.theme.env()</code> returns the environment object used as the theme registry.</p>
+<p><code>color.theme.env()</code> returns the environment currently used as the default theme registry.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>These functions provide tools for inspecting the color themes available in the current R session.</p>
 <p><code>color.theme.info()</code> is the primary user-facing function for discovering themes by name, source, and type.</p>
-<p><code>color.theme.env()</code> is a more advanced function that returns the actual environment used as the theme registry.
-This can be useful for programmatic inspection or manipulation of the theme database.</p>
+<p><code>color.theme.env()</code> is an advanced function that returns the environment currently used as the theme registry.
+It first checks for a user-specified environment via <code>getOption("midr.color.theme.env")</code>.
+If this option is <code>NULL</code> (the default), the function returns the package's internal environment where the default themes are storesd.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

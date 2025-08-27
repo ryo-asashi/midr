@@ -85,11 +85,11 @@
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.</p></dd>
+<dd><p>the plotting style. One of "iceplot" or "centered".</p></dd>
 
 
 <dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
-<dd><p>a character string specifying the color theme or any item that can be used to define "color.theme" object.</p></dd>
+<dd><p>a character string or object defining the color theme. See <code><a href="color.theme.html">color.theme</a></code> for details.</p></dd>
 
 
 <dt id="arg-term">term<a class="anchor" aria-label="anchor" href="#arg-term"></a></dt>
@@ -97,27 +97,27 @@
 
 
 <dt id="arg-var-alpha">var.alpha<a class="anchor" aria-label="anchor" href="#arg-var-alpha"></a></dt>
-<dd><p>a name of the variable or an expression to be used to set <code>alpha</code>.</p></dd>
+<dd><p>a variable name or expression to map to the alpha aesthetic.</p></dd>
 
 
 <dt id="arg-var-color">var.color<a class="anchor" aria-label="anchor" href="#arg-var-color"></a></dt>
-<dd><p>a name of the variable or an expression to be used to set <code>colour</code>.</p></dd>
+<dd><p>a variable name or expression to map to the color aesthetic.</p></dd>
 
 
 <dt id="arg-var-linetype">var.linetype<a class="anchor" aria-label="anchor" href="#arg-var-linetype"></a></dt>
-<dd><p>a name of the variable or an expression to be used to set <code>linetype</code>.</p></dd>
+<dd><p>a variable name or expression to map to the linetype aesthetic.</p></dd>
 
 
 <dt id="arg-var-linewidth">var.linewidth<a class="anchor" aria-label="anchor" href="#arg-var-linewidth"></a></dt>
-<dd><p>a name of the variable or an expression to be used to set <code>linewidth</code>.</p></dd>
+<dd><p>a variable name or expression to map to the linewidth aesthetic.</p></dd>
 
 
 <dt id="arg-reference">reference<a class="anchor" aria-label="anchor" href="#arg-reference"></a></dt>
-<dd><p>an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is <code>1</code>. If negative, the maximum value of the variable is used.</p></dd>
+<dd><p>an integer specifying the index of the sample points to use as the reference for centering the c-ICE plot.</p></dd>
 
 
 <dt id="arg-dots">dots<a class="anchor" aria-label="anchor" href="#arg-dots"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the points representing the predictions for each observation are plotted.</p></dd>
+<dd><p>logical. If <code>TRUE</code>, points representing the actual predictions for each observation are plotted.</p></dd>
 
 
 <dt id="arg-sample">sample<a class="anchor" aria-label="anchor" href="#arg-sample"></a></dt>
@@ -125,7 +125,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>optional parameters to be passed to the main layer.</p></dd>
+<dd><p>optional parameters passed on to the main layer.</p></dd>
 
 </dl></div>
     <div class="section level2">

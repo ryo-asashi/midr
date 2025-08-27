@@ -51,53 +51,57 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.909" id="midr-050909">midr 0.5.0.909<a class="anchor" aria-label="anchor" href="#midr-050909"></a></h2>
-<ul><li>Updated <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> and <code><a href="../reference/numeric.encoder.html">numeric.encoder()</a></code> to vectorize the design-matrix encoding.</li>
-<li>Updated the documents for some functions.</li>
+<ul><li>Vectorized the design matrix encoding process in <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> and <code><a href="../reference/numeric.encoder.html">numeric.encoder()</a></code> for improved performance.</li>
+<li>Unified <code>weighted.rmse()</code> and its related functions into a single, more versatile <code><a href="../reference/weighted.loss.html">weighted.loss()</a></code> function.</li>
+<li>Updated and improved various help documents for clarity and completeness.</li>
+<li>Changed some argument names for consistency (e.g., changed <code>max.bars</code> to <code>max.terms</code>, <code>max.nrow</code> to <code>max.rows</code>, etc.).</li>
+<li>Deprecated <code>weighted()</code> and its family functions.</li>
+<li>Deprecated <code>mid.extract()</code> and <code>mid.frames()</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.908" id="midr-050908">midr 0.5.0.908<a class="anchor" aria-label="anchor" href="#midr-050908"></a></h2>
-<ul><li>Rewrote <code><a href="../reference/color.theme.html">color.theme()</a></code> to enhance the functionality of the function.</li>
+<ul><li>Rewrote <code><a href="../reference/color.theme.html">color.theme()</a></code> to significantly enhance its functionality and flexibility.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.906" id="midr-050906">midr 0.5.0.906<a class="anchor" aria-label="anchor" href="#midr-050906"></a></h2>
-<ul><li>Updated hex logo and favicons.</li>
-<li>Fixed the issue of <code><a href="../reference/numeric.encoder.html">numeric.encoder()</a></code> and <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> that they hold a reference to the execution environment of <code><a href="../reference/interpret.html">interpret.default()</a></code> in their call stacks.</li>
+<ul><li>Fixed a memory leak issue where <code><a href="../reference/numeric.encoder.html">numeric.encoder()</a></code> and <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> held an unnecessary reference to the execution environment of <code><a href="../reference/interpret.html">interpret.default()</a></code>.</li>
+<li>Updated the hex logo and favicons.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.905" id="midr-050905">midr 0.5.0.905<a class="anchor" aria-label="anchor" href="#midr-050905"></a></h2>
-<ul><li>Rewrote <code><a href="../reference/interpret.html">interpret.formula()</a></code> and <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> to make <code>subset</code> and <code>drop.unused.levels</code> available.</li>
-<li>Updated some methods of <code><a href="../reference/get.yhat.html">get.yhat()</a></code> to enforce them to return predictions of the same length as the number of observations.</li>
+<ul><li>Rewrote <code><a href="../reference/interpret.html">interpret.formula()</a></code> and <code><a href="../reference/factor.encoder.html">factor.encoder()</a></code> to correctly support <code>subset</code> and <code>drop.unused.levels</code> arguments.</li>
+<li>Updated <code><a href="../reference/get.yhat.html">get.yhat()</a></code> methods to ensure prediction outputs always have the same length as the number of input observations.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.904" id="midr-050904">midr 0.5.0.904<a class="anchor" aria-label="anchor" href="#midr-050904"></a></h2>
-<ul><li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to improve computational efficiency of interpolating parameters.</li>
+<ul><li>Improved the computational efficiency of the parameter interpolation step in <code><a href="../reference/interpret.html">interpret.default()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.903" id="midr-050903">midr 0.5.0.903<a class="anchor" aria-label="anchor" href="#midr-050903"></a></h2>
-<ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals.</li>
-<li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to change the automatic determination method of ‘k’.</li>
-<li>Added support for “type” suffixes (“_s”: as sequential, “_q”: as qualitative, “_d”: as diverging) in color.theme().</li>
-<li>Improved <code><a href="../reference/mid.effect.html">mid.f()</a></code> to correctly handle vector recycling when an input’s length is 1.</li>
-<li>Fixed <code><a href="../reference/ggmid.mid.conditional.html">autoplot.mid.conditional()</a></code> to avoid doubly evaluation of the “mid” object.</li>
+<ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals”.</li>
+<li>Fixed an issue in <code><a href="../reference/mid.effect.html">mid.f()</a></code> (<code><a href="../reference/mid.effect.html">mid.effect()</a></code>) to correctly handle vector recycling when an input’s length is 1.</li>
+<li>Fixed <code><a href="../reference/ggmid.mid.conditional.html">autoplot.mid.conditional()</a></code> to avoid redundant evaluation of the “mid” object.</li>
+<li>Updated the automatic determination method for the number of knots (<code>k</code>) in <code><a href="../reference/interpret.html">interpret()</a></code>.</li>
+<li>Added support for type suffixes in <code><a href="../reference/color.theme.html">color.theme()</a></code> for easier theme specification.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.902" id="midr-050902">midr 0.5.0.902<a class="anchor" aria-label="anchor" href="#midr-050902"></a></h2>
-<ul><li>Rewrote <code><a href="../reference/interpret.html">interpret.formula()</a></code> to make it able to be called in another function: resolve problems caused by <code><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">stats::model.frame()</a></code>
+<ul><li>Rewrote <code><a href="../reference/interpret.html">interpret.formula()</a></code> to resolve environment issues related to <code><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">stats::model.frame()</a></code>
 </li>
-<li>Added new tests for the above feature.</li>
-<li>Refined the diverging color theme “midr”.</li>
+<li>Added new tests to cover this improved functionality.</li>
+<li>Refined the default diverging color theme “midr”.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.901" id="midr-050901">midr 0.5.0.901<a class="anchor" aria-label="anchor" href="#midr-050901"></a></h2>
-<ul><li>Fix “HCL” color theme to turn it to be a “qualitative” color theme.</li>
-<li>Change rounding method of numeric “encoder” objects.</li>
-<li>Update an article and example related to <code><a href="../reference/color.theme.html">color.theme()</a></code>.</li>
+<ul><li>Corrected the “HCL” color theme to be properly categorized as a “qualitative” theme.</li>
+<li>Changed the rounding method used in numeric “encoder” objects.</li>
+<li>Updated the article and examples related to <code><a href="../reference/color.theme.html">color.theme()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.900" id="midr-050900">midr 0.5.0.900<a class="anchor" aria-label="anchor" href="#midr-050900"></a></h2>
-<ul><li>Enable to change default color themes as options: <code>midr.diverging</code>, <code>midr.qualitative</code> and <code>midr.sequential</code>.</li>
-<li>Add the “HCL” color theme and set it as the default qualitative theme.</li>
-<li>Fix <code><a href="../reference/interpret.html">interpret.formula()</a></code> to store the evaluated <code>formula</code> in the function call.</li>
+<ul><li>Default color themes can now be set globally via R options: <code>midr.diverging</code>, <code>midr.qualitative</code> and <code>midr.sequential</code>.</li>
+<li>Added the “HCL” color theme and set it as the new default for “qualitative” theme.</li>
+<li>Fixed an issue in <code><a href="../reference/interpret.html">interpret.formula()</a></code> to ensure the evaluated <code>formula</code> is correctly stored in the function call.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="midr-050">midr 0.5.0<a class="anchor" aria-label="anchor" href="#midr-050"></a></h2><p class="text-muted">CRAN release: 2025-06-23</p>
@@ -105,67 +109,7 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.9.909" id="midr-049909">midr 0.4.9.909<a class="anchor" aria-label="anchor" href="#midr-049909"></a></h2>
-<ul><li>Working paper is now available on arXiv.</li>
-<li>Updates for final adjustments.</li>
-<li>Some requirements for the ‘x’ argument are removed or relaxed.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.908" id="midr-049908">midr 0.4.9.908<a class="anchor" aria-label="anchor" href="#midr-049908"></a></h2>
-<ul><li>Fix small bugs including one reported in <a href="https://github.com/ryo-asashi/midr/issues/5" class="external-link uri">https://github.com/ryo-asashi/midr/issues/5</a>.</li>
-<li>Change the default values of <code>k</code> to avoid singular fits with smaller datasets.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.907" id="midr-049907">midr 0.4.9.907<a class="anchor" aria-label="anchor" href="#midr-049907"></a></h2>
-<ul><li>
-<code><a href="../reference/interpret.html">interpret()</a></code> now includes a new <code>verbosity</code> argument for logging.</li>
-<li>Fix small bugs.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.906" id="midr-049906">midr 0.4.9.906<a class="anchor" aria-label="anchor" href="#midr-049906"></a></h2>
-<ul><li>
-<strong>Important:</strong> Update the behavior of <code><a href="../reference/get.yhat.html">get.yhat()</a></code> for classification tasks: If the model returns a matrix or data.frame of class probabilities, by default, <code><a href="../reference/get.yhat.html">get.yhat()</a></code> returns the probability of <em>not</em> being the base level.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.9.900-0.4.9.905" id="midr-049900-049905">midr 0.4.9.900-0.4.9.905<a class="anchor" aria-label="anchor" href="#midr-049900-049905"></a></h2>
-<ul><li>
-<code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code> now include a new argument <code>reference</code>, which allows setting the reference point of c-ICE plot to any of the sample points.</li>
-<li>
-<code><a href="../reference/color.theme.html">color.theme()</a></code> now includes a new argument, <code>pkg</code>, for package specification.</li>
-<li>A new article about “color.theme” objects is added.</li>
-<li>A small change of <code><a href="../reference/print.mid.html">print.mid()</a></code> and <code>print.mid.conditional()</code>.</li>
-<li>
-<strong>Important:</strong> Update and chane the behavior of <code><a href="../reference/interpret.html">interpret()</a></code> for classification tasks: If <code>y</code> is a factor or character, <code><a href="../reference/interpret.html">interpret()</a></code> convert its base level to <code>0</code> and all other levels to <code>1</code>.</li>
-<li>Modify <code><a href="../reference/ggmid.html">ggmid()</a></code> and <code><a href="../reference/plot.mid.html">plot.mid()</a></code> to correct effect plots for factor variables with a <code>catchall</code> level. Additionallym <code><a href="../reference/ggmid.html">ggmid()</a></code> now utilize <code><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">ggplot2::geom_jitter()</a></code> and allow for adjustable jitter amounts with the <code>jitter</code> argument. Additionally, when data is not explicitly provided, it is now automatically extracted from the function call stored in the <code>"mid"</code> object.</li>
-<li>Adjust <code><a href="../reference/mid.conditional.html">mid.conditional()</a></code> and <code><a href="../reference/mid.breakdown.html">mid.breakdown()</a></code> so they no longer require explicit data input.</li>
-<li>Update terminology.</li>
-<li>The color palettes of the <code>khroma</code> package are now available for <code><a href="../reference/color.theme.html">color.theme()</a></code>.</li>
-<li>The default theme for <code>ggmid(type = "data")</code> and <code>plot(type = "data")</code> is changed to a sequential color scheme: “bluescale”.</li>
-<li>Add link functions: <code>translogit</code>, <code>transprobit</code>, <code>identity-logistic</code> and <code>identity-gaussian</code> for the interpretation task of classification models.</li>
-<li>
-<code><a href="../reference/interpret.html">interpret()</a></code> now interactively confirms whether a singular fit or exceeding the maximum number of columns is an error.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.3-0.4.8.909" id="midr-043-048909">midr 0.4.3-0.4.8.909<a class="anchor" aria-label="anchor" href="#midr-043-048909"></a></h2>
-<ul><li>Add <code>mid.ur()</code> to extract uninterpreted ratio (rate) more conveniently.</li>
-<li>Modify weighted loss functions to compute deviation-from-mean based losses for one input.</li>
-<li>Modify <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> , <code><a href="../reference/ggmid.mid.importance.html">ggmid.mid.importance()</a></code> and <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> to improve usability of the functions.</li>
-<li>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to add the <code>pred.args</code> argument that can be used to pass optional arguments to the prediction function (<code>pred.fun()</code>).</li>
-<li>Add a draft of the article on “the interpretation of classification models”.</li>
-<li>Modify <code><a href="../reference/interpret.html">interpret()</a></code> to allow matrices to be used as valid inputs for <code>data</code> (<code><a href="../reference/interpret.html">interpret.formula()</a></code>) and <code>x</code> (<code><a href="../reference/interpret.html">interpret.default()</a></code>).</li>
-<li>Add an article on “the interpretation of regression models”.</li>
-<li>Define <code>print.encoder()</code> for “encoder” objects to improve usability of the fitted MID models.</li>
-<li>Update README.</li>
-<li>Change default values of some arguments: e.g. <code>na.action = na.pass</code> of <code><a href="../reference/predict.mid.html">predict.mid()</a></code>.</li>
-<li>Fix small bugs of <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code>.</li>
-<li>Update <code><a href="../reference/interpret.html">interpret()</a></code> to ensure that the value of the argument <code>link</code> is a character string.</li>
-<li>Update <code><a href="../reference/ggmid.mid.conditional.html">ggmid.mid.conditional()</a></code> and <code><a href="../reference/plot.mid.conditional.html">plot.mid.conditional()</a></code>: <code>var.color</code> and the similar arguments can take an expression as input.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.3" id="midr-043">midr 0.4.3<a class="anchor" aria-label="anchor" href="#midr-043"></a></h2>
-<p>midr is in the release process. We will submit the package to CRAN by mid-January 2025 .</p>
-<ul><li>Improving usability of graphing functions.</li>
-<li>Finalizing code and documentation.</li>
-<li>Writing some vignettes. [Submitted to JARIP BULLETIN]</li>
+<ul><li>The accompanying working paper is now available on arXiv.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -64,6 +64,7 @@
 <span>  source <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="color.theme.info.html">color.theme.env</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -73,7 +74,7 @@
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>one of the following items: (i) a character string following the theme name syntax (e.g., "grDevices/RdBu@seq", see the "Theme Name Syntax" section), (ii) a character vector of color names, a palette function, or a ramp function to be used as a color kernel to create a color theme, or (iii) a "color.theme" object.</p></dd>
+<dd><p>a character string to retrieve a pre-defined theme, a color kernel (i.e., a vector of colors or a color generating function) to create a new theme, or a "color.theme" object to be modified. See the "Details" section.</p></dd>
 
 
 <dt id="arg-kernel-args">kernel.args<a class="anchor" aria-label="anchor" href="#arg-kernel-args"></a></dt>
@@ -100,8 +101,12 @@
 <dd><p>logical. If <code>TRUE</code>, the order of colors is reversed.</p></dd>
 
 
+<dt id="arg-env">env<a class="anchor" aria-label="anchor" href="#arg-env"></a></dt>
+<dd><p>an environment where the color themes are registered.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>optional arguments to be passed on to <code>get.theme()</code>, <code>make.theme()</code> or <code>modify.theme()</code>.</p></dd>
+<dd><p>optional named arguments used to modify the color theme. Any argument passed here will override the corresponding settings in <code>kernel.args</code> or <code>options</code>.</p></dd>
 
 
 <dt id="arg-kernel">kernel<a class="anchor" aria-label="anchor" href="#arg-kernel"></a></dt>
@@ -110,13 +115,17 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>color.theme()</code> returns a "color.theme" object, which is an environment with the special class attribute, containing the <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> and <code>ramp()</code> functions, along with other metadata about the theme.</p>
+    <p><code>color.theme()</code> returns a "color.theme" object, which is an environment with the special class attribute, containing the <code>...$palette()</code> and <code>...$ramp</code> functions, along with other metadata about the theme.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The "color.theme" object is a special environment that provides two color-generating functions: <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> and <code>ramp()</code>.</p>
-<p><code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette()</a></code> takes an integer <code>n</code> and returns a vector of <code>n</code> discrete colors. It is primarily intended for qualitative themes, where distinct colors are used to represent categorical data.</p>
-<p><code>ramp()</code> takes a numeric vector <code>x</code> with values in the [0, 1] interval, and returns a vector of corresponding colors. It maps numeric values onto a continuous color gradient, making it suitable for sequential and diverging themes.</p>
+    <p>The "color.theme" object is a special environment that provides two color-generating functions: <code>...$palette()</code> and <code>...$ramp()</code>.</p>
+<p><code>...$palette()</code> takes an integer <code>n</code> and returns a vector of <code>n</code> discrete colors. It is primarily intended for qualitative themes, where distinct colors are used to represent categorical data.</p>
+<p><code>...$ramp()</code> takes a numeric vector <code>x</code> with values in the [0, 1] interval, and returns a vector of corresponding colors. It maps numeric values onto a continuous color gradient, making it suitable for sequential and diverging themes.</p>
+<p>This function, <code>color.theme()</code>, is a versatile dispatcher that behaves differently depending on the class of the <code>object</code> argument.
+If <code>object</code> is a character string (e.g., "Viridis", "grDevices/RdBu_r@q?alpha=.5"), the string is parsed according to the theme name syntax, and the corresponding pre-defined theme is loaded (see the "Theme Name Syntax" section for details).
+If <code>object</code> is a color kernel (i.e., a character vector of colors, a palette function, or a ramp function), a new color theme is created from the kernel.
+If <code>object</code> is a "color.theme" object, the function returns a modified version of the theme, applying any other arguments to update its settings.</p>
     </div>
     <div class="section level2">
     <h2 id="theme-name-syntax">Theme Name Syntax<a class="anchor" aria-label="anchor" href="#theme-name-syntax"></a></h2>
@@ -132,7 +141,7 @@
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="plot.mid.html">plot.mid</a></code>, <code><a href="ggmid.html">ggmid</a></code>, <code><a href="scale_color_theme.html">scale_color_theme</a></code>, <code><a href="set.color.theme.html">set.color.theme</a></code>, <code><a href="color.theme.info.html">color.theme.info</a></code></p></div>
+    <div class="dont-index"><p><code><a href="scale_color_theme.html">scale_color_theme</a></code>, <code><a href="set.color.theme.html">set.color.theme</a></code>, <code><a href="color.theme.info.html">color.theme.info</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -141,27 +150,36 @@
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"Mako"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#070707" "#423460" "#007FA8" "#48C2B4" "#E0F7E1"</span>
-<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#060606" "#42345F" "#007FA7" "#48C2B3" "#DFF7E0"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use special syntax to get a reversed, qualitative theme with alpha value</span></span></span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="st">"grDevices/Zissou 1_r@qual?alpha=0.75"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#F5191CBF" "#E78F0ABF" "#EACB2BBF" "#7CBA96BF" "#3B99B1BF"</span>
-<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#F5191CBF" "#E78E09BF" "#E6CA4CBF" "#7BBA96BF" "#3B99B1BF"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a new theme from a vector of colors</span></span></span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#003f5c"</span>, <span class="st">"#7a5195"</span>, <span class="st">"#ef5675"</span>, <span class="st">"#ffa600"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#003F5B" "#37466E" "#594C81" "#795194" "#A4538A" "#CA5580" "#EE5574"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#F5735C" "#FB8D3F" "#FFA500"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#003F5B" "#614D86" "#B85485" "#F46C63" "#FFA500"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#003F5B" "#614D86" "#B85485" "#F46C63" "#FFA500"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a new theme from a palette function</span></span></span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="fu">grDevices</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#FF0000" "#FF9900" "#CCFF00" "#33FF00" "#00FF66" "#00FFFF" "#0066FF"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#3300FF" "#CC00FF" "#FF0099"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#FF0000" "#CCFF00" "#00FF66" "#0066FF" "#CC00FF"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#FF0000" "#81FF00" "#00FFFB" "#7B00FF" "#FF0006"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Modify an existing theme</span></span></span>
+<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">color.theme</span><span class="op">(</span><span class="va">ct</span>, type <span class="op">=</span> <span class="st">"qualitative"</span>, kernel.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">palette</span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#800000" "#668000" "#008033" "#003380" "#660080"</span>
+<span class="r-in"><span><span class="va">ct</span><span class="op">$</span><span class="fu">ramp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#7F0000" "#407F00" "#007F7E" "#3D007F" "#7F0002"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
