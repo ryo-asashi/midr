@@ -13,10 +13,10 @@
 #' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the varibability of each term's effect.
 #'
 #' @param object a "mid.importance" object to be visualized.
-#' @param type the type of the plot. One of "barplot", "dotchart", "heatmap", or "boxplot".
-#' @param theme a character string or object defining the color theme (see \code{\link{color.theme}}).
+#' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param max.terms the maximum number of terms to display in the bar, dot and box plots.
-#' @param ... optional parameters to be passed to the main layer.
+#' @param ... optional parameters passed on to the main layer.
 #'
 #' @examples
 #' data(diamonds, package = "ggplot2")

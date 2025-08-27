@@ -23,9 +23,9 @@
 
 \item{term}{a character string specifying the component function to be plotted.}
 
-\item{type}{the method for plotting. One of "effect", "data" or "compound".}
+\item{type}{the plotting style. One of "effect", "data" or "compound".}
 
-\item{theme}{a character string or object defining the color theme.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values.}
 

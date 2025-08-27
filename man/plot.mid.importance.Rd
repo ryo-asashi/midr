@@ -15,13 +15,13 @@
 \arguments{
 \item{x}{a "mid.importance" object to be visualized.}
 
-\item{type}{the type of the plot. One of "barplot", "dotchart", "heatmap", or "boxplot".}
+\item{type}{the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".}
 
-\item{theme}{a character string or object defining the color theme (see \code{\link{color.theme}}).}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{max.terms}{the maximum number of terms to display in the bar, dot and box plots.}
 
-\item{...}{optional parameters passed on to the underlying graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{...}{optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
 \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.

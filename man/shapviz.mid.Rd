@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapviz_mid.R
 \name{shapviz.mid}
 \alias{shapviz.mid}
-\title{Calculate SHAP of MID Predictions}
+\title{Calculate MID-Derived Shapley Values}
 \usage{
 \method{shapviz}{mid}(object, data = NULL)
 }
@@ -19,6 +19,6 @@
 }
 \details{
 The function calculates MID-derived Shapley values by attributing the contribution of each component function to its respective variables as follows:
-(1) each main effect is fully attributed to its corresponding variable; and
-(2) each second-order interaction effect is split equally between the two variables involved.
+first, each main effect is fully attributed to its corresponding variable; and
+then, each second-order interaction effect is split equally between the two variables involved.
 }

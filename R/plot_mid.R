@@ -15,11 +15,11 @@
 #'
 #' @param x a "mid" object to be visualized.
 #' @param term a character string specifying the component function to be plotted.
-#' @param type the method for plotting. One of "effect", "data" or "compound".
-#' @param theme a character string or object defining the color theme.
+#' @param type the plotting style. One of "effect", "data" or "compound".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
 #' @param main.effects logical. If \code{TRUE}, main effects are included in the interaction plot.
-#' @param data a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the "mid" object.
+#' @param data a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the function call.
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.

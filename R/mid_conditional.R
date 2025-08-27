@@ -10,7 +10,7 @@
 #'
 #' @param object a "mid" object.
 #' @param variable a character string or expression specifying the singlue predictor variable for which to calculate ICE curves.
-#' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted from the parent frame.
+#' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.
 #' @param n.samples the number of sample points for the \code{varibale}'s range.
 #' @param max.rows the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.
 #' @param type the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.

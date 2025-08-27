@@ -15,9 +15,9 @@
 #' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
 #' @param x a "mid.conditional" object to be visualized.
-#' @param type the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.
-#' @param theme a character string or object defining the color theme.
-#' @param term an optional character string specifying a single term. If provided, the plot will show the conditional effect of that term instead of the total prediction.
+#' @param type the plotting style. One of "iceplot" or "centered".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
+#' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
 #' @param var.alpha a variable name or expression to map to the alpha aesthetic.
 #' @param var.color a variable name or expression to map to the color aesthetic.
 #' @param var.linetype a variable name or expression to map to the linetype aesthetic.

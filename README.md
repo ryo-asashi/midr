@@ -51,6 +51,7 @@ library(ggplot2)
 library(gridExtra)
 library(ISLR2)
 library(ranger)
+library(shapviz)
 theme_set(theme_midr())
 # split the Boston dataset
 data("Boston", package = "ISLR2")
@@ -61,7 +62,7 @@ valid <- Boston[-idx, ]
 # fit a random forest model
 rf <- ranger(medv ~ ., train, mtry = 5)
 preds_rf <- predict(rf, valid)$predictions
-cat("RMSE: ", weighted.rmse(valid$medv, preds_rf))
+cat("RMSE: ", weighted.loss(valid$medv, preds_rf))
 #> RMSE:  3.351362
 ```
 
@@ -88,9 +89,9 @@ mid
 #> 
 #> Uninterpreted Variation Ratio: 0.016249
 preds_mid <- predict(mid, valid)
-cat("RMSE: ", weighted.rmse(preds_rf, preds_mid))
+cat("RMSE: ", weighted.loss(preds_rf, preds_mid))
 #> RMSE:  1.106763
-cat("RMSE: ", weighted.rmse(valid$medv, preds_mid))
+cat("RMSE: ", weighted.loss(valid$medv, preds_mid))
 #> RMSE:  3.306072
 ```
 
@@ -144,13 +145,13 @@ value into variable effects.
 
 ``` r
 # visualize the MID breakdown of the model predictions
-bd1 <- mid.breakdown(mid, data = train[1L, ])
-bd9 <- mid.breakdown(mid, data = train[9L, ])
+bd1 <- mid.breakdown(mid, data = train, row = 1L)
+bd9 <- mid.breakdown(mid, data = train, row = 9L)
 grid.arrange(nrow = 1L,
-  ggmid(bd1, "waterfall", theme = "midr", max.bars = 14L) +
+  ggmid(bd1, "waterfall", theme = "midr", max.terms = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "midr", max.bars = 14L) +
+  ggmid(bd9, "waterfall", theme = "midr", max.terms = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )

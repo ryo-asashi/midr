@@ -15,17 +15,17 @@
 #' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
 #' @param object a "mid.conditional" object to be visualized.
-#' @param type a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.
-#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
+#' @param type the plotting style. One of "iceplot" or "centered".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
-#' @param var.alpha a name of the variable or an expression to be used to set \code{alpha}.
-#' @param var.color a name of the variable or an expression to be used to set \code{colour}.
-#' @param var.linetype a name of the variable or an expression to be used to set \code{linetype}.
-#' @param var.linewidth a name of the variable or an expression to be used to set \code{linewidth}.
-#' @param reference an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is \code{1}. If negative, the maximum value of the variable is used.
-#' @param dots logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.
+#' @param var.alpha a variable name or expression to map to the alpha aesthetic.
+#' @param var.color a variable name or expression to map to the color aesthetic.
+#' @param var.linetype a variable name or expression to map to the linetype aesthetic.
+#' @param var.linewidth a variable name or expression to map to the linewidth aesthetic.
+#' @param reference an integer specifying the index of the sample points to use as the reference for centering the c-ICE plot.
+#' @param dots logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
-#' @param ... optional parameters to be passed to the main layer.
+#' @param ... optional parameters passed on to the main layer.
 #'
 #' @examples
 #' data(airquality, package = "datasets")

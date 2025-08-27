@@ -5,14 +5,17 @@
 \alias{color.theme.env}
 \title{Retrieve Color Theme Information}
 \usage{
-color.theme.info()
+color.theme.info(env = color.theme.env())
 
 color.theme.env()
+}
+\arguments{
+\item{env}{an environment where the color themes are registered.}
 }
 \value{
 \code{color.theme.info()} returns a data frame with columns "name", "source", and "type".
 
-\code{color.theme.env()} returns the environment object used as the theme registry.
+\code{color.theme.env()} returns the environment currently used as the default theme registry.
 }
 \description{
 \code{color.theme.info()} returns a data frame listing all available color themes.
@@ -24,8 +27,9 @@ These functions provide tools for inspecting the color themes available in the c
 
 \code{color.theme.info()} is the primary user-facing function for discovering themes by name, source, and type.
 
-\code{color.theme.env()} is a more advanced function that returns the actual environment used as the theme registry.
-This can be useful for programmatic inspection or manipulation of the theme database.
+\code{color.theme.env()} is an advanced function that returns the environment currently used as the theme registry.
+It first checks for a user-specified environment via \code{getOption("midr.color.theme.env")}.
+If this option is \code{NULL} (the default), the function returns the package's internal environment where the default themes are storesd.
 }
 \examples{
 # Get a data frame of all available themes

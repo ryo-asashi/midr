@@ -50,5 +50,5 @@ mid <- interpret(price ~ (carat + cut + color + clarity) ^ 2, diamonds[idx, ])
 mid.plots(mid, mid.terms(mid, require = "color", remove = "cut"), limits = NULL)
 }
 \seealso{
-\code{\link{plot.mid}}, \code{\link{ggmid}}
+\code{\link{interpret}}, \code{\link{plot.mid}}, \code{\link{ggmid}}
 }

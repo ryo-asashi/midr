@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_terms.R
 \name{mid.terms}
 \alias{mid.terms}
-\title{Extract Terms from a MID Model}
+\title{Extract Terms from MID Models}
 \usage{
 mid.terms(
   object,

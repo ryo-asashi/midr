@@ -35,7 +35,7 @@ The "color.theme" object provides two color-generating functions: `palette()` an
 
 ## Pre-defined themes
 
-You can get a pre-defined "color.theme" object by providing a theme name to the `color.theme()` or `get.color.theme()` functions.
+You can get a pre-defined "color.theme" object by providing a theme name to the `color.theme()` function.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = c(-3, -4)}
 library(midr)
@@ -105,7 +105,7 @@ plot(paired2, text = "RColorBrewer/Paired")
 
 ## Custom themes
 
-Alternatively, you can create a new "color.theme" object by passing a custom color vector or function to the first argument of `color.theme()` or `make.color.theme()`.
+Alternatively, you can create a new "color.theme" object by passing a custom color vector or function to the first argument of `color.theme()`.
 
 ```{r, fig.height = 1.2, fig.width = 6, echo = -1}
 par.midr()
@@ -194,20 +194,20 @@ grid.arrange(
   p + scale_fill_theme("muted_r"),
   p + scale_fill_theme("khroma/discreterainbow"),
   p + scale_fill_theme("mytheme@q"),
-  p + scale_fill_theme("highlight?which=1:3&accent='maroon'")
+  p + scale_fill_theme("highlight?which=1:3&accent='#0da1d0'")
 )
 ```
 
-```{r}
+```{r, echo = FALSE}
 remove(mytheme, envir = midr:::kernel.env)
+.df <- color.theme.info()
 ```
 
 # Pre-defined color themes
 
 The following color themes are available when the **midr** package is loaded. Some themes depend on other packages being installed, so for full functionality, please ensure you have already installed the **viridisLite**, **RColorBrewer**, and **khroma** packages.
 
-```{r sequential, echo = -2}
-.df <- color.theme.info()
+```{r sequential, echo = FALSE}
 DT::datatable(
   .df,
   class = 'cell-border stripe hover',

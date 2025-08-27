@@ -12,8 +12,8 @@
 #' The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
 #'
 #' @param x a "mid.breakdown" object to be visualized.
-#' @param type a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".
-#' @param theme a character string specifying the color theme or any item that can be used to define "color.theme" object.
+#' @param type the plotting style. One of "waterfall", "barplot" or "dotchart".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
 #' @param max.terms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
 #' @param width a numeric value specifying the width of the bars.

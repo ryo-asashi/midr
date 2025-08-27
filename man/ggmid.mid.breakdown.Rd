@@ -23,9 +23,9 @@
 \arguments{
 \item{object}{a "mid.breakdown" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "waterfall", "barplot" or "dotchart".}
+\item{type}{the plotting style. One of "waterfall", "barplot" or "dotchart".}
 
-\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{terms}{an optional character vector specifying which terms to display.}
 

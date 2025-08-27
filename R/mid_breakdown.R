@@ -19,7 +19,7 @@
 #' and easy to understand.
 #'
 #' @param object a "mid" object.
-#' @param data a data frame containing one or more observations for which to calculate the MID breakdown. If \code{NULL}, data is automatically extracted from the parent frame.
+#' @param data a data frame containing one or more observations for which to calculate the MID breakdown. If not provided, data is automatically extracted based on the function call.
 #' @param row an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.
 #' @param format a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.

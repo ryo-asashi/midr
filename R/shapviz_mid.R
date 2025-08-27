@@ -1,15 +1,15 @@
-#' Calculate SHAP of MID Predictions
+#' Calculate MID-Derived Shapley Values
 #'
 #' @description
 #' \code{shapviz.mid()} is an S3 method for the \code{shapviz::shapviz()} generic, which calculates MID-derived Shapley values from a fitted MID model.
 #'
 #' @details
 #' The function calculates MID-derived Shapley values by attributing the contribution of each component function to its respective variables as follows:
-#' (1) each main effect is fully attributed to its corresponding variable; and
-#' (2) each second-order interaction effect is split equally between the two variables involved.
+#' first, each main effect is fully attributed to its corresponding variable; and
+#' then, each second-order interaction effect is split equally between the two variables involved.
 #'
 #' @param object a "mid" object.
-#' @param data a data frame containing the observations for which to calculate MID-derived Shapley values. If not passed, data is automatically extracted based on the function call of the fitted MID model.
+#' @param data a data frame containing the observations for which to calculate MID-derived Shapley values. If not passed, data is automatically extracted based on the function call.
 #'
 #' @returns
 #' \code{shapviz.mid()} returns an object of class "shapviz".

@@ -1,24 +1,24 @@
-#' Register a Color Theme
+#' Register Color Themes
 #'
 #' @description
 #' \code{set.color.theme()} registers a custom color theme in the package's theme registry.
 #'
 #' @details
-#' This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom").
-#' The registered color theme can then be easily retrieved using the "Theme Name Syntax" (see \code{?color.theme}).
+#' This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom/newtheme").
+#' The registered color theme can then be easily retrieved using the "Theme Name Syntax" (see \code{help(color.theme)}).
 #'
 #' To keep the registry environment size small, the \code{kernel} argument supports a form of lazy loading.
-#' To use this feature, provide a vector or list containing two character strings:
-#' (1) an R expression that returns a color kernel (e.g., "rainbow"); and
-#' (2) the namespace in which to evaluate the expression (e.g., "grDevices").
+#' To use this feature, provide a vector or list containing two character strings.
+#' The first is an R expression that returns a color kernel (e.g., "rainbow"), and the second is the namespace in which to evaluate the expression (e.g., "grDevices").
 #' The expression is evaluated only when the color theme is loaded by \code{color.theme()}.
 #'
-#' @param kernel a color vector, a palette function or a ramp function to be used as a color kernel. It can also be a character vector or a list (see "Details"). An existing "color.theme" object can also be passed.
+#' @param kernel a color vector, a palette function, or a ramp function to be used as a color kernel. It can also be a character vector or a list (see the "Details" section). A "color.theme" object can also be passed.
 #' @param kernel.args a list of arguments to be passed to the color kernel.
 #' @param options a list of option values to control the color theme's behavior.
 #' @param name a character string for the color theme name.
 #' @param source a character string for the source name of the color theme.
 #' @param type a character string specifying the type of the color theme. One of "sequential", "diverging", or "qualitative".
+#' @param env an environment where the color themes are registered.
 #'
 #' @returns
 #' \code{set.color.theme()} returns the metadata of the previous theme that was overwritten (or \code{NULL} if none existed) invisibly.
@@ -29,12 +29,13 @@
 #'
 set.color.theme <- function(
     kernel, kernel.args = list(), options = list(),
-    name = "newtheme", source = "custom", type = NULL
+    name = "newtheme", source = "custom", type = NULL, env = color.theme.env()
   ) {
   if (is.color.theme(kernel)) {
     args <- as.list(kernel)[c("kernel", "kernel.args", "options", "type")]
     args$name <- ifnot.null(name, kernel$name)
     args$source <- ifnot.null(source, kernel$source)
+    args$env = env
     return(do.call(set.color.theme, args))
   }
   lazy.load.kernel(kernel, args = kernel.args)
@@ -51,7 +52,6 @@ set.color.theme <- function(
   type <- match.arg(type, c("sequential", "diverging", "qualitative"))
   new <- list(kernel = kernel, kernel.args = kernel.args,
               options = options, name = name, source = source, type = type)
-  env <- color.theme.env()
   old <- env[[name]][[source]]
   env[[name]][[source]] <- new
   invisible(old)

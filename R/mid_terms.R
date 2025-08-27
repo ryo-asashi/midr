@@ -1,4 +1,4 @@
-#' Extract Terms from a MID Model
+#' Extract Terms from MID Models
 #'
 #' @description
 #' \code{mid.terms()} extracts term labels from a fitted MID model or derivative objects.

@@ -25,27 +25,27 @@
 \arguments{
 \item{object}{a "mid.conditional" object to be visualized.}
 
-\item{type}{a character string specifying the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.}
+\item{type}{the plotting style. One of "iceplot" or "centered".}
 
-\item{theme}{a character string specifying the color theme or any item that can be used to define "color.theme" object.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{term}{an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.}
 
-\item{var.alpha}{a name of the variable or an expression to be used to set \code{alpha}.}
+\item{var.alpha}{a variable name or expression to map to the alpha aesthetic.}
 
-\item{var.color}{a name of the variable or an expression to be used to set \code{colour}.}
+\item{var.color}{a variable name or expression to map to the color aesthetic.}
 
-\item{var.linetype}{a name of the variable or an expression to be used to set \code{linetype}.}
+\item{var.linetype}{a variable name or expression to map to the linetype aesthetic.}
 
-\item{var.linewidth}{a name of the variable or an expression to be used to set \code{linewidth}.}
+\item{var.linewidth}{a variable name or expression to map to the linewidth aesthetic.}
 
-\item{reference}{an integer specifying the index of the sample points to be used as reference point for the centered ICE plot. Default is \code{1}. If negative, the maximum value of the variable is used.}
+\item{reference}{an integer specifying the index of the sample points to use as the reference for centering the c-ICE plot.}
 
-\item{dots}{logical. If \code{TRUE}, the points representing the predictions for each observation are plotted.}
+\item{dots}{logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.}
 
 \item{sample}{an optional vector specifying the names of observations to be plotted.}
 
-\item{...}{optional parameters to be passed to the main layer.}
+\item{...}{optional parameters passed on to the main layer.}
 }
 \value{
 \code{ggmid.mid.conditional()} returns a "ggplot" object.

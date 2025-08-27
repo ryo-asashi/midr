@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_color_theme.R
 \name{set.color.theme}
 \alias{set.color.theme}
-\title{Register a Color Theme}
+\title{Register Color Themes}
 \usage{
 set.color.theme(
   kernel,
@@ -10,11 +10,12 @@ set.color.theme(
   options = list(),
   name = "newtheme",
   source = "custom",
-  type = NULL
+  type = NULL,
+  env = color.theme.env()
 )
 }
 \arguments{
-\item{kernel}{a color vector, a palette function or a ramp function to be used as a color kernel. It can also be a character vector or a list (see "Details"). An existing "color.theme" object can also be passed.}
+\item{kernel}{a color vector, a palette function, or a ramp function to be used as a color kernel. It can also be a character vector or a list (see the "Details" section). A "color.theme" object can also be passed.}
 
 \item{kernel.args}{a list of arguments to be passed to the color kernel.}
 
@@ -25,6 +26,8 @@ set.color.theme(
 \item{source}{a character string for the source name of the color theme.}
 
 \item{type}{a character string specifying the type of the color theme. One of "sequential", "diverging", or "qualitative".}
+
+\item{env}{an environment where the color themes are registered.}
 }
 \value{
 \code{set.color.theme()} returns the metadata of the previous theme that was overwritten (or \code{NULL} if none existed) invisibly.
@@ -33,13 +36,12 @@ set.color.theme(
 \code{set.color.theme()} registers a custom color theme in the package's theme registry.
 }
 \details{
-This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom").
-The registered color theme can then be easily retrieved using the "Theme Name Syntax" (see \code{?color.theme}).
+This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom/newtheme").
+The registered color theme can then be easily retrieved using the "Theme Name Syntax" (see \code{help(color.theme)}).
 
 To keep the registry environment size small, the \code{kernel} argument supports a form of lazy loading.
-To use this feature, provide a vector or list containing two character strings:
-(1) an R expression that returns a color kernel (e.g., "rainbow"); and
-(2) the namespace in which to evaluate the expression (e.g., "grDevices").
+To use this feature, provide a vector or list containing two character strings.
+The first is an R expression that returns a color kernel (e.g., "rainbow"), and the second is the namespace in which to evaluate the expression (e.g., "grDevices").
 The expression is evaluated only when the color theme is loaded by \code{color.theme()}.
 }
 \seealso{

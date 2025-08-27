@@ -25,7 +25,7 @@
 #' If \code{engine} is "ggplot2", \code{mid.plots()} returns a list of "ggplot" objects.
 #' Otherwise (i.e., if \code{engine} is "graphics"), \code{mid.plots()} produces plots as side-effects and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.mid}}, \code{\link{ggmid}}
 #'
 #' @export mid.plots
 #'

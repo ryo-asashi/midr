@@ -22,11 +22,11 @@
 \arguments{
 \item{x}{a "mid.conditional" object to be visualized.}
 
-\item{type}{the type of the plot. One of "iceplot" or "centered". If "centered", the ICE values of each observation are set to zero at the leftmost point of the varriable.}
+\item{type}{the plotting style. One of "iceplot" or "centered".}
 
-\item{theme}{a character string or object defining the color theme.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
-\item{term}{an optional character string specifying a single term. If provided, the plot will show the conditional effect of that term instead of the total prediction.}
+\item{term}{an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.}
 
 \item{var.alpha}{a variable name or expression to map to the alpha aesthetic.}
 
