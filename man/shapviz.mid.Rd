@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing the observations for which to calculate MID-derived Shapley values. If not passed, data is automatically extracted based on the function call of the fitted MID model.}
+\item{data}{a data frame containing the observations for which to calculate MID-derived Shapley values. If not passed, data is automatically extracted based on the function call.}
 }
 \value{
 \code{shapviz.mid()} returns an object of class "shapviz".

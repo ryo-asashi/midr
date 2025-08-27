@@ -31,7 +31,7 @@
 
 \item{main.effects}{logical. If \code{TRUE}, main effects are included in the interaction plot.}
 
-\item{data}{a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the "mid" object.}
+\item{data}{a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the function call.}
 
 \item{limits}{a numeric vector of length two specifying the limits of the plotting scale.}
 

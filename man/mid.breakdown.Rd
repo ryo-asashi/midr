@@ -15,7 +15,7 @@ mid.breakdown(
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{data}{a data frame containing one or more observations for which to calculate the MID breakdown. If \code{NULL}, data is automatically extracted from the parent frame.}
+\item{data}{a data frame containing one or more observations for which to calculate the MID breakdown. If not provided, data is automatically extracted based on the function call.}
 
 \item{row}{an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.}
 

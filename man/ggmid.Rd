@@ -39,7 +39,7 @@ ggmid(object, ...)
 
 \item{main.effects}{logical. If \code{TRUE}, main effects are included in the interaction plot.}
 
-\item{data}{a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted.}
+\item{data}{a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted based on the function call.}
 
 \item{limits}{a numeric vector of length two specifying the limits of the plotting scale. \code{NA} values are replaced by the minimum and/or maximum MID values.}
 
