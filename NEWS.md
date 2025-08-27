@@ -1,3 +1,5 @@
+# midr 0.5.1
+
 # midr 0.5.0.909
 
 -   Vectorized the design matrix encoding process in `factor.encoder()` and `numeric.encoder()` for improved performance.
