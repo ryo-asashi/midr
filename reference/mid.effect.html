@@ -95,7 +95,7 @@ It serves as a low-level helper function for making predictions or for direct an
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>mid.effect()</code> is a low-level function designed to calculate the contribution of a single component function.
 Unlike <code><a href="predict.mid.html">predict.mid()</a></code>, which is designed to return total model predictions, <code>mid.effect()</code> is more flexible.
-It accepts vectors, as well as data frames, as input for <code>x</code> and <code>y</code>, making it particularly useful for visualizing a component's effect in combination with other functions, such as <code><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve()</a></code> or a base <b>R</b> plotting routine.</p>
+It accepts vectors, as well as data frames, as input for <code>x</code> and <code>y</code>, making it particularly useful for visualizing a component's effect in combination with other functions, such as <code><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">graphics::curve()</a></code>.</p>
 <p>For a main effect, the function evaluates the component function \(f_j(x_j)\) for a vector of values \(x_j\).
 For an interaction, it evaluates \(f_{jk}(x_j, x_k)\) using vectors \(x_j\) and \(x_k\).</p>
     </div>

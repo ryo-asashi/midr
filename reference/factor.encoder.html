@@ -131,14 +131,11 @@ This encoder converts the variable into a one-hot encoded (dummy) design matrix.
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function is designed to handle qualitative data for use in the MID model's linear system formulation.
-It has two key features:</p>
-<p><b>One-Hot Encoding</b>:
-The primary mechanism is one-hot encoding.
+    <p>This function is designed to handle qualitative data for use in the MID model's linear system formulation.</p>
+<p>The primary mechanism is one-hot encoding.
 Each unique level of the input variable becomes a column in the output matrix.
 For a given observation, the column corresponding to its level is assigned a <code>1</code>, and all other columns are assigned <code>0</code>.</p>
-<p><b>Catch-All Mechanism for High Cardinality</b>:
-When a variable has many unique levels (high cardinality), you can use the <code>use.catchall = TRUE</code> and <code>k</code> arguments.
+<p>When a variable has many unique levels (high cardinality), you can use the <code>use.catchall = TRUE</code> and <code>k</code> arguments.
 This will group the <code>k - 1</code> most frequent levels into their own columns, while all other less frequent levels are consolidated into a single <code>catchall</code> level (e.g., "(others)" by default).
 This is crucial for preventing MID models from becoming overly complex.</p>
     </div>
