@@ -6,10 +6,10 @@
 #'
 #' @param object a "mid" object.
 #' @param terms a character vector of the terms to be visualized. By default, only the main effect terms are used.
-#' @param limits a numeric vector of length two specifying the y-axis limits. \code{NA} values are replaced by the minimum and/or maximum of the plotted MID values. If \code{intercept = TRUE} is set, the intercept is also included in the limit calculation.
+#' @param limits a numeric vector of length two specifying the mid value limits. \code{NA} values are replaced by the minimum and/or maximum of the plotted MID values. If \code{intercept = TRUE} is set, the intercept is also included in the limit calculation.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted accordingly.
 #' @param main.effects logical. If \code{TRUE}, main effects are added to the interaction plots to show conditional effects. This argument disables automatic limit calculations.
-#' @param max.plots an integer specifying the maximum number of plots to be generated.
+#' @param max.nplots the maximum number of plots to generate.
 #' @param engine the plotting engine to use, either "ggplot2" or "graphics".
 #' @param ... optional parameters passed on to \code{plot.mid()} or \code{ggmid()}.
 #'
@@ -32,13 +32,13 @@
 mid.plots <- function(
     object, terms = mid.terms(object, interactions = FALSE),
     limits = c(NA, NA), intercept = FALSE, main.effects = FALSE,
-    max.plots = NULL, engine = c("ggplot2", "graphics"), ...) {
+    max.nplots = NULL, engine = c("ggplot2", "graphics"), ...) {
   engine <- match.arg(engine)
   if (length(terms) == 0L)
     return(NULL)
-  if (!is.null(max.plots) && length(terms) > max.plots) {
+  if (!is.null(max.nplots) && length(terms) > max.nplots) {
     message("the number of terms exceeded the maximum number of plots")
-    terms <- terms[1L:max.plots]
+    terms <- terms[1L:max.nplots]
   }
   true_terms <- terms
   for (i in seq_len(length(terms))) {

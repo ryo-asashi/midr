@@ -51,7 +51,6 @@ library(ggplot2)
 library(gridExtra)
 library(ISLR2)
 library(ranger)
-library(shapviz)
 theme_set(theme_midr())
 # split the Boston dataset
 data("Boston", package = "ISLR2")
@@ -148,10 +147,10 @@ value into variable effects.
 bd1 <- mid.breakdown(mid, data = train, row = 1L)
 bd9 <- mid.breakdown(mid, data = train, row = 9L)
 grid.arrange(nrow = 1L,
-  ggmid(bd1, "waterfall", theme = "midr", max.terms = 14L) +
+  ggmid(bd1, "waterfall", theme = "midr", max.nterms = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "midr", max.terms = 14L) +
+  ggmid(bd9, "waterfall", theme = "midr", max.nterms = 14L) +
     theme(legend.position = "bottom") +
     ggtitle("breakdown of prediction 9")
 )

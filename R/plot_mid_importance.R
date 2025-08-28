@@ -15,7 +15,7 @@
 #' @param x a "mid.importance" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
-#' @param max.terms the maximum number of terms to display in the bar, dot and box plots.
+#' @param max.nterms the maximum number of terms to display in the bar, dot and box plots.
 #' @param ... optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -45,7 +45,7 @@
 #'
 plot.mid.importance <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, max.terms = 30L, ...) {
+    theme = NULL, max.nterms = 30L, ...) {
   dots <- list(...)
   type <- match.arg(type)
   if (missing(theme))
@@ -54,7 +54,7 @@ plot.mid.importance <- function(
   use.theme <- inherits(theme, "color.theme")
   if (type == "dotchart" || type == "barplot") {
     imp <- x$importance
-    imp <- imp[1L:min(max.terms, nrow(imp), na.rm = TRUE), ]
+    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
         to.colors(imp$order, theme)
@@ -114,7 +114,7 @@ plot.mid.importance <- function(
     }
   } else if (type == "boxplot") {
     terms <- as.character(attr(x, "terms"))
-    terms <- terms[1L:min(max.terms, length(terms), na.rm = TRUE)]
+    terms <- terms[1L:min(max.nterms, length(terms), na.rm = TRUE)]
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
     graphics::par(mai = adjusted.mai(terms), las = 1L)

@@ -10,7 +10,7 @@ mid.plots(
   limits = c(NA, NA),
   intercept = FALSE,
   main.effects = FALSE,
-  max.plots = NULL,
+  max.nplots = NULL,
   engine = c("ggplot2", "graphics"),
   ...
 )
@@ -20,13 +20,13 @@ mid.plots(
 
 \item{terms}{a character vector of the terms to be visualized. By default, only the main effect terms are used.}
 
-\item{limits}{a numeric vector of length two specifying the y-axis limits. \code{NA} values are replaced by the minimum and/or maximum of the plotted MID values. If \code{intercept = TRUE} is set, the intercept is also included in the limit calculation.}
+\item{limits}{a numeric vector of length two specifying the mid value limits. \code{NA} values are replaced by the minimum and/or maximum of the plotted MID values. If \code{intercept = TRUE} is set, the intercept is also included in the limit calculation.}
 
 \item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values and the plotting scale is shifted accordingly.}
 
 \item{main.effects}{logical. If \code{TRUE}, main effects are added to the interaction plots to show conditional effects. This argument disables automatic limit calculations.}
 
-\item{max.plots}{an integer specifying the maximum number of plots to be generated.}
+\item{max.nplots}{the maximum number of plots to generate.}
 
 \item{engine}{the plotting engine to use, either "ggplot2" or "graphics".}
 

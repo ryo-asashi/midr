@@ -8,7 +8,7 @@
   x,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
-  max.terms = 30L,
+  max.nterms = 30L,
   ...
 )
 }
@@ -19,7 +19,7 @@
 
 \item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
-\item{max.terms}{the maximum number of terms to display in the bar, dot and box plots.}
+\item{max.nterms}{the maximum number of terms to display in the bar, dot and box plots.}
 
 \item{...}{optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }

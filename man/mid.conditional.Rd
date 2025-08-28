@@ -9,7 +9,7 @@ mid.conditional(
   variable,
   data = NULL,
   n.samples = 100L,
-  max.rows = 100000L,
+  max.nrow = 100000L,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -23,7 +23,7 @@ mid.conditional(
 
 \item{n.samples}{the number of sample points for the \code{varibale}'s range.}
 
-\item{max.rows}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
+\item{max.nrow}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
 
 \item{type}{the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.}
 

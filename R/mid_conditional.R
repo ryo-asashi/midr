@@ -12,7 +12,7 @@
 #' @param variable a character string or expression specifying the singlue predictor variable for which to calculate ICE curves.
 #' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.
 #' @param n.samples the number of sample points for the \code{varibale}'s range.
-#' @param max.rows the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.
+#' @param max.nrow the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.
 #' @param type the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.
 #' @param keep.effects logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.
 #'
@@ -36,7 +36,7 @@
 #'
 mid.conditional <- function(
     object, variable, data = NULL, n.samples = 100L,
-    max.rows = 1e5L, type = c("response", "link"), keep.effects = TRUE) {
+    max.nrow = 1e5L, type = c("response", "link"), keep.effects = TRUE) {
   type <- match.arg(type)
   rf <- length(tf <- mid.terms(object, remove = variable))
   rv <- length(tv <- mid.terms(object, require = variable))
@@ -61,8 +61,8 @@ mid.conditional <- function(
   }
   m <- length(values)
   n <- nrow(data)
-  if (!is.null(max.rows) && m * n > max.rows) {
-    max.n <- max.rows %/% m
+  if (!is.null(max.nrow) && m * n > max.nrow) {
+    max.n <- max.nrow %/% m
     message(paste0("the number of evaluation points exceeds the limit: the data is reduced to ", max.n," observations"))
     data <- data[sample(n, max.n), ]
     n <- nrow(data)

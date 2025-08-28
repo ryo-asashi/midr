@@ -1,4 +1,10 @@
+# midr 0.5.1.900
+
+-   Changed some argument names for consistency (`max.nterms`, `max.nplots`, `max.nrow`).
+
 # midr 0.5.1
+
+Second release on CRAN.
 
 # midr 0.5.0.909
 

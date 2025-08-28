@@ -15,7 +15,7 @@
 #' @param object a "mid.importance" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
-#' @param max.terms the maximum number of terms to display in the bar, dot and box plots.
+#' @param max.nterms the maximum number of terms to display in the bar, dot and box plots.
 #' @param ... optional parameters passed on to the main layer.
 #'
 #' @examples
@@ -45,7 +45,7 @@
 #'
 ggmid.mid.importance <- function(
     object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, max.terms = 30L, ...) {
+    theme = NULL, max.nterms = 30L, ...) {
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
@@ -54,7 +54,7 @@ ggmid.mid.importance <- function(
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     imp <- object$importance
-    imp <- imp[1L:min(max.terms, nrow(imp), na.rm = TRUE), ]
+    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(x = .data[["importance"]], y = .data[["term"]])
       ) + ggplot2::labs(y = NULL)
@@ -99,7 +99,7 @@ ggmid.mid.importance <- function(
     return(pl)
   } else if (type == "boxplot") {
     terms <- as.character(attr(object, "terms"))
-    terms <- terms[1L:min(max.terms, length(terms), na.rm = TRUE)]
+    terms <- terms[1L:min(max.nterms, length(terms), na.rm = TRUE)]
     preds <- object$predictions[, terms]
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = as.numeric(preds),
@@ -107,7 +107,7 @@ ggmid.mid.importance <- function(
     pl <- ggplot2::ggplot(box)
     if (use.theme) {
       imp <- object$importance$importance
-      imp <- imp[1L:min(max.terms, length(terms), na.rm = TRUE)]
+      imp <- imp[1L:min(max.nterms, length(terms), na.rm = TRUE)]
       colors <- theme$palette(length(imp))
       pl <- pl + ggplot2::geom_boxplot(
         ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]),

@@ -15,7 +15,7 @@
 #' @param type the plotting style. One of "waterfall", "barplot" or "dotchart".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
-#' @param max.terms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
+#' @param max.nterms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param catchall a character string for the catchall label.
@@ -46,7 +46,7 @@
 #'
 plot.mid.breakdown <- function(
     x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
-    terms = NULL, max.terms = 15L, width = NULL, vline = TRUE,
+    terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
     catchall = "others", format = c("%t=%v", "%t"), ...) {
   dots <- list(...)
   type <- match.arg(type)
@@ -68,7 +68,7 @@ plot.mid.breakdown <- function(
     bd[nrow(bd) + 1L, "mid"] <- resid
     use.catchall <- TRUE
   }
-  nmax <- min(max.terms, nrow(bd), na.rm = TRUE)
+  nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
   if (nmax < nrow(bd)) {
     resid <- sum(bd[nmax:nrow(bd), "mid"])
     bd <- bd[1L:(nmax - 1L), ]
