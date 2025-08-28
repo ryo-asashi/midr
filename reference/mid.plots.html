@@ -9,7 +9,7 @@ It can automatically determine common plotting scales and manage the layout.'><m
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.909</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ It can automatically determine common plotting scales and manage the layout.</p>
 <span>  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  main.effects <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  max.plots <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max.nplots <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  engine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, <span class="st">"graphics"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -84,7 +84,7 @@ It can automatically determine common plotting scales and manage the layout.</p>
 
 
 <dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
-<dd><p>a numeric vector of length two specifying the y-axis limits. <code>NA</code> values are replaced by the minimum and/or maximum of the plotted MID values. If <code>intercept = TRUE</code> is set, the intercept is also included in the limit calculation.</p></dd>
+<dd><p>a numeric vector of length two specifying the mid value limits. <code>NA</code> values are replaced by the minimum and/or maximum of the plotted MID values. If <code>intercept = TRUE</code> is set, the intercept is also included in the limit calculation.</p></dd>
 
 
 <dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
@@ -95,8 +95,8 @@ It can automatically determine common plotting scales and manage the layout.</p>
 <dd><p>logical. If <code>TRUE</code>, main effects are added to the interaction plots to show conditional effects. This argument disables automatic limit calculations.</p></dd>
 
 
-<dt id="arg-max-plots">max.plots<a class="anchor" aria-label="anchor" href="#arg-max-plots"></a></dt>
-<dd><p>an integer specifying the maximum number of plots to be generated.</p></dd>
+<dt id="arg-max-nplots">max.nplots<a class="anchor" aria-label="anchor" href="#arg-max-nplots"></a></dt>
+<dd><p>the maximum number of plots to generate.</p></dd>
 
 
 <dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>

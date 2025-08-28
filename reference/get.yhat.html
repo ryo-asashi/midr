@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.909</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@ This function, <code>get.yhat()</code>, abstracts away this complexity.</p>
 For classification models, it returns the sum of class probabilities for the classes specified by the <code>target</code> argument.</p>
 <p>Furthermore, <code>get.yhat()</code> provides more consistent handling of missing values.
 While some <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">stats::predict()</a></code> methods may return a shorter vector by omitting <code>NA</code>s, <code>get.yhat()</code> is designed to return a vector of the same length as <code>newdata</code>, preserving <code>NA</code>s in their original positions.</p>
-<p>The design of <code>get.yhat()</code> is strongly influenced by <code><a href="https://modeloriented.github.io/DALEX/reference/yhat.html" class="external-link">DALEX::yhat()</a></code>.</p>
+<p>The design of <code>get.yhat()</code> is strongly influenced by <code>DALEX::yhat()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
