@@ -46,7 +46,7 @@ This function automatically determines the appropriate \strong{ggplot2} scale ba
 If the theme is "qualitative", a discrete scale is used by default to assign distinct colors to categorical data.
 The \code{discrete} argument is automatically set to \code{TRUE} if not specified.
 If the theme is "sequential" or "diverging", a continuous scale is used by default.
-The "diverging" themes are handled specially by \code{scales::rescale_mid()} to correctly center the gradient around the \code{middle} value.
+The "diverging" themes are handled by \code{scales::rescale_mid()} to correctly center the gradient around the \code{middle} value.
 }
 \examples{
 data(txhousing, package = "ggplot2")

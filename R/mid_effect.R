@@ -29,7 +29,7 @@
 #' curve(mid.f(mid, "Wind:Temp", x, 60), 0, 25, add = TRUE, lty = 2)
 #' curve(mid.f(mid, "Wind:Temp", x, 70), 0, 25, add = TRUE, lty = 3)
 #' @returns
-#' \code{mid.effect()} returns a numeric vector of the calculated term contributions, Wwith the same length as \code{x} and \code{y}.
+#' \code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
 #'

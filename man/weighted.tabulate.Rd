@@ -14,7 +14,7 @@ weighted.tabulate(bin, w = NULL, nbins = max(1L, bin, na.rm = TRUE))
 \item{nbins}{the number of bins to be used.}
 }
 \value{
-\code{weighted.tabulate()} returns an numeric vector.
+\code{weighted.tabulate()} returns a numeric vector.
 }
 \description{
 \code{weighted.tabulate()} returns the sum of weights for each integer in the vector \code{bin}.

@@ -9,9 +9,9 @@
 #' It then obtains a prediction for each of these hypothetical observations from the MID model. The returned object can be plotted to visualize the ICE curves.
 #'
 #' @param object a "mid" object.
-#' @param variable a character string or expression specifying the singlue predictor variable for which to calculate ICE curves.
+#' @param variable a character string or expression specifying the single predictor variable for which to calculate ICE curves.
 #' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.
-#' @param n.samples the number of sample points for the \code{varibale}'s range.
+#' @param n.samples the number of sample points for the \code{variable}'s range.
 #' @param max.nrow the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.
 #' @param type the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.
 #' @param keep.effects logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.

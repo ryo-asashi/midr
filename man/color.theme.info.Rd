@@ -29,7 +29,7 @@ These functions provide tools for inspecting the color themes available in the c
 
 \code{color.theme.env()} is an advanced function that returns the environment currently used as the theme registry.
 It first checks for a user-specified environment via \code{getOption("midr.color.theme.env")}.
-If this option is \code{NULL} (the default), the function returns the package's internal environment where the default themes are storesd.
+If this option is \code{NULL} (the default), the function returns the package's internal environment where the default themes are stored.
 }
 \examples{
 # Get a data frame of all available themes

@@ -1,3 +1,7 @@
+# midr 0.5.1.901
+
+-   Corrected typos and improved clarity in the documentation.
+
 # midr 0.5.1.900
 
 -   Changed some argument names for consistency (`max.nterms`, `max.nplots`, `max.nrow`).

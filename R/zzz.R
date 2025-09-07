@@ -146,4 +146,5 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       )
     }
   }
+  invisible(NULL)
 }

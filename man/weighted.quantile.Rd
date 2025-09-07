@@ -30,7 +30,7 @@ weighted.quantile(
 
 \item{type}{an integer between \code{1} and \code{9} selecting the quantile algorithms. Only \code{1} is available for the weighted quantile.}
 
-\item{...}{further arguments passed to \code{stats::quantile()} when the weights is not passed.}
+\item{...}{further arguments passed to \code{stats::quantile()} when weights are not passed.}
 }
 \value{
 \code{weighted.quantile()} returns weighted sample quantiles corresponding to the given probabilities.

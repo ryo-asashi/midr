@@ -15,7 +15,7 @@
 #' @param names logical. If \code{TRUE}, the result has a "names" attribute.
 #' @param digits used only when \code{names} is \code{TRUE}. The precision to use when formatting the percentages.
 #' @param type an integer between \code{1} and \code{9} selecting the quantile algorithms. Only \code{1} is available for the weighted quantile.
-#' @param ... further arguments passed to \code{stats::quantile()} when the weights is not passed.
+#' @param ... further arguments passed to \code{stats::quantile()} when weights are not passed.
 #'
 #' @returns
 #' \code{weighted.quantile()} returns weighted sample quantiles corresponding to the given probabilities.
@@ -95,7 +95,7 @@ weighted.quantile <- function(
 #' @param nbins the number of bins to be used.
 #'
 #' @returns
-#' \code{weighted.tabulate()} returns an numeric vector.
+#' \code{weighted.tabulate()} returns a numeric vector.
 #'
 #' @seealso \code{\link{weighted.quantile}}
 #'

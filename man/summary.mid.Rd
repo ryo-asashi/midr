@@ -19,7 +19,7 @@
 \code{summary.mid()} returns the original "mid" object invisibly.
 }
 \description{
-For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID Model.
+For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID model.
 }
 \details{
 The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.

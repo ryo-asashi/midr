@@ -10,7 +10,7 @@
 #' The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
 #' The \code{type = "dotchart"} option creates a dot plot, offering a clean alternative to the bar plot for visualizing term importance.
 #' The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
-#' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the varibability of each term's effect.
+#' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the variability of each term's effect.
 #'
 #' @param object a "mid.importance" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".

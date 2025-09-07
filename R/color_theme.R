@@ -24,7 +24,7 @@
 #'   \item source: (optional) the source package or collection of the theme (e.g., "grDevices").
 #'   \item name: the name of the theme (e.g., "RdBu").
 #'   \item "_r": (optional) a suffix to reverse the color order.
-#'   \item type: (optional) the desired theme type, which will be matched with "sequential", "diverging" or "qualitative" (i.e., "s", "d", and "q" are sufficient, but longer character strings such as "seq", "div", "qual" are also possible).
+#'   \item type: (optional) the desired theme type, which will be matched with "sequential", "diverging" or "qualitative" (i.e., "s", "d", and "q" are sufficient, but longer strings such as "seq", "div", "qual" are also possible).
 #'   \item query: (optional) a query string to overwrite the color theme's metadata including specific theme options or kernel arguments. Pairs are in \code{key=value} format and separated by \code{;} or \code{&} (e.g., "...?alpha=0.5;na.color='gray50'"). Possible keys include "name", "source", "type", "reverse" and any item of the theme's \code{options} and \code{kernel.args}.
 #' }
 #'

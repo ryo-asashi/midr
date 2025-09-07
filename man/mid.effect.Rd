@@ -19,7 +19,7 @@ mid.f(object, term, x, y = NULL)
 \item{y}{a vector of values for the second variable in an interaction term.}
 }
 \value{
-\code{mid.effect()} returns a numeric vector of the calculated term contributions, Wwith the same length as \code{x} and \code{y}.
+\code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
 }
 \description{
 \code{mid.effect()} calculates the contribution of a single component function of a fitted MID model.

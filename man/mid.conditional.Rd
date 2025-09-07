@@ -17,11 +17,11 @@ mid.conditional(
 \arguments{
 \item{object}{a "mid" object.}
 
-\item{variable}{a character string or expression specifying the singlue predictor variable for which to calculate ICE curves.}
+\item{variable}{a character string or expression specifying the single predictor variable for which to calculate ICE curves.}
 
 \item{data}{a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.}
 
-\item{n.samples}{the number of sample points for the \code{varibale}'s range.}
+\item{n.samples}{the number of sample points for the \code{variable}'s range.}
 
 \item{max.nrow}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
 

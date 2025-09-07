@@ -8,7 +8,7 @@
 #' If the theme is "qualitative", a discrete scale is used by default to assign distinct colors to categorical data.
 #' The \code{discrete} argument is automatically set to \code{TRUE} if not specified.
 #' If the theme is "sequential" or "diverging", a continuous scale is used by default.
-#' The "diverging" themes are handled specially by \code{scales::rescale_mid()} to correctly center the gradient around the \code{middle} value.
+#' The "diverging" themes are handled by \code{scales::rescale_mid()} to correctly center the gradient around the \code{middle} value.
 #'
 #' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.
 #' @param ... optional arguments to be passed to \code{ggplot2::continuous_scale()} or \code{ggplot2::discrete_scale()}.

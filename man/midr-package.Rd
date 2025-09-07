@@ -20,7 +20,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Ryoichi Asasihba \email{ryoichi.asashiba@gmail.com}
+\strong{Maintainer}: Ryoichi Asashiba \email{ryoichi.asashiba@gmail.com}
 
 Authors:
 \itemize{
