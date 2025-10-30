@@ -31,7 +31,6 @@ mid.conditional(
 }
 \value{
 \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
-\item{terms}{a character vector of relevant terms for the \code{variable}.}
 \item{observed}{a data frame of the original observations used, along with their predictions.}
 \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation}

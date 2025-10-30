@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "khroma", 
+pkgs <- c("mlbench", "gridExtra", "ggplot2", "Metrics", "khroma", "earth",
           "glmnet", "ranger", "e1071", "nnet", "rpart", "gam", "xgboost")
 for (pkg in pkgs) {
   if (!(pkg %in% installed.packages())) {
@@ -168,6 +168,18 @@ library(gam)
 model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
+mid <- interpret(y ~ .^2, train, model)
+print(mid)
+grid.arrange(grobs = effect_plots(mid), nrow = 2L)
+grid.arrange(interaction_plot(mid), importance_plot(mid),
+             ice_plot(mid), eval_plot(model, mid), nrow = 2)
+```
+
+### Multivariate Adaptive Regression Spline
+
+```{r earth_earth, message=FALSE}
+library(earth)
+model <- earth(y ~ ., degree = 2, data = train)
 mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)

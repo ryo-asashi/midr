@@ -25,7 +25,6 @@
 #' print(ice)
 #' @returns
 #' \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
-#' \item{terms}{a character vector of relevant terms for the \code{variable}.}
 #' \item{observed}{a data frame of the original observations used, along with their predictions.}
 #' \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 #' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation}
@@ -80,7 +79,6 @@ mid.conditional <- function(
   if (type == "response" && !is.null(object$link))
     yhat <- object$link$linkinv(yhat)
   res <- list()
-  res$terms <- tv
   res$observed <- cbind(.id = ids, yhat = yhat, data)
   if (keep.effects)
     res$observed.effects <- pm
@@ -107,6 +105,7 @@ mid.conditional <- function(
     res$conditional.effects <- pm
   res$values <- values
   class(res) <- c("mid.conditional")
+  attr(res, "terms") <- tv
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res

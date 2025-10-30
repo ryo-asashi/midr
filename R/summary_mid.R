@@ -66,7 +66,7 @@ summary.mid <- function(
   cat("\nImportance:\n")
   imp <- utils::head(mid.importance(object)$importance, top.n)
   imp$importance <- format(imp$importance, digits = digits)
-  if ((tot.n <- length(object$terms)) - top.n > 0L)
+  if ((tot.n <- length(mid.terms(object))) - top.n > 0L)
     cat(paste0("(Top ", top.n, " out of ", tot.n, ")\n"))
   print.data.frame(imp)
   invisible(object)

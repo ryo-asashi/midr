@@ -23,7 +23,7 @@
 #' }
 #'
 #' @param object a fitted model object to be interpreted.
-#' @param ... optional arguments. For \code{interpret.formula()}, arguments to be passed on to \code{interpret.default()}. For \code{interpret.default()}, \code{...} can include convenient aliases (e.g., "ok" for \code{singular.ok}, "ie" for \code{interaction}) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).
+#' @param ... optional arguments. For \code{interpret.formula()}, arguments to be passed on to \code{interpret.default()}. For \code{interpret.default()}, \code{...} can include convenient aliases (e.g., "ok" for \code{singular.ok}, "ie" for \code{interactions}) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).
 #'
 #' @examples
 #' # Fit a MID model as a surrogate for another model
@@ -94,7 +94,7 @@ UseMethod("interpret")
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
 #' @param interactions logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
-#' @param terms a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all interactions if \code{interaction} is \code{TRUE}.
+#' @param terms a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
 #' @param method an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.
@@ -572,7 +572,7 @@ interpret.default <- function(
   class(obj) <- c("mid")
   obj$model.class <- attr(object, "class")
   obj$call <- cl
-  obj$terms <- terms
+  obj$terms <- stats::terms(make.formula(terms))
   obj$link <- link
   obj$intercept <- intercept
   obj$encoders <- list()
@@ -680,17 +680,14 @@ interpret.formula <- function(
   attr(y, "na.action") <- NULL
   weights <- stats::model.weights(data)
   data[["(weights)"]] <- NULL
-  if (use.yhat) {
-    ysymbol <- if (any(colnames(data) == "yhat")) "predicted" else "yhat"
-    if (length(formula) == 2L) formula[[3L]] <- formula[[2L]]
-    formula[[2L]] <- as.symbol(ysymbol)
-  }
-  tl <- attr(attr(data, "terms"), "term.labels")
+  mt <- attr(data, "terms")
+  tl <- attr(mt, "term.labels")
   ret <- interpret.default(object = model, x = data, y = y, weights = weights,
                            terms = tl, mode = mode, na.action = na.action,
                            verbosity = verbosity, internal.call = TRUE, ...)
   cl$formula <- formula
   ret$call <- cl
+  ret$terms <- mt
   if (!is.null(naa.ret <- ret$na.action))
     naai$ids <- naai$ids[-naa.ret]
   if (length(naai$ids) < naai$n.init) {

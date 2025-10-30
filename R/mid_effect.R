@@ -44,7 +44,7 @@ mid.effect <- function(object, term, x, y = NULL) {
     x <- x[, tags[1L]]
   }
   n <- length(x)
-  .term <- term.check(term, object$terms, stop = FALSE)
+  .term <- term.check(term, mid.terms(object), stop = FALSE)
   if (is.na(.term))
     return(numeric(n))
   if (!ie) {

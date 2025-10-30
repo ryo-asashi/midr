@@ -41,7 +41,7 @@
 #'
 predict.mid <- function(
     object, newdata = NULL, na.action = "na.pass",
-    type = c("response", "link", "terms"), terms = object$terms, ...) {
+    type = c("response", "link", "terms"), terms = mid.terms(object), ...) {
   type <- match.arg(type)
   if (!missing(terms)) {
     for (i in seq_len(length(terms)))

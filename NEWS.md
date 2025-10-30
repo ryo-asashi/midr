@@ -1,3 +1,11 @@
+# midr 0.5.2.900
+
+-   Updated functions to enhance consistency with the 'stats' package, especially with regard to the return value for the `stats::terms()` function.
+
+# midr 0.5.2
+
+Third release on CRAN.
+
 # midr 0.5.1.901
 
 -   Corrected typos and improved clarity in the documentation.

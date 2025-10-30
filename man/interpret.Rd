@@ -55,7 +55,7 @@ interpret(object, ...)
 \arguments{
 \item{object}{a fitted model object to be interpreted.}
 
-\item{...}{optional arguments. For \code{interpret.formula()}, arguments to be passed on to \code{interpret.default()}. For \code{interpret.default()}, \code{...} can include convenient aliases (e.g., "ok" for \code{singular.ok}, "ie" for \code{interaction}) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).}
+\item{...}{optional arguments. For \code{interpret.formula()}, arguments to be passed on to \code{interpret.default()}. For \code{interpret.default()}, \code{...} can include convenient aliases (e.g., "ok" for \code{singular.ok}, "ie" for \code{interactions}) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).}
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
@@ -75,7 +75,7 @@ interpret(object, ...)
 
 \item{interactions}{logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.}
 
-\item{terms}{a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all interactions if \code{interaction} is \code{TRUE}.}
+\item{terms}{a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.}
 
 \item{singular.ok}{logical. If \code{FALSE}, a singular fit is an error.}
 

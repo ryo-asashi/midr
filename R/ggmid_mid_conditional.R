@@ -62,7 +62,7 @@ ggmid.mid.conditional <- function(
   if (!is.null(term)) {
     if (is.null(object$conditional.effects))
       stop("the term effects are not stored in the object")
-    term <- term.check(term, object$terms, stop = TRUE)
+    term <- term.check(term, mid.terms(object), stop = TRUE)
     yvar <- paste0("mid(", term, ")")
     obs[, yvar] <- object$observed.effects[, term]
     con[, yvar] <- object$conditional.effects[, term]

@@ -9,7 +9,7 @@
   newdata = NULL,
   na.action = "na.pass",
   type = c("response", "link", "terms"),
-  terms = object$terms,
+  terms = mid.terms(object),
   ...
 )
 }

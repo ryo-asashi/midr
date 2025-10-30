@@ -65,7 +65,7 @@ ggmid.mid <- function(
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
     jitter = .3, resolution = c(100L, 100L), ...) {
   tags <- term.split(term)
-  term <- term.check(term, object$terms, stop = TRUE)
+  term <- term.check(term, mid.terms(object), stop = TRUE)
   type <- match.arg(type)
   if (missing(theme) && length(tags) == 2L)
     theme <- if(type == "data") {
