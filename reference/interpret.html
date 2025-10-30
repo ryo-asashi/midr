@@ -9,7 +9,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,7 +117,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>optional arguments. For <code>interpret.formula()</code>, arguments to be passed on to <code>interpret.default()</code>. For <code>interpret.default()</code>, <code>...</code> can include convenient aliases (e.g., "ok" for <code>singular.ok</code>, "ie" for <code>interaction</code>) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).</p></dd>
+<dd><p>optional arguments. For <code>interpret.formula()</code>, arguments to be passed on to <code>interpret.default()</code>. For <code>interpret.default()</code>, <code>...</code> can include convenient aliases (e.g., "ok" for <code>singular.ok</code>, "ie" for <code>interactions</code>) as well as several advanced fitting options (see the "Advanced Fitting Options" section for details).</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -157,7 +157,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-terms">terms<a class="anchor" aria-label="anchor" href="#arg-terms"></a></dt>
-<dd><p>a character vector of term labels specifying the set of component functions to be modeled. If not passed, <code>terms</code> includes all main effects, and all interactions if <code>interaction</code> is <code>TRUE</code>.</p></dd>
+<dd><p>a character vector of term labels specifying the set of component functions to be modeled. If not passed, <code>terms</code> includes all main effects, and all second-order interactions if <code>interactions</code> is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-singular-ok">singular.ok<a class="anchor" aria-label="anchor" href="#arg-singular-ok"></a></dt>
