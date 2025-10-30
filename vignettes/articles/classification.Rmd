@@ -64,7 +64,7 @@ abline(0, 1, lty = 3)
 ```{r utils}
 # define utility functions for the following chunks
 effect_plots <- function(object) {
-  plots <- mid.plots(mid, terms = terms(mid)[1:6])
+  plots <- mid.plots(mid, terms = mid.terms(mid)[1:6])
   for (i in 1:6) {
     plots[[i]] <- plots[[i]] + ggtitle("main effect")
     if (any(i == c(1, 3, 4)))

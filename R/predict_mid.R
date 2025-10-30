@@ -45,7 +45,7 @@ predict.mid <- function(
   type <- match.arg(type)
   if (!missing(terms)) {
     for (i in seq_len(length(terms)))
-      terms[i] <- term.check(terms[i], object$terms, stop = FALSE)
+      terms[i] <- term.check(terms[i], mid.terms(object), stop = FALSE)
     terms <- unique(terms[!is.na(terms)])
   }
   if (is.null(newdata)) {
