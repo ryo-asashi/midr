@@ -157,7 +157,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-terms">terms<a class="anchor" aria-label="anchor" href="#arg-terms"></a></dt>
-<dd><p>a character vector of term labels specifying the set of component functions to be modeled. If not passed, <code>terms</code> includes all main effects, and all second-order interactions if <code>interactions</code> is <code>TRUE</code>.</p></dd>
+<dd><p>a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, <code>terms</code> includes all main effects, and all second-order interactions if <code>interactions</code> is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-singular-ok">singular.ok<a class="anchor" aria-label="anchor" href="#arg-singular-ok"></a></dt>
@@ -246,7 +246,7 @@ MID models are additive, highly interpretable models composed of functions, each
 <dd><p>the matched call.</p></dd>
 
 <dt>terms</dt>
-<dd><p>the term labels.</p></dd>
+<dd><p>the <code><a href="https://rdrr.io/r/stats/terms.object.html" class="external-link">terms.object</a></code> used.</p></dd>
 
 <dt>link</dt>
 <dd><p>a "link-glm" or "link-midr" object containing the link function.</p></dd>
@@ -279,7 +279,7 @@ MID models are additive, highly interpretable models composed of functions, each
 <dd><p>a numeric vector of the working residuals.</p></dd>
 
 <dt>na.action</dt>
-<dd><p>information about the special handlings of <code>NA</code>s.</p></dd>
+<dd><p>information about the special handling of <code>NA</code>s.</p></dd>
 
 </dl></div>
     <div class="section level2">
