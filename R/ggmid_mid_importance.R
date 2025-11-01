@@ -98,7 +98,7 @@ ggmid.mid.importance <- function(
     pl <- pl + scale_fill_theme(theme = if (use.theme) theme else "grayscale")
     return(pl)
   } else if (type == "boxplot") {
-    terms <- as.character(attr(object, "terms"))
+    terms <- mid.terms(object)
     terms <- terms[1L:min(max.nterms, length(terms), na.rm = TRUE)]
     preds <- object$predictions[, terms]
     terms <- factor(terms, levels = rev(terms))

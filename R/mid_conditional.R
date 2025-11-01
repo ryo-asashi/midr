@@ -105,7 +105,7 @@ mid.conditional <- function(
     res$conditional.effects <- pm
   res$values <- values
   class(res) <- c("mid.conditional")
-  attr(res, "terms") <- tv
+  attr(res, "term.labels") <- tv
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res

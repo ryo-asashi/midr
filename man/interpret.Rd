@@ -75,7 +75,7 @@ interpret(object, ...)
 
 \item{interactions}{logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.}
 
-\item{terms}{a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.}
+\item{terms}{a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.}
 
 \item{singular.ok}{logical. If \code{FALSE}, a singular fit is an error.}
 
@@ -119,7 +119,7 @@ interpret(object, ...)
 \code{interpret()} returns an object of class "mid". This is a list with the following components:
 \item{weights}{a numeric vector of the sample weights.}
 \item{call}{the matched call.}
-\item{terms}{the term labels.}
+\item{terms}{the \code{\link[stats]{terms.object}} used.}
 \item{link}{a "link-glm" or "link-midr" object containing the link function.}
 \item{intercept}{the intercept.}
 \item{encoders}{a list of variable encoders.}
@@ -130,7 +130,7 @@ interpret(object, ...)
 \item{linear.predictors}{a numeric vector of the linear predictors.}
 \item{fitted.values}{a numeric vector of the fitted values.}
 \item{residuals}{a numeric vector of the working residuals.}
-\item{na.action}{information about the special handlings of \code{NA}s.}
+\item{na.action}{information about the special handling of \code{NA}s.}
 }
 \description{
 \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.

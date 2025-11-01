@@ -61,7 +61,7 @@
 #' \code{interpret()} returns an object of class "mid". This is a list with the following components:
 #' \item{weights}{a numeric vector of the sample weights.}
 #' \item{call}{the matched call.}
-#' \item{terms}{the term labels.}
+#' \item{terms}{the \code{\link[stats]{terms.object}} used.}
 #' \item{link}{a "link-glm" or "link-midr" object containing the link function.}
 #' \item{intercept}{the intercept.}
 #' \item{encoders}{a list of variable encoders.}
@@ -72,7 +72,7 @@
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
 #' \item{residuals}{a numeric vector of the working residuals.}
-#' \item{na.action}{information about the special handlings of \code{NA}s.}
+#' \item{na.action}{information about the special handling of \code{NA}s.}
 #'
 #' @seealso \code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.plots}}, \code{\link{mid.effect}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
 #'
@@ -94,7 +94,7 @@ UseMethod("interpret")
 #' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
 #' @param interactions logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
-#' @param terms a character vector of term labels specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
+#' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
 #' @param method an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.
@@ -212,7 +212,14 @@ interpret.default <- function(
     if (interactions)
       its <- utils::combn(mts, 2L, function(x) paste0(x, collapse = ":"))
   } else {
-    spl <- sapply(strsplit(terms, ":"), length)
+    if (inherits(terms, "formula")) {
+      terms <- attr(stats::terms(terms), "term.labels")
+    }
+    spl <- strsplit(terms, ":")
+    if (!all(unique(unlist(spl)) %in% tags)) {
+      stop("'terms' contains term labels that are not found in 'x'")
+    }
+    spl <- sapply(spl, length)
     mts <- unique(terms[spl == 1L])
     its <- unique(terms[spl == 2L])
   }

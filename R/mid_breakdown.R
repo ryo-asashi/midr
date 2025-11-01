@@ -92,7 +92,7 @@ mid.breakdown <- function(
   } else {
     out$prediction <- object$intercept + sum(preds)
   }
-  attr(out, "terms") <- as.character(df$term)
+  attr(out, "term.labels") <- as.character(df$term)
   class(out) <- c("mid.breakdown")
   out
 }

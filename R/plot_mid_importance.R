@@ -113,7 +113,7 @@ plot.mid.importance <- function(
                        lty = args$lty, lwd = args$lwd)
     }
   } else if (type == "boxplot") {
-    terms <- as.character(attr(x, "terms"))
+    terms <- mid.terms(x)
     terms <- terms[1L:min(max.nterms, length(terms), na.rm = TRUE)]
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))

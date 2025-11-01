@@ -48,7 +48,10 @@ mid.terms <- function(
     main.effects <- dots$me
   if (missing(interactions) && !is.null(dots$ie))
     interactions <- dots$ie
-  terms <- ifnot.null(attr(object$terms, "term.labels"), attr(object, "terms"))
+  terms <- ifnot.null(
+    attr(ifnot.null(object$terms, attr(object, "terms")), "term.labels"),
+    attr(object, "term.labels")
+  )
   if (!main.effects)
     terms <- terms[grepl(":", terms)]
   if (!interactions)
@@ -67,30 +70,20 @@ mid.terms <- function(
 
 #' @exportS3Method base::labels
 #'
-labels.mid <- function(object, ...) mid.terms(object = object, ...)
+labels.mid <- function(object, ...)
+  mid.terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.importance <- function(object, ...) mid.terms(object = object, ...)
+labels.mid.importance <- function(object, ...)
+  mid.terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.breakdown <- function(object, ...) mid.terms(object = object, ...)
+labels.mid.breakdown <- function(object, ...)
+  mid.terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.conditional <- function(object, ...) mid.terms(object = object, ...)
-
-
-#' @exportS3Method stats::terms
-#'
-terms.mid.importance <- function(x, ...) mid.terms(object = x, ...)
-
-#' @exportS3Method stats::terms
-#'
-terms.mid.breakdown <- function(x, ...) mid.terms(object = x, ...)
-
-#' @exportS3Method stats::terms
-#'
-terms.mid.conditional <- function(x, ...) mid.terms(object = x, ...)
-
+labels.mid.conditional <- function(object, ...)
+  mid.terms(object = object, ...)

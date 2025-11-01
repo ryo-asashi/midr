@@ -64,7 +64,7 @@ mid.importance <- function(
                         "Mean Absolute Contribution",
                         "Root Mean Square Contribution",
                         "Median Absolute Contribution")
-  attr(out, "terms") <- as.character(df$term)
+  attr(out, "term.labels") <- as.character(df$term)
   class(out) <- c("mid.importance")
   out
 }
