@@ -579,7 +579,7 @@ interpret.default <- function(
   class(obj) <- c("mid")
   obj$model.class <- attr(object, "class")
   obj$call <- cl
-  obj$terms <- stats::terms(make.formula(terms))
+  obj$terms <- stats::terms(make.formula(terms, "..y"))
   obj$link <- link
   obj$intercept <- intercept
   obj$encoders <- list()
