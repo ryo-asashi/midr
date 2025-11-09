@@ -34,9 +34,10 @@ term.check <- function(x, terms, stop = TRUE) {
   return(x)
 }
 
-make.formula <- function(xlabels, ylabel = NULL) {
+make.formula <- function(xlabels, ylabel = NULL, env = parent.frame()) {
   stats::as.formula(
-    paste(if (!is.null(ylabel)) ylabel, "~", paste(xlabels, collapse = "+"))
+    paste(if (!is.null(ylabel)) ylabel, "~", paste(xlabels, collapse = "+")),
+    env = env
   )
 }
 
@@ -241,7 +242,13 @@ mid.frames <- function(object, ...) {
 #' @exportS3Method stats::formula
 #'
 formula.mid <- function(x, ...) {
-  stats::formula(stats::terms(x))
+  fm <- x$call$formula
+  if (!is.null(fm)) {
+    res <- stats::formula(stats::terms(x))
+    environment(res) <- environment(fm)
+    res
+  }
+  else stats::formula(stats::terms(x))
 }
 
 
