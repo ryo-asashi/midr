@@ -1,0 +1,152 @@
+# Visualization with graphics package
+
+``` r
+# load required packages
+library(midr)
+library(ISLR2)
+
+# train a predictive MID model
+mid <- interpret(
+  bikers ~ (mnth + hr + as.factor(workingday) +
+    weathersit + temp + hum + windspeed)^2, # model formula
+  data = Bikeshare, # training data
+  lambda = .01 # smoothing parameter
+)
+#> 'model' not passed: response variable in 'data' is used
+```
+
+## Feature Importance
+
+``` r
+# compute MID based variable importance
+imp <- mid.importance(mid)
+
+# create importance plots
+par.midr(bg = "#FEFEFE")
+plot(imp, theme = "Temps", max = 15)
+title(main = 'Feature Importance (barplot)')
+```
+
+![](graphics_files/figure-html/importance-1.png)
+
+``` r
+plot(imp, type = "dotchart", theme = "Set 1", max = 15, cex = 1.4)
+title(main = 'Feature Importance (dotchart)')
+```
+
+![](graphics_files/figure-html/importance-2.png)
+
+``` r
+plot(imp, type = "heatmap", theme = "BuPu")
+title(main = 'Feature Importance (heatmap)')
+```
+
+![](graphics_files/figure-html/importance-3.png)
+
+``` r
+plot(imp, type = "boxplot", theme = "Spectral", max = 15, cex = .5)
+title(main = 'Feature Importance (boxplot)')
+```
+
+![](graphics_files/figure-html/importance-4.png)
+
+## Component Functions
+
+``` r
+# create component plots
+par.midr(bg = "#FEFEFE")
+plot(mid, term = "temp")
+title(main = 'Main Effect (effect)')
+```
+
+![](graphics_files/figure-html/effect-1.png)
+
+``` r
+plot(mid, term = "hr")
+title(main = 'Main Effect (effect)')
+```
+
+![](graphics_files/figure-html/effect-2.png)
+
+``` r
+plot(mid, term = "hr:as.factor(workingday)")
+title(main = 'Interaction Effect (effect)')
+```
+
+![](graphics_files/figure-html/effect-3.png)
+
+``` r
+plot(mid, term = "hr:temp", type = "data",
+     main.effects = TRUE, theme = "Mako", data = Bikeshare)
+title(main = 'Interaction Effect (data)')
+```
+
+![](graphics_files/figure-html/effect-4.png)
+
+``` r
+plot(mid, term = "temp:windspeed", type = "compound",
+     main.effects = TRUE, data = Bikeshare)
+title(main = 'Interaction Effect (compound)')
+```
+
+![](graphics_files/figure-html/effect-5.png)
+
+## Conditional Expectations
+
+``` r
+# compute ICE plots
+set.seed(42)
+ice_rows <- sample(nrow(Bikeshare), 200L)
+ice <- mid.conditional(mid, variable = "hr",
+                       data = Bikeshare[ice_rows, ])
+# create plots
+par.midr(bg = "#FEFEFE")
+plot(ice, theme = "Cividis", var.color = mnth == "Aug")
+title(main = 'Conditional Expectations (iceplot)')
+```
+
+![](graphics_files/figure-html/conditional-1.png)
+
+``` r
+plot(ice, term = "hr:temp", dots = FALSE,
+     theme = "Temps", var.color = temp)
+title(main = 'Conditional Expectations (iceplot)')
+```
+
+![](graphics_files/figure-html/conditional-2.png)
+
+``` r
+plot(ice, type = "centered", alpha = .3,
+     theme = "midr", var.color = `as.factor(workingday)`)
+title(main = 'Conditional Expectations (centered)')
+```
+
+![](graphics_files/figure-html/conditional-3.png)
+
+## Prediction Breakdown
+
+``` r
+# compute MID breakdown for the individual penguins
+bd100 <- mid.breakdown(mid, Bikeshare[100L, ])
+
+# create plots
+par.midr(bg = "#FEFEFE")
+plot(bd100, theme = "Tableau 10")
+title(main = 'Prediction Breakdown (waterfall)')
+```
+
+![](graphics_files/figure-html/breakdown-1.png)
+
+``` r
+plot(bd100, type = "barplot", theme = "Set 1")
+title(main = 'Prediction Breakdown (barplot)')
+```
+
+![](graphics_files/figure-html/breakdown-2.png)
+
+``` r
+plot(bd100, type = "dotchart", theme = "Set 2", cex = 1.5)
+title(main = 'Prediction Breakdown (dotchart)')
+```
+
+![](graphics_files/figure-html/breakdown-3.png)

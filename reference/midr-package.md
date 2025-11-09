@@ -1,0 +1,36 @@
+# midr: Learning from Black-Box Models by Maximum Interpretation Decomposition
+
+The goal of 'midr' is to provide a model-agnostic method for
+interpreting and explaining black-box predictive models by creating a
+globally interpretable surrogate model. The package implements 'Maximum
+Interpretation Decomposition' (MID), a functional decomposition
+technique that finds an optimal additive approximation of the original
+model. This approximation is achieved by minimizing the squared error
+between the predictions of the black-box model and the surrogate model.
+The theoretical foundations of MID are described in Iwasawa & Matsumori
+(2025) \[Forthcoming\], and the package itself is detailed in Asashiba
+et al. (2025)
+[doi:10.48550/arXiv.2506.08338](https://doi.org/10.48550/arXiv.2506.08338)
+.
+
+## See also
+
+Useful links:
+
+- <https://github.com/ryo-asashi/midr>
+
+- <https://ryo-asashi.github.io/midr/>
+
+- Report bugs at <https://github.com/ryo-asashi/midr/issues>
+
+## Author
+
+**Maintainer**: Ryoichi Asashiba <ryoichi.asashiba@gmail.com>
+
+Authors:
+
+- Hirokazu Iwasawa
+
+Other contributors:
+
+- Reiji Kozuma \[contributor\]
