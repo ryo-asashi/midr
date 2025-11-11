@@ -15,7 +15,8 @@
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Learning from Black-Box Models by Maximum Interpretation Decomposition">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="Learning from Black-Box Models by Maximum Interpretation Decomposition">
 <meta name="description" content="The goal of midr is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements Maximum Interpretation Decomposition (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2025) [Forthcoming], and the package itself is detailed in Asashiba et al. (2025) &lt;doi:10.48550/arXiv.2506.08338&gt;.">
 <meta property="og:description" content="The goal of midr is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements Maximum Interpretation Decomposition (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2025) [Forthcoming], and the package itself is detailed in Asashiba et al. (2025) &lt;doi:10.48550/arXiv.2506.08338&gt;.">
 <meta property="og:image" content="https://ryo-asashi.github.io/midr/logo.png">
@@ -30,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.900</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.901</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +116,7 @@
 <span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span> <span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="co"># fit a random forest model</span></span>
-<span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu">ranger</span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.loss.html">weighted.loss</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_rf</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; RMSE:  3.351362</span></span></code></pre></div>
@@ -147,7 +148,7 @@
 <p>To visualize the main and interaction effects of the variables, apply <code><a href="reference/ggmid.html">ggmid()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> to the fitted MID model.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the main and interaction effects of the MID model</span></span>
-<span><span class="fu">grid.arrange</span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"main effect of lstat"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"dis"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -160,13 +161,13 @@
 <p><img src="reference/figures/README-ggmid-1.png" width="100%"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize all main effects</span></span>
-<span><span class="fu">grid.arrange</span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-ggmid-2.png" width="100%"></p>
 <p><code><a href="reference/mid.importance.html">mid.importance()</a></code> helps to compute and compare the importance of main and interaction effects.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the MID importance of the component functions</span></span>
 <span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
-<span><span class="fu">grid.arrange</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"highlight"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"importance of variable effects"</span><span class="op">)</span>,</span>
@@ -180,7 +181,7 @@
 <code class="sourceCode R"><span><span class="co"># visualize the MID breakdown of the model predictions</span></span>
 <span><span class="va">bd1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.breakdown.html">mid.breakdown</a></span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">train</span>, row <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="va">bd9</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.breakdown.html">mid.breakdown</a></span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">train</span>, row <span class="op">=</span> <span class="fl">9L</span><span class="op">)</span></span>
-<span><span class="fu">grid.arrange</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">bd1</span>, <span class="st">"waterfall"</span>, theme <span class="op">=</span> <span class="st">"midr"</span>, max.nterms <span class="op">=</span> <span class="fl">14L</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"breakdown of prediction 1"</span><span class="op">)</span>,</span>
@@ -193,7 +194,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the ICE curves of the MID model</span></span>
 <span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span><span class="op">)</span></span>
-<span><span class="fu">grid.arrange</span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ICE of lstat"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, <span class="st">"centered"</span>, <span class="st">"mako"</span>, var.color <span class="op">=</span> <span class="va">dis</span><span class="op">)</span> <span class="op">+</span></span>

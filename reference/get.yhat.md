@@ -97,7 +97,8 @@ return a shorter vector by omitting `NA`s, `get.yhat()` is designed to
 return a vector of the same length as `newdata`, preserving `NA`s in
 their original positions.
 
-The design of `get.yhat()` is strongly influenced by `DALEX::yhat()`.
+The design of `get.yhat()` is strongly influenced by
+[`DALEX::yhat()`](https://modeloriented.github.io/DALEX/reference/yhat.html).
 
 ## See also
 

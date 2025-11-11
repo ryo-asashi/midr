@@ -13,7 +13,8 @@ ggmid(
   object,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
-  max.nterms = 30L,
+  terms = NULL,
+  max.nterms = 30,
   ...
 )
 
@@ -37,6 +38,10 @@ autoplot(object, ...)
   a character string or object defining the color theme. See
   [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
   for details.
+
+- terms:
+
+  an optional character vector specifying which terms to display.
 
 - max.nterms:
 

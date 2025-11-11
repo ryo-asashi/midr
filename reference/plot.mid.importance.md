@@ -12,6 +12,7 @@ plot(
   x,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
+  terms = NULL,
   max.nterms = 30L,
   ...
 )
@@ -33,6 +34,10 @@ plot(
   a character string or object defining the color theme. See
   [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
   for details.
+
+- terms:
+
+  an optional character vector specifying which terms to display.
 
 - max.nterms:
 
