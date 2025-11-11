@@ -1,3 +1,8 @@
+# midr 0.5.2.901
+
+-   Enhanced plotting functions for "mid.importance" objects, allowing users to restrict which terms are displayed.
+-   Fixed a bug that occurred when a link function is used with a response variable containing `NA` values.
+
 # midr 0.5.2.900
 
 -   Updated functions to enhance consistency with the 'stats' package, especially with regard to the return value for the `stats::terms()` function.

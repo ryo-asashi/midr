@@ -15,6 +15,7 @@
 #' @param object a "mid.importance" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
+#' @param terms an optional character vector specifying which terms to display.
 #' @param max.nterms the maximum number of terms to display in the bar, dot and box plots.
 #' @param ... optional parameters passed on to the main layer.
 #'
@@ -45,15 +46,17 @@
 #'
 ggmid.mid.importance <- function(
     object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, max.nterms = 30L, ...) {
+    theme = NULL, terms = NULL, max.nterms = 30, ...) {
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
+  imp <- object$importance
+  if (!is.null(terms))
+    imp <- imp[match(terms, imp$term, nomatch = 0L), ]
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
-    imp <- object$importance
     imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(x = .data[["importance"]], y = .data[["term"]])
@@ -80,7 +83,6 @@ ggmid.mid.importance <- function(
     return(pl)
   # heatmap
   } else if (type == "heatmap") {
-    imp <- object$importance
     terms <- as.character(imp$term)
     spt <- strsplit(terms, ":")
     ftag <- sapply(spt, function(x) x[1L])

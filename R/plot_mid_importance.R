@@ -15,6 +15,7 @@
 #' @param x a "mid.importance" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
+#' @param terms an optional character vector specifying which terms to display.
 #' @param max.nterms the maximum number of terms to display in the bar, dot and box plots.
 #' @param ... optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
@@ -45,15 +46,17 @@
 #'
 plot.mid.importance <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, max.nterms = 30L, ...) {
+    theme = NULL, terms = NULL, max.nterms = 30L, ...) {
   dots <- list(...)
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
+  imp <- x$importance
+  if (!is.null(terms))
+    imp <- imp[match(terms, imp$term, nomatch = 0L), ]
   if (type == "dotchart" || type == "barplot") {
-    imp <- x$importance
     imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
@@ -73,7 +76,6 @@ plot.mid.importance <- function(
     args <- override(args, dots)
     do.call(barplot2, args)
   } else if (type == "heatmap") {
-    imp <- x$importance
     rownames(imp) <- terms <- as.character(imp$term)
     tags <- unique(term.split(terms))
     m <- length(tags)

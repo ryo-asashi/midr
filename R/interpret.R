@@ -186,6 +186,8 @@ interpret.default <- function(
     verbose(paste(length(naa.y), "NA values in 'y' are omitted"), verbosity, 3L)
     x <- x[-naa.y, , drop = FALSE]
     weights <- weights[-naa.y]
+    if (!is.null(link))
+      yres <- yres[-naa.y]
     naai$ids <- naai$ids[-naa.y]
     attr(y, "na.action") <- NULL
   }

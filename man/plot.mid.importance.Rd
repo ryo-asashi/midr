@@ -8,6 +8,7 @@
   x,
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
+  terms = NULL,
   max.nterms = 30L,
   ...
 )
@@ -18,6 +19,8 @@
 \item{type}{the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".}
 
 \item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
+
+\item{terms}{an optional character vector specifying which terms to display.}
 
 \item{max.nterms}{the maximum number of terms to display in the bar, dot and box plots.}
 

@@ -1,0 +1,5 @@
+/* pkgdown/extra.css */
+
+[data-bs-theme="dark"] .examples img {
+  filter: none !important;
+}
