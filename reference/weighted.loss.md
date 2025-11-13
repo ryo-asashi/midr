@@ -33,8 +33,8 @@ weighted.loss(x, y = NULL, w = NULL, na.rm = FALSE, method = "rmse")
 - method:
 
   the loss measure. One of "mse" (mean square error), "rmse" (root mean
-  square error), "mae" (mean absolute error), or "medae" (median
-  absolute error).
+  square error), mae" (mean absolute error), "medae" (median absolute
+  error), or "r2" (R-squared).
 
 ## Value
 
@@ -54,9 +54,7 @@ weighted.loss(x = c(0, 10), y = c(0, 0), w = c(99, 1), method = "medae")
 # Verify uninterpreted variation ratio of a fitted MID model without weights
 mid <- interpret(dist ~ speed, cars)
 #> 'model' not passed: response variable in 'data' is used
-RSS <- weighted.loss(cars$dist, predict(mid, cars), method = "mse")
-TSS <- weighted.loss(cars$dist, method = "mse")
-RSS / TSS
+1 - weighted.loss(cars$dist, predict(mid, cars), method = "r2")
 #> [1] 0.2263636
 mid$ratio
 #> [1] 0.2263636
@@ -65,9 +63,7 @@ mid$ratio
 w <- 1:nrow(cars)
 mid <- interpret(dist ~ speed, cars, weights = w)
 #> 'model' not passed: response variable in 'data' is used
-RSS <- weighted.loss(cars$dist, predict(mid, cars), w = w, method = "mse")
-TSS <- weighted.loss(cars$dist, w = w, method = "mse")
-RSS / TSS
+1 - weighted.loss(cars$dist, predict(mid, cars), w = w, method = "r2")
 #> [1] 0.2864814
 mid$ratio
 #> [1] 0.2864814

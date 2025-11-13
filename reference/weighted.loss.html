@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.902</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), "mae" (mean absolute error), or "medae" (median absolute error).</p></dd>
+<dd><p>the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), mae" (mean absolute error), "medae" (median absolute error), or "r2" (R-squared).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -101,9 +101,7 @@
 <span class="r-in"><span><span class="co"># Verify uninterpreted variation ratio of a fitted MID model without weights</span></span></span>
 <span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span>, <span class="va">cars</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
-<span class="r-in"><span><span class="va">RSS</span> <span class="op">&lt;-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"mse"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">TSS</span> <span class="op">&lt;-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, method <span class="op">=</span> <span class="st">"mse"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">RSS</span> <span class="op">/</span> <span class="va">TSS</span></span></span>
+<span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"r2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
 <span class="r-in"><span><span class="va">mid</span><span class="op">$</span><span class="va">ratio</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
@@ -112,9 +110,7 @@
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span>, <span class="va">cars</span>, weights <span class="op">=</span> <span class="va">w</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
-<span class="r-in"><span><span class="va">RSS</span> <span class="op">&lt;-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, w <span class="op">=</span> <span class="va">w</span>, method <span class="op">=</span> <span class="st">"mse"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">TSS</span> <span class="op">&lt;-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, w <span class="op">=</span> <span class="va">w</span>, method <span class="op">=</span> <span class="st">"mse"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">RSS</span> <span class="op">/</span> <span class="va">TSS</span></span></span>
+<span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, w <span class="op">=</span> <span class="va">w</span>, method <span class="op">=</span> <span class="st">"r2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2864814</span>
 <span class="r-in"><span><span class="va">mid</span><span class="op">$</span><span class="va">ratio</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2864814</span>
