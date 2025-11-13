@@ -7,7 +7,7 @@
 #' @param y an optional numeric vector. If \code{NULL}, \code{x} is compared against its weighted mean.
 #' @param w a numeric vector of sample weights for each value in \code{x}.
 #' @param na.rm logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from all input vectors before the calculation.
-#' @param method the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), "mae" (mean absolute error), or "medae" (median absolute error).
+#' @param method the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), mae" (mean absolute error), "medae" (median absolute error), or "r2" (R-squared).
 #'
 #' @examples
 #' # Calculate loss metrics between x and y with weights
@@ -17,17 +17,13 @@
 #'
 #' # Verify uninterpreted variation ratio of a fitted MID model without weights
 #' mid <- interpret(dist ~ speed, cars)
-#' RSS <- weighted.loss(cars$dist, predict(mid, cars), method = "mse")
-#' TSS <- weighted.loss(cars$dist, method = "mse")
-#' RSS / TSS
+#' 1 - weighted.loss(cars$dist, predict(mid, cars), method = "r2")
 #' mid$ratio
 #'
 #' # Verify uninterpreted variation ratio of a fitted MID model with weights
 #' w <- 1:nrow(cars)
 #' mid <- interpret(dist ~ speed, cars, weights = w)
-#' RSS <- weighted.loss(cars$dist, predict(mid, cars), w = w, method = "mse")
-#' TSS <- weighted.loss(cars$dist, w = w, method = "mse")
-#' RSS / TSS
+#' 1 - weighted.loss(cars$dist, predict(mid, cars), w = w, method = "r2")
 #' mid$ratio
 #' @returns
 #' \code{weighted.loss()} returns a single numeric value.
@@ -35,8 +31,10 @@
 #' @export weighted.loss
 #'
 weighted.loss <- function(
-    x, y = NULL, w = NULL, na.rm = FALSE, method = "rmse"
+    x, y = NULL, w = NULL, na.rm = FALSE,
+    method = c("rmse", "mse", "mae", "medae", "r2")
   ) {
+  method <- match.arg(method)
   if (na.rm) {
     ok <- !is.na(x)
     if (!is.null(w))
@@ -51,6 +49,13 @@ weighted.loss <- function(
   }
   if (!is.null(w) && length(w) != length(x))
     stop("'x' and 'w' must have the same length")
+  if (method == "r2") {
+    if (is.null(y))
+      return(0)
+    rms <- weighted.loss(x, y, w, FALSE, "mse")
+    tms <- weighted.loss(x, NULL, w, FALSE, "mse")
+    return(1 - rms / tms)
+  }
   if (is.null(y)) {
     y <- if (is.null(w)) sum(x) / length(x) else sum(x * w) / sum(w)
   } else if (length(y) != length(x)) {
@@ -71,8 +76,7 @@ weighted.loss <- function(
                                     names = FALSE, type = 1L)
     else weighted.quantile(abs(x), w, probs = 0.5, na.rm = na.rm,
                            names = FALSE, type = 1L)
-  } else
-    stop("'method' must be one of 'mse', 'rmse', 'mae', or 'medae'")
+  }
 }
 
 

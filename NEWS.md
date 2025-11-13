@@ -1,3 +1,7 @@
+# midr 0.5.2.902
+
+-   `weighted.loss()` supports the R-squared metrics by passing `method = "r2"`.
+
 # midr 0.5.2.901
 
 -   Enhanced plotting functions for "mid.importance" objects, allowing users to restrict which terms are displayed.

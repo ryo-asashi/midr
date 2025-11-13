@@ -15,7 +15,7 @@ weighted.loss(x, y = NULL, w = NULL, na.rm = FALSE, method = "rmse")
 
 \item{na.rm}{logical. If \code{TRUE}, any \code{NA} and \code{NaN}s are removed from all input vectors before the calculation.}
 
-\item{method}{the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), "mae" (mean absolute error), or "medae" (median absolute error).}
+\item{method}{the loss measure. One of "mse" (mean square error), "rmse" (root mean square error), mae" (mean absolute error), "medae" (median absolute error), or "r2" (R-squared).}
 }
 \value{
 \code{weighted.loss()} returns a single numeric value.
@@ -31,16 +31,12 @@ weighted.loss(x = c(0, 10), y = c(0, 0), w = c(99, 1), method = "medae")
 
 # Verify uninterpreted variation ratio of a fitted MID model without weights
 mid <- interpret(dist ~ speed, cars)
-RSS <- weighted.loss(cars$dist, predict(mid, cars), method = "mse")
-TSS <- weighted.loss(cars$dist, method = "mse")
-RSS / TSS
+1 - weighted.loss(cars$dist, predict(mid, cars), method = "r2")
 mid$ratio
 
 # Verify uninterpreted variation ratio of a fitted MID model with weights
 w <- 1:nrow(cars)
 mid <- interpret(dist ~ speed, cars, weights = w)
-RSS <- weighted.loss(cars$dist, predict(mid, cars), w = w, method = "mse")
-TSS <- weighted.loss(cars$dist, w = w, method = "mse")
-RSS / TSS
+1 - weighted.loss(cars$dist, predict(mid, cars), w = w, method = "r2")
 mid$ratio
 }
