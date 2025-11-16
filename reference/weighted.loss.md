@@ -7,7 +7,13 @@ mean of a numeric vector.
 ## Usage
 
 ``` r
-weighted.loss(x, y = NULL, w = NULL, na.rm = FALSE, method = "rmse")
+weighted.loss(
+  x,
+  y = NULL,
+  w = NULL,
+  na.rm = FALSE,
+  method = c("rmse", "mse", "mae", "medae", "r2")
+)
 ```
 
 ## Arguments
