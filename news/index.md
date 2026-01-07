@@ -1,5 +1,10 @@
 # Changelog
 
+## midr 0.5.2.903
+
+- [`interpret.formula()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  now supports unevaluated column names for the `weights` argument.
+
 ## midr 0.5.2.902
 
 - [`weighted.loss()`](https://ryo-asashi.github.io/midr/reference/weighted.loss.md)

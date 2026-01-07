@@ -328,15 +328,21 @@ params <- list(eta = .1, subsample = .7, max_depth = 5)
 set.seed(42)
 model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
                  params = params, verbose = 0)
+#> Warning in throw_err_or_depr_msg("Parameter(s) have been removed from this
+#> function: ", : Parameter(s) have been removed from this function: params. This
+#> warning will become an error in a future version.
+#> Warning in throw_err_or_depr_msg("Passed unrecognized parameters: ",
+#> paste(head(names_unrecognized), : Passed unrecognized parameters: verbose. This
+#> warning will become an error in a future version.
 mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = ~.^2, data = as.matrix(mtrain), model = model)
 #> 
-#> Model Class: xgb.Booster
+#> Model Class: xgboost, xgb.Booster
 #> 
-#> Intercept: 14.172
+#> Intercept: 14.307
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -344,7 +350,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.011813
+#> Uninterpreted Variation Ratio: 0.030267
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
