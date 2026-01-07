@@ -93,4 +93,8 @@ test_that("weights works", {
   r3 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X2, weights = weights)$ratio
   expect_equal(r1, r3)
   expect_false(r1 == r2)
+  # test 2
+  X2[, "wcol"] <- weights
+  r4 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X2, weights = wcol)$ratio
+  expect_equal(r1, r4)
 })

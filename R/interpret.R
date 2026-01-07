@@ -640,7 +640,6 @@ interpret.formula <- function(
   verbose("model fitting started", verbosity, 2L, TRUE)
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")
-  if (is.null(weights)) weights <- attr(data, "weights")
   use.yhat <- !is.null(model) && !is.null(pred.fun)
   ystr <- if (use.yhat) "predictions" else "response variable"
   if (use.yhat) {
@@ -660,7 +659,8 @@ interpret.formula <- function(
   args$na.action <- na.action
   args$drop.unused.levels <- drop.unused.levels
   if (use.yhat) args$.yhat <- y
-  args$weights <- weights
+  args$weights <- eval(substitute(weights), data, parent.frame())
+  if (is.null(args$weights)) args$weights <- attr(data, "weights")
   data <- do.call(stats::model.frame.default, args)
   naa <- na.action(data)
   n <- nrow(data) + length(naa)

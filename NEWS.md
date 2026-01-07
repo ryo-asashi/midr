@@ -1,3 +1,7 @@
+# midr 0.5.2.903
+
+-   `interpret.formula()` now supports unevaluated column names for the `weights` argument.
+
 # midr 0.5.2.902
 
 -   `weighted.loss()` supports the R-squared metrics by passing `method = "r2"`.
