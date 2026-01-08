@@ -273,11 +273,6 @@ following components:
   predictions and the fitted MID values, to the sum of squared
   deviations of the target model predictions.
 
-- fitted.matrix:
-
-  a matrix showing the breakdown of the predictions into the effects of
-  the component functions.
-
 - linear.predictors:
 
   a numeric vector of the linear predictors.

@@ -1,5 +1,28 @@
 # Changelog
 
+## midr 0.5.2.904
+
+- Memory-efficient
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md):
+  The model object no longer stores the massive `fitted.matrix` (the
+  term-wise decomposition of the fitted values).
+- Optimized [`predict()`](https://rdrr.io/r/stats/predict.html) engine:
+  Re-implemented the prediction logic using a matrix-free approach.
+- On-demand Decomposition: Functions like
+  [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
+  now perform term-wise decomposition on-the-fly using the new optimized
+  prediction engine.
+- [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
+  introduced a new argument `max.nkeeps` (default: 10,000). While
+  importance scores are calculated using the full dataset for maximum
+  accuracy, the function now optionally retains only a weighted random
+  sample of the term-wise predictions.
+- Standardized `predict` outputs: For `type = "terms"`, the intercept is
+  now stored in the `constant` attribute of the returned matrix,
+  aligning with standard R conventions (e.g., `predict.lm`).
+- Removed the redundant `fitted.matrix` reference in `interpret.default`
+  to prevent memory leaks during the estimation process.
+
 ## midr 0.5.2.903
 
 - [`interpret.formula()`](https://ryo-asashi.github.io/midr/reference/interpret.md)

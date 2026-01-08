@@ -161,6 +161,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              evaluation_plot(model, mid, target = "yes"))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/stats_glm-2.png)
@@ -203,6 +205,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              evaluation_plot(model, mid))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/nnet_nnet-2.png)
@@ -249,6 +253,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              evaluation_plot(model, mid, target = "yes"))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/e1071_svm-2.png)
@@ -291,6 +297,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              evaluation_plot(model, mid, target = "yes"))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/ranger_ranger-2.png)
@@ -345,6 +353,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              evaluation_plot(model, mid, target = "yes"))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/rpart_rpart-2.png)
@@ -391,6 +401,8 @@ grid.arrange(nrow = 2L,
              interaction_plot(mid),
              ice_plot(mid),
              interaction_plot(mid, "age:class"))
+#> 'data' and 'weights' are extracted from the 'object'
+#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](classification_files/figure-html/midr_interpret-2.png)

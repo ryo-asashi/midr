@@ -20,6 +20,7 @@ mid <- interpret(
 ``` r
 # compute MID based variable importance
 imp <- mid.importance(mid)
+#> 'data' and 'weights' are extracted from the 'object'
 
 # create importance plots
 par.midr(bg = "#FEFEFE")

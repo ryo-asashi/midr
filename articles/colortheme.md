@@ -220,6 +220,7 @@ grid.arrange(
 
 ``` r
 imp <- mid.importance(mid)
+#> 'data' and 'weights' are extracted from the 'object'
 grid.arrange(
   ggmid(imp, "heatmap"),
   ggmid(imp, "barplot", max = 10, theme = "mytheme@q"),

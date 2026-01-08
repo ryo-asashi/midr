@@ -90,6 +90,7 @@ idx <- sample(nrow(diamonds), 1e4)
 mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
 #> 'model' not passed: response variable in 'data' is used
 imp <- mid.importance(mid)
+#> 'data' and 'weights' are extracted from the 'object'
 
 # Create a bar plot (default)
 ggmid(imp)
