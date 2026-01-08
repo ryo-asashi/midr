@@ -126,7 +126,6 @@ interpret(object, ...)
 \item{main.effects}{a list of data frames representing the main effects.}
 \item{interacions}{a list of data frames representing the interactions.}
 \item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
-\item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 \item{linear.predictors}{a numeric vector of the linear predictors.}
 \item{fitted.values}{a numeric vector of the fitted values.}
 \item{residuals}{a numeric vector of the working residuals.}

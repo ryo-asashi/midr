@@ -1,7 +1,7 @@
 Package: midr
 Type: Package
 Title: Learning from Black-Box Models by Maximum Interpretation Decomposition
-Version: 0.5.2.903
+Version: 0.5.2.904
 Authors@R: c(
     person("Ryoichi", "Asashiba", email = "ryoichi.asashiba@gmail.com",
            role = c("aut", "cre")),

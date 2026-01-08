@@ -42,7 +42,8 @@ test_that("interpret() returns valid 'na.action'", {
   # test 3 : formula, na.exclude
   mid <- interpret(formula = y ~ x, na.action = "na.exclude")
   expect_s3_class(mid$na.action, "exclude")
-  expect_equal(predict(mid), c(1, 2, NA, 4, NA))
+  expect_equal(predict(mid, na.action = "na.exclude"),
+               c(1, 2, NA, 4, NA), ignore_attr = TRUE)
   # test 4 : default, vector x
   mid <- interpret(object = NULL, x = x, y = y)
   expect_equal(mid$na.action, c(3, 5), ignore_attr = TRUE)

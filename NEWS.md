@@ -1,3 +1,12 @@
+# midr 0.5.2.904
+
+- Memory-efficient `interpret()`: The model object no longer stores the massive `fitted.matrix` (the term-wise decomposition of the fitted values).
+- Optimized `predict()` engine: Re-implemented the prediction logic using a matrix-free approach.
+- On-demand Decomposition: Functions like `mid.importance()` now perform term-wise decomposition on-the-fly using the new optimized prediction engine.
+- `mid.importance()` introduced a new argument `max.nkeeps` (default: 10,000). While importance scores are calculated using the full dataset for maximum accuracy, the function now optionally retains only a weighted random sample of the term-wise predictions.
+- Standardized `predict` outputs: For `type = "terms"`, the intercept is now stored in the `constant` attribute of the returned matrix, aligning with standard R conventions (e.g., `predict.lm`).
+- Removed the redundant `fitted.matrix` reference in `interpret.default` to prevent memory leaks during the estimation process.
+
 # midr 0.5.2.903
 
 -   `interpret.formula()` now supports unevaluated column names for the `weights` argument.

@@ -68,7 +68,6 @@
 #' \item{main.effects}{a list of data frames representing the main effects.}
 #' \item{interacions}{a list of data frames representing the interactions.}
 #' \item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
-#' \item{fitted.matrix}{a matrix showing the breakdown of the predictions into the effects of the component functions.}
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
 #' \item{residuals}{a numeric vector of the working residuals.}
@@ -540,12 +539,10 @@ interpret.default <- function(
   beta[indices] <- 0
   verbose("least squares estimation completed", verbosity, 2L, FALSE)
   # summarize results of the decomposition --------
-  fm <- matrix(0, nrow = n, ncol = p + q)
-  colnames(fm) <- terms
   ## intercept
   if(fit.intercept)
     intercept <- beta[1L]
-  attr(fm, "constant") <- intercept
+  lp <- rep(intercept, n)
   ## main effects
   if (me) {
     ret.main.effects <- list()
@@ -555,7 +552,7 @@ interpret.default <- function(
       dat$density <- dens[indices]
       dat$mid <- beta[indices]
       ret.main.effects[[mts[i]]] <- dat
-      fm[, i] <- as.numeric(mmats[[mts[i]]] %*% dat$mid)
+      lp <- lp + as.numeric(mmats[[mts[i]]] %*% beta[indices])
     }
   }
   ## interactions
@@ -567,13 +564,15 @@ interpret.default <- function(
       vals <- expand.grid(1L:nval[1L], 1L:nval[2L])
       dat <- cbind(iencs[[pcl[1L]]]$frame[vals[, 1L], ],
                    iencs[[pcl[2L]]]$frame[vals[, 2L], ])
+      rownames(dat) <- NULL
       indices <- (fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])
       dat$density <- dens[indices]
       dat$mid <- beta[indices]
-      rownames(dat) <- NULL
       ret.interactions[[its[i]]] <- dat
-      fm[, p + i] <-
-        as.numeric(X[seq_len(n), indices, drop = FALSE] %*% gamma[indices])
+      A1 <- imats[[pcl[1L]]]
+      A2 <- imats[[pcl[2L]]]
+      W <- matrix(beta[indices], nrow = nval[1L], ncol = nval[2L])
+      lp <- lp + rowSums((A1 %*% W) * A2)
     }
   }
   # output the result --------
@@ -594,8 +593,7 @@ interpret.default <- function(
     obj$encoders[["interactions"]] <- iencs
   }
   obj$weights <- weights
-  obj$fitted.matrix <- fm
-  obj$fitted.values <- rowSums(fm) + intercept
+  obj$fitted.values <- lp
   obj$residuals <- y - obj$fitted.values
   tot <- stats::weighted.mean((y - intercept) ^ 2, weights)
   uiq <- stats::weighted.mean(obj$residuals ^ 2, weights)
@@ -603,8 +601,8 @@ interpret.default <- function(
   verbose(paste0("uninterpreted variation ratio: ", format(uir)), verbosity, 3L)
   obj$ratio <- uir
   if (!is.null(link)) {
-    obj$linear.predictors <- obj$fitted.values
-    obj$fitted.values <- link$linkinv(obj$fitted.values)
+    obj$linear.predictors <- lp
+    obj$fitted.values <- link$linkinv(lp)
     obj$response.residuals <- yres - obj$fitted.values
     mu <- stats::weighted.mean(yres, weights)
     tot <- stats::weighted.mean((yres - mu) ^ 2, weights)

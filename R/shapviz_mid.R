@@ -19,7 +19,7 @@
 shapviz.mid <- function(object, data = NULL) {
   if (missing(data))
     data <- model.data(object, env = parent.frame())
-  preds <- predict.mid(object, data, type = "term", na.action = "na.pass")
+  preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")
   xvars <- unique(term.split(colnames(preds)))
   shaps <- matrix(0, nrow = nrow(preds), ncol = length(xvars))
   colnames(shaps) <- xvars
