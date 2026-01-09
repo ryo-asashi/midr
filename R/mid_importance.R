@@ -13,7 +13,7 @@
 #' @param weights an optional numeric vector of sample weights.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by importance in descending order.
 #' @param measure an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
-#' @param max.nkeeps an integer specifying the maximum number of observations to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken. This helps to reduce memory usage and improve plotting performance.
+#' @param max.nrow an integer specifying the maximum number of observations to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -29,7 +29,7 @@
 #' @returns
 #' \code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:
 #' \item{importance}{a data frame with the calculated importance values, sorted by default.}
-#' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nkeeps}, this matrix contains a sampled subset.}
+#' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nrow}, this matrix contains a sampled subset.}
 #' \item{measure}{a character string describing the type of the importance measure used.}
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
@@ -38,16 +38,16 @@
 #'
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
-    max.nkeeps = 10000) {
+    max.nrow = 10000) {
   if (is.null(data)) {
     data <- model.data(object, env = parent.frame())
-    if (is.null(data)) {
+    if (is.null(data))
       stop("'data' must be provided")
-    } else {
+    naa <- object$na.action
+    if (!is.null(naa))
+      data <- data[-naa, , drop = FALSE]
+    if (is.null(weights))
       weights <- object$weights
-      message("'data' ", if (is.null(weights)) "is " else "and 'weights' are ",
-              "extracted from the 'object'")
-    }
   }
   preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")
   if (!is.null(weights) && diff(range(weights, na.rm = TRUE)) == 0)
@@ -64,10 +64,10 @@ mid.importance <- function(
     as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
   out <- list()
   out$importance <- df
-  if (!is.null(max.nkeeps) && max.nkeeps >= 1 && n > max.nkeeps) {
-    message("The number of predictions exceeds 'max.nkeeps': ", max.nkeeps,
-            "predictions are randomly sampled")
-    keepids <- sample(n, max.nkeeps, replace = FALSE, prob = weights)
+  if (!is.null(max.nrow) && max.nrow >= 1 && n > max.nrow) {
+    message("number of observations exceeds 'max.nrow': a sample of ",
+            max.nrow, " observations from 'data' is stored")
+    keepids <- sample(n, max.nrow, replace = FALSE, prob = weights)
     preds <- preds[keepids, , drop = FALSE]
   }
   out$predictions <- preds

@@ -89,7 +89,7 @@ color.theme <- function(
   } else if (is.character(object) && length(object) == 1L) {
     parsed <- try(parse.theme.name(object), silent = TRUE)
     if (inherits(parsed, "try-error"))
-      stop(paste0(object, " can't be parsed"))
+      stop("'", object, "' can't be parsed")
     args <- get.theme(parsed$name, ifnot.null(parsed$source, source), env)
     args <- list(theme = do.call(make.theme, args), kernel.args = kernel.args,
                  options = options, name = name, source = source, type = type,

@@ -25,8 +25,8 @@ term.check <- function(x, terms, stop = TRUE) {
     rx <- paste0(rev(term.split(x)), collapse = ":")
     if (!any(rx == terms)) {
       if (stop)
-        stop(paste0("term '", x, "' does not exist"))
-      message(paste0("term '", x, "' does not exist"))
+        stop("term '", x, "' does not exist")
+      message("term '", x, "' does not exist")
       return(NA)
     }
     return(rx)

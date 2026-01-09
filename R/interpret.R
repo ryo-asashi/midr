@@ -683,7 +683,7 @@ interpret.formula <- function(
     data[["(.yhat)"]] <- NULL
   }
   if (anyNA(y))
-    stop(paste0("NA values found in ", ystr))
+    stop("NA values found in ", ystr)
   attr(y, "na.action") <- NULL
   weights <- stats::model.weights(data)
   data[["(weights)"]] <- NULL

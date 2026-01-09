@@ -60,7 +60,7 @@ factor.encoder <- function(
     if (is.vector(frame))
       frame <- factor.frame(levels = frame, catchall = NULL)
     if (!inherits(frame, "factor.frame"))
-      stop("invalid factor.frame supplied")
+      stop("'frame' must be a vector or a valid 'factor.frame' object")
     flvs <- attr(frame, "levels")
     catchall <- attr(frame, "catchall")
     use.catchall <- !is.null(catchall)

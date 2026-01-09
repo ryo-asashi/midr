@@ -79,7 +79,7 @@ ggmid.mid <- function(
     if (is.null(data))
       data <- model.data(object, env = parent.frame())
     if (is.null(data))
-      stop(paste0("'data' must be supplied for the '", type, "' plot"))
+      stop("'data' must be supplied for the '", type, "' plot")
     preds <- predict.mid(object, data, terms = unique(c(tags, term)),
                          type = "terms", na.action = "na.pass")
     data <- model.reframe(object, data)

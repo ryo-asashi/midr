@@ -10,7 +10,7 @@ mid.importance(
   weights = NULL,
   sort = TRUE,
   measure = 1L,
-  max.nkeeps = 10000
+  max.nrow = 10000
 )
 }
 \arguments{
@@ -24,12 +24,12 @@ mid.importance(
 
 \item{measure}{an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
 
-\item{max.nkeeps}{an integer specifying the maximum number of observations to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken. This helps to reduce memory usage and improve plotting performance.}
+\item{max.nrow}{an integer specifying the maximum number of observations to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.}
 }
 \value{
 \code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:
 \item{importance}{a data frame with the calculated importance values, sorted by default.}
-\item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nkeeps}, this matrix contains a sampled subset.}
+\item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nrow}, this matrix contains a sampled subset.}
 \item{measure}{a character string describing the type of the importance measure used.}
 }
 \description{

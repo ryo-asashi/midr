@@ -37,7 +37,7 @@ mid.plots <- function(
   if (length(terms) == 0L)
     return(NULL)
   if (!is.null(max.nplots) && length(terms) > max.nplots) {
-    message("the number of terms exceeded the maximum number of plots")
+    message("number of terms exceeds 'max.nplots'")
     terms <- terms[1L:max.nplots]
   }
   true_terms <- terms

@@ -75,7 +75,7 @@ numeric.encoder <- function(
       }
     }
     if (!inherits(frame, "numeric.frame"))
-      stop(paste0("invalid numeric.frame supplied"))
+      stop("'frame' must be a numeric vector or a valid 'numeric.frame' object")
     reps <- attr(frame, "reps")
     n.rep <- length(reps)
     br <- attr(frame, "breaks")

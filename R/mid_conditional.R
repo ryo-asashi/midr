@@ -40,7 +40,7 @@ mid.conditional <- function(
   rf <- length(tf <- mid.terms(object, remove = variable))
   rv <- length(tv <- mid.terms(object, require = variable))
   if (length(variable) != 1L || rv == 0L)
-    stop("'variable' must be a character denoting a valid predictor variable of the model")
+    stop("'variable' must be a character string denoting a valid predictor variable")
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
@@ -62,7 +62,8 @@ mid.conditional <- function(
   n <- nrow(data)
   if (!is.null(max.nrow) && m * n > max.nrow) {
     max.n <- max.nrow %/% m
-    message(paste0("the number of evaluation points exceeds the limit: the data is reduced to ", max.n," observations"))
+    message("number of evaluation points exceeds 'max.nrow': a sample of ",
+    max.n," observations from 'data' is used")
     data <- data[sample(n, max.n), ]
     n <- nrow(data)
   }
