@@ -108,7 +108,7 @@ ggmid.mid.importance <- function(
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
     pl <- ggplot2::ggplot(box) + ggplot2::geom_boxplot(
-        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
+        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...
       )
     if (use.theme) {
       pl$data <- merge(box, imp, by = "term", all.x = TRUE)
