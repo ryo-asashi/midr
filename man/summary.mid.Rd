@@ -4,14 +4,12 @@
 \alias{summary.mid}
 \title{Summarize MID Models}
 \usage{
-\method{summary}{mid}(object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...)
+\method{summary}{mid}(object, digits = max(3L, getOption("digits") - 2L), ...)
 }
 \arguments{
 \item{object}{a "mid" object to be summarized.}
 
 \item{digits}{the number of significant digits for printing numeric values.}
-
-\item{top.n}{the maximum number of top-ranked terms to be printed in the MID importance table.}
 
 \item{...}{arguments to be passed to other methods (not used in this method).}
 }
@@ -30,7 +28,6 @@ Lower values suggest a better fit.
 (3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
 This aids in assessing model fit and identifying potential biases.
 (4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
-(5) "Importance" - a list of the top terms ranked by their MID importance, which quantifies their average contribution to the model's predictions.
 }
 \examples{
 # Summarize a fitted MID model

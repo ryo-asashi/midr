@@ -12,11 +12,9 @@
 #' (3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
 #' This aids in assessing model fit and identifying potential biases.
 #' (4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
-#' (5) "Importance" - a list of the top terms ranked by their MID importance, which quantifies their average contribution to the model's predictions.
 #'
 #' @param object a "mid" object to be summarized.
 #' @param digits the number of significant digits for printing numeric values.
-#' @param top.n the maximum number of top-ranked terms to be printed in the MID importance table.
 #' @param ... arguments to be passed to other methods (not used in this method).
 #'
 #' @examples
@@ -32,7 +30,7 @@
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(
-    object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...) {
+    object, digits = max(3L, getOption("digits") - 2L), ...) {
   cl <- paste0(trimws(deparse(object$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   if(use.link <- !is.null(object$link))
@@ -63,12 +61,6 @@ summary.mid <- function(
   graphics::abline(h = 0L, lty = 3L, col = "gray65")
   cat("\nEncoding:\n")
   print.data.frame(mid.encoding.scheme(object))
-  cat("\nImportance:\n")
-  imp <- utils::head(mid.importance(object)$importance, top.n)
-  imp$importance <- format(imp$importance, digits = digits)
-  if ((tot.n <- length(mid.terms(object))) - top.n > 0L)
-    cat(paste0("(Top ", top.n, " out of ", tot.n, ")\n"))
-  print.data.frame(imp)
   invisible(object)
 }
 
