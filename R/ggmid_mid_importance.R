@@ -16,7 +16,7 @@
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
-#' @param max.nterms the maximum number of terms to display in the bar, dot and box plots.
+#' @param max.nterms the maximum number of terms to display. Defaults to 30 for bar, dot and box plots.
 #' @param ... optional parameters passed on to the main layer.
 #'
 #' @examples
@@ -46,8 +46,9 @@
 #'
 ggmid.mid.importance <- function(
     object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, terms = NULL, max.nterms = 30, ...) {
+    theme = NULL, terms = NULL, max.nterms = NULL, ...) {
   type <- match.arg(type)
+  max.nterms <- ifnot.null(max.nterms, if (type == "heatmap") NULL else 30L)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
@@ -55,9 +56,9 @@ ggmid.mid.importance <- function(
   imp <- object$importance
   if (!is.null(terms))
     imp <- imp[match(terms, imp$term, nomatch = 0L), ]
+  imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
-    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(x = .data[["importance"]], y = .data[["term"]])
       ) + ggplot2::labs(y = NULL)
@@ -99,24 +100,21 @@ ggmid.mid.importance <- function(
       ggplot2::geom_tile(...)
     pl <- pl + scale_fill_theme(theme = if (use.theme) theme else "grayscale")
     return(pl)
+  # boxplot
   } else if (type == "boxplot") {
-    terms <- mid.terms(object)
-    terms <- terms[1L:min(max.nterms, length(terms), na.rm = TRUE)]
-    preds <- object$predictions[, terms]
+    terms <- as.character(imp$term)
+    preds <- object$predictions
+    preds_vec <- unlist(lapply(terms, function(term) preds[, term]))
     terms <- factor(terms, levels = rev(terms))
-    box <- data.frame(mid = as.numeric(preds),
-                         term = rep(terms, each = nrow(preds)))
-    pl <- ggplot2::ggplot(box)
+    box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
+    pl <- ggplot2::ggplot(box) + ggplot2::geom_boxplot(
+        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
+      )
     if (use.theme) {
-      imp <- object$importance$importance
-      imp <- imp[1L:min(max.nterms, length(terms), na.rm = TRUE)]
-      colors <- theme$palette(length(imp))
-      pl <- pl + ggplot2::geom_boxplot(
-        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]),
-        fill = colors, ...)
-    } else {
-      pl <- pl + ggplot2::geom_boxplot(
-        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...)
+      pl$data <- merge(box, imp, by = "term", all.x = TRUE)
+      var <- if (theme$type == "qualitative") "order" else "importance"
+      pl <- pl + ggplot2::aes(fill = .data[[var]], group = .data[["term"]]) +
+        scale_fill_theme(theme = theme)
     }
     pl <- pl + ggplot2::labs(y = NULL)
     return(pl)

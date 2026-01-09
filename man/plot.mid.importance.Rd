@@ -9,7 +9,7 @@
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
   terms = NULL,
-  max.nterms = 30L,
+  max.nterms = NULL,
   ...
 )
 }
@@ -22,7 +22,7 @@
 
 \item{terms}{an optional character vector specifying which terms to display.}
 
-\item{max.nterms}{the maximum number of terms to display in the bar, dot and box plots.}
+\item{max.nterms}{the maximum number of terms to display. Defaults to 30 for bar, dot and box plots.}
 
 \item{...}{optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
