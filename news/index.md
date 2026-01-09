@@ -1,5 +1,13 @@
 # Changelog
 
+## midr 0.5.2.905
+
+- Updated
+  [`ggmid.mid.importance()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
+  and
+  [`plot.mid.importance()`](https://ryo-asashi.github.io/midr/reference/plot.mid.importance.md)
+  to modify appearance of the plots when color themes are applied.
+
 ## midr 0.5.2.904
 
 - Memory-efficient

@@ -14,7 +14,7 @@ ggmid(
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
   terms = NULL,
-  max.nterms = 30,
+  max.nterms = NULL,
   ...
 )
 
@@ -45,7 +45,8 @@ autoplot(object, ...)
 
 - max.nterms:
 
-  the maximum number of terms to display in the bar, dot and box plots.
+  the maximum number of terms to display. Defaults to 30 for bar, dot
+  and box plots.
 
 - ...:
 
