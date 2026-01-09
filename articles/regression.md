@@ -127,7 +127,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/stats_lm-2.png)
@@ -274,7 +273,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/nnet_nnet-2.png)
@@ -316,7 +314,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/e1071_svm-2.png)
@@ -363,7 +360,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 evp <- eval_plot(model, mid, as.matrix(test[, -11]))
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), evp, nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/xgboost_xgboost-2.png)
@@ -399,7 +395,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/ranger_ranger-2.png)
@@ -449,7 +444,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/rpart_rpart-2.png)
@@ -484,7 +478,6 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ``` r
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 ```
 
 ![](regression_files/figure-html/mid_interpret-2.png)

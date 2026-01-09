@@ -219,8 +219,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/stats_lm-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/stats_lm-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
@@ -352,8 +351,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/nnet_nnet-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/nnet_nnet-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -392,8 +390,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/e1071_svm-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/e1071_svm-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -437,8 +434,7 @@ model prediction or the two predictions, respectively.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evp</span> <span class="op">&lt;-</span> <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="op">-</span><span class="fl">11</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="va">evp</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="va">evp</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/xgboost_xgboost-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
@@ -469,8 +465,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/ranger_ranger-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/ranger_ranger-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
@@ -515,8 +510,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/rpart_rpart-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/rpart_rpart-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -548,8 +542,7 @@ model prediction or the two predictions, respectively.</p>
 <p><img src="regression_files/figure-html/mid_interpret-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="fu">interaction_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">importance_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>,</span>
-<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data' and 'weights' are extracted from the 'object'</span></span></code></pre></div>
+<span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/mid_interpret-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>

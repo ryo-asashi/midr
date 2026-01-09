@@ -22,7 +22,6 @@ mid <- interpret(
 ``` r
 # compute MID based variable importance
 imp <- mid.importance(mid)
-#> 'data' and 'weights' are extracted from the 'object'
 
 # create importance plots
 ggmid(imp, theme = "Temps", max = 15) +

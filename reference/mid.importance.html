@@ -65,7 +65,7 @@ This is a measure of feature importance that quantifies the average contribution
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  measure <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  max.nkeeps <span class="op">=</span> <span class="fl">10000</span></span>
+<span>  max.nrow <span class="op">=</span> <span class="fl">10000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -93,8 +93,8 @@ This is a measure of feature importance that quantifies the average contribution
 <dd><p>an integer specifying the measure of importance. Possible alternatives are <code>1</code> for the mean absolute effect, <code>2</code> for the root mean square effect, and <code>3</code> for the median absolute effect.</p></dd>
 
 
-<dt id="arg-max-nkeeps">max.nkeeps<a class="anchor" aria-label="anchor" href="#arg-max-nkeeps"></a></dt>
-<dd><p>an integer specifying the maximum number of observations to retain in the <code>predictions</code> component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken. This helps to reduce memory usage and improve plotting performance.</p></dd>
+<dt id="arg-max-nrow">max.nrow<a class="anchor" aria-label="anchor" href="#arg-max-nrow"></a></dt>
+<dd><p>an integer specifying the maximum number of observations to retain in the <code>predictions</code> component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -104,7 +104,7 @@ This is a measure of feature importance that quantifies the average contribution
 <dd><p>a data frame with the calculated importance values, sorted by default.</p></dd>
 
 <dt>predictions</dt>
-<dd><p>the matrix of the fitted or predicted MID values. If the number of observations exceeds <code>max.nkeeps</code>, this matrix contains a sampled subset.</p></dd>
+<dd><p>the matrix of the fitted or predicted MID values. If the number of observations exceeds <code>max.nrow</code>, this matrix contains a sampled subset.</p></dd>
 
 <dt>measure</dt>
 <dd><p>a character string describing the type of the importance measure used.</p></dd>
@@ -154,30 +154,29 @@ Terms with higher importance have a larger average impact on the model's overall
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate MID importance using root mean square contribution</span></span></span>
 <span class="r-in"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu">mid.importance</span><span class="op">(</span><span class="va">mid</span>, measure <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 'data' and 'weights' are extracted from the 'object'</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MID Importance based on 153 Observations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MID Importance based on 111 Observations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Measure: Root Mean Square Contribution</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Importance:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             term importance order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   16.16385     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   14.62577     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    6.80267     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    6.17725     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.55141     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     Wind:Month    0.59102     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   Solar.R:Wind    0.58890     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       Wind:Day    0.54694     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       Temp:Day    0.53583     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Solar.R:Month    0.52604     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.45375     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.44336     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.35682     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.28964     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.23401     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   16.23314     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   14.77143     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    7.25784     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    5.69605     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.66107     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     Wind:Month    0.56396     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   Solar.R:Wind    0.55439     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Solar.R:Month    0.51836     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       Wind:Day    0.51705     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day    0.48822     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.47417     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.41892     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.32831     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.30592     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.20070     2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -13,7 +13,7 @@ mid.importance(
   weights = NULL,
   sort = TRUE,
   measure = 1L,
-  max.nkeeps = 10000
+  max.nrow = 10000
 )
 ```
 
@@ -43,12 +43,11 @@ mid.importance(
   are `1` for the mean absolute effect, `2` for the root mean square
   effect, and `3` for the median absolute effect.
 
-- max.nkeeps:
+- max.nrow:
 
   an integer specifying the maximum number of observations to retain in
   the `predictions` component of the returned object. If the number of
   observations exceeds this value, a weighted random sample is taken.
-  This helps to reduce memory usage and improve plotting performance.
 
 ## Value
 
@@ -62,7 +61,7 @@ a list containing the following components:
 - predictions:
 
   the matrix of the fitted or predicted MID values. If the number of
-  observations exceeds `max.nkeeps`, this matrix contains a sampled
+  observations exceeds `max.nrow`, this matrix contains a sampled
   subset.
 
 - measure:
@@ -117,28 +116,27 @@ print(imp)
 
 # Calculate MID importance using root mean square contribution
 imp <- mid.importance(mid, measure = 2)
-#> 'data' and 'weights' are extracted from the 'object'
 print(imp)
 #> 
-#> MID Importance based on 153 Observations
+#> MID Importance based on 111 Observations
 #> 
 #> Measure: Root Mean Square Contribution
 #> 
 #> Importance:
 #>             term importance order
-#> 1           Temp   16.16385     1
-#> 2           Wind   14.62577     1
-#> 3        Solar.R    6.80267     1
-#> 4            Day    6.17725     1
-#> 5          Month    2.55141     1
-#> 6     Wind:Month    0.59102     2
-#> 7   Solar.R:Wind    0.58890     2
-#> 8       Wind:Day    0.54694     2
-#> 9       Temp:Day    0.53583     2
-#> 10 Solar.R:Month    0.52604     2
-#> 11     Month:Day    0.45375     2
-#> 12     Wind:Temp    0.44336     2
-#> 13   Solar.R:Day    0.35682     2
-#> 14  Solar.R:Temp    0.28964     2
-#> 15    Temp:Month    0.23401     2
+#> 1           Temp   16.23314     1
+#> 2           Wind   14.77143     1
+#> 3        Solar.R    7.25784     1
+#> 4            Day    5.69605     1
+#> 5          Month    2.66107     1
+#> 6     Wind:Month    0.56396     2
+#> 7   Solar.R:Wind    0.55439     2
+#> 8  Solar.R:Month    0.51836     2
+#> 9       Wind:Day    0.51705     2
+#> 10      Temp:Day    0.48822     2
+#> 11     Month:Day    0.47417     2
+#> 12     Wind:Temp    0.41892     2
+#> 13   Solar.R:Day    0.32831     2
+#> 14  Solar.R:Temp    0.30592     2
+#> 15    Temp:Month    0.20070     2
 ```

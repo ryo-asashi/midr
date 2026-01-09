@@ -78,7 +78,6 @@ summary(mid)
 #> speed  linear(17)
 #> 
 #> Importance:
-#> 'data' and 'weights' are extracted from the 'object'
 #>    term importance order
 #> 1 speed     18.138     1
 ```
