@@ -8,7 +8,7 @@ comprehensive summary of a fitted MID model.
 
 ``` r
 # S3 method for class 'mid'
-summary(object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...)
+summary(object, digits = max(3L, getOption("digits") - 2L), ...)
 ```
 
 ## Arguments
@@ -20,11 +20,6 @@ summary(object, digits = max(3L, getOption("digits") - 2L), top.n = 10L, ...)
 - digits:
 
   the number of significant digits for printing numeric values.
-
-- top.n:
-
-  the maximum number of top-ranked terms to be printed in the MID
-  importance table.
 
 - ...:
 
@@ -44,9 +39,7 @@ model's variance that is not explained by the MID model. Lower values
 suggest a better fit. (3) "Residuals" - a five-number summary (Min, 1Q,
 Median, 3Q, Max) of the working residuals. This aids in assessing model
 fit and identifying potential biases. (4) "Encoding" - a summary of the
-encoding schemes used for each variable in the MID model. (5)
-"Importance" - a list of the top terms ranked by their MID importance,
-which quantifies their average contribution to the model's predictions.
+encoding schemes used for each variable in the MID model.
 
 ## See also
 
@@ -76,8 +69,4 @@ summary(mid)
 #> Encoding:
 #>       main.effect
 #> speed  linear(17)
-#> 
-#> Importance:
-#>    term importance order
-#> 1 speed     18.138     1
 ```
