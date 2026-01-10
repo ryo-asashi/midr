@@ -4,14 +4,21 @@
 \alias{summary.mid}
 \title{Summarize MID Models}
 \usage{
-\method{summary}{mid}(object, digits = max(3L, getOption("digits") - 2L), ...)
+\method{summary}{mid}(
+  object,
+  diagnosis = FALSE,
+  digits = max(3L, getOption("digits") - 2L),
+  ...
+)
 }
 \arguments{
 \item{object}{a "mid" object to be summarized.}
 
+\item{diagnosis}{logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.}
+
 \item{digits}{the number of significant digits for printing numeric values.}
 
-\item{...}{arguments to be passed to other methods (not used in this method).}
+\item{...}{arguments to be passed to \code{graphics::panel.smooth()} for the diagnosis plot.}
 }
 \value{
 \code{summary.mid()} returns the original "mid" object invisibly.
@@ -21,13 +28,15 @@ For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summa
 }
 \details{
 The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
-The output includes the following components:
-(1) "Call" - the function call used to fit the MID model.
-(2) "Uninterpreted Variation Ratio" - a key metric indicating the proportion of the target model's variance that is not explained by the MID model.
-Lower values suggest a better fit.
-(3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
-This aids in assessing model fit and identifying potential biases.
-(4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
+The output includes:
+\itemize{
+  \item \strong{Call}: the function call used to fit the MID model.
+  \item \strong{Link}: name of the link function used to fit the MID model, if applicable.
+  \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
+  \item \strong{Residuals}: five-number summary of (working) residuals.
+  \item \strong{Encoding}: summary of encoding schemes per variable.
+  \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnosis = TRUE}).
+}
 }
 \examples{
 # Summarize a fitted MID model

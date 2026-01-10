@@ -5,17 +5,20 @@
 #'
 #' @details
 #' The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
-#' The output includes the following components:
-#' (1) "Call" - the function call used to fit the MID model.
-#' (2) "Uninterpreted Variation Ratio" - a key metric indicating the proportion of the target model's variance that is not explained by the MID model.
-#' Lower values suggest a better fit.
-#' (3) "Residuals" - a five-number summary (Min, 1Q, Median, 3Q, Max) of the working residuals.
-#' This aids in assessing model fit and identifying potential biases.
-#' (4) "Encoding" - a summary of the encoding schemes used for each variable in the MID model.
+#' The output includes:
+#' \itemize{
+#'   \item \strong{Call}: the function call used to fit the MID model.
+#'   \item \strong{Link}: name of the link function used to fit the MID model, if applicable.
+#'   \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
+#'   \item \strong{Residuals}: five-number summary of (working) residuals.
+#'   \item \strong{Encoding}: summary of encoding schemes per variable.
+#'   \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnosis = TRUE}).
+#' }
 #'
 #' @param object a "mid" object to be summarized.
+#' @param diagnosis logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.
 #' @param digits the number of significant digits for printing numeric values.
-#' @param ... arguments to be passed to other methods (not used in this method).
+#' @param ... arguments to be passed to \code{graphics::panel.smooth()} for the diagnosis plot.
 #'
 #' @examples
 #' # Summarize a fitted MID model
@@ -30,37 +33,47 @@
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(
-    object, digits = max(3L, getOption("digits") - 2L), ...) {
+    object, diagnosis = FALSE, digits = max(3L, getOption("digits") - 2L), ...
+  ) {
+  use.link <- !is.null(object$link)
+  rsd <- object$residuals
+  # call
   cl <- paste0(trimws(deparse(object$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
-  if(use.link <- !is.null(object$link))
+  # link
+  if(use.link)
     cat(paste0("\nLink: ", object$link$name, "\n", collapse = ""))
+  # ratio
   cat(paste0("\nUninterpreted Variation Ratio:\n"))
   print.default(object$ratio, digits = digits)
-  rsd <- object$residuals
-  yhat <- if (use.link) {
-    object$linear.predictors
-  } else {
-    object$fitted.values
-  }
+  # residuals
   cat(paste0("\n", if (use.link) "Working ", "Residuals:\n"))
   if (length(rsd) > 5L) {
     nam <- c("Min", "1Q", "Median", "3Q", "Max")
     rq <- structure(zapsmall(stats::quantile(rsd), digits + 1L), names = nam)
-    print(rq, digits = digits, ...)
+    print(rq, digits = digits)
   } else {
-    print(rsd, digits = digits, ...)
+    print(rsd, digits = digits)
   }
-  graphics::plot.default(
-    yhat, rsd,
-    xlab = ifelse(use.link, "Linear Predictors", "Fitted Values"),
-    ylab = paste0(if (use.link) "Working ", "Residuals"),
-    main = "Residuals vs Fitted Values", font.main = 1L, type = "n"
-  )
-  graphics::panel.smooth(yhat, rsd, iter = 3L)
-  graphics::abline(h = 0L, lty = 3L, col = "gray65")
+  # encoding
   cat("\nEncoding:\n")
   print.data.frame(mid.encoding.scheme(object))
+  # diagnosis
+  if (diagnosis) {
+    yhat <- if (use.link) object$linear.predictors else object$fitted.values
+    graphics::plot.default(
+      yhat, rsd,
+      xlab = ifelse(use.link, "Linear Predictors", "Fitted Values"),
+      ylab = paste0(if (use.link) "Working ", "Residuals"),
+      main = "Residuals vs Fitted Values", font.main = 1L, type = "n"
+    )
+    args <- list(...)
+    args$x <- yhat
+    args$y <- rsd
+    args$iter <- ifnot.null(args$iter, 3L)
+    do.call(graphics::panel.smooth, args)
+    graphics::abline(h = 0L, lty = 3L, col = "gray65")
+  }
   invisible(object)
 }
 
