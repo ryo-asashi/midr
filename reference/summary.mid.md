@@ -8,7 +8,12 @@ comprehensive summary of a fitted MID model.
 
 ``` r
 # S3 method for class 'mid'
-summary(object, digits = max(3L, getOption("digits") - 2L), ...)
+summary(
+  object,
+  diagnosis = FALSE,
+  digits = max(3L, getOption("digits") - 2L),
+  ...
+)
 ```
 
 ## Arguments
@@ -17,13 +22,20 @@ summary(object, digits = max(3L, getOption("digits") - 2L), ...)
 
   a "mid" object to be summarized.
 
+- diagnosis:
+
+  logical. If `TRUE`, the diagnosis plot is displayed. Defaults to
+  `FALSE`.
+
 - digits:
 
   the number of significant digits for printing numeric values.
 
 - ...:
 
-  arguments to be passed to other methods (not used in this method).
+  arguments to be passed to
+  [`graphics::panel.smooth()`](https://rdrr.io/r/graphics/panel.smooth.html)
+  for the diagnosis plot.
 
 ## Value
 
@@ -32,14 +44,22 @@ summary(object, digits = max(3L, getOption("digits") - 2L), ...)
 ## Details
 
 The S3 method `summary.mid()` generates a comprehensive overview of the
-fitted MID model. The output includes the following components: (1)
-"Call" - the function call used to fit the MID model. (2) "Uninterpreted
-Variation Ratio" - a key metric indicating the proportion of the target
-model's variance that is not explained by the MID model. Lower values
-suggest a better fit. (3) "Residuals" - a five-number summary (Min, 1Q,
-Median, 3Q, Max) of the working residuals. This aids in assessing model
-fit and identifying potential biases. (4) "Encoding" - a summary of the
-encoding schemes used for each variable in the MID model.
+fitted MID model. The output includes:
+
+- **Call**: the function call used to fit the MID model.
+
+- **Link**: name of the link function used to fit the MID model, if
+  applicable.
+
+- **Uninterpreted Variation Ratio**: proportion of target model variance
+  not explained by MID model.
+
+- **Residuals**: five-number summary of (working) residuals.
+
+- **Encoding**: summary of encoding schemes per variable.
+
+- **Diagnosis**: residuals vs fitted values plot (displayed only when
+  `diagnosis = TRUE`).
 
 ## See also
 
@@ -64,7 +84,6 @@ summary(mid)
 #> Residuals:
 #>       Min        1Q    Median        3Q       Max 
 #> -24.50000  -8.06250  -0.33333   8.37500  29.50000 
-
 #> 
 #> Encoding:
 #>       main.effect
