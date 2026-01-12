@@ -4,13 +4,7 @@
 \alias{mid.breakdown}
 \title{Calculate MID Breakdowns}
 \usage{
-mid.breakdown(
-  object,
-  data = NULL,
-  row = NULL,
-  sort = TRUE,
-  format = c("\%s", "\%s, \%s")
-)
+mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -21,7 +15,7 @@ mid.breakdown(
 
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.}
 
-\item{format}{a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.}
+\item{format}{an optional named list/vector of character strings. The names should correspond to term names in the model, and the values are format strings passed to \code{sprintf()} to format the feature values (e.g., \code{x1 = "\%.2f"}). If a term is not specified, \code{"\%s"} is used by default for main effects and \code{"\%s, \%s"} for interactions.}
 }
 \value{
 \code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:

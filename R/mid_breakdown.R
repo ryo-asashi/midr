@@ -22,7 +22,7 @@
 #' @param data a data frame containing one or more observations for which to calculate the MID breakdown. If not provided, data is automatically extracted based on the function call.
 #' @param row an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.
-#' @param format a character vector of length two to be used as a format string for \code{sprintf()} to display the values of main effects and interactions, respectively.
+#' @param format an optional named list/vector of character strings. The names should correspond to term names in the model, and the values are format strings passed to \code{sprintf()} to format the feature values (e.g., \code{x1 = "\%.2f"}). If a term is not specified, \code{"\%s"} is used by default for main effects and \code{"\%s, \%s"} for interactions.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -47,7 +47,7 @@
 #' @export mid.breakdown
 #'
 mid.breakdown <- function(
-    object, data = NULL, row = NULL, sort = TRUE, format = c("%s", "%s, %s")) {
+    object, data = NULL, row = NULL, sort = TRUE, format = list()) {
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
@@ -67,16 +67,20 @@ mid.breakdown <- function(
   m <- length(terms)
   orders <- as.factor(sapply(strsplit(terms, split = ":"), length))
   values <- character(m)
+  if (!is.list(format))
+    format <- as.list(format)
   for (i in seq_len(m)) {
     term <- terms[i]
     tags <- term.split(term)
     if (length(tags) == 1L) {
+      fmt <- ifnot.null(format[[term]], "%s")
       u <- data[1L, tags[1L]]
-      values[i] <- sprintf(format[1L], u)
+      values[i] <- sprintf(fmt, u)
     } else {
+      fmt <- ifnot.null(format[[term]], "%s, %s")
       u <- data[1L, tags[1L]]
       v <- data[1L, tags[2L]]
-      values[i] <- sprintf(format[2L], u, v)
+      values[i] <- sprintf(fmt, u, v)
     }
   }
   df <- data.frame(term = factor(terms, levels = rev(terms)),

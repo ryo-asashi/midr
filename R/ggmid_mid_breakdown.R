@@ -57,16 +57,18 @@ ggmid.mid.breakdown <- function(
   bd <- object$breakdown
   bd$term <- as.character(bd$term)
   if (any(!grepl("%t", format) & !grepl("%v", format)))
-    stop("all format strings must contain at least one of '%t' and '%v'")
+    stop("all format strings must contain at least one of '%t' or '%v'")
   if (length(format) == 1L)
     format <- c(format, format)
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
-    resid <- sum(bd[-rowid, "mid"])
+    resid <- bd[-rowid, "mid"]
     bd <- bd[rowid, ]
-    bd[nrow(bd) + 1L, "mid"] <- resid
-    use.catchall <- TRUE
+    if (length(resid) > 0L) {
+      bd[nrow(bd) + 1L, "mid"] <- sum(resid)
+      use.catchall <- TRUE
+    }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
   if (nmax < nrow(bd)) {

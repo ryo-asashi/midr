@@ -63,10 +63,12 @@ plot.mid.breakdown <- function(
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
-    resid <- sum(bd[-rowid, "mid"])
+    resid <- bd[-rowid, "mid"]
     bd <- bd[rowid, ]
-    bd[nrow(bd) + 1L, "mid"] <- resid
-    use.catchall <- TRUE
+    if (length(resid) > 0L) {
+      bd[nrow(bd) + 1L, "mid"] <- sum(resid)
+      use.catchall <- TRUE
+    }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
   if (nmax < nrow(bd)) {
