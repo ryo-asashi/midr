@@ -8,13 +8,7 @@ interactions.
 ## Usage
 
 ``` r
-mid.breakdown(
-  object,
-  data = NULL,
-  row = NULL,
-  sort = TRUE,
-  format = c("%s", "%s, %s")
-)
+mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
 ```
 
 ## Arguments
@@ -42,9 +36,12 @@ mid.breakdown(
 
 - format:
 
-  a character vector of length two to be used as a format string for
-  [`sprintf()`](https://rdrr.io/r/base/sprintf.html) to display the
-  values of main effects and interactions, respectively.
+  an optional named list/vector of character strings. The names should
+  correspond to term names in the model, and the values are format
+  strings passed to [`sprintf()`](https://rdrr.io/r/base/sprintf.html)
+  to format the feature values (e.g., `x1 = "%.2f"`). If a term is not
+  specified, `"%s"` is used by default for main effects and `"%s, %s"`
+  for interactions.
 
 ## Value
 
