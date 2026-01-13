@@ -1,5 +1,23 @@
 # Changelog
 
+## midr 0.5.2.906
+
+- The `format` argument in
+  [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
+  is deprecated.
+- [`plot.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
+  and
+  [`ggmid.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
+  now have a new argument `format.args`, which is passed to
+  [`base::format()`](https://rdrr.io/r/base/format.html) to format the
+  predictor values stored in “mid.breakdown” objects.
+- The `format` argument in
+  [`plot.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
+  and
+  [`ggmid.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
+  is renamed to `label.format`. The formatting strings now support more
+  flexible formats, such as “%t=%v, %t=%v” for interactions.
+
 ## midr 0.5.2.905
 
 - Updated

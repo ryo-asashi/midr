@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.905</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.906</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +76,9 @@ img {
 <span>  max.nterms <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>  width <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  vline <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  catchall <span class="op">=</span> <span class="st">"others"</span>,</span>
-<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"%t=%v"</span>, <span class="st">"%t"</span><span class="op">)</span>,</span>
+<span>  catchall <span class="op">=</span> <span class="st">"(others)"</span>,</span>
+<span>  label.format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"%t=%v"</span>, <span class="st">"%t:%t"</span><span class="op">)</span>,</span>
+<span>  format.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -118,8 +119,12 @@ img {
 <dd><p>a character string for the catchall label.</p></dd>
 
 
-<dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
-<dd><p>a character string or character vector of length two to be used as the format of the axis labels. Use "%t" for the term name (e.g., "carat") and "%v" for the values (e.g., "0.23").</p></dd>
+<dt id="arg-label-format">label.format<a class="anchor" aria-label="anchor" href="#arg-label-format"></a></dt>
+<dd><p>a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default <code>"%t = %v"</code>), and the second is for interactions (default <code>"%t:%t"</code>). Use <code>"%t"</code> for the term name and <code>"%v"</code> for its value.</p></dd>
+
+
+<dt id="arg-format-args">format.args<a class="anchor" aria-label="anchor" href="#arg-format-args"></a></dt>
+<dd><p>a named list of additional arguments passed to <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></code> for formatting the values. Common arguments include <code>digits</code>, <code>nsmall</code>, and <code>big.mark</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

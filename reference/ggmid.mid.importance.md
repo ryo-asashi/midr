@@ -14,7 +14,7 @@ ggmid(
   type = c("barplot", "dotchart", "heatmap", "boxplot"),
   theme = NULL,
   terms = NULL,
-  max.nterms = NULL,
+  max.nterms = 30L,
   ...
 )
 

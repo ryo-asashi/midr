@@ -8,7 +8,7 @@ interactions.
 ## Usage
 
 ``` r
-mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
+mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 ```
 
 ## Arguments
@@ -33,15 +33,6 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
 
   logical. If `TRUE`, the output data frame is sorted by the absolute
   contribution of each effect.
-
-- format:
-
-  an optional named list/vector of character strings. The names should
-  correspond to term names in the model, and the values are format
-  strings passed to [`sprintf()`](https://rdrr.io/r/base/sprintf.html)
-  to format the feature values (e.g., `x1 = "%.2f"`). If a term is not
-  specified, `"%s"` is used by default for main effects and `"%s, %s"`
-  for interactions.
 
 ## Value
 
@@ -107,22 +98,22 @@ print(mbd)
 #> Prediction: 39.739
 #> 
 #> Breakdown of Effects:
-#>             term    value         mid order
-#> 1           Temp       67 -1.5043e+01     1
-#> 2            Day        1  4.9770e+00     1
-#> 3          Month        5  3.7575e+00     1
-#> 4     Wind:Month   7.4, 5  2.0404e+00     2
-#> 5       Temp:Day    67, 1  1.3885e+00     2
-#> 6  Solar.R:Month   190, 5  1.3124e+00     2
-#> 7           Wind      7.4  1.0227e+00     1
-#> 8        Solar.R      190 -9.4228e-01     1
-#> 9      Wind:Temp  7.4, 67 -6.2914e-01     2
-#> 10  Solar.R:Temp  190, 67 -5.6533e-01     2
-#> 11     Month:Day     5, 1  5.0500e-01     2
-#> 12   Solar.R:Day   190, 1 -2.4755e-01     2
-#> 13      Wind:Day   7.4, 1  4.2771e-02     2
-#> 14    Temp:Month    67, 5  2.0660e-02     2
-#> 15  Solar.R:Wind 190, 7.4 -3.4803e-04     2
+#>             term         mid order
+#> 1           Temp -1.5043e+01     1
+#> 2            Day  4.9770e+00     1
+#> 3          Month  3.7575e+00     1
+#> 4     Wind:Month  2.0404e+00     2
+#> 5       Temp:Day  1.3885e+00     2
+#> 6  Solar.R:Month  1.3124e+00     2
+#> 7           Wind  1.0227e+00     1
+#> 8        Solar.R -9.4228e-01     1
+#> 9      Wind:Temp -6.2914e-01     2
+#> 10  Solar.R:Temp -5.6533e-01     2
+#> 11     Month:Day  5.0500e-01     2
+#> 12   Solar.R:Day -2.4755e-01     2
+#> 13      Wind:Day  4.2771e-02     2
+#> 14    Temp:Month  2.0660e-02     2
+#> 15  Solar.R:Wind -3.4803e-04     2
 
 # Calculate the breakdown for the third observation in the data
 mbd <- mid.breakdown(mid, data = airquality, row = 3)
@@ -135,20 +126,20 @@ print(mbd)
 #> Prediction: 9.9693
 #> 
 #> Breakdown of Effects:
-#>             term     value        mid order
-#> 1           Temp        74 -16.686548     1
-#> 2            Day         3 -11.078821     1
-#> 3           Wind      12.6  -9.263680     1
-#> 4          Month         5   3.757459     1
-#> 5  Solar.R:Month    149, 5   0.702906     2
-#> 6       Wind:Day   12.6, 3   0.501892     2
-#> 7     Wind:Month   12.6, 5  -0.461498     2
-#> 8   Solar.R:Wind 149, 12.6   0.321963     2
-#> 9      Month:Day      5, 3   0.180867     2
-#> 10      Temp:Day     74, 3   0.120489     2
-#> 11   Solar.R:Day    149, 3  -0.069100     2
-#> 12    Temp:Month     74, 5  -0.068488     2
-#> 13       Solar.R       149  -0.034390     1
-#> 14     Wind:Temp  12.6, 74  -0.030288     2
-#> 15  Solar.R:Temp   149, 74  -0.022524     2
+#>             term        mid order
+#> 1           Temp -16.686548     1
+#> 2            Day -11.078821     1
+#> 3           Wind  -9.263680     1
+#> 4          Month   3.757459     1
+#> 5  Solar.R:Month   0.702906     2
+#> 6       Wind:Day   0.501892     2
+#> 7     Wind:Month  -0.461498     2
+#> 8   Solar.R:Wind   0.321963     2
+#> 9      Month:Day   0.180867     2
+#> 10      Temp:Day   0.120489     2
+#> 11   Solar.R:Day  -0.069100     2
+#> 12    Temp:Month  -0.068488     2
+#> 13       Solar.R  -0.034390     1
+#> 14     Wind:Temp  -0.030288     2
+#> 15  Solar.R:Temp  -0.022524     2
 ```

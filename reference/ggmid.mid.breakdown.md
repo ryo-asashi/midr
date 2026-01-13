@@ -16,8 +16,9 @@ ggmid(
   max.nterms = 15L,
   width = NULL,
   vline = TRUE,
-  catchall = "others",
-  format = c("%t=%v", "%t"),
+  catchall = "(others)",
+  label.format = c("%t=%v", "%t:%t"),
+  format.args = list(),
   ...
 )
 
@@ -63,11 +64,18 @@ autoplot(object, ...)
 
   a character string for the catchall label.
 
-- format:
+- label.format:
 
-  a character string or character vector of length two to be used as the
-  format of the axis labels. Use "%t" for the term name (e.g., "Wind")
-  and "%v" for the values (e.g., "30").
+  a character vector of length one or two specifying the format of the
+  axis labels. The first element is used for main effects (default
+  `"%t = %v"`), and the second is for interactions (default `"%t:%t"`).
+  Use `"%t"` for the term name and `"%v"` for its value.
+
+- format.args:
+
+  a named list of additional arguments passed to
+  [`format`](https://rdrr.io/r/base/format.html) for formatting the
+  values. Common arguments include `digits`, `nsmall`, and `big.mark`.
 
 - ...:
 

@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.905</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.906</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ It breaks down the total prediction into the effects of the intercept, main effe
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mid.breakdown</span><span class="op">(</span><span class="va">object</span>, data <span class="op">=</span> <span class="cn">NULL</span>, row <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">TRUE</span>, format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mid.breakdown</span><span class="op">(</span><span class="va">object</span>, data <span class="op">=</span> <span class="cn">NULL</span>, row <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -91,10 +91,6 @@ It breaks down the total prediction into the effects of the intercept, main effe
 
 <dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the output data frame is sorted by the absolute contribution of each effect.</p></dd>
-
-
-<dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
-<dd><p>an optional named list/vector of character strings. The names should correspond to term names in the model, and the values are format strings passed to <code><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf()</a></code> to format the feature values (e.g., <code>x1 = "%.2f"</code>). If a term is not specified, <code>"%s"</code> is used by default for main effects and <code>"%s, %s"</code> for interactions.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -148,22 +144,22 @@ and easy to understand.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 39.739</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             term    value         mid order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp       67 -1.5043e+01     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day        1  4.9770e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          Month        5  3.7575e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     Wind:Month   7.4, 5  2.0404e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       Temp:Day    67, 1  1.3885e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Solar.R:Month   190, 5  1.3124e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7           Wind      7.4  1.0227e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        Solar.R      190 -9.4228e-01     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Wind:Temp  7.4, 67 -6.2914e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  Solar.R:Temp  190, 67 -5.6533e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day     5, 1  5.0500e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Solar.R:Day   190, 1 -2.4755e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      Wind:Day   7.4, 1  4.2771e-02     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    Temp:Month    67, 5  2.0660e-02     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Wind 190, 7.4 -3.4803e-04     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             term         mid order</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp -1.5043e+01     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day  4.9770e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          Month  3.7575e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     Wind:Month  2.0404e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       Temp:Day  1.3885e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Solar.R:Month  1.3124e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           Wind  1.0227e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        Solar.R -9.4228e-01     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Wind:Temp -6.2914e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  Solar.R:Temp -5.6533e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day  5.0500e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Solar.R:Day -2.4755e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      Wind:Day  4.2771e-02     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14    Temp:Month  2.0660e-02     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Wind -3.4803e-04     2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate the breakdown for the third observation in the data</span></span></span>
 <span class="r-in"><span><span class="va">mbd</span> <span class="op">&lt;-</span> <span class="fu">mid.breakdown</span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">airquality</span>, row <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
@@ -176,22 +172,22 @@ and easy to understand.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 9.9693</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             term     value        mid order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp        74 -16.686548     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day         3 -11.078821     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3           Wind      12.6  -9.263680     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          Month         5   3.757459     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Solar.R:Month    149, 5   0.702906     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       Wind:Day   12.6, 3   0.501892     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Wind:Month   12.6, 5  -0.461498     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   Solar.R:Wind 149, 12.6   0.321963     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Month:Day      5, 3   0.180867     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day     74, 3   0.120489     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Solar.R:Day    149, 3  -0.069100     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    Temp:Month     74, 5  -0.068488     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       Solar.R       149  -0.034390     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     Wind:Temp  12.6, 74  -0.030288     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Temp   149, 74  -0.022524     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             term        mid order</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp -16.686548     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day -11.078821     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           Wind  -9.263680     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          Month   3.757459     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Solar.R:Month   0.702906     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       Wind:Day   0.501892     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Wind:Month  -0.461498     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   Solar.R:Wind   0.321963     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Month:Day   0.180867     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day   0.120489     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Solar.R:Day  -0.069100     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    Temp:Month  -0.068488     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       Solar.R  -0.034390     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     Wind:Temp  -0.030288     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Temp  -0.022524     2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
