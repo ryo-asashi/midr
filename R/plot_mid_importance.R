@@ -46,10 +46,9 @@
 #'
 plot.mid.importance <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, terms = NULL, max.nterms = NULL, ...) {
+    theme = NULL, terms = NULL, max.nterms = 30L, ...) {
   dots <- list(...)
   type <- match.arg(type)
-  max.nterms <- ifnot.null(max.nterms, if (type == "heatmap") NULL else 30L)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
@@ -57,7 +56,8 @@ plot.mid.importance <- function(
   imp <- x$importance
   if (!is.null(terms))
     imp <- imp[match(terms, imp$term, nomatch = 0L), ]
-  imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
+  if (type != "heatmap")
+    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     cols <- if (use.theme) {

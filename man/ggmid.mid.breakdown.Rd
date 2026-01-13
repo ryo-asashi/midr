@@ -13,8 +13,9 @@
   max.nterms = 15L,
   width = NULL,
   vline = TRUE,
-  catchall = "others",
-  format = c("\%t=\%v", "\%t"),
+  catchall = "(others)",
+  label.format = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
   ...
 )
 
@@ -37,7 +38,9 @@
 
 \item{catchall}{a character string for the catchall label.}
 
-\item{format}{a character string or character vector of length two to be used as the format of the axis labels. Use "\%t" for the term name (e.g., "Wind") and "\%v" for the values (e.g., "30").}
+\item{label.format}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+
+\item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
 
 \item{...}{optional parameters passed on to the main layer.}
 }

@@ -19,7 +19,8 @@
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param catchall a character string for the catchall label.
-#' @param format a character string or character vector of length two to be used as the format of the axis labels. Use "\%t" for the term name (e.g., "carat") and "\%v" for the values (e.g., "0.23").
+#' @param label.format a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param ... optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -47,7 +48,8 @@
 plot.mid.breakdown <- function(
     x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    catchall = "others", format = c("%t=%v", "%t"), ...) {
+    catchall = "(others)", label.format = c("%t=%v", "%t:%t"),
+    format.args = list(), ...) {
   dots <- list(...)
   type <- match.arg(type)
   if (missing(theme))
@@ -56,10 +58,6 @@ plot.mid.breakdown <- function(
   use.theme <- inherits(theme, "color.theme")
   bd <- x$breakdown
   bd$term <- as.character(bd$term)
-  if (any(!grepl("%t", format) & !grepl("%v", format)))
-    stop("all format strings must contain at least one of '%t' or '%v'")
-  if (length(format) == 1L)
-    format <- c(format, format)
   use.catchall <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
@@ -77,11 +75,22 @@ plot.mid.breakdown <- function(
     bd[nmax, "mid"] <- resid
     use.catchall <- TRUE
   }
+  # update labels
+  format.args$x <- as.data.frame(x$data)
+  values <- unlist(do.call(base::format, format.args))
   for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
     term <- bd[i, "term"]
-    fmt <- if (grepl(":", term)) format[2L] else format[1L]
-    bd[i, "term"] <-
-      gsub("%v", bd[i, "value"], gsub("%t", bd[i, "term"], fmt))
+    tags <- term.split(term)
+    vals <- values[tags]
+    if (length(tags) == 1L) {
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[1L]))
+    } else {
+      if (length(label.format) == 1L)
+        label.format <- c(label.format, "%t:%t")
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[2L]))
+      label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
+    }
+    bd[i, "term"] <- label
   }
   if (use.catchall)
     bd[nrow(bd), "term"] <- catchall

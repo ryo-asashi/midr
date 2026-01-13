@@ -4,7 +4,7 @@
 \alias{mid.breakdown}
 \title{Calculate MID Breakdowns}
 \usage{
-mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
+mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 }
 \arguments{
 \item{object}{a "mid" object.}
@@ -14,8 +14,6 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE, format = list())
 \item{row}{an optional numeric value or character string specifying the row of \code{data} to be used for the breakdown. If \code{NULL}, and the \code{data} contains two or more observations, only the first observation is used.}
 
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.}
-
-\item{format}{an optional named list/vector of character strings. The names should correspond to term names in the model, and the values are format strings passed to \code{sprintf()} to format the feature values (e.g., \code{x1 = "\%.2f"}). If a term is not specified, \code{"\%s"} is used by default for main effects and \code{"\%s, \%s"} for interactions.}
 }
 \value{
 \code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:
