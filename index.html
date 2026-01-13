@@ -96,7 +96,7 @@ img {
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The goal of ‘midr’ is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements ‘Maximum Interpretation Decomposition’ (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2025) [Forthcoming], and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
+<p>The goal of ‘midr’ is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements ‘Maximum Interpretation Decomposition’ (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2026) [Forthcoming], and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -138,7 +138,7 @@ img {
 <span><span class="va">mid</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = yhat ~ .^2, data = train, model = rf, lambda = 0.1)</span></span>
+<span><span class="co">#&gt; interpret(formula = medv ~ .^2, data = train, model = rf, lambda = 0.1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: ranger</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -220,7 +220,7 @@ img {
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>[1] Iwasawa, H. &amp; Matsumori, Y. (2025). “A Functional Decomposition Approach to Maximize the Interpretability of Black-Box Models”. [Forthcoming]</p>
+<p>[1] Iwasawa, H. &amp; Matsumori, Y. (2026). “A Functional Decomposition Approach to Maximize the Interpretability of Black-Box Models”. [Forthcoming]</p>
 <p>[2] Asashiba, R., Kozuma, R. &amp; Iwasawa, H. (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition”. <a href="https://arxiv.org/abs/2506.08338" class="external-link uri">https://arxiv.org/abs/2506.08338</a></p>
 <p>[3] Goldstein, A., Kapelner, A., Bleich, J., &amp; Pitkin, E. (2015). “Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation”. <em>Journal of Computational and Graphical Statistics</em>, <em>24</em>(1), 44–65. <a href="https://doi.org/10.1080/10618600.2014.907095" class="external-link uri">https://doi.org/10.1080/10618600.2014.907095</a></p>
 </div>

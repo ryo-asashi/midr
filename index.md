@@ -8,7 +8,7 @@ technique that finds an optimal additive approximation of the original
 model. This approximation is achieved by minimizing the squared error
 between the predictions of the black-box model and the surrogate model.
 The theoretical foundations of MID are described in Iwasawa & Matsumori
-(2025) \[Forthcoming\], and the package itself is detailed in [Asashiba
+(2026) \[Forthcoming\], and the package itself is detailed in [Asashiba
 et al. (2025)](https://arxiv.org/abs/2506.08338).
 
 ## Installation
@@ -64,7 +64,7 @@ mid <- interpret(medv ~ .^2, train, rf, lambda = .1)
 mid
 #> 
 #> Call:
-#> interpret(formula = yhat ~ .^2, data = train, model = rf, lambda = 0.1)
+#> interpret(formula = medv ~ .^2, data = train, model = rf, lambda = 0.1)
 #> 
 #> Model Class: ranger
 #> 
@@ -176,7 +176,7 @@ grid.arrange(
 
 ## References
 
-\[1\] Iwasawa, H. & Matsumori, Y. (2025). “A Functional Decomposition
+\[1\] Iwasawa, H. & Matsumori, Y. (2026). “A Functional Decomposition
 Approach to Maximize the Interpretability of Black-Box Models”.
 \[Forthcoming\]
 
