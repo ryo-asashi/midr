@@ -104,7 +104,7 @@ UseMethod("interpret")
 #' @param encoding.digits an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.
 #' @param use.catchall logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.
 #' @param catchall a character string specifying the catchall level.
-#' @param max.ncol integer. The maximum number of columns of the design matrix.
+#' @param max.elements integer. The maximum number of elements of the design matrix. Defaults to \code{1e9}.
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
 #' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
@@ -116,7 +116,7 @@ interpret.default <- function(
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0,
     kappa = 1e6, na.action = getOption("na.action"), verbosity = 1L,
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
-    max.ncol = 1e4L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
+    max.elements = 1e9, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   cl[[1L]] <- as.name("interpret")
@@ -295,9 +295,9 @@ interpret.default <- function(
     ilens <- sapply(iencs, function(x) x$n)
     plens <- structure(integer(q), names = its)
     for (i in seq_len(q)) {
-      pcl <- term.split(its[i])
-      plens[i] <- ilens[pcl[1L]] * ilens[pcl[2L]]
-      mi <- mi + ilens[pcl[1L]] + ilens[pcl[2L]]
+      itag <- term.split(its[i])
+      plens[i] <- ilens[itag[1L]] * ilens[itag[2L]]
+      mi <- mi + ilens[itag[1L]] + ilens[itag[2L]]
     }
     pcumlens <- structure(cumsum(c(0L, plens)), names = c(its, NA))
     v <- pcumlens[length(pcumlens)] # total number of unique pairs
@@ -306,15 +306,16 @@ interpret.default <- function(
   fi <- as.integer(fit.intercept)
   ncol <- fi + u + v
   ncon <- p + mi
-  if (!is.null(max.ncol) && ncol > max.ncol) {
-    title <- paste0("number of columns of the design matrix (", ncol,
-                    ") exceeded 'max.ncol' (", max.ncol, ")")
+  tot.elements <- n * ncol
+  if (!is.null(max.elements) && tot.elements > max.elements) {
+    title <- sprintf("estimated design matrix size: %.2f GB (%d elements)",
+                     tot.elements * 8 / (1024 ^ 3), tot.elements)
     if (verbosity < 1L)
       stop(title)
     choices <- c("exit", "continue")
     sel <- try(utils::select.list(choices, title = title), silent = TRUE)
     if (inherits(sel, "try-error") || sel == "exit")
-      stop("execution halted: number of parameters exceeded 'max.ncol'")
+      stop("number of elements in the design matrix exceeded 'max.elements'")
   }
   X <- matrix(0, nrow = n, ncol = ncol)
   M <- matrix(0, nrow = ncon, ncol = ncol)
@@ -322,12 +323,13 @@ interpret.default <- function(
   w <- sqrt(weights)
   D <- rep.int(1, ncol)
   dens <- numeric(ncol)
-  bemp <- logical(ncol)
-  lemp <- list()
+  vnil <- logical(ncol)
+  lnil <- list()
   lreg <- list()
   ## intercept
   if (fit.intercept) {
-    X[, 1L] <- 1
+    D[1L] <- sqrt(wsum)
+    X[, 1L] <- if (weighted.norm) 1 / D[1L] else 1
   } else {
     intercept <- stats::weighted.mean(Y, weights)
     intercept <- attract(intercept, nil)
@@ -335,81 +337,100 @@ interpret.default <- function(
   }
   ## main effects
   for (i in seq_len(p)) {
-    mcl <- mts[i]
-    ord <- orvs[mcl]
-    for (j in 1L:mlens[[i]]) {
-      m <- fi + mcumlens[i] + j
-      X[, m] <- mmats[[i]][, j]
-      vsum <- sum(X[, m] * weights)
-      if (vsum == 0) {
-        lemp[[length(lemp) + 1L]] <- c(
-          m,
-          if (ord && j > 1L) m - 1L,
-          if (ord && j < mlens[[i]]) m + 1L
-        )
-        bemp[m] <- TRUE
-        next
-      }
-      M[i, m] <- vsum
-      D[m] <- sqrt(vsum)
+    mtag <- mts[i]
+    cols <- fi + mcumlens[i] + seq_len(mlens[i])
+    Xsub <- mmats[[i]]
+    vsum <- colSums(Xsub * weights)
+    D[cols] <- sqrt(vsum)
+    vfil <- (vsum != 0)
+    vnil[cols] <- !vfil
+    dens[cols] <- vsum / wsum
+    if (any(vfil)) {
       if (weighted.norm) {
-        X[, m] <- X[, m] / D[m]
-        M[i, m] <- M[i, m] / D[m]
+        X[, cols[vfil]] <- sweep(
+          Xsub[, vfil, drop = FALSE], 2L, STATS = D[cols[vfil]], FUN = "/"
+        ) * w
+        M[i, cols[vfil]] <- D[cols[vfil]]
+      } else {
+        X[, cols[vfil]] <- Xsub[, vfil, drop = FALSE] * w
+        M[i, cols[vfil]] <- vsum[vfil]
       }
-      dens[m] <- vsum / wsum
-      if (lambda > 0 && ord)
+    }
+    ordr <- orvs[mtag]
+    for (j in seq_len(mlens[i])) {
+      m <- cols[j]
+      if (vnil[m]) {
+        lnil[[length(lnil) + 1L]] <- c(
+          m,
+          if (ordr && j > 1L) m - 1L,
+          if (ordr && j < mlens[[i]]) m + 1L
+        )
+      } else if (lambda > 0 && ordr) {
         lreg[[length(lreg) + 1L]] <- c(
           m,
           if (j > 1L) m - 1L,
           if (j < mlens[[i]]) m + 1L
         )
+      }
     }
   }
   ## interactions
-  ofs <- p
+  ofset <- p
   for (i in seq_len(q)) {
-    pcl <- term.split(its[i])
-    nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
-    vals <- as.matrix(expand.grid(1L:nval[1L], 1L:nval[2L]))
-    ords <- orvs[c(pcl[1L], pcl[2L])]
-    for (j in 1L:plens[[i]]) {
-      val <- vals[j, ]
-      m <- fi + u + pcumlens[i] + j
-      X[, m] <- imats[[pcl[1L]]][, val[1L]] * imats[[pcl[2L]]][, val[2L]]
-      vsum <- sum(X[, m] * weights)
-      if (vsum == 0) {
-        lemp[[length(lemp) + 1L]] <- c(
-          m,
-          if (ords[1L] && val[1L] > 1L) m - 1L,
-          if (ords[1L] && val[1L] < nval[1L]) m + 1L,
-          if (ords[2L] && val[2L] > 1L) m - nval[1L],
-          if (ords[2L] && val[2L] < nval[2L]) m + nval[1L]
-        )
-        bemp[m] <- TRUE
-        next
-      }
-      M[ofs + val[1L], m] <- vsum
-      M[ofs + nval[1L] + val[2L], m] <- vsum
-      D[m] <- sqrt(vsum)
+    itag <- term.split(its[i])
+    cols <- fi + u + pcumlens[i] + seq_len(plens[i])
+    nval <- ilens[itag]
+    Xsub <- (
+      imats[[itag[1L]]][, rep(seq_len(nval[1L]), times = nval[2L]), drop = FALSE] *
+      imats[[itag[2L]]][, rep(seq_len(nval[2L]), each = nval[1L]), drop = FALSE]
+    )
+    vsum <- colSums(Xsub * weights)
+    D[cols] <- sqrt(vsum)
+    vfil <- (vsum != 0)
+    vnil[cols] <- !vfil
+    dens[cols] <- vsum / wsum
+    if (any(vfil)) {
       if (weighted.norm) {
-        X[, m] <- X[, m] / D[m]
-        M[, m] <- M[, m] / D[m]
+        X[, cols[vfil]] <- sweep(
+          Xsub[, vfil, drop = FALSE], 2L, D[cols[vfil]], "/"
+        ) * w
+      } else {
+        X[, cols[vfil]] <- Xsub[, vfil, drop = FALSE] * w
       }
-      dens[m] <- vsum / wsum
-      if (lambda > 0 && ords[1L])
-        lreg[[length(lreg) + 1L]] <- c(
-          m,
-          if (val[1L] > 1L) m - 1L,
-          if (val[1L] < nval[1L]) m + 1L
-        )
-      if (lambda > 0 && ords[2L])
-        lreg[[length(lreg) + 1L]] <- c(
-          m,
-          if (val[2L] > 1L) m - nval[1L],
-          if (val[2L] < nval[2L]) m + nval[1L]
-        )
     }
-    ofs <- ofs + nval[1L] + nval[2L]
+    ordr <- orvs[itag]
+    for (j in seq_len(plens[i])) {
+      m <- cols[j]
+      npos <- c((j - 1) %% nval[1L] + 1L, (j - 1) %/% nval[1L] + 1L)
+      if (vfil[j]) {
+        value <- if (weighted.norm) vsum[j] / D[m] else vsum[j]
+        M[ofset + npos[1L], m] <- value
+        M[ofset + nval[1L] + npos[2L], m] <- value
+      }
+      if (vnil[m]) {
+        lnil[[length(lnil) + 1L]] <- c(
+          m,
+          if (ordr[1L] && npos[1L] > 1L) m - 1L,
+          if (ordr[1L] && npos[1L] < nval[1L]) m + 1L,
+          if (ordr[2L] && npos[2L] > 1L) m - nval[1L],
+          if (ordr[2L] && npos[2L] < nval[2L]) m + nval[1L]
+        )
+      } else if (lambda > 0) {
+        if (ordr[1L])
+          lreg[[length(lreg) + 1L]] <- c(
+            m,
+            if (npos[1L] > 1L) m - 1L,
+            if (npos[1L] < nval[1L]) m + 1L
+          )
+        if (ordr[2L])
+          lreg[[length(lreg) + 1L]] <- c(
+            m,
+            if (npos[2L] > 1L) m - nval[1L],
+            if (npos[2L] < nval[2L]) m + nval[1L]
+          )
+      }
+    }
+    ofset <- ofset + nval[1L] + nval[2L]
   }
   ## ridge regularization
   nreg <- 0L
@@ -419,7 +440,7 @@ interpret.default <- function(
     R <- matrix(0, nrow = nreg, ncol = ncol)
     for (i in seq_len(nreg)) {
       a <- lreg[[i]][-1L]
-      a <- a[!bemp[a]]
+      a <- a[!vnil[a]]
       if (length(a) == 0L)
         next
       m <- lreg[[i]][1L]
@@ -432,33 +453,39 @@ interpret.default <- function(
     w <- c(w, wreg)
   }
   ## additional constraints for columns filled with zero
-  nemp <- length(lemp)
-  if (nemp > 0L) {
-    Memp <- matrix(0, nrow = nemp, ncol = ncol)
-    for (i in 1L:nemp)
-      Memp[i, lemp[[i]][1L]] <- 1
-    M <- rbind(M, Memp)
+  nnil <- length(lnil)
+  if (nnil > 0L) {
+    Mnil <- matrix(0, nrow = nnil, ncol = ncol)
+    for (i in 1L:nnil)
+      Mnil[i, lnil[[i]][1L]] <- 1
+    M <- rbind(M, Mnil)
+  }
+  # clean up RAM
+  remove(Xsub)
+  if (tot.elements > max.elements / 10) {
+    verbose(paste0("collecting garbage..."), verbosity, 3L, FALSE)
+    gc(verbose = FALSE, full = FALSE)
   }
   # get the least squares solution --------
   verbose(paste0("least squares estimation initiated with 'mode' ", mode,
                  " and 'method' ", method), verbosity, 2L, FALSE)
   verbose(paste0(
-    ncol, " parameters", if (nemp > 0L) paste0(" (", nemp, " unestimables)"),
+    ncol, " parameters", if (nnil > 0L) paste0(" (", nnil, " unestimables)"),
     ", ", n, " observations, ", ncon, " centering constraints",
     if (nreg > 0L) paste0(", ", nreg, " smoothing constraints")
   ), verbosity, 3L, FALSE)
   if (mode == 1L) {
-    X <- rbind(X, M)
+    X <- rbind(X, M * sqrt(kappa))
     Y <- c(Y, numeric(nrow(M)))
     w <- c(w, rep.int(sqrt(kappa), nrow(M)))
     r <- 0L
-    if (method >= 0L) {
-      z <- try(RcppEigen::fastLmPure(X * w, Y * w, method), silent = TRUE)
+    z <- if (method >= 0L) {
+      try(RcppEigen::fastLmPure(X, Y * w, method), silent = TRUE)
+    } else {
+      try(stats::lm.fit(X, Y * w))
     }
-    if (method < 0L || inherits(z, "try-error")) {
-      method <- -1L
-      z <- stats::lm.fit(X * w, Y * w)
-    }
+    if (inherits(z, "try-error"))
+      stop("failed to solve the least squares problem")
     beta <- z$coefficients
     beta[is.na(beta)] <- 0
     crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
@@ -473,15 +500,13 @@ interpret.default <- function(
     if (r == dim(Msvd$v)[2L])
       stop("no coefficients to evaluate found")
     vr <- as.matrix(Msvd$v[, (r + 1L):ncol])
-    if (method >= 0L)
-      z <- try(RcppEigen::fastLmPure((X * w) %*% vr, Y * w, method),
-               silent = TRUE)
-    if (inherits(z, "try-error")) {
-      verbose("'RcppEigen::fastLmPure' failed: 'lm.fit' is used", verbosity, 1L)
-      method <- -1L
+    z <- if (method >= 0L) {
+      try(RcppEigen::fastLmPure(X %*% vr, Y * w, method), silent = TRUE)
+    } else {
+      try(stats::lm.fit(X %*% vr, Y * w))
     }
-    if (method < 0L)
-      z <- stats::lm.fit((X * w) %*% vr, Y * w)
+    if (inherits(z, "try-error"))
+      stop("failed to solve the least squares problem")
     coef <- z$coefficients
     coef[is.na(coef)] <- 0
     beta <- as.numeric(vr %*% coef)
@@ -500,17 +525,17 @@ interpret.default <- function(
     }
     verbose("singular fit encountered", verbosity, level = 1L)
   }
-  lemp <- lemp[vapply(lemp, length, 0L) > 1L]
-  nemp <- length(lemp)
+  lnil <- lnil[vapply(lnil, length, 0L) > 1L]
+  nnil <- length(lnil)
   gamma <- beta
   if (weighted.norm)
-    beta <- beta / D
-  if (!(interpolate.beta == "none" || isFALSE(interpolate.beta)) && nemp > 0L) {
+    beta[!vnil] <- beta[!vnil] / D[!vnil]
+  if (!(interpolate.beta == "none" || isFALSE(interpolate.beta)) && nnil > 0L) {
     verbose("interpolating unestimable parameters...",
             verbosity, 3L)
     if (interpolate.beta == "iterative" || isTRUE(interpolate.beta)) {
-      midx <- vapply(lemp, `[`, 0, 1L)
-      aidx <- lapply(lemp, `[`, -1)
+      midx <- vapply(lnil, `[`, 0, 1L)
+      aidx <- lapply(lnil, `[`, -1)
       pntr <- cumsum(c(1L, vapply(aidx, length, 0)))
       aidx <- unlist(aidx)
       res <- cpp_interpolate_beta(beta, midx, aidx, pntr, tol, maxit)
@@ -520,9 +545,9 @@ interpret.default <- function(
       beta <- res$beta
     } else {
       B <- diag(1, ncol)
-      for (i in seq_len(nemp)) {
-        a <- lemp[[i]][-1L]
-        m <- lemp[[i]][1L]
+      for (i in seq_len(nnil)) {
+        a <- lnil[[i]][-1L]
+        m <- lnil[[i]][1L]
         B[m, a] <- - 1
         B[m, m] <- length(a)
       }
@@ -559,18 +584,18 @@ interpret.default <- function(
   if (ie) {
     ret.interactions <- list()
     for (i in seq_len(q)) {
-      pcl <- term.split(its[i])
-      nval <- c(ilens[[pcl[1L]]], ilens[[pcl[2L]]])
+      itag <- term.split(its[i])
+      nval <- c(ilens[[itag[1L]]], ilens[[itag[2L]]])
       vals <- expand.grid(1L:nval[1L], 1L:nval[2L])
-      dat <- cbind(iencs[[pcl[1L]]]$frame[vals[, 1L], ],
-                   iencs[[pcl[2L]]]$frame[vals[, 2L], ])
+      dat <- cbind(iencs[[itag[1L]]]$frame[vals[, 1L], ],
+                   iencs[[itag[2L]]]$frame[vals[, 2L], ])
       rownames(dat) <- NULL
       indices <- (fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])
       dat$density <- dens[indices]
       dat$mid <- beta[indices]
       ret.interactions[[its[i]]] <- dat
-      A1 <- imats[[pcl[1L]]]
-      A2 <- imats[[pcl[2L]]]
+      A1 <- imats[[itag[1L]]]
+      A2 <- imats[[itag[2L]]]
       W <- matrix(beta[indices], nrow = nval[1L], ncol = nval[2L])
       lp <- lp + rowSums((A1 %*% W) * A2)
     }

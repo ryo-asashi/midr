@@ -30,7 +30,7 @@ interpret(object, ...)
   encoding.digits = 3L,
   use.catchall = FALSE,
   catchall = "(others)",
-  max.ncol = 10000L,
+  max.elements = 1e+09,
   nil = 1e-07,
   tol = 1e-07,
   pred.args = list(),
@@ -97,7 +97,7 @@ interpret(object, ...)
 
 \item{catchall}{a character string specifying the catchall level.}
 
-\item{max.ncol}{integer. The maximum number of columns of the design matrix.}
+\item{max.elements}{integer. The maximum number of elements of the design matrix. Defaults to \code{1e9}.}
 
 \item{nil}{a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.}
 
