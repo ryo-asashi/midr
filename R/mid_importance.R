@@ -9,11 +9,11 @@
 #' Terms with higher importance have a larger average impact on the model's overall predictions.
 #'
 #' @param object a "mid" object.
-#' @param data a data frame containing the observations to calculate the importance. If \code{NULL}, the \code{fitted.matrix} from the "mid" object is used.
+#' @param data a data frame containing the observations to calculate the importance. If not provided, data is automatically extracted based on the function call.
 #' @param weights an optional numeric vector of sample weights.
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by importance in descending order.
 #' @param measure an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
-#' @param max.nrow an integer specifying the maximum number of observations to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.
+#' @param max.nsamples an integer specifying the maximum number of samples to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -29,7 +29,7 @@
 #' @returns
 #' \code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:
 #' \item{importance}{a data frame with the calculated importance values, sorted by default.}
-#' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nrow}, this matrix contains a sampled subset.}
+#' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nsamples}, this matrix contains a sampled subset.}
 #' \item{measure}{a character string describing the type of the importance measure used.}
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
@@ -38,7 +38,7 @@
 #'
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
-    max.nrow = 10000) {
+    max.nsamples = 1e4L) {
   if (is.null(data)) {
     data <- model.data(object, env = parent.frame())
     if (is.null(data))
@@ -64,10 +64,8 @@ mid.importance <- function(
     as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
   out <- list()
   out$importance <- df
-  if (!is.null(max.nrow) && max.nrow >= 1 && n > max.nrow) {
-    message("number of observations exceeds 'max.nrow': a sample of ",
-            max.nrow, " observations from 'data' is stored")
-    keepids <- sample(n, max.nrow, replace = FALSE, prob = weights)
+  if (!is.null(max.nsamples) && n > max.nsamples) {
+    keepids <- sample(n, max.nsamples, replace = FALSE, prob = weights)
     preds <- preds[keepids, , drop = FALSE]
   }
   out$predictions <- preds

@@ -104,7 +104,7 @@ UseMethod("interpret")
 #' @param encoding.digits an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.
 #' @param use.catchall logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.
 #' @param catchall a character string specifying the catchall level.
-#' @param max.elements integer. The maximum number of elements of the design matrix. Defaults to \code{1e9}.
+#' @param max.nelements an integer specifying the maximum number of elements of the design matrix. Defaults to \code{1e9}.
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
 #' @param pred.args optional parameters other than the fitted model and new data to be passed to \code{pred.fun()}.
@@ -116,7 +116,7 @@ interpret.default <- function(
     terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0,
     kappa = 1e6, na.action = getOption("na.action"), verbosity = 1L,
     encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
-    max.elements = 1e9, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
+    max.nelements = 1e9L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   cl[[1L]] <- as.name("interpret")
@@ -307,7 +307,7 @@ interpret.default <- function(
   ncol <- fi + u + v
   ncon <- p + mi
   tot.elements <- n * ncol
-  if (!is.null(max.elements) && tot.elements > max.elements) {
+  if (!is.null(max.nelements) && tot.elements > max.nelements) {
     title <- sprintf("estimated design matrix size: %.2f GB (%d elements)",
                      tot.elements * 8 / (1024 ^ 3), tot.elements)
     if (verbosity < 1L)
@@ -315,7 +315,7 @@ interpret.default <- function(
     choices <- c("exit", "continue")
     sel <- try(utils::select.list(choices, title = title), silent = TRUE)
     if (inherits(sel, "try-error") || sel == "exit")
-      stop("number of elements in the design matrix exceeded 'max.elements'")
+      stop("number of elements in the design matrix exceeded 'max.nelements'")
   }
   X <- matrix(0, nrow = n, ncol = ncol)
   M <- matrix(0, nrow = ncon, ncol = ncol)
@@ -460,9 +460,9 @@ interpret.default <- function(
       Mnil[i, lnil[[i]][1L]] <- 1
     M <- rbind(M, Mnil)
   }
-  # clean up RAM
+  # clean up RAM --------
   remove(Xsub)
-  if (tot.elements > max.elements / 10) {
+  if (!is.null(max.nelements) && tot.elements > max.nelements / 10) {
     verbose(paste0("collecting garbage..."), verbosity, 3L, FALSE)
     gc(verbose = FALSE, full = FALSE)
   }

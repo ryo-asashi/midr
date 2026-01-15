@@ -1,3 +1,7 @@
+# midr 0.5.2.907 (beta)
+
+-   Updated `interpret()` to improve space and time complexity of constructing the design matrix.
+
 # midr 0.5.2.906
 
 -   The `format` argument in `mid.breakdown()` is deprecated.

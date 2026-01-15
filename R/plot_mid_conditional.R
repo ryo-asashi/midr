@@ -22,7 +22,7 @@
 #' @param var.color a variable name or expression to map to the color aesthetic.
 #' @param var.linetype a variable name or expression to map to the linetype aesthetic.
 #' @param var.linewidth a variable name or expression to map to the linewidth aesthetic.
-#' @param reference an integer specifying the index of the sample points to use as the reference for centering the c-ICE plot.
+#' @param reference an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.
 #' @param dots logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters passed on to the graphing functions.

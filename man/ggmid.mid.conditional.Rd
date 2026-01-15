@@ -39,7 +39,7 @@
 
 \item{var.linewidth}{a variable name or expression to map to the linewidth aesthetic.}
 
-\item{reference}{an integer specifying the index of the sample points to use as the reference for centering the c-ICE plot.}
+\item{reference}{an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.}
 
 \item{dots}{logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.}
 
