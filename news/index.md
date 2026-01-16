@@ -1,6 +1,6 @@
 # Changelog
 
-## midr 0.5.2.907 (beta)
+## midr 0.5.2.907
 
 - Updated
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)

@@ -331,6 +331,11 @@ The `...` argument can be used to pass several advanced fitting options:
   an integer specifying the maximum number of iterations for the
   "iterative" interpolation method.
 
+- save.memory:
+
+  an integer (0, 1, or 2) specifying the memory-saving level. Higher
+  values reduce memory usage at the cost of increased computation time.
+
 - weighted.norm:
 
   logical. If `TRUE`, the columns of the design matrix are normalized by

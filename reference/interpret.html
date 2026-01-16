@@ -311,6 +311,9 @@ The model is fitted by minimizing the squared error between the target, \(f(\mat
   <dt>maxit</dt>
 <dd><p>an integer specifying the maximum number of iterations for the "iterative" interpolation method.</p></dd>
 
+  <dt>save.memory</dt>
+<dd><p>an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.</p></dd>
+
   <dt>weighted.norm</dt>
 <dd><p>logical. If <code>TRUE</code>, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., <code>4</code> or <code>5</code>) of <code>fastLmPure()</code> is the minimum-norm solution in a <em>weighted</em> sense.</p></dd>
 
