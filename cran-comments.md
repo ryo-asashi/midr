@@ -1,6 +1,6 @@
 ## Submission Type
 
-## This is a patch release of **midr**.
+This is a patch release of **midr 0.5.3**.
 
 ## Test Environments
 
@@ -16,20 +16,7 @@ I have tested this package on:
 
 ## R CMD check results
 
-0 errors \| 0 warnings \| 1 notes
-
-```         
-❯ checking CRAN incoming feasibility ... [18s] NOTE
-Maintainer: 'Ryoichi Asashiba <ryoichi.asashiba@gmail.com>'
-
-New maintainer:
-  Ryoichi Asashiba <ryoichi.asashiba@gmail.com>
-Old maintainer(s):
-  Ryoichi Asasihba <ryoichi.asashiba@gmail.com>
-```
-
-This NOTE is because **I corrected a typo in my own last name** in the `DESCRIPTION` file (`Asasihba` -\> `Asashiba`).\
-This change is intentional and correct.
+0 errors \| 0 warnings \| 0 notes
 
 ------------------------------------------------------------------------
 

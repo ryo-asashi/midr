@@ -1,3 +1,19 @@
+# midr 0.5.3
+
+Fourth release on CRAN. This version introduces significant memory efficiency improvements for large-scale data analysis.
+
+### Major Improvements
+
+-   Optimized fitting process: Enhanced the space (and time) complexity when constructing large design matrices, especially for datasets with many observations.
+-   Memory-efficient estimation: Introduced the `save.memory` option in `interpret()`.
+-   Improved design matrix constraints: Replaced the `max.ncol` argument with `max.nelements` in `interpret()` to provide more intuitive control over the memory consumption of the design matrix.
+
+### Other Enhancements
+
+-   Memory-free prediction engine: Re-implemented the prediction logic to avoid storing massive term effect matrices, significantly reducing the memory usage of `interpret()` and `predict.mid()`.
+-   Flexible formatting: `plot.mid.breakdown()` and `ggmid.mid.breakdown()` now support `format.args` and enhanced `label.format` for better visualization control.
+-   CRAN compatibility: Updated various internal functions to ensure consistent behavior with the 'stats' package (especially with `stats::terms()`) and improved documentation clarity.
+
 # midr 0.5.2.907
 
 -   Updated `interpret()` to improve space and time complexity of constructing the design matrix.
