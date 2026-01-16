@@ -101,6 +101,7 @@ ggmid.mid.breakdown <- function(
       bd, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
     ) + ggplot2::labs(y = NULL)
     if (type == "barplot") {
+      width <- ifnot.null(width, .8)
       pl <- pl + ggplot2::geom_col(width = width, ...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {

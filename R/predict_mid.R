@@ -59,35 +59,30 @@ predict.mid <- function(
   newdata <- do.call(na.action, list(newdata))
   naa <- stats::na.action(newdata)
   n <- nrow(newdata)
-  r <- length(terms)
+  m <- length(terms)
   if (type == "terms") {
-    preds <- matrix(0, nrow = n, ncol = r, dimnames = list(NULL, terms))
+    preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, terms))
   } else {
     preds <- rep(object$intercept, n)
   }
-  spl <- strsplit(terms, ":")
-  spllen <- sapply(spl, length)
-  mtags <- unique(terms[spllen == 1L])
-  itags <- unique(unlist(spl[spllen == 2L]))
-  mmats <- list()
-  for (tag in mtags)
-    mmats[[tag]] <- object$encoders$main.effects[[tag]]$encode(newdata[, tag])
-  imats <- list()
-  for (tag in itags)
-    imats[[tag]] <- object$encoders$interactions[[tag]]$encode(newdata[, tag])
-  for (i in seq_len(r)) {
-    tags <- spl[[i]]
+  ltag <- strsplit(terms, ":")
+  tlen <- sapply(ltag, length)
+  imat <- list()
+  for (tag in unique(unlist(ltag[tlen == 2L]))) {
+    imat[[tag]] <- object$encoders$interactions[[tag]]$encode(newdata[, tag])
+  }
+  for (i in seq_len(m)) {
+    tags <- ltag[[i]]
     if (length(tags) == 1L) {
-      term_preds <- as.numeric(
-        mmats[[tags]] %*% object$main.effects[[tags]]$mid
-      )
+      mmat <- object$encoders$main.effects[[tags]]$encode(newdata[, tags])
+      term_preds <- as.numeric(mmat %*% object$main.effects[[tags]]$mid)
+      mmat <- NULL
     } else if (length(tags) == 2L) {
-      n1 <- object$encoders$interactions[[tags[1L]]]$n
-      n2 <- object$encoders$interactions[[tags[2L]]]$n
-      A1 <- imats[[tags[1L]]]
-      A2 <- imats[[tags[2L]]]
-      W <- matrix(object$interactions[[terms[i]]]$mid, nrow = n1, ncol = n2)
-      term_preds <- rowSums((A1 %*% W) * A2)
+      W <- matrix(
+        object$interactions[[terms[i]]]$mid,
+        nrow = ncol(imat[[tags[1L]]]), ncol = ncol(imat[[tags[2L]]])
+      )
+      term_preds <- rowSums((imat[[tags[1L]]] %*% W) * imat[[tags[2L]]])
     }
     if (type == "terms") {
       preds[, i] <- term_preds

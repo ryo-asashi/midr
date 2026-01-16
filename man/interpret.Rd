@@ -30,7 +30,7 @@ interpret(object, ...)
   encoding.digits = 3L,
   use.catchall = FALSE,
   catchall = "(others)",
-  max.ncol = 10000L,
+  max.nelements = 1000000000L,
   nil = 1e-07,
   tol = 1e-07,
   pred.args = list(),
@@ -97,7 +97,7 @@ interpret(object, ...)
 
 \item{catchall}{a character string specifying the catchall level.}
 
-\item{max.ncol}{integer. The maximum number of columns of the design matrix.}
+\item{max.nelements}{an integer specifying the maximum number of elements of the design matrix. Defaults to \code{1e9}.}
 
 \item{nil}{a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.}
 
@@ -148,7 +148,7 @@ The model is fitted by minimizing the squared error between the target, \eqn{f(\
 The \code{...} argument can be used to pass several advanced fitting options:
 \describe{
   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
-  \item{interpolate.beta}{a character string specifying the method for interpolating unestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+  \item{interpolate.beta}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
   \item{weighted.encoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}

@@ -23,7 +23,6 @@ for (pkg in pkgs) {
 library(midr)
 library(ISLR2)
 library(ggplot2)
-theme_set(theme_midr())
 
 # train a predictive MID model
 mid <- interpret(

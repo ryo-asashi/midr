@@ -8,8 +8,8 @@ mid.conditional(
   object,
   variable,
   data = NULL,
-  n.samples = 100L,
-  max.nrow = 100000L,
+  resolution = 100L,
+  max.nsamples = 1000L,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -21,9 +21,9 @@ mid.conditional(
 
 \item{data}{a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.}
 
-\item{n.samples}{the number of sample points for the \code{variable}'s range.}
+\item{resolution}{an integer specifying the number of evaluation points for the \code{variable}'s range.}
 
-\item{max.nrow}{the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.}
+\item{max.nsamples}{an integer specifying the maximum number of samples. If the number of observations exceeds this limit, the \code{data} is randomly sampled.}
 
 \item{type}{the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.}
 
