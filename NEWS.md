@@ -1,4 +1,4 @@
-# midr 0.5.2.907 (beta)
+# midr 0.5.2.907
 
 -   Updated `interpret()` to improve space and time complexity of constructing the design matrix.
 

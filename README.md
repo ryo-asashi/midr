@@ -51,7 +51,6 @@ library(ggplot2)
 library(gridExtra)
 library(ISLR2)
 library(ranger)
-theme_set(theme_midr())
 # split the Boston dataset
 data("Boston", package = "ISLR2")
 set.seed(42)
@@ -101,13 +100,14 @@ To visualize the main and interaction effects of the variables, apply
 # visualize the main and interaction effects of the MID model
 grid.arrange(
   ggmid(mid, "lstat") +
-    ggtitle("main effect of lstat"),
+    labs(title = "Variable Effect",
+         subtitle = "Main Effect of 'lstat'"),
   ggmid(mid, "dis") +
-    ggtitle("main effect of dis"),
+    labs(title = "", subtitle = "Main effect of 'dis'"),
   ggmid(mid, "lstat:dis") +
-    ggtitle("interaction of lstat:dis"),
+    labs(subtitle = "Interaction Effect of 'lstat:dis'"),
   ggmid(mid, "lstat:dis", main.effects = TRUE, type = "compound") +
-    ggtitle("interaction + main effects")
+    labs(subtitle = "Total Effect of 'lstat:dis'")
 )
 ```
 
@@ -127,12 +127,13 @@ and interaction effects.
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, "dotchart", theme = "highlight") +
-    theme(legend.position = "bottom") +
-    ggtitle("importance of variable effects"),
+  ggmid(imp, fill = "#2080B0", max.nterms = 20) +
+    theme(legend.position = "none") +
+    labs(title = "Variable Effect Importance",
+         subtitle = "Bar Plot"),
   ggmid(imp, "heatmap") +
-    theme(legend.position = "bottom") +
-    ggtitle("heatmap of variable importance")
+    theme(legend.position = "none") +
+    labs(title = "", subtitle = "Heat Map")
 )
 ```
 
@@ -147,12 +148,13 @@ value into variable effects.
 bd1 <- mid.breakdown(mid, data = train, row = 1L)
 bd9 <- mid.breakdown(mid, data = train, row = 9L)
 grid.arrange(nrow = 1L,
-  ggmid(bd1, "waterfall", theme = "midr", max.nterms = 14L) +
-    theme(legend.position = "bottom") +
-    ggtitle("breakdown of prediction 1"),
-  ggmid(bd9, "waterfall", theme = "midr", max.nterms = 14L) +
-    theme(legend.position = "bottom") +
-    ggtitle("breakdown of prediction 9")
+  ggmid(bd1, fill = "#2080B0") +
+    theme(legend.position = "none") +
+    labs(title = "Breakdown of Prediction",
+         subtitle = "Waterfall Plot for Row 1"),
+  ggmid(bd9, theme = "shap", size = 3, type = "dotchart") +
+    theme(legend.position = "none") +
+    labs(title = "", subtitle = "Dot Chart for Row 9")
 )
 ```
 
@@ -164,16 +166,17 @@ curves by main and interaction effects.
 
 ``` r
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat")
+ice <- mid.conditional(mid, "lstat", max.nsamples = 150)
 grid.arrange(
-  ggmid(ice, alpha = .1) +
-    ggtitle("ICE of lstat"),
-  ggmid(ice, "centered", "mako", var.color = dis) +
-    ggtitle("c-ICE of lstat"),
-  ggmid(ice, term = "lstat:dis", theme = "mako", var.color = dis) +
-    ggtitle("ICE of interaction with dis"),
-  ggmid(ice, term = "lstat:age", theme = "mako", var.color = age) +
-    ggtitle("ICE of interaction with age")
+  ggmid(ice, color = "#2080B0") +
+    labs(title = "Individual Conditional Expectation",
+         subtitle = "ICE Plot of 'lstat'"),
+  ggmid(ice, "centered", color = "#2080B0") +
+    labs(title = "", subtitle = "c-ICE Plot of 'lstat'"),
+  ggmid(ice, term = "lstat:dis", var.color = dis) +
+    labs(subtitle = "Interaction Effect with 'dis'"),
+  ggmid(ice, term = "lstat:age", var.color = age) +
+    labs(subtitle = "Interaction Effect with 'age'")
 )
 ```
 

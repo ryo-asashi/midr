@@ -18,6 +18,7 @@
 #'   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
 #'   \item{interpolate.beta}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
 #'   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
+#'   \item{save.memory}{an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.}
 #'   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
 #'   \item{weighted.encoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}
 #' }
@@ -387,10 +388,10 @@ interpret.default <- function(
   nreg <- length(lreg)
   nnil <- length(lnil)
   nfin <- n + nreg + (if (mode == 1L) ncon + nnil else 0L)
-  tot.elements <- nfin * npar
-  if (!is.null(max.nelements) && tot.elements > max.nelements) {
+  nelements <- nfin * npar
+  if (!is.null(max.nelements) && nelements > max.nelements) {
     title <- sprintf("estimated design matrix size: %.2f GB (%d elements)",
-                     tot.elements * 8 / (1024 ^ 3), tot.elements)
+                     nelements * 8 / (1024 ^ 3), nelements)
     if (verbosity < 1L)
       stop(title)
     choices <- c("exit", "continue")
@@ -505,7 +506,7 @@ interpret.default <- function(
       }
   }
   # collect garbage --------
-  if (!is.null(max.nelements) && tot.elements > max.nelements / 10) {
+  if (!is.null(max.nelements) && nelements > max.nelements / 10) {
     verbose(paste0("collecting garbage ..."), verbosity, 3L, FALSE)
     gc(verbose = FALSE, full = FALSE)
   }
