@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.907</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,9 +57,25 @@ img {
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ryo-asashi/midr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ryo-asashi/midr/blob/v0.5.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.3" id="midr-053">midr 0.5.3<a class="anchor" aria-label="anchor" href="#midr-053"></a></h2>
+<p>Fourth release on CRAN. This version introduces significant memory efficiency improvements for large-scale data analysis.</p>
+<div class="section level4">
+<h4 id="major-improvements-0-5-3">Major Improvements<a class="anchor" aria-label="anchor" href="#major-improvements-0-5-3"></a></h4>
+<ul><li>Optimized fitting process: Enhanced the space (and time) complexity when constructing large design matrices, especially for datasets with many observations.</li>
+<li>Memory-efficient estimation: Introduced the <code>save.memory</code> option in <code><a href="../reference/interpret.html">interpret()</a></code>.</li>
+<li>Improved design matrix constraints: Replaced the <code>max.ncol</code> argument with <code>max.nelements</code> in <code><a href="../reference/interpret.html">interpret()</a></code> to provide more intuitive control over the memory consumption of the design matrix.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="other-enhancements-0-5-3">Other Enhancements<a class="anchor" aria-label="anchor" href="#other-enhancements-0-5-3"></a></h4>
+<ul><li>Memory-free prediction engine: Re-implemented the prediction logic to avoid storing massive term effect matrices, significantly reducing the memory usage of <code><a href="../reference/interpret.html">interpret()</a></code> and <code><a href="../reference/predict.mid.html">predict.mid()</a></code>.</li>
+<li>Flexible formatting: <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> and <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> now support <code>format.args</code> and enhanced <code>label.format</code> for better visualization control.</li>
+<li>CRAN compatibility: Updated various internal functions to ensure consistent behavior with the ‘stats’ package (especially with <code><a href="https://rdrr.io/r/stats/terms.html" class="external-link">stats::terms()</a></code>) and improved documentation clarity.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2.907" id="midr-052907">midr 0.5.2.907<a class="anchor" aria-label="anchor" href="#midr-052907"></a></h2>
 <ul><li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to improve space and time complexity of constructing the design matrix.</li>

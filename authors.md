@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/ryo-asashi/midr/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/ryo-asashi/midr/blob/v0.5.3/inst/CITATION)
 
 Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box
 Models by Maximum Interpretation Decomposition.” 2506.08338,
