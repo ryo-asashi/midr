@@ -623,7 +623,7 @@ interpret.default <- function(
                              drop = FALSE],
       ienc[[itag[2L]]]$frame[rep(seq_len(nval[2L]), each = nval[1L]), ,
                              drop = FALSE],
-      row.names = NULL
+      row.names = NULL, check.names = FALSE
     )
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
     dat$density <- dens[cols]
