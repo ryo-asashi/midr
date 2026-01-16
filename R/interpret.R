@@ -130,6 +130,7 @@ interpret.default <- function(
   maxit <- ifnot.null(dots$maxit, 1e4L)
   weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
   weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
+  save.memory <- ifnot.null(dots$save.memory, 1L)
   # preprocess data --------
   if (missing(object)) object <- NULL
   if (missing(weights)) weights <- attr(x, "weights")
@@ -267,7 +268,8 @@ interpret.default <- function(
                          catchall = catchall, tag = tag, frame = f(tag, 1L),
                          weights = if (weighted.encoding) weights)
         }
-      mmat[[tag]] <- menc[[tag]]$encode(x[[tag]])
+      if (save.memory < 1L)
+        mmat[[tag]] <- menc[[tag]]$encode(x[[tag]])
     }
   }
   if (ie <- (q > 0L)) {
@@ -284,7 +286,8 @@ interpret.default <- function(
                          catchall = catchall, tag = tag, frame = f(tag, 2L),
                          weights = if (weighted.encoding) weights)
         }
-      imat[[tag]] <- ienc[[tag]]$encode(x[[tag]])
+      if (save.memory < 2L)
+        imat[[tag]] <- ienc[[tag]]$encode(x[[tag]])
     }
   }
   # compute metadata for design matrix --------
@@ -317,7 +320,9 @@ interpret.default <- function(
   for (i in seq_len(p)) {
     mtag <- mts[i]
     cols <- fiti + mcumlen[i] + seq_len(mlen[i])
-    vsum <- colSums(mmat[[mtag]] * weights)
+    vsum <- colSums(
+      ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]])) * weights
+    )
     delt[cols] <- vsum
     vnil[cols] <- vsum == 0
     dens[cols] <- vsum / wsum
@@ -343,7 +348,10 @@ interpret.default <- function(
   for (i in seq_len(q)) {
     itag <- term.split(its[i])
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
-    vsum <- as.numeric(crossprod(imat[[itag[1L]]], imat[[itag[2L]]] * weights))
+    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
+    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    vsum <- as.numeric(crossprod(mat1, mat2 * weights))
+    mat1 <- mat2 <- NULL
     delt[cols] <- vsum
     vnil[cols] <- vsum == 0
     dens[cols] <- vsum / wsum
@@ -421,7 +429,7 @@ interpret.default <- function(
     vfil <- !vnil[cols]
     if (!any(vfil)) next
     # original matrix
-    Xsub <- mmat[[mtag]]
+    Xsub <- ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]]))
     X[seq_len(n), cols[vfil]] <- if (weighted.norm) {
       sweep(Xsub[, vfil, drop = FALSE], 2L, sqrt(delt[cols[vfil]]), "/") * rw
     } else {
@@ -445,10 +453,11 @@ interpret.default <- function(
     nval <- ilen[itag]
     if (!any(vfil)) next
     # original matrix
-    Xsub <- (imat[[itag[1L]]][, rep(seq_len(nval[1L]), times = nval[2L]),
-                              drop = FALSE] *
-             imat[[itag[2L]]][, rep(seq_len(nval[2L]), each = nval[1L]),
-                              drop = FALSE])
+    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
+    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    Xsub <- (mat1[, rep(seq_len(nval[1L]), times = nval[2L]), drop = FALSE] *
+             mat2[, rep(seq_len(nval[2L]), each = nval[1L]), drop = FALSE])
+    mat1 <- mat2 <- NULL
     X[seq_len(n), cols[vfil]] <- if (weighted.norm) {
       sweep(Xsub[, vfil, drop = FALSE], 2L, sqrt(delt[cols[vfil]]), "/") * rw
     } else {
@@ -600,7 +609,9 @@ interpret.default <- function(
     dat$density <- dens[cols]
     dat$mid <- beta[cols]
     ret.main.effects[[mts[i]]] <- dat
-    lp <- lp + as.numeric(mmat[[mtag]] %*% beta[cols])
+    lp <- lp + as.numeric(
+      ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]])) %*% beta[cols]
+    )
   }
   ## interactions
   ret.interactions <- list()
@@ -619,7 +630,10 @@ interpret.default <- function(
     dat$mid <- beta[cols]
     ret.interactions[[its[i]]] <- dat
     W <- matrix(beta[cols], nrow = nval[1L], ncol = nval[2L])
-    lp <- lp + rowSums((imat[[itag[1L]]] %*% W) * imat[[itag[2L]]])
+    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
+    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    lp <- lp + rowSums((mat1 %*% W) * mat2)
+    mat1 <- mat2 <- NULL
   }
   # output the result --------
   obj <- list()
