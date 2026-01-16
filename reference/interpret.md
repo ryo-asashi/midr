@@ -32,7 +32,7 @@ interpret(
   encoding.digits = 3L,
   use.catchall = FALSE,
   catchall = "(others)",
-  max.ncol = 10000L,
+  max.nelements = 1000000000L,
   nil = 1e-07,
   tol = 1e-07,
   pred.args = list(),
@@ -188,9 +188,10 @@ interpret(
 
   a character string specifying the catchall level.
 
-- max.ncol:
+- max.nelements:
 
-  integer. The maximum number of columns of the design matrix.
+  an integer specifying the maximum number of elements of the design
+  matrix. Defaults to `1e9`.
 
 - nil:
 
@@ -320,7 +321,7 @@ The `...` argument can be used to pass several advanced fitting options:
 
 - interpolate.beta:
 
-  a character string specifying the method for interpolating unestimable
+  a character string specifying the method for interpolating inestimable
   coefficients (betas) that arise from sparse data regions. Can be
   "iterative" for an iterative smoothing process, "direct" for solving a
   linear system, or "none" to disable interpolation.

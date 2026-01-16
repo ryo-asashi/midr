@@ -12,8 +12,8 @@ mid.conditional(
   object,
   variable,
   data = NULL,
-  n.samples = 100L,
-  max.nrow = 100000L,
+  resolution = 100L,
+  max.nsamples = 1000L,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -36,15 +36,15 @@ mid.conditional(
   calculations. If not provided, data is automatically extracted based
   on the function call.
 
-- n.samples:
+- resolution:
 
-  the number of sample points for the `variable`'s range.
+  an integer specifying the number of evaluation points for the
+  `variable`'s range.
 
-- max.nrow:
+- max.nsamples:
 
-  the maximum number of rows for the output data frames. If the number
-  of evaluation points exceeds this limit, the original data is randomly
-  subsampled.
+  an integer specifying the maximum number of samples. If the number of
+  observations exceeds this limit, the `data` is randomly sampled.
 
 - type:
 

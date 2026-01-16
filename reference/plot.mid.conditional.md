@@ -64,7 +64,7 @@ plot(
 
 - reference:
 
-  an integer specifying the index of the sample points to use as the
+  an integer specifying the index of the evaluation point to use as the
   reference for centering the c-ICE plot.
 
 - dots:

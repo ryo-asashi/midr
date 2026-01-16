@@ -5,7 +5,6 @@
 library(midr)
 library(ISLR2)
 library(ggplot2)
-theme_set(theme_midr())
 
 # train a predictive MID model
 mid <- interpret(
@@ -140,8 +139,6 @@ ggmid(bd100, theme = "Tableau 10") +
 ``` r
 ggmid(bd100, type = "barplot", theme = "Set 1") +
   ggtitle('Prediction Breakdown (barplot)')
-#> Warning in ggplot2::geom_col(width = width, ...): Ignoring empty
-#> aesthetic: `width`.
 ```
 
 ![](ggplot2_files/figure-html/breakdown-2.png)

@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ ICE curves visualize how a single observation's prediction changes as a specifie
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">variable</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n.samples <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  max.nrow <span class="op">=</span> <span class="fl">100000L</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  max.nsamples <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"response"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
 <span>  keep.effects <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -97,12 +97,12 @@ ICE curves visualize how a single observation's prediction changes as a specifie
 <dd><p>a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.</p></dd>
 
 
-<dt id="arg-n-samples">n.samples<a class="anchor" aria-label="anchor" href="#arg-n-samples"></a></dt>
-<dd><p>the number of sample points for the <code>variable</code>'s range.</p></dd>
+<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
+<dd><p>an integer specifying the number of evaluation points for the <code>variable</code>'s range.</p></dd>
 
 
-<dt id="arg-max-nrow">max.nrow<a class="anchor" aria-label="anchor" href="#arg-max-nrow"></a></dt>
-<dd><p>the maximum number of rows for the output data frames. If the number of evaluation points exceeds this limit, the original data is randomly subsampled.</p></dd>
+<dt id="arg-max-nsamples">max.nsamples<a class="anchor" aria-label="anchor" href="#arg-max-nsamples"></a></dt>
+<dd><p>an integer specifying the maximum number of samples. If the number of observations exceeds this limit, the <code>data</code> is randomly sampled.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>

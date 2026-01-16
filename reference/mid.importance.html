@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ This is a measure of feature importance that quantifies the average contribution
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  measure <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  max.nrow <span class="op">=</span> <span class="fl">10000</span></span>
+<span>  max.nsamples <span class="op">=</span> <span class="fl">10000L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,7 +89,7 @@ This is a measure of feature importance that quantifies the average contribution
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>a data frame containing the observations to calculate the importance. If <code>NULL</code>, the <code>fitted.matrix</code> from the "mid" object is used.</p></dd>
+<dd><p>a data frame containing the observations to calculate the importance. If not provided, data is automatically extracted based on the function call.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -104,8 +104,8 @@ This is a measure of feature importance that quantifies the average contribution
 <dd><p>an integer specifying the measure of importance. Possible alternatives are <code>1</code> for the mean absolute effect, <code>2</code> for the root mean square effect, and <code>3</code> for the median absolute effect.</p></dd>
 
 
-<dt id="arg-max-nrow">max.nrow<a class="anchor" aria-label="anchor" href="#arg-max-nrow"></a></dt>
-<dd><p>an integer specifying the maximum number of observations to retain in the <code>predictions</code> component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.</p></dd>
+<dt id="arg-max-nsamples">max.nsamples<a class="anchor" aria-label="anchor" href="#arg-max-nsamples"></a></dt>
+<dd><p>an integer specifying the maximum number of samples to retain in the <code>predictions</code> component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -115,7 +115,7 @@ This is a measure of feature importance that quantifies the average contribution
 <dd><p>a data frame with the calculated importance values, sorted by default.</p></dd>
 
 <dt>predictions</dt>
-<dd><p>the matrix of the fitted or predicted MID values. If the number of observations exceeds <code>max.nrow</code>, this matrix contains a sampled subset.</p></dd>
+<dd><p>the matrix of the fitted or predicted MID values. If the number of observations exceeds <code>max.nsamples</code>, this matrix contains a sampled subset.</p></dd>
 
 <dt>measure</dt>
 <dd><p>a character string describing the type of the importance measure used.</p></dd>

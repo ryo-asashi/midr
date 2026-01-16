@@ -1,5 +1,12 @@
 # Changelog
 
+## midr 0.5.2.907 (beta)
+
+- Updated
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to improve space and time complexity of constructing the design
+  matrix.
+
 ## midr 0.5.2.906
 
 - The `format` argument in

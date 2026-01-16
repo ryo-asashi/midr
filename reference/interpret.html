@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.906</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2.907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@ MID models are additive, highly interpretable models composed of functions, each
 <span>  encoding.digits <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  use.catchall <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  catchall <span class="op">=</span> <span class="st">"(others)"</span>,</span>
-<span>  max.ncol <span class="op">=</span> <span class="fl">10000L</span>,</span>
+<span>  max.nelements <span class="op">=</span> <span class="fl">1000000000L</span>,</span>
 <span>  nil <span class="op">=</span> <span class="fl">1e-07</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-07</span>,</span>
 <span>  pred.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -211,8 +211,8 @@ MID models are additive, highly interpretable models composed of functions, each
 <dd><p>a character string specifying the catchall level.</p></dd>
 
 
-<dt id="arg-max-ncol">max.ncol<a class="anchor" aria-label="anchor" href="#arg-max-ncol"></a></dt>
-<dd><p>integer. The maximum number of columns of the design matrix.</p></dd>
+<dt id="arg-max-nelements">max.nelements<a class="anchor" aria-label="anchor" href="#arg-max-nelements"></a></dt>
+<dd><p>an integer specifying the maximum number of elements of the design matrix. Defaults to <code>1e9</code>.</p></dd>
 
 
 <dt id="arg-nil">nil<a class="anchor" aria-label="anchor" href="#arg-nil"></a></dt>
@@ -306,7 +306,7 @@ The model is fitted by minimizing the squared error between the target, \(f(\mat
 <dd><p>logical. If <code>TRUE</code>, the intercept term is fitted as part of the least squares problem. If <code>FALSE</code> (default), it is calculated as the weighted mean of the response.</p></dd>
 
   <dt>interpolate.beta</dt>
-<dd><p>a character string specifying the method for interpolating unestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.</p></dd>
+<dd><p>a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.</p></dd>
 
   <dt>maxit</dt>
 <dd><p>an integer specifying the maximum number of iterations for the "iterative" interpolation method.</p></dd>

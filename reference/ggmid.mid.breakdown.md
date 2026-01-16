@@ -124,7 +124,6 @@ ggmid(mbd, type = "waterfall")
 
 # Create a bar plot with a different theme
 ggmid(mbd, type = "barplot", theme = "highlight")
-#> Warning: Ignoring empty aesthetic: `width`.
 
 
 # Create a dot chart

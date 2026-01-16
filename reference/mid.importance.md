@@ -13,7 +13,7 @@ mid.importance(
   weights = NULL,
   sort = TRUE,
   measure = 1L,
-  max.nrow = 10000
+  max.nsamples = 10000L
 )
 ```
 
@@ -26,7 +26,8 @@ mid.importance(
 - data:
 
   a data frame containing the observations to calculate the importance.
-  If `NULL`, the `fitted.matrix` from the "mid" object is used.
+  If not provided, data is automatically extracted based on the function
+  call.
 
 - weights:
 
@@ -43,10 +44,10 @@ mid.importance(
   are `1` for the mean absolute effect, `2` for the root mean square
   effect, and `3` for the median absolute effect.
 
-- max.nrow:
+- max.nsamples:
 
-  an integer specifying the maximum number of observations to retain in
-  the `predictions` component of the returned object. If the number of
+  an integer specifying the maximum number of samples to retain in the
+  `predictions` component of the returned object. If the number of
   observations exceeds this value, a weighted random sample is taken.
 
 ## Value
@@ -61,7 +62,7 @@ a list containing the following components:
 - predictions:
 
   the matrix of the fitted or predicted MID values. If the number of
-  observations exceeds `max.nrow`, this matrix contains a sampled
+  observations exceeds `max.nsamples`, this matrix contains a sampled
   subset.
 
 - measure:
