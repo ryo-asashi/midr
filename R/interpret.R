@@ -16,7 +16,7 @@
 #' The \code{...} argument can be used to pass several advanced fitting options:
 #' \describe{
 #'   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
-#'   \item{interpolate.beta}{a character string specifying the method for interpolating unestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+#'   \item{interpolate.beta}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
 #'   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
 #'   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
 #'   \item{weighted.encoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}
@@ -252,13 +252,12 @@ interpret.default <- function(
   if (!singular.ok && any(method == 1L:2L))
     verbose("when 'method' is set to 1 or 2, singular fits cannot be detected",
             verbosity, level = 1L)
-  # get encoders for the calculation of the main effects --------
-  u <- 0L
+  # get variable encoders and encoded matrices --------
   if (me <- (p > 0L)) {
-    mencs <- list()
-    mmats <- list()
+    menc <- list()
+    mmat <- list()
     for (tag in mts) {
-      mencs[[tag]] <-
+      menc[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(x = x[[tag]], k = k[1L], type = type[1L], tag = tag,
                           encoding.digits = encoding.digits, frame = f(tag, 1L),
@@ -268,19 +267,14 @@ interpret.default <- function(
                          catchall = catchall, tag = tag, frame = f(tag, 1L),
                          weights = if (weighted.encoding) weights)
         }
-      mmats[[tag]] <- mencs[[tag]]$encode(x[[tag]])
+      mmat[[tag]] <- menc[[tag]]$encode(x[[tag]])
     }
-    mlens <- sapply(mencs, function(x) x$n)
-    mcumlens <- structure(cumsum(c(0L, mlens)), names = c(mts, NA))
-    u <- mcumlens[length(mcumlens)] # total number of unique values
   }
-  # get encoders for the calculation of the interactions --------
-  v <- mi <- 0L
   if (ie <- (q > 0L)) {
-    iencs <- list()
-    imats <- list()
+    ienc <- list()
+    imat <- list()
     for (tag in unique(term.split(its))) {
-      iencs[[tag]] <-
+      ienc[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(x = x[[tag]], k = k[2L], type = type[2L], tag = tag,
                           encoding.digits = encoding.digits, frame = f(tag, 2L),
@@ -290,23 +284,102 @@ interpret.default <- function(
                          catchall = catchall, tag = tag, frame = f(tag, 2L),
                          weights = if (weighted.encoding) weights)
         }
-      imats[[tag]] <- iencs[[tag]]$encode(x[[tag]])
+      imat[[tag]] <- ienc[[tag]]$encode(x[[tag]])
     }
-    ilens <- sapply(iencs, function(x) x$n)
-    plens <- structure(integer(q), names = its)
+  }
+  # compute metadata for design matrix --------
+  fiti <- as.integer(fit.intercept)
+  u <- v <- s <- 0
+  if (me) {
+    mlen <- sapply(menc, function(x) x$n)
+    mcumlen <- structure(cumsum(c(0L, mlen)), names = c(mts, NA))
+    u <- mcumlen[length(mcumlen)]
+  }
+  if (ie) {
+    ilen <- sapply(ienc, function(x) x$n)
+    plen <- structure(integer(q), names = its)
     for (i in seq_len(q)) {
       itag <- term.split(its[i])
-      plens[i] <- ilens[itag[1L]] * ilens[itag[2L]]
-      mi <- mi + ilens[itag[1L]] + ilens[itag[2L]]
+      plen[i] <- ilen[itag[1L]] * ilen[itag[2L]]
+      s <- s + ilen[itag[1L]] + ilen[itag[2L]]
     }
-    pcumlens <- structure(cumsum(c(0L, plens)), names = c(its, NA))
-    v <- pcumlens[length(pcumlens)] # total number of unique pairs
+    pcumlen <- structure(cumsum(c(0L, plen)), names = c(its, NA))
+    v <- pcumlen[length(pcumlen)]
   }
-  # create the design matrix and the constraints matrix --------
-  fi <- as.integer(fit.intercept)
-  ncol <- fi + u + v
-  ncon <- p + mi
-  tot.elements <- n * ncol
+  npar <- fiti + u + v
+  ncon <- p + s
+  delt <- rep.int(1, npar)
+  dens <- numeric(npar)
+  vnil <- logical(npar)
+  lnil <- list()
+  lreg <- list()
+  ## main effects
+  for (i in seq_len(p)) {
+    mtag <- mts[i]
+    cols <- fiti + mcumlen[i] + seq_len(mlen[i])
+    vsum <- colSums(mmat[[mtag]] * weights)
+    delt[cols] <- vsum
+    vnil[cols] <- vsum == 0
+    dens[cols] <- vsum / wsum
+    ordr <- orvs[mtag]
+    for (j in seq_len(mlen[i])) {
+      m <- cols[j]
+      if (vnil[m]) {
+        lnil[[length(lnil) + 1L]] <- c(
+          m,
+          if (ordr && j > 1L) m - 1L,
+          if (ordr && j < mlen[[i]]) m + 1L
+        )
+      } else if (lambda > 0 && ordr) {
+        lreg[[length(lreg) + 1L]] <- c(
+          m,
+          if (j > 1L) m - 1L,
+          if (j < mlen[[i]]) m + 1L
+        )
+      }
+    }
+  }
+  ## interactions
+  for (i in seq_len(q)) {
+    itag <- term.split(its[i])
+    cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
+    vsum <- as.numeric(crossprod(imat[[itag[1L]]], imat[[itag[2L]]] * weights))
+    delt[cols] <- vsum
+    vnil[cols] <- vsum == 0
+    dens[cols] <- vsum / wsum
+    nval <- ilen[itag]
+    ordr <- orvs[itag]
+    for (j in seq_len(plen[i])) {
+      m <- cols[j]
+      posn <- c((j - 1) %% nval[1L] + 1L, (j - 1) %/% nval[1L] + 1L)
+      if (vnil[m]) {
+        lnil[[length(lnil) + 1L]] <- c(
+          m,
+          if (ordr[1L] && posn[1L] > 1L) m - 1L,
+          if (ordr[1L] && posn[1L] < nval[1L]) m + 1L,
+          if (ordr[2L] && posn[2L] > 1L) m - nval[1L],
+          if (ordr[2L] && posn[2L] < nval[2L]) m + nval[1L]
+        )
+      } else if (lambda > 0) {
+        if (ordr[1L])
+          lreg[[length(lreg) + 1L]] <- c(
+            m,
+            if (posn[1L] > 1L) m - 1L,
+            if (posn[1L] < nval[1L]) m + 1L
+          )
+        if (ordr[2L])
+          lreg[[length(lreg) + 1L]] <- c(
+            m,
+            if (posn[2L] > 1L) m - nval[1L],
+            if (posn[2L] < nval[2L]) m + nval[1L]
+          )
+      }
+    }
+  }
+  nreg <- length(lreg)
+  nnil <- length(lnil)
+  nfin <- n + nreg + (if (mode == 1L) ncon + nnil else 0L)
+  tot.elements <- nfin * npar
   if (!is.null(max.nelements) && tot.elements > max.nelements) {
     title <- sprintf("estimated design matrix size: %.2f GB (%d elements)",
                      tot.elements * 8 / (1024 ^ 3), tot.elements)
@@ -317,193 +390,146 @@ interpret.default <- function(
     if (inherits(sel, "try-error") || sel == "exit")
       stop("number of elements in the design matrix exceeded 'max.nelements'")
   }
-  X <- matrix(0, nrow = n, ncol = ncol)
-  M <- matrix(0, nrow = ncon, ncol = ncol)
-  Y <- y
-  w <- sqrt(weights)
-  D <- rep.int(1, ncol)
-  dens <- numeric(ncol)
-  vnil <- logical(ncol)
-  lnil <- list()
-  lreg <- list()
+  verbose(paste0(
+    npar, " parameters", if (nnil > 0L) paste0(" (", nnil, " inestimable)"),
+    ", ", n, " observations, ", ncon, " centering constraints",
+    if (nreg > 0L) paste0(", ", nreg, " smoothing constraints")
+  ), verbosity, 3L, FALSE)
+  # construct design matrix --------
+  rw <- sqrt(weights)
+  rk <- sqrt(kappa)
+  rl <- sqrt(lambda)
+  X <- matrix(0, nrow = nfin, ncol = npar)
+  if (mode == 2L) {
+    M <- matrix(0, nrow = ncon + nnil, ncol = npar)
+  }
+  Y <- numeric(nfin)
   ## intercept
   if (fit.intercept) {
-    D[1L] <- sqrt(wsum)
-    X[, 1L] <- if (weighted.norm) 1 / D[1L] else 1
+    delt[1L] <- wsum
+    X[seq_len(n), 1L] <- if (weighted.norm) rw / sqrt(wsum) else rw
+    Y[seq_len(n)] <- y * rw
   } else {
-    intercept <- stats::weighted.mean(Y, weights)
+    intercept <- stats::weighted.mean(y, weights)
     intercept <- attract(intercept, nil)
-    Y <- Y - intercept
+    Y[seq_len(n)] <- (y - intercept) * rw
   }
   ## main effects
   for (i in seq_len(p)) {
     mtag <- mts[i]
-    cols <- fi + mcumlens[i] + seq_len(mlens[i])
-    Xsub <- mmats[[i]]
-    vsum <- colSums(Xsub * weights)
-    D[cols] <- sqrt(vsum)
-    vfil <- (vsum != 0)
-    vnil[cols] <- !vfil
-    dens[cols] <- vsum / wsum
-    if (any(vfil)) {
-      if (weighted.norm) {
-        X[, cols[vfil]] <- sweep(
-          Xsub[, vfil, drop = FALSE], 2L, STATS = D[cols[vfil]], FUN = "/"
-        ) * w
-        M[i, cols[vfil]] <- D[cols[vfil]]
-      } else {
-        X[, cols[vfil]] <- Xsub[, vfil, drop = FALSE] * w
-        M[i, cols[vfil]] <- vsum[vfil]
-      }
+    cols <- fiti + mcumlen[i] + seq_len(mlen[i])
+    vfil <- !vnil[cols]
+    if (!any(vfil)) next
+    # original matrix
+    Xsub <- mmat[[mtag]]
+    X[seq_len(n), cols[vfil]] <- if (weighted.norm) {
+      sweep(Xsub[, vfil, drop = FALSE], 2L, sqrt(delt[cols[vfil]]), "/") * rw
+    } else {
+      Xsub[, vfil, drop = FALSE] * rw
     }
-    ordr <- orvs[mtag]
-    for (j in seq_len(mlens[i])) {
-      m <- cols[j]
-      if (vnil[m]) {
-        lnil[[length(lnil) + 1L]] <- c(
-          m,
-          if (ordr && j > 1L) m - 1L,
-          if (ordr && j < mlens[[i]]) m + 1L
-        )
-      } else if (lambda > 0 && ordr) {
-        lreg[[length(lreg) + 1L]] <- c(
-          m,
-          if (j > 1L) m - 1L,
-          if (j < mlens[[i]]) m + 1L
-        )
-      }
+    Xsub <- NULL
+    # centering constraints
+    Xsub <- if (weighted.norm) sqrt(delt[cols[vfil]]) else delt[cols[vfil]]
+    if (mode == 1L) {
+      X[n + nreg + i, cols[vfil]] <- Xsub * rk
+    } else {
+      M[i, cols[vfil]] <- Xsub
     }
   }
   ## interactions
-  ofset <- p
+  offs <- p
   for (i in seq_len(q)) {
     itag <- term.split(its[i])
-    cols <- fi + u + pcumlens[i] + seq_len(plens[i])
-    nval <- ilens[itag]
-    Xsub <- (
-      imats[[itag[1L]]][, rep(seq_len(nval[1L]), times = nval[2L]), drop = FALSE] *
-      imats[[itag[2L]]][, rep(seq_len(nval[2L]), each = nval[1L]), drop = FALSE]
-    )
-    vsum <- colSums(Xsub * weights)
-    D[cols] <- sqrt(vsum)
-    vfil <- (vsum != 0)
-    vnil[cols] <- !vfil
-    dens[cols] <- vsum / wsum
-    if (any(vfil)) {
-      if (weighted.norm) {
-        X[, cols[vfil]] <- sweep(
-          Xsub[, vfil, drop = FALSE], 2L, D[cols[vfil]], "/"
-        ) * w
-      } else {
-        X[, cols[vfil]] <- Xsub[, vfil, drop = FALSE] * w
-      }
+    cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
+    vfil <- !vnil[cols]
+    nval <- ilen[itag]
+    if (!any(vfil)) next
+    # original matrix
+    Xsub <- (imat[[itag[1L]]][, rep(seq_len(nval[1L]), times = nval[2L]),
+                              drop = FALSE] *
+             imat[[itag[2L]]][, rep(seq_len(nval[2L]), each = nval[1L]),
+                              drop = FALSE])
+    X[seq_len(n), cols[vfil]] <- if (weighted.norm) {
+      sweep(Xsub[, vfil, drop = FALSE], 2L, sqrt(delt[cols[vfil]]), "/") * rw
+    } else {
+      Xsub[, vfil, drop = FALSE] * rw
     }
-    ordr <- orvs[itag]
-    for (j in seq_len(plens[i])) {
+    Xsub <- NULL
+    # centering constraints
+    for (j in seq_len(plen[i])) {
       m <- cols[j]
-      npos <- c((j - 1) %% nval[1L] + 1L, (j - 1) %/% nval[1L] + 1L)
-      if (vfil[j]) {
-        value <- if (weighted.norm) vsum[j] / D[m] else vsum[j]
-        M[ofset + npos[1L], m] <- value
-        M[ofset + nval[1L] + npos[2L], m] <- value
-      }
-      if (vnil[m]) {
-        lnil[[length(lnil) + 1L]] <- c(
-          m,
-          if (ordr[1L] && npos[1L] > 1L) m - 1L,
-          if (ordr[1L] && npos[1L] < nval[1L]) m + 1L,
-          if (ordr[2L] && npos[2L] > 1L) m - nval[1L],
-          if (ordr[2L] && npos[2L] < nval[2L]) m + nval[1L]
-        )
-      } else if (lambda > 0) {
-        if (ordr[1L])
-          lreg[[length(lreg) + 1L]] <- c(
-            m,
-            if (npos[1L] > 1L) m - 1L,
-            if (npos[1L] < nval[1L]) m + 1L
-          )
-        if (ordr[2L])
-          lreg[[length(lreg) + 1L]] <- c(
-            m,
-            if (npos[2L] > 1L) m - nval[1L],
-            if (npos[2L] < nval[2L]) m + nval[1L]
-          )
+      if (vnil[m]) next
+      posn <- c((j - 1) %% nval[1L] + 1L, (j - 1) %/% nval[1L] + 1L)
+      Xsub <- if (weighted.norm) sqrt(delt[m]) else delt[m]
+      if (mode == 1L) {
+        X[offs + n + nreg + posn[1L], m] <- Xsub * rk
+        X[offs + n + nreg + nval[1L] + posn[2L], m] <- Xsub * rk
+      } else {
+        M[offs + posn[1L], m] <- Xsub
+        M[offs + nval[1L] + posn[2L], m] <- Xsub
       }
     }
-    ofset <- ofset + nval[1L] + nval[2L]
+    offs <- offs + nval[1L] + nval[2L]
   }
   ## ridge regularization
-  nreg <- 0L
-  if (lambda > 0) {
-    nreg <- length(lreg)
-    wreg <- rep.int(sqrt(lambda), nreg)
-    R <- matrix(0, nrow = nreg, ncol = ncol)
+  if (nreg > 0L) {
     for (i in seq_len(nreg)) {
+      m <- lreg[[i]][1L]
       a <- lreg[[i]][-1L]
       a <- a[!vnil[a]]
-      if (length(a) == 0L)
-        next
-      m <- lreg[[i]][1L]
-      R[i, a] <- - (if (weighted.norm) 1 / D[a] else 1)
-      R[i, m] <- (if (weighted.norm) 1 / D[m] else 1) * length(a)
-      wreg[i] <- wreg[i] * D[m]
+      if (length(a) == 0L) next
+      X[n + i, m] <- (
+        length(a) / ifelse(weighted.norm, sqrt(delt[m]), 1) * sqrt(delt[m]) * rl
+      )
+      X[n + i, a] <- (
+        - 1 / ifelse(weighted.norm, sqrt(delt[a]), 1) * sqrt(delt[m]) * rl
+      )
     }
-    X <- rbind(X, R)
-    Y <- c(Y, numeric(nreg))
-    w <- c(w, wreg)
   }
-  ## additional constraints for columns filled with zero
-  nnil <- length(lnil)
-  if (nnil > 0L) {
-    Mnil <- matrix(0, nrow = nnil, ncol = ncol)
-    for (i in 1L:nnil)
-      Mnil[i, lnil[[i]][1L]] <- 1
-    M <- rbind(M, Mnil)
+  ## inestimable parameters
+  if (mode == 1L && nnil > 0L) {
+    for (i in seq_len(nnil))
+      if (mode == 1L) {
+        X[n + nreg + ncon + i, lnil[[i]][1L]] <- 1 * rk
+      } else {
+        M[ncon + i, lnil[[i]][1L]] <- 1
+      }
   }
-  # clean up RAM --------
-  remove(Xsub)
+  # collect garbage --------
   if (!is.null(max.nelements) && tot.elements > max.nelements / 10) {
-    verbose(paste0("collecting garbage..."), verbosity, 3L, FALSE)
+    verbose(paste0("collecting garbage ..."), verbosity, 3L, FALSE)
     gc(verbose = FALSE, full = FALSE)
   }
-  # get the least squares solution --------
+  # solve the least squares problem --------
   verbose(paste0("least squares estimation initiated with 'mode' ", mode,
                  " and 'method' ", method), verbosity, 2L, FALSE)
-  verbose(paste0(
-    ncol, " parameters", if (nnil > 0L) paste0(" (", nnil, " unestimables)"),
-    ", ", n, " observations, ", ncon, " centering constraints",
-    if (nreg > 0L) paste0(", ", nreg, " smoothing constraints")
-  ), verbosity, 3L, FALSE)
   if (mode == 1L) {
-    X <- rbind(X, M * sqrt(kappa))
-    Y <- c(Y, numeric(nrow(M)))
-    w <- c(w, rep.int(sqrt(kappa), nrow(M)))
     r <- 0L
     z <- if (method >= 0L) {
-      try(RcppEigen::fastLmPure(X, Y * w, method), silent = TRUE)
+      try(RcppEigen::fastLmPure(X, Y, method), silent = TRUE)
     } else {
-      try(stats::lm.fit(X, Y * w))
+      try(stats::lm.fit(X, Y))
     }
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     beta <- z$coefficients
     beta[is.na(beta)] <- 0
-    crsd <- z$residuals[(n + nreg + 1L):(n + nreg + ncon)]
-    if (any(abs(crsd) > (nil * sqrt(kappa) * wsum))) {
+    crsd <- z$residuals[n + nreg + seq_len(ncon)]
+    if (any(abs(crsd) > (nil * rk * wsum))) {
       verbose(paste0("not strictly centered: max absolute average effect = ",
-                     format(max(abs(crsd)) / sqrt(kappa) / wsum, digits = 6L)),
+                     format(max(abs(crsd)) / rk / wsum, digits = 6L)),
               verbosity, level = 1L)
     }
   } else if (mode == 2L) {
-    Msvd <- svd(M, nv = ncol)
+    Msvd <- svd(M, nv = npar)
     r <- sum(Msvd$d > tol)
     if (r == dim(Msvd$v)[2L])
       stop("no coefficients to evaluate found")
-    vr <- as.matrix(Msvd$v[, (r + 1L):ncol])
+    vr <- as.matrix(Msvd$v[, (r + 1L):npar])
     z <- if (method >= 0L) {
-      try(RcppEigen::fastLmPure(X %*% vr, Y * w, method), silent = TRUE)
+      try(RcppEigen::fastLmPure(X %*% vr, Y, method), silent = TRUE)
     } else {
-      try(stats::lm.fit(X %*% vr, Y * w))
+      try(stats::lm.fit(X %*% vr, Y))
     }
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
@@ -513,7 +539,7 @@ interpret.default <- function(
   } else {
     stop("'mode' must be 1 or 2")
   }
-  if (!(any(method == 1L:2L)) && z$rank < ncol - r) {
+  if (!(any(method == 1L:2L)) && z$rank < npar - r) {
     if (!singular.ok) {
       title <- "singular fit encountered"
       if (verbosity < 1L)
@@ -527,11 +553,10 @@ interpret.default <- function(
   }
   lnil <- lnil[vapply(lnil, length, 0L) > 1L]
   nnil <- length(lnil)
-  gamma <- beta
   if (weighted.norm)
-    beta[!vnil] <- beta[!vnil] / D[!vnil]
+    beta[!vnil] <- beta[!vnil] / sqrt(delt[!vnil])
   if (!(interpolate.beta == "none" || isFALSE(interpolate.beta)) && nnil > 0L) {
-    verbose("interpolating unestimable parameters...",
+    verbose("interpolating inestimable parameters ...",
             verbosity, 3L)
     if (interpolate.beta == "iterative" || isTRUE(interpolate.beta)) {
       midx <- vapply(lnil, `[`, 0, 1L)
@@ -544,7 +569,7 @@ interpret.default <- function(
         " after ", res$iter," iterations"), verbosity, 3L)
       beta <- res$beta
     } else {
-      B <- diag(1, ncol)
+      B <- diag(1, npar)
       for (i in seq_len(nnil)) {
         a <- lnil[[i]][-1L]
         m <- lnil[[i]][1L]
@@ -559,9 +584,7 @@ interpret.default <- function(
     }
     beta[is.na(beta)] <- 0
   }
-  indices <- (abs(beta) <= nil)
-  gamma[indices] <- 0
-  beta[indices] <- 0
+  beta[(abs(beta) <= nil)] <- 0
   verbose("least squares estimation completed", verbosity, 2L, FALSE)
   # summarize results of the decomposition --------
   ## intercept
@@ -569,36 +592,34 @@ interpret.default <- function(
     intercept <- beta[1L]
   lp <- rep(intercept, n)
   ## main effects
-  if (me) {
-    ret.main.effects <- list()
-    for (i in seq_len(p)) {
-      dat <- mencs[[mts[i]]]$frame
-      indices <- (fi + mcumlens[i] + 1L):(fi + mcumlens[i + 1L])
-      dat$density <- dens[indices]
-      dat$mid <- beta[indices]
-      ret.main.effects[[mts[i]]] <- dat
-      lp <- lp + as.numeric(mmats[[mts[i]]] %*% beta[indices])
-    }
+  ret.main.effects <- list()
+  for (i in seq_len(p)) {
+    mtag <- mts[i]
+    dat <- menc[[mts[i]]]$frame
+    cols <- fiti + mcumlen[i] + seq_len(mlen[i])
+    dat$density <- dens[cols]
+    dat$mid <- beta[cols]
+    ret.main.effects[[mts[i]]] <- dat
+    lp <- lp + as.numeric(mmat[[mtag]] %*% beta[cols])
   }
   ## interactions
-  if (ie) {
-    ret.interactions <- list()
-    for (i in seq_len(q)) {
-      itag <- term.split(its[i])
-      nval <- c(ilens[[itag[1L]]], ilens[[itag[2L]]])
-      vals <- expand.grid(1L:nval[1L], 1L:nval[2L])
-      dat <- cbind(iencs[[itag[1L]]]$frame[vals[, 1L], ],
-                   iencs[[itag[2L]]]$frame[vals[, 2L], ])
-      rownames(dat) <- NULL
-      indices <- (fi + u + pcumlens[i] + 1L):(fi + u + pcumlens[i + 1L])
-      dat$density <- dens[indices]
-      dat$mid <- beta[indices]
-      ret.interactions[[its[i]]] <- dat
-      A1 <- imats[[itag[1L]]]
-      A2 <- imats[[itag[2L]]]
-      W <- matrix(beta[indices], nrow = nval[1L], ncol = nval[2L])
-      lp <- lp + rowSums((A1 %*% W) * A2)
-    }
+  ret.interactions <- list()
+  for (i in seq_len(q)) {
+    itag <- term.split(its[i])
+    nval <- ilen[itag]
+    dat <- data.frame(
+      ienc[[itag[1L]]]$frame[rep(seq_len(nval[1L]), times = nval[2L]), ,
+                             drop = FALSE],
+      ienc[[itag[2L]]]$frame[rep(seq_len(nval[2L]), each = nval[1L]), ,
+                             drop = FALSE],
+      row.names = NULL
+    )
+    cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
+    dat$density <- dens[cols]
+    dat$mid <- beta[cols]
+    ret.interactions[[its[i]]] <- dat
+    W <- matrix(beta[cols], nrow = nval[1L], ncol = nval[2L])
+    lp <- lp + rowSums((imat[[itag[1L]]] %*% W) * imat[[itag[2L]]])
   }
   # output the result --------
   obj <- list()
@@ -611,11 +632,11 @@ interpret.default <- function(
   obj$encoders <- list()
   if (me) {
     obj$main.effects <- ret.main.effects
-    obj$encoders[["main.effects"]] <- mencs
+    obj$encoders[["main.effects"]] <- menc
   }
   if (ie) {
     obj$interactions <- ret.interactions
-    obj$encoders[["interactions"]] <- iencs
+    obj$encoders[["interactions"]] <- ienc
   }
   obj$weights <- weights
   obj$fitted.values <- lp
