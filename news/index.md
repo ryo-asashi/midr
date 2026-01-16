@@ -2,6 +2,8 @@
 
 ## midr 0.5.3
 
+CRAN release: 2026-01-16
+
 Fourth release on CRAN. This version introduces significant memory
 efficiency improvements for large-scale data analysis.
 
