@@ -1,5 +1,13 @@
 # Changelog
 
+## midr 0.5.3.900
+
+- Fixed incorrect calculation in
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  when `singular.ok = TRUE` (or, more directly, `weighted.norm = TRUE`)
+  and `lambda > 0`.
+- Modified weights calculation to enhance the numerical stability.
+
 ## midr 0.5.3
 
 CRAN release: 2026-01-16
