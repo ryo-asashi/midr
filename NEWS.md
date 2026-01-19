@@ -1,3 +1,8 @@
+# midr 0.5.3.900
+
+-   Fixed incorrect calculation in `interpret()` when `singular.ok = TRUE` (or, more directly, `weighted.norm = TRUE`) and `lambda > 0`.
+-   Modified weights calculation to enhance the numerical stability.
+
 # midr 0.5.3
 
 Fourth release on CRAN. This version introduces significant memory efficiency improvements for large-scale data analysis.

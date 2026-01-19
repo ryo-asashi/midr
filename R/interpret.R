@@ -206,7 +206,7 @@ interpret.default <- function(
   n <- nrow(x)
   if (n == 0L)
     stop("no observations found")
-  wsum <- sum(weights)
+  weights <- weights / sum(weights) * n
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
   if (is.null(terms)) {
@@ -313,7 +313,6 @@ interpret.default <- function(
   npar <- fiti + u + v
   ncon <- p + s
   delt <- rep.int(1, npar)
-  dens <- numeric(npar)
   vnil <- logical(npar)
   lnil <- list()
   lreg <- list()
@@ -324,9 +323,8 @@ interpret.default <- function(
     vsum <- colSums(
       ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]])) * weights
     )
-    delt[cols] <- vsum
-    vnil[cols] <- vsum == 0
-    dens[cols] <- vsum / wsum
+    vnil[cols] <- vsum <= nil
+    delt[cols] <- ifelse(vnil[cols], 0, vsum)
     ordr <- orvs[mtag]
     for (j in seq_len(mlen[i])) {
       m <- cols[j]
@@ -353,9 +351,8 @@ interpret.default <- function(
     mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
     vsum <- as.numeric(crossprod(mat1, mat2 * weights))
     mat1 <- mat2 <- NULL
-    delt[cols] <- vsum
-    vnil[cols] <- vsum == 0
-    dens[cols] <- vsum / wsum
+    vnil[cols] <- vsum <= nil
+    delt[cols] <- ifelse(vnil[cols], 0, vsum)
     nval <- ilen[itag]
     ordr <- orvs[itag]
     for (j in seq_len(plen[i])) {
@@ -415,8 +412,8 @@ interpret.default <- function(
   Y <- numeric(nfin)
   ## intercept
   if (fit.intercept) {
-    delt[1L] <- wsum
-    X[seq_len(n), 1L] <- if (weighted.norm) rw / sqrt(wsum) else rw
+    delt[1L] <- n
+    X[seq_len(n), 1L] <- if (weighted.norm) rw / sqrt(n) else rw
     Y[seq_len(n)] <- y * rw
   } else {
     intercept <- stats::weighted.mean(y, weights)
@@ -488,12 +485,13 @@ interpret.default <- function(
       a <- lreg[[i]][-1L]
       a <- a[!vnil[a]]
       if (length(a) == 0L) next
-      X[n + i, m] <- (
-        length(a) / ifelse(weighted.norm, sqrt(delt[m]), 1) * sqrt(delt[m]) * rl
-      )
-      X[n + i, a] <- (
-        - 1 / ifelse(weighted.norm, sqrt(delt[a]), 1) * sqrt(delt[m]) * rl
-      )
+      if (weighted.norm) {
+        X[n + i, m] <- length(a) * rl
+        X[n + i, a] <- (- 1) * sqrt(delt[m]) / sqrt(delt[a]) * rl
+      } else {
+        X[n + i, m] <- length(a) * sqrt(delt[m]) * rl
+        X[n + i, a] <- (- 1) * sqrt(delt[m]) * rl
+      }
     }
   }
   ## inestimable parameters
@@ -525,9 +523,10 @@ interpret.default <- function(
     beta <- z$coefficients
     beta[is.na(beta)] <- 0
     crsd <- z$residuals[n + nreg + seq_len(ncon)]
-    if (any(abs(crsd) > (nil * rk * wsum))) {
+    max_error <- (max(abs(crsd)) / (rk * n))
+    if (max_error > nil) {
       verbose(paste0("not strictly centered: max absolute average effect = ",
-                     format(max(abs(crsd)) / rk / wsum, digits = 6L)),
+                     format(max_error, digits = 6L)),
               verbosity, level = 1L)
     }
   } else if (mode == 2L) {
@@ -607,7 +606,7 @@ interpret.default <- function(
     mtag <- mts[i]
     dat <- menc[[mts[i]]]$frame
     cols <- fiti + mcumlen[i] + seq_len(mlen[i])
-    dat$density <- dens[cols]
+    dat$density <- delt[cols] / n
     dat$mid <- beta[cols]
     ret.main.effects[[mts[i]]] <- dat
     lp <- lp + as.numeric(
@@ -627,7 +626,7 @@ interpret.default <- function(
       row.names = NULL, check.names = FALSE
     )
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
-    dat$density <- dens[cols]
+    dat$density <- delt[cols] / n
     dat$mid <- beta[cols]
     ret.interactions[[its[i]]] <- dat
     W <- matrix(beta[cols], nrow = nval[1L], ncol = nval[2L])
