@@ -292,22 +292,38 @@ following components:
 
 ## Details
 
-The MID model approximates a target model's prediction function
-\\f(\mathbf{x})\\, or values of the response variable \\\mathbf{y}\\.
-This model, denoted as \\\mathcal{F}(\mathbf{x})\\, has the following
-structure: \$\$\mathcal{F}(\mathbf{x}) = f\_\phi + \sum\_{j}
-f\_{j}(x_j) + \sum\_{j\<k} f\_{jk}(x_j, x_k)\$\$ where \\f\_\phi\\ is
-the intercept, \\f\_{j}(x_j)\\ is the main effect of feature \\j\\, and
-\\f\_{jk}(x_j, x_k)\\ is the second-order interaction effect between
-features \\j\\ and \\k\\.
+Maximum Interpretation Decomposition (MID) is a functional decomposition
+framework designed to serve as a faithful surrogate for complex,
+black-box models. It deconstructs a target prediction function
+\\f(\mathbf{X})\\ into a set of highly interpretable components:
 
-To ensure that the decomposed components are unique, they are fitted
-under the *centering constraints*: each main effect's average is
-constrained to be zero, and each interaction effect's conditional
-averages are also constrained to be zero. The model is fitted by
-minimizing the squared error between the target, \\f(\mathbf{x})\\ or
-\\\mathbf{y}\\, and the surrogate \\\mathcal{F}(\mathbf{x})\\, which is
-typically evaluated on a representative dataset.
+\$\$f(\mathbf{X}) = g\_\emptyset + \sum\_{j} g_j(X_j) + \sum\_{j\<k}
+g\_{jk}(X_j, X_k) + g_D(\mathbf{X})\$\$
+
+where \\g\_\emptyset\\ is the intercept, \\g_j(X_j)\\ represents the
+main effect of feature \\j\\, \\g\_{jk}(X_j, X_k)\\ represents the
+second-order interaction between features \\j\\ and \\k\\, and
+\\g_D(\mathbf{X})\\ is the residual.
+
+The components \\g_j\\ and \\g\_{jk}\\ are modeled as a linear expansion
+of basis functions, resulting in piecewise linear or piecewise constant
+functions. The estimation is performed by minimizing a penalized squared
+residual objective over a representative dataset:
+
+\$\$\text{minimize } \mathbf{E}\[g_D(\mathbf{X})^2\] + \lambda
+R(g;\mathbf{X})\$\$
+
+where \\\lambda \ge 0\\ is a regularization parameter that controls the
+smoothness of the components by penalizing the second-order differences
+of adjacent coefficients (a discrete roughness penalty). To ensure the
+uniqueness and identifiability of the decomposition, MID imposes the
+centering constraints: for any feature \\j\\, \\\mathbf{E}\[g_j(X_j)\] =
+0\\; and for any feature pair \\(j, k)\\, \\\mathbf{E}\[g\_{jk}(X_j,
+X_k) \mid X_j = x_j\] = 0\\ for all \\x_j\\ and
+\\\mathbf{E}\[g\_{jk}(X_j, X_k) \mid X_k = x_k\] = 0\\ for all \\x_k\\.
+In cases where the least-squares solution is still not unique due to
+collinearity, an additional probability-weighted minimum-norm constraint
+is applied to the coefficients to ensure a stable and unique solution.
 
 ## Advanced Fitting Options
 

@@ -111,16 +111,11 @@ It breaks down the total prediction into the effects of the intercept, main effe
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>mid.breakdown()</code> is a method for local interpretability.
-For a given observation, it provides a clear answer to the question, "How much did each component of the MID model contribute to the final prediction?"</p>
-<p>The function calculates the value of each term in the MID model's additive structure for the specified observation.
-The total prediction is the sum of these individual contributions.
-The prediction, denoted \(\mathcal{F}(\mathbf{x})\), is decomposed as:
-$$\mathcal{F}(\mathbf{x}) = f_\phi + \sum_{j} f_{j}(x_j) + \sum_{j&lt;k} f_{jk}(x_j, x_k)$$</p>
-<p>The output data frame itemizes the numerical value of each main effect
-(\(f_{j}(x_j)\)) and interaction effect (\(f_{jk}(x_j, x_k)\)),
-along with the intercept (\(f_\phi\)). This makes the prediction transparent
-and easy to understand.</p>
+    <p>This function provides local interpretability for a specific observation by decomposing its prediction into the individual contributions of the MID components.
+For a target observation \(\mathbf{x}\), the total prediction is represented as the sum of all estimated terms:</p>
+<p>$$g(\mathbf{x}) = g_\emptyset + \sum_{j} g_j(x_j) + \sum_{j&lt;k} g_{jk}(x_j, x_k)$$</p>
+<p>The output data frame itemizes the numerical value of each main effect \(g_j(x_j)\) and interaction effect \(g_{jk}(x_j, x_k)\), along with the intercept \(g_\emptyset\).
+This decomposition makes the model's decision for a single instance fully transparent and easy to attribute to specific features or their combinations.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

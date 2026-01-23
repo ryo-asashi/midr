@@ -58,21 +58,19 @@ list with the following components:
 
 ## Details
 
-`mid.breakdown()` is a method for local interpretability. For a given
-observation, it provides a clear answer to the question, "How much did
-each component of the MID model contribute to the final prediction?"
+This function provides local interpretability for a specific observation
+by decomposing its prediction into the individual contributions of the
+MID components. For a target observation \\\mathbf{x}\\, the total
+prediction is represented as the sum of all estimated terms:
 
-The function calculates the value of each term in the MID model's
-additive structure for the specified observation. The total prediction
-is the sum of these individual contributions. The prediction, denoted
-\\\mathcal{F}(\mathbf{x})\\, is decomposed as:
-\$\$\mathcal{F}(\mathbf{x}) = f\_\phi + \sum\_{j} f\_{j}(x_j) +
-\sum\_{j\<k} f\_{jk}(x_j, x_k)\$\$
+\$\$g(\mathbf{x}) = g\_\emptyset + \sum\_{j} g_j(x_j) + \sum\_{j\<k}
+g\_{jk}(x_j, x_k)\$\$
 
 The output data frame itemizes the numerical value of each main effect
-(\\f\_{j}(x_j)\\) and interaction effect (\\f\_{jk}(x_j, x_k)\\), along
-with the intercept (\\f\_\phi\\). This makes the prediction transparent
-and easy to understand.
+\\g_j(x_j)\\ and interaction effect \\g\_{jk}(x_j, x_k)\\, along with
+the intercept \\g\_\emptyset\\. This decomposition makes the model's
+decision for a single instance fully transparent and easy to attribute
+to specific features or their combinations.
 
 ## See also
 

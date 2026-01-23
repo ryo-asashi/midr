@@ -78,11 +78,19 @@ is a list with the following components:
 
 ## Details
 
-The function generates a set of hypothetical observations by creating
-copies of the original data and varying the specified `variable` across
-a range of sample points. It then obtains a prediction for each of these
-hypothetical observations from the MID model. The returned object can be
-plotted to visualize the ICE curves.
+This function generates Individual Conditional Expectation (ICE) data by
+evaluating the MID model over a range of values for a specific variable.
+For a given observation \\\mathbf{x}\_i\\, the ICE value at \\X_j = x'\\
+is computed by replacing the value \\x\_{i,j}\\ with \\x'\\ while
+keeping all other features \\\mathbf{x}\_{i,\setminus j}\\ fixed:
+
+\$\$f\_{\text{ICE}}(x') = g(x', \mathbf{x}\_{i,\setminus j})\$\$
+
+The function creates a set of hypothetical observations across a grid of
+evaluation points for the specified `variable`. The resulting object can
+be plotted to visualize how the prediction changes for individuals as a
+specific feature varies, revealing both global trends and local
+departures (heterogeneity).
 
 ## See also
 

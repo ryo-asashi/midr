@@ -128,8 +128,11 @@ ICE curves visualize how a single observation's prediction changes as a specifie
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function generates a set of hypothetical observations by creating copies of the original data and varying the specified <code>variable</code> across a range of sample points.
-It then obtains a prediction for each of these hypothetical observations from the MID model. The returned object can be plotted to visualize the ICE curves.</p>
+    <p>This function generates Individual Conditional Expectation (ICE) data by evaluating the MID model over a range of values for a specific variable.
+For a given observation \(\mathbf{x}_i\), the ICE value at \(X_j = x'\) is computed by replacing the value \(x_{i,j}\) with \(x'\) while keeping all other features \(\mathbf{x}_{i,\setminus j}\) fixed:</p>
+<p>$$f_{\text{ICE}}(x') = g(x', \mathbf{x}_{i,\setminus j})$$</p>
+<p>The function creates a set of hypothetical observations across a grid of evaluation points for the specified <code>variable</code>.
+The resulting object can be plotted to visualize how the prediction changes for individuals as a specific feature varies, revealing both global trends and local departures (heterogeneity).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
