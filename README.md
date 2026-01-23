@@ -51,6 +51,7 @@ library(ggplot2)
 library(gridExtra)
 library(ISLR2)
 library(ranger)
+theme_set(theme_midr("xy"))
 # split the Boston dataset
 data("Boston", package = "ISLR2")
 set.seed(42)
@@ -100,7 +101,7 @@ To visualize the main and interaction effects of the variables, apply
 # visualize the main and interaction effects of the MID model
 grid.arrange(
   ggmid(mid, "lstat") +
-    labs(title = "Variable Effect",
+    labs(title = "Feature Effects",
          subtitle = "Main Effect of 'lstat'"),
   ggmid(mid, "dis") +
     labs(title = "", subtitle = "Main effect of 'dis'"),
@@ -127,11 +128,11 @@ and interaction effects.
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
-  ggmid(imp, fill = "#2080B0", max.nterms = 20) +
+  ggmid(imp, fill = "steelblue", max.nterms = 20) +
     theme(legend.position = "none") +
-    labs(title = "Variable Effect Importance",
+    labs(title = "Feature Effect Importance",
          subtitle = "Bar Plot"),
-  ggmid(imp, "heatmap") +
+  ggmid(imp, "heatmap", linewidth=.25, color="gray85") +
     theme(legend.position = "none") +
     labs(title = "", subtitle = "Heat Map")
 )
@@ -148,9 +149,9 @@ value into variable effects.
 bd1 <- mid.breakdown(mid, data = train, row = 1L)
 bd9 <- mid.breakdown(mid, data = train, row = 9L)
 grid.arrange(nrow = 1L,
-  ggmid(bd1, fill = "#2080B0") +
+  ggmid(bd1, fill = "steelblue") +
     theme(legend.position = "none") +
-    labs(title = "Breakdown of Prediction",
+    labs(title = "Additive Breakdown of Predictios",
          subtitle = "Waterfall Plot for Row 1"),
   ggmid(bd9, theme = "shap", size = 3, type = "dotchart") +
     theme(legend.position = "none") +
@@ -168,10 +169,10 @@ curves by main and interaction effects.
 # visualize the ICE curves of the MID model
 ice <- mid.conditional(mid, "lstat", max.nsamples = 150)
 grid.arrange(
-  ggmid(ice, color = "#2080B0") +
+  ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",
          subtitle = "ICE Plot of 'lstat'"),
-  ggmid(ice, "centered", color = "#2080B0") +
+  ggmid(ice, "centered", color = "steelblue") +
     labs(title = "", subtitle = "c-ICE Plot of 'lstat'"),
   ggmid(ice, term = "lstat:dis", var.color = dis) +
     labs(subtitle = "Interaction Effect with 'dis'"),
@@ -194,6 +195,6 @@ from Black-Box Models by Maximum Interpretation Decomposition”.
 
 \[3\] Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015).
 “Peeking Inside the Black Box: Visualizing Statistical Learning With
-Plots of Individual Conditional Expectation”. *Journal of Computational
-and Graphical Statistics*, *24*(1), 44–65.
+Plots of Individual Conditional Expectation”. *Journal of Computational
+and Graphical Statistics*, *24*(1), 44–65.
 <https://doi.org/10.1080/10618600.2014.907095>

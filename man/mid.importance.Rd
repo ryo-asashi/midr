@@ -37,8 +37,11 @@ mid.importance(
 This is a measure of feature importance that quantifies the average contribution of each component function across a dataset.
 }
 \details{
-The MID importance of a component function (e.g., a main effect or an interaction) is defined as the mean absolute effect on the predictions within the given data.
-Terms with higher importance have a larger average impact on the model's overall predictions.
+The MID importance of a component function \eqn{g_S}, where \eqn{S} represents a single feature \eqn{\{j\}} or a feature pair \eqn{\{j, k\}}, is defined as the mean absolute effect on the predictions within the given data:
+
+\deqn{\mathbf{I}(g_S) = \frac{1}{n} \sum_{i=1}^n |g_S(\mathbf{x}_{i,S})|}
+
+Terms with higher importance values have a larger average impact on the model's overall predictions. Because all components (main effects and interactions) are measured on the same scale as the response variable, these values provide a direct and comparable measure of each term's contribution to the model.
 }
 \examples{
 data(airquality, package = "datasets")

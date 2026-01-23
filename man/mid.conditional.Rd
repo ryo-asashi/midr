@@ -40,8 +40,13 @@ mid.conditional(
 ICE curves visualize how a single observation's prediction changes as a specified variable's value varies, while all other variable are held constant.
 }
 \details{
-The function generates a set of hypothetical observations by creating copies of the original data and varying the specified \code{variable} across a range of sample points.
-It then obtains a prediction for each of these hypothetical observations from the MID model. The returned object can be plotted to visualize the ICE curves.
+This function generates Individual Conditional Expectation (ICE) data by evaluating the MID model over a range of values for a specific variable.
+For a given observation \eqn{\mathbf{x}_i}, the ICE value at \eqn{X_j = x'} is computed by replacing the value \eqn{x_{i,j}} with \eqn{x'} while keeping all other features \eqn{\mathbf{x}_{i,\setminus j}} fixed:
+
+\deqn{f_{\text{ICE}}(x') = g(x', \mathbf{x}_{i,\setminus j})}
+
+The function creates a set of hypothetical observations across a grid of evaluation points for the specified \code{variable}.
+The resulting object can be plotted to visualize how the prediction changes for individuals as a specific feature varies, revealing both global trends and local departures (heterogeneity).
 }
 \examples{
 data(airquality, package = "datasets")
