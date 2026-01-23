@@ -149,6 +149,7 @@ The estimation is performed by minimizing a penalized squared residual objective
 \deqn{\text{minimize } \mathbf{E}[g_D(\mathbf{X})^2] + \lambda R(g;\mathbf{X})}
 
 where \eqn{\lambda \ge 0} is a regularization parameter that controls the smoothness of the components by penalizing the second-order differences of adjacent coefficients (a discrete roughness penalty).
+
 To ensure the uniqueness and identifiability of the decomposition, MID imposes the centering constraints: for any feature \eqn{j}, \eqn{\mathbf{E}[g_j(X_j)] = 0}; and for any feature pair \eqn{(j, k)}, \eqn{\mathbf{E}[g_{jk}(X_j, X_k) \mid X_j = x_j] = 0} for all \eqn{x_j} and \eqn{\mathbf{E}[g_{jk}(X_j, X_k) \mid X_k = x_k] = 0} for all \eqn{x_k}.
 In cases where the least-squares solution is still not unique due to collinearity, an additional probability-weighted minimum-norm constraint is applied to the coefficients to ensure a stable and unique solution.
 }
