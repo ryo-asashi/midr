@@ -315,15 +315,17 @@ R(g;\mathbf{X})\$\$
 
 where \\\lambda \ge 0\\ is a regularization parameter that controls the
 smoothness of the components by penalizing the second-order differences
-of adjacent coefficients (a discrete roughness penalty). To ensure the
-uniqueness and identifiability of the decomposition, MID imposes the
-centering constraints: for any feature \\j\\, \\\mathbf{E}\[g_j(X_j)\] =
-0\\; and for any feature pair \\(j, k)\\, \\\mathbf{E}\[g\_{jk}(X_j,
-X_k) \mid X_j = x_j\] = 0\\ for all \\x_j\\ and
-\\\mathbf{E}\[g\_{jk}(X_j, X_k) \mid X_k = x_k\] = 0\\ for all \\x_k\\.
-In cases where the least-squares solution is still not unique due to
-collinearity, an additional probability-weighted minimum-norm constraint
-is applied to the coefficients to ensure a stable and unique solution.
+of adjacent coefficients (a discrete roughness penalty).
+
+To ensure the uniqueness and identifiability of the decomposition, MID
+imposes the centering constraints: for any feature \\j\\,
+\\\mathbf{E}\[g_j(X_j)\] = 0\\; and for any feature pair \\(j, k)\\,
+\\\mathbf{E}\[g\_{jk}(X_j, X_k) \mid X_j = x_j\] = 0\\ for all \\x_j\\
+and \\\mathbf{E}\[g\_{jk}(X_j, X_k) \mid X_k = x_k\] = 0\\ for all
+\\x_k\\. In cases where the least-squares solution is still not unique
+due to collinearity, an additional probability-weighted minimum-norm
+constraint is applied to the coefficients to ensure a stable and unique
+solution.
 
 ## Advanced Fitting Options
 

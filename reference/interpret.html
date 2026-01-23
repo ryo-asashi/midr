@@ -299,8 +299,8 @@ It deconstructs a target prediction function \(f(\mathbf{X})\) into a set of hig
 <p>The components \(g_j\) and \(g_{jk}\) are modeled as a linear expansion of basis functions, resulting in piecewise linear or piecewise constant functions.
 The estimation is performed by minimizing a penalized squared residual objective over a representative dataset:</p>
 <p>$$\text{minimize } \mathbf{E}[g_D(\mathbf{X})^2] + \lambda R(g;\mathbf{X})$$</p>
-<p>where \(\lambda \ge 0\) is a regularization parameter that controls the smoothness of the components by penalizing the second-order differences of adjacent coefficients (a discrete roughness penalty).
-To ensure the uniqueness and identifiability of the decomposition, MID imposes the centering constraints: for any feature \(j\), \(\mathbf{E}[g_j(X_j)] = 0\); and for any feature pair \((j, k)\), \(\mathbf{E}[g_{jk}(X_j, X_k) \mid X_j = x_j] = 0\) for all \(x_j\) and \(\mathbf{E}[g_{jk}(X_j, X_k) \mid X_k = x_k] = 0\) for all \(x_k\).
+<p>where \(\lambda \ge 0\) is a regularization parameter that controls the smoothness of the components by penalizing the second-order differences of adjacent coefficients (a discrete roughness penalty).</p>
+<p>To ensure the uniqueness and identifiability of the decomposition, MID imposes the centering constraints: for any feature \(j\), \(\mathbf{E}[g_j(X_j)] = 0\); and for any feature pair \((j, k)\), \(\mathbf{E}[g_{jk}(X_j, X_k) \mid X_j = x_j] = 0\) for all \(x_j\) and \(\mathbf{E}[g_{jk}(X_j, X_k) \mid X_k = x_k] = 0\) for all \(x_k\).
 In cases where the least-squares solution is still not unique due to collinearity, an additional probability-weighted minimum-norm constraint is applied to the coefficients to ensure a stable and unique solution.</p>
     </div>
     <div class="section level2">
