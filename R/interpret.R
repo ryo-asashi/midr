@@ -256,9 +256,6 @@ interpret.default <- function(
     ), verbosity, 3L)
   if (length(type) == 1L)
     type <- c(type, type)
-  f <- function(tag, d) {
-    ifnot.null(frames[[paste0(switch(d, "|", ":"), tag)]], frames[[tag]])
-  }
   if (is.null(method))
     method <- if (!singular.ok) 0L else 5L
   if (!singular.ok && any(method == 1L:2L))
@@ -271,13 +268,19 @@ interpret.default <- function(
     for (tag in mts) {
       menc[[tag]] <-
         if (nuvs[tag]) {
-          numeric.encoder(x = x[[tag]], k = k[1L], type = type[1L], tag = tag,
-                          encoding.digits = encoding.digits, frame = f(tag, 1L),
-                          weights = if (weighted.encoding) weights)
+          numeric.encoder(
+            x = x[[tag]], k = k[1L], type = type[1L], tag = tag,
+            encoding.digits = encoding.digits,
+            frame = frames[[paste0("|", tag)]] %||% frames[[tag]],
+            weights = if (weighted.encoding) weights
+          )
         } else {
-          factor.encoder(x = x[[tag]], k = k[1L], use.catchall = use.catchall,
-                         catchall = catchall, tag = tag, frame = f(tag, 1L),
-                         weights = if (weighted.encoding) weights)
+          factor.encoder(
+            x = x[[tag]], k = k[1L], use.catchall = use.catchall,
+            catchall = catchall, tag = tag,
+            frame = frames[[paste0("|", tag)]] %||% frames[[tag]],
+            weights = if (weighted.encoding) weights
+          )
         }
       if (save.memory < 1L)
         mmat[[tag]] <- menc[[tag]]$encode(x[[tag]])
@@ -289,13 +292,19 @@ interpret.default <- function(
     for (tag in unique(term.split(its))) {
       ienc[[tag]] <-
         if (nuvs[tag]) {
-          numeric.encoder(x = x[[tag]], k = k[2L], type = type[2L], tag = tag,
-                          encoding.digits = encoding.digits, frame = f(tag, 2L),
-                          weights = if (weighted.encoding) weights)
+          numeric.encoder(
+            x = x[[tag]], k = k[2L], type = type[2L], tag = tag,
+            encoding.digits = encoding.digits,
+            frame = frames[[paste0(":", tag)]] %||% frames[[tag]],
+            weights = if (weighted.encoding) weights
+          )
         } else {
-          factor.encoder(x = x[[tag]], k = k[2L], use.catchall = use.catchall,
-                         catchall = catchall, tag = tag, frame = f(tag, 2L),
-                         weights = if (weighted.encoding) weights)
+          factor.encoder(
+            x = x[[tag]], k = k[2L], use.catchall = use.catchall,
+            catchall = catchall, tag = tag,
+            frame = frames[[paste0(":", tag)]] %||% frames[[tag]],
+            weights = if (weighted.encoding) weights
+          )
         }
       if (save.memory < 2L)
         imat[[tag]] <- ienc[[tag]]$encode(x[[tag]])

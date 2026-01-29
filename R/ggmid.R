@@ -56,8 +56,6 @@ UseMethod("ggmid")
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
 #' @param ... optional parameters passed to the main plotting layer.
 #'
-#' @importFrom rlang .data
-#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid <- function(
