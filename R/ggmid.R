@@ -111,7 +111,7 @@ ggmid.mid <- function(
         data$mid <- data$mid + object$intercept
       jit <- 0
       if (enc$type == "factor") {
-        data[[term]] <- apply.catchall(data[[term]], enc)
+        data[[term]] <- transform.factor(data[[term]], enc)
         jit <- jitter[1L]
       }
       pl <- pl + if (type == "data") {
@@ -206,7 +206,7 @@ ggmid.mid <- function(
       jit <- c(0, 0)
       for (i in 1L:2L) {
         if (encs[[i]]$type == "factor") {
-          data[[tags[i]]] <- apply.catchall(data[[tags[i]]], encs[[i]])
+          data[[tags[i]]] <- transform.factor(data[[tags[i]]], encs[[i]])
           jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
         }
       }

@@ -112,7 +112,7 @@ plot.mid <- function(
       if (intercept) mids <- mids + x$intercept
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
       if (enc$type == "factor") {
-        xval <- apply.catchall(xval, enc)
+        xval <- transform.factor(xval, enc)
         jit <- jitter[1L]
         xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
         if (type == "data") {
@@ -170,7 +170,7 @@ plot.mid <- function(
     if (main.effects)
       z <- z + mid.f(x, tags[1L], rdf) + mid.f(x, tags[2L], rdf)
     zmat <- matrix(z, nrow = ms[1L], ncol = ms[2L])
-    zlim <- ifnot.null(limits, range(z))
+    zlim <- limits %||% range(z)
     for (i in 1L:2L) {
       if (encs[[i]]$type == "factor")
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
@@ -185,13 +185,13 @@ plot.mid <- function(
     if (type == "data" || type == "compound") {
       xval <- data[[tags[1L]]]
       if (encs[[1L]]$type == "factor") {
-        xval <- apply.catchall(xval, encs[[1L]])
+        xval <- transform.factor(xval, encs[[1L]])
         jit <- jitter[1L]
         xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
       }
       yval <- data[[tags[2L]]]
       if (encs[[2L]]$type == "factor") {
-        yval <- apply.catchall(yval, encs[[2L]])
+        yval <- transform.factor(yval, encs[[2L]])
         jit <- if (length(jitter) > 1L) jitter[2L] else jitter[1L]
         yval <- as.integer(yval) - stats::runif(length(yval), -jit, jit)
       }
