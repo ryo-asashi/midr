@@ -81,11 +81,19 @@ model.data <- function(object, env = parent.frame()) {
   NULL
 }
 
-apply.catchall <- function(x, encoder) {
-  catchall <- attr(encoder$frame, "catchall")
-  if (!is.null(catchall)) {
-    x <- factor(x, attr(encoder$frame, "levels"))
-    x[is.na(x)] <- catchall
+transform.factor <- function(x, enc) {
+  x <- as.character(x)
+  flvs <- attr(enc$frame, "levels")
+  others <- attr(enc$frame, "others")
+  map <- attr(enc$frame, "map")
+  if (!is.null(map)) {
+    x_mapped <- map[x]
+    ok <- !is.na(x_mapped)
+    x[ok] <- x_mapped[ok]
+  }
+  x <- factor(x, flvs)
+  if (!is.null(others)) {
+    x[is.na(x)] <- others
   }
   x
 }

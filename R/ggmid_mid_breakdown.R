@@ -18,8 +18,8 @@
 #' @param max.nterms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
-#' @param catchall a character string for the catchall label.
-#' @param label.format a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param others a character string for the catchall label.
+#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param ... optional parameters passed on to the main layer.
 #'
@@ -48,7 +48,7 @@
 ggmid.mid.breakdown <- function(
     object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    catchall = "(others)", label.format = c("%t=%v", "%t:%t"),
+    others = "others", label.pattern = c("%t=%v", "%t:%t"),
     format.args = list(), ...) {
   dots <- list(...)
   type <- match.arg(type)
@@ -58,14 +58,14 @@ ggmid.mid.breakdown <- function(
   use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown
   bd$term <- as.character(bd$term)
-  use.catchall <- FALSE
+  use.others <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
     resid <- bd[-rowid, "mid"]
     bd <- bd[rowid, ]
     if (length(resid) > 0L) {
       bd[nrow(bd) + 1L, "mid"] <- sum(resid)
-      use.catchall <- TRUE
+      use.others <- TRUE
     }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
@@ -73,27 +73,27 @@ ggmid.mid.breakdown <- function(
     resid <- sum(bd[nmax:nrow(bd), "mid"])
     bd <- bd[1L:(nmax - 1L), ]
     bd[nmax, "mid"] <- resid
-    use.catchall <- TRUE
+    use.others <- TRUE
   }
   # update labels
   format.args$x <- as.data.frame(object$data)
   values <- unlist(do.call(base::format, format.args))
-  for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
+  for (i in seq_len(nrow(bd) - as.numeric(use.others))) {
     term <- bd[i, "term"]
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
     } else {
-      if (length(label.format) == 1L)
-        label.format <- c(label.format, "%t:%t")
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[2L]))
+      if (length(label.pattern) == 1L)
+        label.pattern <- c(label.pattern, "%t:%t")
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     bd[i, "term"] <- label
   }
-  if (use.catchall)
-    bd[nrow(bd), "term"] <- catchall
+  if (use.others)
+    bd[nrow(bd), "term"] <- others
   bd$term <- factor(bd$term, levels = rev(bd$term))
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
@@ -101,7 +101,7 @@ ggmid.mid.breakdown <- function(
       bd, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
     ) + ggplot2::labs(y = NULL)
     if (type == "barplot") {
-      width <- ifnot.null(width, .8)
+      width <- width %||% .8
       pl <- pl + ggplot2::geom_col(width = width, ...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
@@ -127,12 +127,12 @@ ggmid.mid.breakdown <- function(
     if (vline) {
       tli <- ggplot2::theme_get()$line
       pl <- pl + ggplot2::geom_vline(
-        xintercept = 0, lwd = ifnot.null(tli$linewidth, .5) * .5)
+        xintercept = 0, lwd = (tli$linewidth %||% .5) * .5)
     }
     return(pl)
   # waterfall
   } else if (type == "waterfall") {
-    width <- ifnot.null(width, .6)
+    width <- width %||% .6
     hw <- width / 2
     bd$ymin <- as.integer(bd$term) - hw
     bd$ymax <- as.integer(bd$term) + hw
@@ -143,15 +143,12 @@ ggmid.mid.breakdown <- function(
       bd, ggplot2::aes(y = .data[["term"]])) +
       ggplot2::labs(y = NULL, x = "yhat")
     tli <- ggplot2::theme_get()$line
-    col <- ifnot.null(c(dots$colour, dots$color, dots$col)[1L],
-                      ifnot.null(tli$colour, "black"))
-    lty <- ifnot.null(c(dots$linetype, dots$lty)[1L],
-                      ifnot.null(tli$linetype, 1L))
-    lwd <- ifnot.null(c(dots$linewidth, dots$lwd)[1L],
-                      ifnot.null(tli$linewidth, 0.5))
+    col <- c(dots$colour, dots$color, dots$col)[1L] %||% tli$colour %||% "black"
+    lty <- c(dots$linetype, dots$lty)[1L] %||% tli$linetype %||% 1L
+    lwd <- c(dots$linewidth, dots$lwd)[1L] %||% tli$linewidth %||% 0.5
     if (vline) {
       pl <- pl + ggplot2::geom_vline(
-        xintercept = object$intercept, lwd = ifnot.null(tli$linewidth, .5) * .5)
+        xintercept = object$intercept, lwd = (tli$linewidth %||% .5) * .5)
     }
     pl <- pl +
       ggplot2::geom_rect(

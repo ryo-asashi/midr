@@ -7,32 +7,37 @@
 \usage{
 factor.encoder(
   x,
-  k,
-  use.catchall = TRUE,
-  catchall = "(others)",
-  tag = "x",
+  k = NULL,
+  lump = c("none", "auto", "rank", "order"),
+  others = "others",
+  sep = "..",
+  weights = NULL,
   frame = NULL,
-  weights = NULL
+  tag = "x"
 )
 
-factor.frame(levels, catchall = "(others)", tag = "x")
+factor.frame(levels, others = NULL, map = NULL, tag = "x")
 }
 \arguments{
 \item{x}{a vector to be encoded as a qualitative variable.}
 
 \item{k}{an integer specifying the maximum number of distinct levels to retain (including the catch-all level). If not positive, all unique values of \code{x} are used.}
 
-\item{use.catchall}{logical. If \code{TRUE}, less frequent levels are grouped into the catch-all level.}
+\item{lump}{a character string specifying the lumping strategy: \code{"none"}, no lumping is performed; \code{"rank"}, lumps levels based on frequency rank; \code{"order"} merges adjacent levels based on cumulative frequency to preserve order; and \code{"auto"} automatically selects \code{"order"} for ordered factors and \code{"rank"} for others.}
 
-\item{catchall}{a character string for the catch-all level.}
+\item{others}{a character string for the catch-all level (used when \code{lump = "rank"}).}
 
-\item{tag}{the name of the variable.}
-
-\item{frame}{a "factor.frame" object or a character vector that explicitly defines the levels of the variable.}
+\item{sep}{a character string used to separate the start and end levels when merging ordered factors (e.g., "Level1..Level3").}
 
 \item{weights}{an optional numeric vector of sample weights for \code{x}.}
 
+\item{frame}{a "factor.frame" object or a character vector that explicitly defines the levels of the variable.}
+
+\item{tag}{the name of the variable.}
+
 \item{levels}{a vector to be used as the levels of the variable.}
+
+\item{map}{a named vector that maps original levels to lumped levels.}
 }
 \value{
 \code{factor.encoder()} returns an object of class "encoder". This is a list containing the following components:
@@ -56,28 +61,26 @@ The primary mechanism is one-hot encoding.
 Each unique level of the input variable becomes a column in the output matrix.
 For a given observation, the column corresponding to its level is assigned a \code{1}, and all other columns are assigned \code{0}.
 
-When a variable has many unique levels (high cardinality), you can use the \code{use.catchall = TRUE} and \code{k} arguments.
-This will group the \code{k - 1} most frequent levels into their own columns, while all other less frequent levels are consolidated into a single \code{catchall} level (e.g., "(others)" by default).
+When a variable has many unique levels (high cardinality), you can use the \code{lump} and \code{k} arguments to reduce dimensionality.
 This is crucial for preventing MID models from becoming overly complex.
 }
 \examples{
 # Create an encoder for a qualitative variable
 data(iris, package = "datasets")
-enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
+enc <- factor.encoder(x = iris$Species, lump = "none", tag = "Species")
 enc
 
 # Encode a vector with NA
 enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 
-# Create an encoder with a pre-defined encoding frame
-frm <- factor.frame(c("setosa", "virginica"), "other iris")
-enc <- factor.encoder(x = iris$Species, frame = frm)
-enc
-enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+# Lumping by rank (retain top 1 + others)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank", others = "other.iris")
+enc$encode(head(iris$Species))
 
-# Create an encoder with a character vector specifying the levels
-enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
-enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
+# Lumping ordered factor (merge adjacent levels)
+x <- ordered(sample(LETTERS[1:5], 20, replace = TRUE))
+enc <- factor.encoder(x, k = 3, lump = "order")
+enc$encode(x)
 }
 \seealso{
 \code{\link{numeric.encoder}}

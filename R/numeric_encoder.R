@@ -19,11 +19,12 @@
 #'
 #' @param x a numeric vector to be encoded.
 #' @param k an integer specifying the coarseness of the encoding. If not positive, all unique values of \code{x} are used as knots or bins.
-#' @param type an integer (\code{1} or \code{0}) specifying the encoding method (see the "details" section).
-#' @param encoding.digits an integer specifying the rounding digits for the piecewise linear encoding (\code{type = 1}).
-#' @param tag the name of the variable.
-#' @param frame a "numeric.frame" object or a numeric vector that explicitly defines the knots or breakes for the encoding.
+#' @param type a character string or an integer specifying the encoding method: \code{"linear"} / \code{1} (default) or \code{"constant"} / \code{1}.
+#' @param split a character string specifying the splitting strategy: \code{"quantile"} (default) creates bins/knots based on data density; \code{"uniform"} creates equally spaced bins/knots over the data range.
+#' @param digits an integer specifying the rounding digits for the piecewise linear encoding (\code{type = "linear"}).
 #' @param weights an optional numeric vector of sample weights for \code{x}.
+#' @param frame a "numeric.frame" object or a numeric vector that explicitly defines the knots or breaks for the encoding.
+#' @param tag the name of the variable.
 #'
 #' @examples
 #' # Create an encoder for a quantitative variable
@@ -54,21 +55,14 @@
 #' @export numeric.encoder
 #'
 numeric.encoder <- function(
-    x, k, type = 1L, encoding.digits = NULL, tag = "x", frame = NULL,
-    weights = NULL) {
-  # set breaks and representative values --------
-  if (any(is.infinite(x))) {
-    xmax <- .Machine$double.xmax
-    x[xmax < x] <- xmax
-    x[x < - xmax] <- - xmax
-  }
-  uni <- sort(unique(round(x, 12L)))
-  if (length(uni) == 0L)
-    uni <- 0
-  n.uni <- length(uni)
+    x, k, type = c("linear", "constant"), split = c("quantile", "uniform"),
+    digits = NULL, weights = NULL, frame = NULL, tag = "x") {
+  if (is.numeric(type))
+    type <- if (type <= 0) "constant" else "linear"
+  type <- match.arg(type, c("linear", "constant"))
   if (!is.null(frame)) {
     if (is.vector(frame)) {
-      frame <- if (type == 0L) {
+      frame <- if (type == "constant") {
         numeric.frame(breaks = frame, tag = tag, type = type)
       } else {
         numeric.frame(reps = frame, tag = tag, type = type)
@@ -77,63 +71,73 @@ numeric.encoder <- function(
     if (!inherits(frame, "numeric.frame"))
       stop("'frame' must be a numeric vector or a valid 'numeric.frame' object")
     reps <- attr(frame, "reps")
-    n.rep <- length(reps)
+    nrep <- length(reps)
     br <- attr(frame, "breaks")
-    if (!is.null(attr(frame, "type")))
-      type <- attr(frame, "type")
-    if (!is.null(attr(frame, "encoding.digits")))
-      encoding.digits <- attr(frame, "encoding.digits")
-  } else if (k <= 0L) {
-    reps <- uni
-    n.rep <- length(reps)
-    if (n.rep == 1L) {
-      br <- c(uni[1L] - 1L, uni[1L] + 1L)
-      type <- -1L
-    } else {
-      br <- (reps[1L:n.rep - 1L] + reps[2L:n.rep]) / 2
-      br <- c(uni[1L], br, uni[n.uni])
-    }
+    type <- attr(frame, "type") %||% type
+    digits <- attr(frame, "digits") %||% digits
   } else {
-    if (type == 1L) {
-      pr <- seq.int(0, 1, length.out = k)
-    } else {
-      mgn <- 1 / (2 * k)
-      pr <- seq.int(mgn, 1 - mgn, length.out = k)
+    # set breaks and representative values based on x --------
+    if (any(is.infinite(x))) {
+      xmax <- .Machine$double.xmax
+      x[xmax < x] <- xmax
+      x[x < - xmax] <- - xmax
     }
-    qs <- weighted.quantile(x = x, w = weights, probs = pr,
-                            na.rm = TRUE, names = FALSE, type = 1L)
-    reps <- unique(round(qs, 12L))
-    if (any(is.na(reps)))
+    split <- match.arg(split)
+    uni <- sort(unique(round(x, 12L)))
+    nuni <- length(uni)
+    if (nuni == 0L) {
       reps <- 0
-    n.rep <- length(reps)
-    if (n.rep == 1L) {
-      if (n.uni == 1L) {
-        br <- c(uni[1L] - 1L, uni[1L] + 1L)
-      } else {
-        br <- c(uni[1L], uni[n.uni])
-      }
-      type = -1L
+    } else if (k <= 0L) {
+      reps <- uni
     } else {
-      br <- (reps[1L:n.rep - 1L] + reps[2L:n.rep]) / 2
-      br <- c(uni[1L], br, uni[n.uni])
+      if (type == "linear") {
+        prob <- if (k == 1) 0.5 else seq.int(0, 1, length.out = k)
+      } else {
+        prob <- seq.int(0, 1, length.out = 2L * k + 1L)
+        prob <- prob[seq.int(2L, 2L * k, by = 2L)]
+      }
+      if (split == "quantile") {
+        reps <- weighted.quantile(x = x, w = weights, probs = prob,
+                                  na.rm = TRUE, names = FALSE, type = 1L)
+      } else {
+        reps <- prob * (uni[nuni] - uni[1L]) + uni[1L]
+      }
+      reps <- unique(round(reps, 12L))
+    }
+    nrep <- length(reps)
+    if (any(is.na(reps)) || nrep == 0L) {
+      reps <- 0
+      nrep <- 1L
+      br <- c(-1, 1)
+      type <- "null"
+    } else if (nrep == 1L) {
+      if (nuni == 1L) {
+        br <- c(nuni - 1L, uni[1L] + 1L)
+      } else {
+        br <- c(uni[1L], uni[nuni])
+      }
+      type = "null"
+    } else {
+      br <- (reps[1L:nrep - 1L] + reps[2L:nrep]) / 2
+      br <- c(uni[1L], br, uni[nuni])
     }
   }
   frame <- numeric.frame(reps = reps, breaks = br, type = type,
-                         encoding.digits = encoding.digits, tag = tag)
+                         digits = digits, tag = tag)
   # define encoder function --------
-  if (type == 1L) {
+  if (type == "linear") {
     encode <- function(x, ...) {
       n <- length(x)
-      mat <- matrix(0, nrow = n, ncol = n.rep)
+      mat <- matrix(0, nrow = n, ncol = nrep)
       itv <- findInterval(x, reps)
       mat[itv == 0, 1L] <- 1
-      mat[itv == n.rep, n.rep] <- 1
-      ok <- (!is.na(x) & itv > 0 & itv < n.rep)
+      mat[itv == nrep, nrep] <- 1
+      ok <- (!is.na(x) & itv > 0 & itv < nrep)
       l <- reps[itv[ok]]
       r <- reps[itv[ok] + 1L]
       prop <- (r - x[ok]) / (r - l)
-      if (!is.null(encoding.digits)) {
-        rounder <- 10 ^ encoding.digits
+      if (!is.null(digits)) {
+        rounder <- 10 ^ digits
         prop <- floor(prop * rounder + .5) / rounder
       }
       mat[cbind(which(ok), itv[ok])] <- prop
@@ -141,16 +145,16 @@ numeric.encoder <- function(
       colnames(mat) <- format(reps, digits = 6L)
       mat
     }
-  } else if (type == 0L) {
+  } else if (type == "constant") {
     encode <- function(x, ...) {
       n <- length(x)
-      mat <- matrix(0, nrow = n, ncol = n.rep)
+      mat <- matrix(0, nrow = n, ncol = nrep)
       itv <- findInterval(x, br, all.inside = TRUE)
       ok <- !is.na(x)
       mat[cbind(which(ok), itv[ok])] <- 1
       bs <- format(br, digits = 6L)
       bs[c(1L, length(bs))] <- c("-Inf", "Inf")
-      colnames(mat) <- paste0("[", bs[1L:n.rep], ", ", bs[2L:(n.rep + 1L)], ")")
+      colnames(mat) <- paste0("[", bs[1L:nrep], ", ", bs[2L:(nrep + 1L)], ")")
       mat
     }
   } else {
@@ -160,12 +164,11 @@ numeric.encoder <- function(
       mat
     }
   }
-  type <- switch(type + 2L, "null", "constant", "linear")
   environment(encode) <- rlang::env(
     rlang::ns_env("midr"),
-    n.rep = n.rep, reps = reps, br = br, encoding.digits = encoding.digits
+    nrep = nrep, reps = reps, br = br, digits = digits
   )
-  enc <- list(frame = frame, encode = encode, n = n.rep, type = type)
+  enc <- list(frame = frame, encode = encode, n = nrep, type = type)
   structure(enc, class = "encoder")
 }
 
@@ -184,27 +187,27 @@ numeric.encoder <- function(
 #' @export numeric.frame
 #'
 numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
-                          encoding.digits = NULL, tag = "x") {
+                          digits = NULL, tag = "x") {
   if (is.null(reps) && is.null(breaks))
     stop("at least one of 'reps' or 'breaks' must be supplied")
   if (is.null(reps)) {
     breaks <- sort(unique(breaks))
     n.br <- length(breaks)
     reps <- (breaks[1L:(n.br - 1L)] + breaks[2L:n.br]) / 2L
-    n.rep <- length(reps)
+    nrep <- length(reps)
   } else {
     reps <- sort(unique(reps))
-    n.rep <- length(reps)
+    nrep <- length(reps)
     if (is.null(breaks)) {
-      breaks <- (reps[1L:(n.rep - 1L)] + reps[2L:n.rep]) / 2L
-      breaks <- c(reps[1L], breaks, reps[n.rep])
+      breaks <- (reps[1L:(nrep - 1L)] + reps[2L:nrep]) / 2L
+      breaks <- c(reps[1L], breaks, reps[nrep])
     } else {
       breaks <- sort(unique(breaks))
     }
   }
-  if (length(breaks) != n.rep + 1L)
+  if (length(breaks) != nrep + 1L)
     stop("the length of 'breaks' must be the length of 'reps' plus 1")
-  frame <- data.frame(reps, breaks[1L:n.rep], breaks[2L:(n.rep + 1)])
+  frame <- data.frame(reps, breaks[1L:nrep], breaks[2L:(nrep + 1)])
   ng <- c(frame[[1L]] <= frame[[2L]], frame[[1L]] > frame[[3L]])
   ng[1L] <- frame[1L, 1L] < frame[1L, 2L]
   if (any(ng))
@@ -212,7 +215,7 @@ numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
   colnames(frame) <- paste0(tag, c("", "_min", "_max"))
   class(frame) <- c("numeric.frame", "data.frame")
   structure(frame, reps = reps, breaks = breaks,
-            type = type, encoding.digits = encoding.digits)
+            type = type, digits = digits)
 }
 
 

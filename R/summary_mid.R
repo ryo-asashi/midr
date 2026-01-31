@@ -70,7 +70,7 @@ summary.mid <- function(
     args <- list(...)
     args$x <- yhat
     args$y <- rsd
-    args$iter <- ifnot.null(args$iter, 3L)
+    args$iter <- args$iter %||% 3L
     do.call(graphics::panel.smooth, args)
     graphics::abline(h = 0L, lty = 3L, col = "gray65")
   }

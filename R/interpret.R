@@ -26,7 +26,7 @@
 #' The \code{...} argument can be used to pass several advanced fitting options:
 #' \describe{
 #'   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
-#'   \item{interpolate.beta}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+#'   \item{interpolate}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
 #'   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
 #'   \item{save.memory}{an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.}
 #'   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
@@ -77,7 +77,7 @@
 #' \item{intercept}{the intercept.}
 #' \item{encoders}{a list of variable encoders.}
 #' \item{main.effects}{a list of data frames representing the main effects.}
-#' \item{interacions}{a list of data frames representing the interactions.}
+#' \item{interactions}{a list of data frames representing the interactions.}
 #' \item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 #' \item{linear.predictors}{a numeric vector of the linear predictors.}
 #' \item{fitted.values}{a numeric vector of the fitted values.}
@@ -101,7 +101,7 @@ UseMethod("interpret")
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
 #' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
 #' @param k an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.
-#' @param type an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
+#' @param type a character string, an integer, or a vector of length two specifying the encoding type. Can be integer (\code{1} for linear, \code{0} for step) or character (\code{"linear"}, \code{"constant"}). If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
 #' @param interactions logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
 #' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
@@ -112,9 +112,11 @@ UseMethod("interpret")
 #' @param kappa the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
 #' @param verbosity the level of verbosity. \code{0}: fatal, \code{1}: warning (default), \code{2}: info or \code{3}: debug.
-#' @param encoding.digits an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.
-#' @param use.catchall logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.
-#' @param catchall a character string specifying the catchall level.
+#' @param split a character string specifying the splitting strategy for numeric variables: \code{"quantile"} or \code{"uniform"}.
+#' @param digits an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1} or \code{"linear"}.
+#' @param lump a character string specifying the lumping strategy for factor variables: \code{"none"}, \code{"rank"}, \code{"order"}, or \code{"auto"}.
+#' @param others a character string specifying the others level.
+#' @param sep a character string used to separate levels when merging ordered factors or creating interaction terms.
 #' @param max.nelements an integer specifying the maximum number of elements of the design matrix. Defaults to \code{1e9}.
 #' @param nil a threshold for the intercept and coefficients to be treated as zero. The default is \code{1e-7}.
 #' @param tol a tolerance for the singular value decomposition. The default is \code{1e-7}.
@@ -123,10 +125,10 @@ UseMethod("interpret")
 #'
 interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
-    k = c(NA, NA), type = c(1L, 1L), frames = list(), interactions = FALSE,
-    terms = NULL, singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0,
-    kappa = 1e6, na.action = getOption("na.action"), verbosity = 1L,
-    encoding.digits = 3L, use.catchall = FALSE, catchall = "(others)",
+    k = c(NA, NA), type = c(1L, 1L), interactions = FALSE, terms = NULL,
+    singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0, kappa = 1e6,
+    na.action = getOption("na.action"), verbosity = 1L, frames = list(),
+    split = "quantile", digits = 3L, lump = "none", others = "others", sep = ":",
     max.nelements = 1e9L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
@@ -136,12 +138,12 @@ interpret.default <- function(
     verbose("model fitting started", verbosity, 2L, TRUE)
   if (missing(interactions) && !is.null(dots$ie)) interactions <- dots$ie
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
-  fit.intercept <- ifnot.null(dots$fit.intercept, FALSE)
-  interpolate.beta <- ifnot.null(dots$interpolate.beta, TRUE)
-  maxit <- ifnot.null(dots$maxit, 1e4L)
-  weighted.norm <- ifnot.null(dots$weighted.norm, singular.ok)
-  weighted.encoding <- ifnot.null(dots$weighted.encoding, FALSE)
-  save.memory <- ifnot.null(dots$save.memory, 1L)
+  fit.intercept <- dots$fit.intercept %||% FALSE
+  interpolate <- dots$interpolate %||% "iterative"
+  maxit <- dots$maxit %||% 1e4L
+  weighted.norm <- dots$weighted.norm %||% singular.ok
+  weighted.encoding <- dots$weighted.encoding %||% FALSE
+  save.memory <- dots$save.memory %||% 1L
   # preprocess data --------
   if (missing(object)) object <- NULL
   if (missing(weights)) weights <- attr(x, "weights")
@@ -245,7 +247,7 @@ interpret.default <- function(
   ), verbosity, 3L)
   if (length(k) == 1L)
     k <- c(k, NA)
-  k[2L] <- ifnot.null(dots$k2, k[2L])
+  k[2L] <- dots$k2 %||% k[2L]
   if (is.na(k[1L]))
     k[1L] <- min(25L, max(2L, if (lambda > 0) 25L else n %/% (p + q)))
   if (is.na(k[2L]))
@@ -269,17 +271,15 @@ interpret.default <- function(
       menc[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(
-            x = x[[tag]], k = k[1L], type = type[1L], tag = tag,
-            encoding.digits = encoding.digits,
-            frame = frames[[paste0("|", tag)]] %||% frames[[tag]],
-            weights = if (weighted.encoding) weights
+            x = x[[tag]], k = k[1L], type = type[1L], split = split,
+            digits = digits, weights = if (weighted.encoding) weights else NULL,
+            frame = frames[[paste0("|", tag)]] %||% frames[[tag]], tag = tag
           )
         } else {
           factor.encoder(
-            x = x[[tag]], k = k[1L], use.catchall = use.catchall,
-            catchall = catchall, tag = tag,
-            frame = frames[[paste0("|", tag)]] %||% frames[[tag]],
-            weights = if (weighted.encoding) weights
+            x = x[[tag]], k = k[1L], lump = lump, others = others, sep = sep,
+            weights = if (weighted.encoding) weights else NULL,
+            frame = frames[[paste0("|", tag)]] %||% frames[[tag]], tag = tag
           )
         }
       if (save.memory < 1L)
@@ -293,17 +293,15 @@ interpret.default <- function(
       ienc[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(
-            x = x[[tag]], k = k[2L], type = type[2L], tag = tag,
-            encoding.digits = encoding.digits,
-            frame = frames[[paste0(":", tag)]] %||% frames[[tag]],
-            weights = if (weighted.encoding) weights
+            x = x[[tag]], k = k[2L], type = type[2L], split = split,
+            digits = digits, weights = if (weighted.encoding) weights else NULL,
+            frame = frames[[paste0(":", tag)]] %||% frames[[tag]], tag = tag
           )
         } else {
           factor.encoder(
-            x = x[[tag]], k = k[2L], use.catchall = use.catchall,
-            catchall = catchall, tag = tag,
-            frame = frames[[paste0(":", tag)]] %||% frames[[tag]],
-            weights = if (weighted.encoding) weights
+            x = x[[tag]], k = k[2L], lump = lump, others = others, sep = sep,
+            weights = if (weighted.encoding) weights else NULL,
+            frame = frames[[paste0(":", tag)]] %||% frames[[tag]], tag = tag
           )
         }
       if (save.memory < 2L)
@@ -340,7 +338,7 @@ interpret.default <- function(
     mtag <- mts[i]
     cols <- fiti + mcumlen[i] + seq_len(mlen[i])
     vsum <- colSums(
-      ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]])) * weights
+      mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]]) * weights
     )
     vnil[cols] <- vsum <= nil
     delt[cols] <- ifelse(vnil[cols], 0, vsum)
@@ -366,8 +364,8 @@ interpret.default <- function(
   for (i in seq_len(q)) {
     itag <- term.split(its[i])
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
-    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
-    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
+    mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
     vsum <- as.numeric(crossprod(mat1, mat2 * weights))
     mat1 <- mat2 <- NULL
     vnil[cols] <- vsum <= nil
@@ -446,7 +444,7 @@ interpret.default <- function(
     vfil <- !vnil[cols]
     if (!any(vfil)) next
     # original matrix
-    Xsub <- ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]]))
+    Xsub <- mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]])
     X[seq_len(n), cols[vfil]] <- if (weighted.norm) {
       sweep(Xsub[, vfil, drop = FALSE], 2L, sqrt(delt[cols[vfil]]), "/") * rw
     } else {
@@ -470,8 +468,8 @@ interpret.default <- function(
     nval <- ilen[itag]
     if (!any(vfil)) next
     # original matrix
-    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
-    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
+    mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
     Xsub <- (mat1[, rep(seq_len(nval[1L]), times = nval[2L]), drop = FALSE] *
              mat2[, rep(seq_len(nval[2L]), each = nval[1L]), drop = FALSE])
     mat1 <- mat2 <- NULL
@@ -583,10 +581,10 @@ interpret.default <- function(
   nnil <- length(lnil)
   if (weighted.norm)
     beta[!vnil] <- beta[!vnil] / sqrt(delt[!vnil])
-  if (!(interpolate.beta == "none" || isFALSE(interpolate.beta)) && nnil > 0L) {
+  if (!(interpolate == "none" || isFALSE(interpolate)) && nnil > 0L) {
     verbose("interpolating inestimable parameters ...",
             verbosity, 3L)
-    if (interpolate.beta == "iterative" || isTRUE(interpolate.beta)) {
+    if (interpolate == "iterative" || isTRUE(interpolate)) {
       midx <- vapply(lnil, `[`, 0, 1L)
       aidx <- lapply(lnil, `[`, -1)
       pntr <- cumsum(c(1L, vapply(aidx, length, 0)))
@@ -629,7 +627,7 @@ interpret.default <- function(
     dat$mid <- beta[cols]
     ret.main.effects[[mts[i]]] <- dat
     lp <- lp + as.numeric(
-      ifnot.null(mmat[[mtag]], menc[[mtag]]$encode(x[[mtag]])) %*% beta[cols]
+      mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]]) %*% beta[cols]
     )
   }
   ## interactions
@@ -649,8 +647,8 @@ interpret.default <- function(
     dat$mid <- beta[cols]
     ret.interactions[[its[i]]] <- dat
     W <- matrix(beta[cols], nrow = nval[1L], ncol = nval[2L])
-    mat1 <- ifnot.null(imat[[itag[1L]]], ienc[[itag[1L]]]$encode(x[[itag[1L]]]))
-    mat2 <- ifnot.null(imat[[itag[2L]]], ienc[[itag[2L]]]$encode(x[[itag[2L]]]))
+    mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
+    mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
     lp <- lp + rowSums((mat1 %*% W) * mat2)
     mat1 <- mat2 <- NULL
   }

@@ -90,7 +90,7 @@ color.theme <- function(
     parsed <- try(parse.theme.name(object), silent = TRUE)
     if (inherits(parsed, "try-error"))
       stop("'", object, "' can't be parsed")
-    args <- get.theme(parsed$name, ifnot.null(parsed$source, source), env)
+    args <- get.theme(parsed$name, parsed$source %||% source, env)
     args <- list(theme = do.call(make.theme, args), kernel.args = kernel.args,
                  options = options, name = name, source = source, type = type,
                  reverse = reverse, ...)
@@ -281,7 +281,7 @@ make.theme <- function(
     kernel.args$mode <- ifnot.null(
       kernel.args$mode, switch(type, qualitative = "palette", "ramp")
     )
-    kernel.args$alpha <- ifnot.null(kernel.args$alpha, NA)
+    kernel.args$alpha <- kernel.args$alpha %||% NA
   }
   options$kernel.size <- ifnot.null(options$kernel.size,
                                     kernel.size(kernel, args = kernel.args))
@@ -289,10 +289,10 @@ make.theme <- function(
     options$palette.formatter,
     switch(type, qualitative = "recycle", "interpolate")
   )
-  options$palette.reverse <- ifnot.null(options$palette.reverse, FALSE)
-  options$ramp.rescaler <- ifnot.null(options$ramp.rescaler, c(0, 1))
-  options$na.color <- ifnot.null(options$na.color, NA)
-  options$reverse.method <- ifnot.null(options$reverse.method, NA)
+  options$palette.reverse <- options$palette.reverse %||% FALSE
+  options$ramp.rescaler <- options$ramp.rescaler %||% c(0, 1)
+  options$na.color <- options$na.color %||% NA
+  options$reverse.method <- options$reverse.method %||% NA
   env <- rlang::env(rlang::ns_env("midr"),
                     kernel = kernel, kernel.args = kernel.args, options = options,
                     name = name, source = source, type = type
@@ -349,7 +349,7 @@ make.theme <- function(
     ret <- character(length(x))
     ret[ng] <- NA
     x[!ng] <- pmin(1, pmax(0, x[!ng]))
-    rsc <- ifnot.null(options$ramp.rescaler, c(0, 1))
+    rsc <- options$ramp.rescaler %||% c(0, 1)
     if (!is.numeric(rsc) || length(rsc) != 2L)
       stop("'ramp.rescaler' option must be a numeric vector of length 2")
     x[!ng] <- x[!ng] * diff(rsc) + rsc[1L]
@@ -481,7 +481,7 @@ rescale <- function(x, middle = NULL) {
 to.colors <- function(x, theme, middle = 0, na.value = NULL) {
   theme <- color.theme(theme)
   if (is.null(na.value))
-    na.value <- ifnot.null(theme$options$na.color, NA)
+    na.value <- theme$options$na.color %||% NA
   if (is.discrete(x)) {
     x <- as.integer(as.factor(x))
     cols <- theme$palette(max(x, na.rm = TRUE))[x]

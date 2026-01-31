@@ -49,7 +49,7 @@ mid.terms <- function(
   if (missing(interactions) && !is.null(dots$ie))
     interactions <- dots$ie
   terms <- ifnot.null(
-    attr(ifnot.null(object$terms, attr(object, "terms")), "term.labels"),
+    attr(object$terms %||% attr(object, "terms"), "term.labels"),
     attr(object, "term.labels")
   )
   if (!main.effects)
