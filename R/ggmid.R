@@ -118,6 +118,9 @@ ggmid.mid <- function(
       jit <- 0
       if (enc$type == "factor") {
         jit <- jitter[1L]
+        vals <- factor(data[, term], lvs)
+        vals[is.na(vals)] <- attr(enc$frame, "others") %||% NA
+        data[, term] <- vals
       }
       pl <- pl + if (type == "data") {
         ggplot2::geom_jitter(
@@ -223,6 +226,10 @@ ggmid.mid <- function(
       for (i in seq_len(2L)) {
         if (encs[[i]]$type == "factor") {
           jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+          frm <- encs[[i]]$frame
+          vals <- factor(data[, tags[i]], attr(frm, "original"))
+          vals[is.na(vals)] <- attr(frm, "others") %||% NA
+          data[, tags[i]] <- vals
         }
       }
       if (type == "compound") {

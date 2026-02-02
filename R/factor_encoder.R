@@ -173,8 +173,11 @@ factor.frame <- function(
     levels, others = NULL, map = NULL, original = NULL, tag = "x"
   ) {
   levels <- as.character(levels)
-  if (!is.null(others))
+  if (!is.null(others)) {
     levels <- unique(c(levels, others))
+    if (!is.null(original))
+      original <- unique(c(original, others))
+  }
   frame <- data.frame(factor(levels, levels = levels))
   frame[[2L]] <- as.integer(frame[[1L]])
   colnames(frame) <- paste0(tag, c("", "_level"))

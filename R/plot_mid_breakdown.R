@@ -129,7 +129,7 @@ plot.mid.breakdown <- function(
     bd$xmin <- cs[1L:n]
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
-                 fill = cols, horizontal = TRUE, xlab = "mid", width = width,
+                 fill = cols, horizontal = TRUE, xlab = "yhat", width = width,
                  lty = 1L, lwd = 1L, col = NULL)
     args <- override(args, dots)
     do.call(barplot2, args)

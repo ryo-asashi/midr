@@ -147,8 +147,8 @@ plot.mid.conditional <- function(
   if (dots) {
     if (fv) {
       obs[, variable] <- factor(obs[ , variable], levels = flvs)
-      if (!is.null(attr(values, "catchall")))
-        obs[is.na(obs[, variable]), variable] <- attr(values, "catchall")
+      if (!is.null(attr(values, "others")))
+        obs[is.na(obs[, variable]), variable] <- attr(values, "others")
     }
     graphics::points.default(x = obs[, variable], y = obs[, yvar],
                              pch = 16L, col = dcol)

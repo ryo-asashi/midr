@@ -114,6 +114,10 @@ plot.mid <- function(
     }
     if (type == "data" || type == "compound") {
       xval <- data[, term]
+      if (enc$type == "factor") {
+        xval <- factor(xval, lvs)
+        xval[is.na(xval)] <- attr(enc$frame, "others") %||% NA
+      }
       mids <- as.numeric(preds[, term])
       if (intercept)
         mids <- mids + x$intercept
@@ -195,11 +199,17 @@ plot.mid <- function(
       xval <- data[[tags[1L]]]
       if (encs[[1L]]$type == "factor") {
         jit <- jitter[1L]
+        frm <- encs[[1L]]$frame
+        xval <- factor(xval, attr(frm, "original"))
+        xval[is.na(xval)] <- attr(frm, "others") %||% NA
         xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
       }
       yval <- data[[tags[2L]]]
       if (encs[[2L]]$type == "factor") {
         jit <- if (length(jitter) > 1L) jitter[2L] else jitter[1L]
+        frm <- encs[[2L]]$frame
+        yval <- factor(yval, attr(frm, "original"))
+        yval[is.na(yval)] <- attr(frm, "others") %||% NA
         yval <- as.integer(yval) - stats::runif(length(yval), -jit, jit)
       }
     }
