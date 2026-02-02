@@ -128,7 +128,7 @@ interpret.default <- function(
     k = c(NA, NA), type = c(1L, 1L), interactions = FALSE, terms = NULL,
     singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0, kappa = 1e6,
     na.action = getOption("na.action"), verbosity = 1L, frames = list(),
-    split = "quantile", digits = 3L, lump = "none", others = "others", sep = ":",
+    split = "quantile", digits = 3L, lump = "none", others = "others", sep = ">",
     max.nelements = 1e9L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
@@ -634,19 +634,12 @@ interpret.default <- function(
   ret.interactions <- list()
   for (i in seq_len(q)) {
     itag <- term.split(its[i])
-    nval <- ilen[itag]
-    dat <- data.frame(
-      ienc[[itag[1L]]]$frame[rep(seq_len(nval[1L]), times = nval[2L]), ,
-                             drop = FALSE],
-      ienc[[itag[2L]]]$frame[rep(seq_len(nval[2L]), each = nval[1L]), ,
-                             drop = FALSE],
-      row.names = NULL, check.names = FALSE
-    )
+    dat <- interaction.frame(ienc[[itag[1L]]]$frame, ienc[[itag[2L]]]$frame)
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
     dat$density <- delt[cols] / n
     dat$mid <- beta[cols]
     ret.interactions[[its[i]]] <- dat
-    W <- matrix(beta[cols], nrow = nval[1L], ncol = nval[2L])
+    W <- matrix(beta[cols], nrow = ilen[itag[1L]], ncol = ilen[itag[2L]])
     mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
     mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
     lp <- lp + rowSums((mat1 %*% W) * mat2)

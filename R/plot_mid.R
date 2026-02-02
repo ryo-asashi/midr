@@ -76,8 +76,14 @@ plot.mid <- function(
   }
   # main effect
   if ((len <- length(tags)) == 1L) {
-    df <- stats::na.omit(x$main.effects[[term]])
-    enc <- x$encoders[["main.effects"]][[term]]
+    enc <- x$encoders$main.effects[[term]]
+    lvs <- attr(enc$frame, "original")
+    if (is.null(lvs)) {
+      df <- stats::na.omit(x$main.effects[[term]])
+    } else {
+      df <- factor.frame(lvs, tag = term)
+      df$mid <- mid.f(x, term, df)
+    }
     if (intercept)
       df$mid <- df$mid + x$intercept
     middle <- if (intercept) x$intercept else 0
@@ -109,10 +115,10 @@ plot.mid <- function(
     if (type == "data" || type == "compound") {
       xval <- data[, term]
       mids <- as.numeric(preds[, term])
-      if (intercept) mids <- mids + x$intercept
+      if (intercept)
+        mids <- mids + x$intercept
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
       if (enc$type == "factor") {
-        xval <- transform.factor(xval, enc)
         jit <- jitter[1L]
         xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
         if (type == "data") {
@@ -139,24 +145,27 @@ plot.mid <- function(
     }
   # interaction
   } else if (len == 2L) {
+    encs <- list(x$encoders$interactions[[tags[1L]]],
+                 x$encoders$interactions[[tags[2L]]])
     ms <- resolution
     if (length(ms) == 1L)
       ms <- c(ms, ms)
-    xy <- list(NULL, NULL)
-    lat <- list(NULL, NULL)
-    lab <- list(NULL, NULL)
-    encs <- list(x$encoders[["interactions"]][[tags[1L]]],
-                 x$encoders[["interactions"]][[tags[2L]]])
-    for (i in 1L:2L) {
+    xy <- lat <- lab <- vector("list", 2L)
+    for (i in seq_len(2L)) {
+      lvs <- attr(encs[[i]]$frame, "original")
+      frm <- if (is.null(lvs)) {
+        encs[[i]]$frame
+      } else {
+        factor.frame(lvs, tag = tags[i])
+      }
       if (encs[[i]]$type == "factor") {
-        ms[i] <- encs[[i]]$n * 2L
-        xy[[i]] <- rep(encs[[i]]$frame[[1L]], each = 2L)
-        lat[[i]] <- seq_len(encs[[i]]$n)
-        lab[[i]] <- encs[[i]]$frame[[1L]]
+        xy[[i]] <- rep(frm[[1L]], each = 2L)
+        ms[i] <- length(xy[[i]])
+        lab[[i]] <- frm[[1L]]
+        lat[[i]] <- seq_along(lab[[i]])
       } else {
         cns <- paste0(tags[i], c("_min", "_max"))
-        xy[[i]] <- seq(min(encs[[i]]$frame[[cns[1L]]]),
-                       max(encs[[i]]$frame[[cns[2L]]]),
+        xy[[i]] <- seq(min(frm[[cns[1L]]]), max(frm[[cns[2L]]]),
                        length.out = ms[i])
       }
     }
@@ -171,7 +180,7 @@ plot.mid <- function(
       z <- z + mid.f(x, tags[1L], rdf) + mid.f(x, tags[2L], rdf)
     zmat <- matrix(z, nrow = ms[1L], ncol = ms[2L])
     zlim <- limits %||% range(z)
-    for (i in 1L:2L) {
+    for (i in seq_len(2L)) {
       if (encs[[i]]$type == "factor")
         xy[[i]] <- as.numeric(xy[[i]]) + c(-.499, +.499)
     }
@@ -185,13 +194,11 @@ plot.mid <- function(
     if (type == "data" || type == "compound") {
       xval <- data[[tags[1L]]]
       if (encs[[1L]]$type == "factor") {
-        xval <- transform.factor(xval, encs[[1L]])
         jit <- jitter[1L]
         xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
       }
       yval <- data[[tags[2L]]]
       if (encs[[2L]]$type == "factor") {
-        yval <- transform.factor(yval, encs[[2L]])
         jit <- if (length(jitter) > 1L) jitter[2L] else jitter[1L]
         yval <- as.integer(yval) - stats::runif(length(yval), -jit, jit)
       }
@@ -226,14 +233,8 @@ plot.mid <- function(
       args <- override(args, dots)
       do.call(graphics::plot.default, args)
       graphics::box()
-      for (i in 1L:2L) {
-        if (encs[[i]]$type == "factor") {
-          lvs <- levels(encs[[i]]$frame[[1L]])
-          graphics::axis(side = i, at = seq_len(encs[[i]]$n), labels = lvs)
-        } else {
-          graphics::axis(side = i)
-        }
-      }
+      graphics::axis(side = 1L, at = lat[[1L]], labels = lab[[1L]])
+      graphics::axis(side = 2L, at = lat[[2L]], labels = lab[[2L]])
       args <- args[c("x", "y", "col", "pch", "cex")]
       do.call(graphics::points.default, args)
     }

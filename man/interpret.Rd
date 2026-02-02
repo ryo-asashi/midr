@@ -31,7 +31,7 @@ interpret(object, ...)
   digits = 3L,
   lump = "none",
   others = "others",
-  sep = ":",
+  sep = ">",
   max.nelements = 1000000000L,
   nil = 1e-07,
   tol = 1e-07,

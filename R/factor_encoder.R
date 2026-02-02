@@ -53,7 +53,7 @@
 #'
 factor.encoder <- function(
     x, k = NULL, lump = c("none", "auto", "rank", "order"), others = "others",
-    sep = "..", weights = NULL, frame = NULL, tag = "x") {
+    sep = ">", weights = NULL, frame = NULL, tag = "x") {
   if (!is.null(frame)) {
     if (is.vector(frame))
       frame <- factor.frame(levels = frame, others = NULL)
@@ -62,10 +62,10 @@ factor.encoder <- function(
     flvs <- attr(frame, "levels")
     others <- attr(frame, "others")
     map <- attr(frame, "map")
+    olvs <- attr(frame, "original") %||% levels(as.factor(x))
   } else {
     # set levels based on x --------
-    if (!is.factor(x))
-      x <- factor(x)
+    x <- as.factor(x)
     lump <- match.arg(lump)
     if (lump == "auto")
       lump <- if (is.ordered(x)) "order" else "rank"
@@ -107,36 +107,51 @@ factor.encoder <- function(
   type <- if (length(flvs) == 0L) "null" else "factor"
   nlvs <- length(flvs)
   frame <- factor.frame(
-    levels = flvs, others = others, map = map, tag = tag
+    levels = flvs, others = others, map = map, original = olvs, tag = tag
   )
   # define encoder function --------
   if (type == "factor") {
+    transform <- function(x) {
+      x <- as.character(x)
+      if (!is.null(map)) {
+        x.mapped <- map[x]
+        ok <- !is.na(x.mapped)
+        x[ok] <- x.mapped[ok]
+      }
+      x <- factor(x, flvs)
+      if (!is.null(others)) {
+        x[is.na(x)] <- others
+      }
+      x
+    }
     encode <- function(x, ...) {
       n <- length(x)
-      mat <- matrix(0, nrow = n, ncol = nlvs)
-      x <- as.character(x)
-      if (!is.null(map))
-        x <- map[x]
-      x <- factor(x, levels = flvs)
-      if (!is.null(others))
-        x[is.na(x)] <- others
+      x <- transform(x)
       ok <- !is.na(x)
+      mat <- matrix(0, nrow = n, ncol = nlvs)
       mat[cbind(which(ok), as.integer(x[ok]))] <- 1
       colnames(mat) <- flvs
       mat
     }
   } else {
+    transform <- function(x) {
+      NULL
+    }
     encode <- function(x, ...) {
       mat <- matrix(0, nrow = length(x), ncol = 1L)
       colnames(mat) <- flvs
       mat
     }
   }
-  environment(encode) <- rlang::env(
+  fenv <- rlang::env(
     rlang::ns_env("midr"),
-    nlvs = nlvs, flvs = flvs, others = others, map = map
+    nlvs = nlvs, flvs = flvs, others = others, map = map, transform = transform
   )
-  enc <- list(frame = frame, encode = encode, n = nlvs, type = type)
+  environment(transform) <- fenv
+  environment(encode) <- fenv
+  enc <- list(
+    frame = frame, transform = transform, encode = encode, n = nlvs, type = type
+  )
   structure(enc, class = "encoder")
 }
 
@@ -147,6 +162,7 @@ factor.encoder <- function(
 #'
 #' @param levels a vector to be used as the levels of the variable.
 #' @param map a named vector that maps original levels to lumped levels.
+#' @param original a character vector to be used as the original levels for expanding the frame. Defaults to \code{NULL}.
 #'
 #' @returns
 #' \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
@@ -154,15 +170,16 @@ factor.encoder <- function(
 #' @export factor.frame
 #'
 factor.frame <- function(
-    levels, others = NULL, map = NULL, tag = "x"
+    levels, others = NULL, map = NULL, original = NULL, tag = "x"
   ) {
-  if (!is.null(map) && !all(map %in% levels))
-    message("some 'map' values are not covered by 'levels'")
+  levels <- as.character(levels)
   if (!is.null(others))
     levels <- unique(c(levels, others))
   frame <- data.frame(factor(levels, levels = levels))
   frame[[2L]] <- as.integer(frame[[1L]])
   colnames(frame) <- paste0(tag, c("", "_level"))
   class(frame) <- c("factor.frame", "data.frame")
-  structure(frame, levels = levels, others = others, map = map)
+  structure(
+    frame, levels = levels, others = others, map = map, original = original
+  )
 }

@@ -10,13 +10,13 @@ factor.encoder(
   k = NULL,
   lump = c("none", "auto", "rank", "order"),
   others = "others",
-  sep = "..",
+  sep = ">",
   weights = NULL,
   frame = NULL,
   tag = "x"
 )
 
-factor.frame(levels, others = NULL, map = NULL, tag = "x")
+factor.frame(levels, others = NULL, map = NULL, original = NULL, tag = "x")
 }
 \arguments{
 \item{x}{a vector to be encoded as a qualitative variable.}
@@ -38,6 +38,8 @@ factor.frame(levels, others = NULL, map = NULL, tag = "x")
 \item{levels}{a vector to be used as the levels of the variable.}
 
 \item{map}{a named vector that maps original levels to lumped levels.}
+
+\item{original}{a character vector to be used as the original levels for expanding the frame. Defaults to \code{NULL}.}
 }
 \value{
 \code{factor.encoder()} returns an object of class "encoder". This is a list containing the following components:

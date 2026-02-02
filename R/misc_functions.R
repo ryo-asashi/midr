@@ -81,21 +81,14 @@ model.data <- function(object, env = parent.frame()) {
   NULL
 }
 
-transform.factor <- function(x, enc) {
-  x <- as.character(x)
-  flvs <- attr(enc$frame, "levels")
-  others <- attr(enc$frame, "others")
-  map <- attr(enc$frame, "map")
-  if (!is.null(map)) {
-    x_mapped <- map[x]
-    ok <- !is.na(x_mapped)
-    x[ok] <- x_mapped[ok]
-  }
-  x <- factor(x, flvs)
-  if (!is.null(others)) {
-    x[is.na(x)] <- others
-  }
-  x
+interaction.frame <- function(xfrm, yfrm) {
+  nx <- nrow(xfrm)
+  ny <- nrow(yfrm)
+  data.frame(
+    xfrm[rep(seq_len(nx), times = ny), , drop = FALSE],
+    yfrm[rep(seq_len(ny), each = nx), , drop = FALSE],
+    row.names = NULL, check.names = FALSE
+  )
 }
 
 adjusted.mai <- function(labels, margin = 1/16) {
