@@ -19,7 +19,6 @@ interpret(
   link = NULL,
   k = c(NA, NA),
   type = c(1L, 1L),
-  frames = list(),
   interactions = FALSE,
   terms = NULL,
   singular.ok = FALSE,
@@ -29,9 +28,12 @@ interpret(
   kappa = 1e+06,
   na.action = getOption("na.action"),
   verbosity = 1L,
-  encoding.digits = 3L,
-  use.catchall = FALSE,
-  catchall = "(others)",
+  frames = list(),
+  split = "quantile",
+  digits = 3L,
+  lump = "none",
+  others = "others",
+  sep = ">",
   max.nelements = 1000000000L,
   nil = 1e-07,
   tol = 1e-07,
@@ -111,18 +113,11 @@ interpret(
 
 - type:
 
-  an integer or integer-valued vector of length two. The type of
-  encoding. The effects of quantitative variables are modeled as
-  piecewise linear functions if `type` is `1`, and as step functions if
-  `type` is `0`. If a vector is passed, `type[1L]` is used for main
-  effects and `type[2L]` is used for interactions.
-
-- frames:
-
-  a named list of encoding frames ("numeric.frame" or "factor.frame"
-  objects). The encoding frames are used to encode the variable of the
-  corresponding name. If the name begins with "\|" or ":", the encoding
-  frame is used only for main effects or interactions, respectively.
+  a character string, an integer, or a vector of length two specifying
+  the encoding type. Can be integer (`1` for linear, `0` for step) or
+  character (`"linear"`, `"constant"`). If a vector is passed,
+  `type[1L]` is used for main effects and `type[2L]` is used for
+  interactions.
 
 - interactions:
 
@@ -174,19 +169,36 @@ interpret(
   the level of verbosity. `0`: fatal, `1`: warning (default), `2`: info
   or `3`: debug.
 
-- encoding.digits:
+- frames:
+
+  a named list of encoding frames ("numeric.frame" or "factor.frame"
+  objects). The encoding frames are used to encode the variable of the
+  corresponding name. If the name begins with "\|" or ":", the encoding
+  frame is used only for main effects or interactions, respectively.
+
+- split:
+
+  a character string specifying the splitting strategy for numeric
+  variables: `"quantile"` or `"uniform"`.
+
+- digits:
 
   an integer. The rounding digits for encoding numeric variables. Used
-  only when `type` is `1`.
+  only when `type` is `1` or `"linear"`.
 
-- use.catchall:
+- lump:
 
-  logical. If `TRUE`, less frequent levels of qualitative variables are
-  dropped and replaced by the catchall level.
+  a character string specifying the lumping strategy for factor
+  variables: `"none"`, `"rank"`, `"order"`, or `"auto"`.
 
-- catchall:
+- others:
 
-  a character string specifying the catchall level.
+  a character string specifying the others level.
+
+- sep:
+
+  a character string used to separate levels when merging ordered
+  factors or creating interaction terms.
 
 - max.nelements:
 
@@ -264,7 +276,7 @@ following components:
 
   a list of data frames representing the main effects.
 
-- interacions:
+- interactions:
 
   a list of data frames representing the interactions.
 
@@ -337,7 +349,7 @@ The `...` argument can be used to pass several advanced fitting options:
   squares problem. If `FALSE` (default), it is calculated as the
   weighted mean of the response.
 
-- interpolate.beta:
+- interpolate:
 
   a character string specifying the method for interpolating inestimable
   coefficients (betas) that arise from sparse data regions. Can be

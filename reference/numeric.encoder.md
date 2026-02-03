@@ -14,18 +14,19 @@ object that defines the encoding scheme.
 numeric.encoder(
   x,
   k,
-  type = 1L,
-  encoding.digits = NULL,
-  tag = "x",
+  type = c("linear", "constant"),
+  split = c("quantile", "uniform"),
+  digits = NULL,
+  weights = NULL,
   frame = NULL,
-  weights = NULL
+  tag = "x"
 )
 
 numeric.frame(
   reps = NULL,
   breaks = NULL,
   type = NULL,
-  encoding.digits = NULL,
+  digits = NULL,
   tag = "x"
 )
 ```
@@ -43,26 +44,32 @@ numeric.frame(
 
 - type:
 
-  an integer (`1` or `0`) specifying the encoding method (see the
-  "details" section).
+  a character string or an integer specifying the encoding method:
+  `"linear"` / `1` (default) or `"constant"` / `1`.
 
-- encoding.digits:
+- split:
+
+  a character string specifying the splitting strategy: `"quantile"`
+  (default) creates bins/knots based on data density; `"uniform"`
+  creates equally spaced bins/knots over the data range.
+
+- digits:
 
   an integer specifying the rounding digits for the piecewise linear
-  encoding (`type = 1`).
-
-- tag:
-
-  the name of the variable.
-
-- frame:
-
-  a "numeric.frame" object or a numeric vector that explicitly defines
-  the knots or breakes for the encoding.
+  encoding (`type = "linear"`).
 
 - weights:
 
   an optional numeric vector of sample weights for `x`.
+
+- frame:
+
+  a "numeric.frame" object or a numeric vector that explicitly defines
+  the knots or breaks for the encoding.
+
+- tag:
+
+  the name of the variable.
 
 - reps:
 
@@ -155,14 +162,14 @@ enc$encode(x = c(4:8, NA, Inf))
 frm <- numeric.frame(breaks = c(3, 5, 7, 9), type = 0L)
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
 enc$encode(x = c(4:8, NA, Inf))
-#>      [-Inf, 5) [5, 7) [7, Inf)
-#> [1,]         1      0        0
-#> [2,]         0      1        0
-#> [3,]         0      1        0
-#> [4,]         0      0        1
-#> [5,]         0      0        1
-#> [6,]         0      0        0
-#> [7,]         0      0        1
+#>      Void
+#> [1,]    0
+#> [2,]    0
+#> [3,]    0
+#> [4,]    0
+#> [5,]    0
+#> [6,]    0
+#> [7,]    0
 
 # Create an encoder with a numeric vector specifying the knots
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = c(3, 5, 7, 9))

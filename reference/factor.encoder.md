@@ -12,15 +12,16 @@ that defines the encoding scheme.
 ``` r
 factor.encoder(
   x,
-  k,
-  use.catchall = TRUE,
-  catchall = "(others)",
-  tag = "x",
+  k = NULL,
+  lump = c("none", "auto", "rank", "order"),
+  others = "others",
+  sep = ">",
+  weights = NULL,
   frame = NULL,
-  weights = NULL
+  tag = "x"
 )
 
-factor.frame(levels, catchall = "(others)", tag = "x")
+factor.frame(levels, others = NULL, map = NULL, original = NULL, tag = "x")
 ```
 
 ## Arguments
@@ -35,31 +36,49 @@ factor.frame(levels, catchall = "(others)", tag = "x")
   (including the catch-all level). If not positive, all unique values of
   `x` are used.
 
-- use.catchall:
+- lump:
 
-  logical. If `TRUE`, less frequent levels are grouped into the
-  catch-all level.
+  a character string specifying the lumping strategy: `"none"`, no
+  lumping is performed; `"rank"`, lumps levels based on frequency rank;
+  `"order"` merges adjacent levels based on cumulative frequency to
+  preserve order; and `"auto"` automatically selects `"order"` for
+  ordered factors and `"rank"` for others.
 
-- catchall:
+- others:
 
-  a character string for the catch-all level.
+  a character string for the catch-all level (used when
+  `lump = "rank"`).
 
-- tag:
+- sep:
 
-  the name of the variable.
+  a character string used to separate the start and end levels when
+  merging ordered factors (e.g., "Level1..Level3").
+
+- weights:
+
+  an optional numeric vector of sample weights for `x`.
 
 - frame:
 
   a "factor.frame" object or a character vector that explicitly defines
   the levels of the variable.
 
-- weights:
+- tag:
 
-  an optional numeric vector of sample weights for `x`.
+  the name of the variable.
 
 - levels:
 
   a vector to be used as the levels of the variable.
+
+- map:
+
+  a named vector that maps original levels to lumped levels.
+
+- original:
+
+  a character vector to be used as the original levels for expanding the
+  frame. Defaults to `NULL`.
 
 ## Value
 
@@ -96,11 +115,8 @@ observation, the column corresponding to its level is assigned a `1`,
 and all other columns are assigned `0`.
 
 When a variable has many unique levels (high cardinality), you can use
-the `use.catchall = TRUE` and `k` arguments. This will group the `k - 1`
-most frequent levels into their own columns, while all other less
-frequent levels are consolidated into a single `catchall` level (e.g.,
-"(others)" by default). This is crucial for preventing MID models from
-becoming overly complex.
+the `lump` and `k` arguments to reduce dimensionality. This is crucial
+for preventing MID models from becoming overly complex.
 
 ## See also
 
@@ -111,7 +127,7 @@ becoming overly complex.
 ``` r
 # Create an encoder for a qualitative variable
 data(iris, package = "datasets")
-enc <- factor.encoder(x = iris$Species, use.catchall = FALSE, tag = "Species")
+enc <- factor.encoder(x = iris$Species, lump = "none", tag = "Species")
 enc
 #> 
 #> Factor encoder with 3 levels
@@ -132,34 +148,40 @@ enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
 #> [4,]      0          0         0
 #> [5,]      0          1         0
 
-# Create an encoder with a pre-defined encoding frame
-frm <- factor.frame(c("setosa", "virginica"), "other iris")
-enc <- factor.encoder(x = iris$Species, frame = frm)
-enc
-#> 
-#> Factor encoder with 3 levels
-#> 
-#> Frame:
-#>            x
-#> 1     setosa
-#> 2  virginica
-#> 3 other iris
-#> 
-enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
-#>      setosa virginica other iris
-#> [1,]      1         0          0
-#> [2,]      0         1          0
-#> [3,]      0         0          1
-#> [4,]      0         0          1
-#> [5,]      0         0          1
-
-# Create an encoder with a character vector specifying the levels
-enc <- factor.encoder(x = iris$Species, frame = c("setosa", "versicolor"))
-enc$encode(c("setosa", "virginica", "ensata", NA, "versicolor"))
-#>      setosa versicolor
+# Lumping by rank (retain top 1 + others)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank", others = "other.iris")
+enc$encode(head(iris$Species))
+#>      setosa other.iris
 #> [1,]      1          0
-#> [2,]      0          0
-#> [3,]      0          0
-#> [4,]      0          0
-#> [5,]      0          1
+#> [2,]      1          0
+#> [3,]      1          0
+#> [4,]      1          0
+#> [5,]      1          0
+#> [6,]      1          0
+
+# Lumping ordered factor (merge adjacent levels)
+x <- ordered(sample(LETTERS[1:5], 20, replace = TRUE))
+enc <- factor.encoder(x, k = 3, lump = "order")
+enc$encode(x)
+#>       A>B C>D E
+#>  [1,]   0   1 0
+#>  [2,]   1   0 0
+#>  [3,]   0   0 1
+#>  [4,]   0   0 1
+#>  [5,]   0   0 1
+#>  [6,]   1   0 0
+#>  [7,]   0   1 0
+#>  [8,]   0   1 0
+#>  [9,]   0   0 1
+#> [10,]   0   0 1
+#> [11,]   0   1 0
+#> [12,]   0   0 1
+#> [13,]   1   0 0
+#> [14,]   0   1 0
+#> [15,]   1   0 0
+#> [16,]   0   1 0
+#> [17,]   1   0 0
+#> [18,]   0   1 0
+#> [19,]   0   0 1
+#> [20,]   1   0 0
 ```

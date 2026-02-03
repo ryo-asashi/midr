@@ -16,8 +16,8 @@ ggmid(
   max.nterms = 15L,
   width = NULL,
   vline = TRUE,
-  catchall = "(others)",
-  label.format = c("%t=%v", "%t:%t"),
+  others = "others",
+  label.pattern = c("%t=%v", "%t:%t"),
   format.args = list(),
   ...
 )
@@ -60,11 +60,11 @@ autoplot(object, ...)
   logical. If `TRUE`, a vertical line is drawn at the zero or intercept
   line.
 
-- catchall:
+- others:
 
   a character string for the catchall label.
 
-- label.format:
+- label.pattern:
 
   a character vector of length one or two specifying the format of the
   axis labels. The first element is used for main effects (default

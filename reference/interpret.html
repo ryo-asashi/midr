@@ -82,7 +82,6 @@ MID models are additive, highly interpretable models composed of functions, each
 <span>  link <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
-<span>  frames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  interactions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  singular.ok <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -92,9 +91,12 @@ MID models are additive, highly interpretable models composed of functions, each
 <span>  kappa <span class="op">=</span> <span class="fl">1e+06</span>,</span>
 <span>  na.action <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"na.action"</span><span class="op">)</span>,</span>
 <span>  verbosity <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  encoding.digits <span class="op">=</span> <span class="fl">3L</span>,</span>
-<span>  use.catchall <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  catchall <span class="op">=</span> <span class="st">"(others)"</span>,</span>
+<span>  frames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  split <span class="op">=</span> <span class="st">"quantile"</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  lump <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  others <span class="op">=</span> <span class="st">"others"</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">"&gt;"</span>,</span>
 <span>  max.nelements <span class="op">=</span> <span class="fl">1000000000L</span>,</span>
 <span>  nil <span class="op">=</span> <span class="fl">1e-07</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-07</span>,</span>
@@ -156,11 +158,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if <code>type</code> is <code>1</code>, and as step functions if <code>type</code> is <code>0</code>. If a vector is passed, <code>type[1L]</code> is used for main effects and <code>type[2L]</code> is used for interactions.</p></dd>
-
-
-<dt id="arg-frames">frames<a class="anchor" aria-label="anchor" href="#arg-frames"></a></dt>
-<dd><p>a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.</p></dd>
+<dd><p>a character string, an integer, or a vector of length two specifying the encoding type. Can be integer (<code>1</code> for linear, <code>0</code> for step) or character (<code>"linear"</code>, <code>"constant"</code>). If a vector is passed, <code>type[1L]</code> is used for main effects and <code>type[2L]</code> is used for interactions.</p></dd>
 
 
 <dt id="arg-interactions">interactions<a class="anchor" aria-label="anchor" href="#arg-interactions"></a></dt>
@@ -199,16 +197,28 @@ MID models are additive, highly interpretable models composed of functions, each
 <dd><p>the level of verbosity. <code>0</code>: fatal, <code>1</code>: warning (default), <code>2</code>: info or <code>3</code>: debug.</p></dd>
 
 
-<dt id="arg-encoding-digits">encoding.digits<a class="anchor" aria-label="anchor" href="#arg-encoding-digits"></a></dt>
-<dd><p>an integer. The rounding digits for encoding numeric variables. Used only when <code>type</code> is <code>1</code>.</p></dd>
+<dt id="arg-frames">frames<a class="anchor" aria-label="anchor" href="#arg-frames"></a></dt>
+<dd><p>a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.</p></dd>
 
 
-<dt id="arg-use-catchall">use.catchall<a class="anchor" aria-label="anchor" href="#arg-use-catchall"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, less frequent levels of qualitative variables are dropped and replaced by the catchall level.</p></dd>
+<dt id="arg-split">split<a class="anchor" aria-label="anchor" href="#arg-split"></a></dt>
+<dd><p>a character string specifying the splitting strategy for numeric variables: <code>"quantile"</code> or <code>"uniform"</code>.</p></dd>
 
 
-<dt id="arg-catchall">catchall<a class="anchor" aria-label="anchor" href="#arg-catchall"></a></dt>
-<dd><p>a character string specifying the catchall level.</p></dd>
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>an integer. The rounding digits for encoding numeric variables. Used only when <code>type</code> is <code>1</code> or <code>"linear"</code>.</p></dd>
+
+
+<dt id="arg-lump">lump<a class="anchor" aria-label="anchor" href="#arg-lump"></a></dt>
+<dd><p>a character string specifying the lumping strategy for factor variables: <code>"none"</code>, <code>"rank"</code>, <code>"order"</code>, or <code>"auto"</code>.</p></dd>
+
+
+<dt id="arg-others">others<a class="anchor" aria-label="anchor" href="#arg-others"></a></dt>
+<dd><p>a character string specifying the others level.</p></dd>
+
+
+<dt id="arg-sep">sep<a class="anchor" aria-label="anchor" href="#arg-sep"></a></dt>
+<dd><p>a character string used to separate levels when merging ordered factors or creating interaction terms.</p></dd>
 
 
 <dt id="arg-max-nelements">max.nelements<a class="anchor" aria-label="anchor" href="#arg-max-nelements"></a></dt>
@@ -271,7 +281,7 @@ MID models are additive, highly interpretable models composed of functions, each
 <dt>main.effects</dt>
 <dd><p>a list of data frames representing the main effects.</p></dd>
 
-<dt>interacions</dt>
+<dt>interactions</dt>
 <dd><p>a list of data frames representing the interactions.</p></dd>
 
 <dt>ratio</dt>
@@ -310,7 +320,7 @@ In cases where the least-squares solution is still not unique due to collinearit
 <p>The <code>...</code> argument can be used to pass several advanced fitting options:</p><dl><dt>fit.intercept</dt>
 <dd><p>logical. If <code>TRUE</code>, the intercept term is fitted as part of the least squares problem. If <code>FALSE</code> (default), it is calculated as the weighted mean of the response.</p></dd>
 
-  <dt>interpolate.beta</dt>
+  <dt>interpolate</dt>
 <dd><p>a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.</p></dd>
 
   <dt>maxit</dt>

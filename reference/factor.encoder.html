@@ -75,15 +75,16 @@ This encoder converts the variable into a one-hot encoded (dummy) design matrix.
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">factor.encoder</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  <span class="va">k</span>,</span>
-<span>  use.catchall <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  catchall <span class="op">=</span> <span class="st">"(others)"</span>,</span>
-<span>  tag <span class="op">=</span> <span class="st">"x"</span>,</span>
+<span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lump <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"auto"</span>, <span class="st">"rank"</span>, <span class="st">"order"</span><span class="op">)</span>,</span>
+<span>  others <span class="op">=</span> <span class="st">"others"</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">"&gt;"</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  frame <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  tag <span class="op">=</span> <span class="st">"x"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">factor.frame</span><span class="op">(</span><span class="va">levels</span>, catchall <span class="op">=</span> <span class="st">"(others)"</span>, tag <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">factor.frame</span><span class="op">(</span><span class="va">levels</span>, others <span class="op">=</span> <span class="cn">NULL</span>, map <span class="op">=</span> <span class="cn">NULL</span>, original <span class="op">=</span> <span class="cn">NULL</span>, tag <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -98,28 +99,40 @@ This encoder converts the variable into a one-hot encoded (dummy) design matrix.
 <dd><p>an integer specifying the maximum number of distinct levels to retain (including the catch-all level). If not positive, all unique values of <code>x</code> are used.</p></dd>
 
 
-<dt id="arg-use-catchall">use.catchall<a class="anchor" aria-label="anchor" href="#arg-use-catchall"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, less frequent levels are grouped into the catch-all level.</p></dd>
+<dt id="arg-lump">lump<a class="anchor" aria-label="anchor" href="#arg-lump"></a></dt>
+<dd><p>a character string specifying the lumping strategy: <code>"none"</code>, no lumping is performed; <code>"rank"</code>, lumps levels based on frequency rank; <code>"order"</code> merges adjacent levels based on cumulative frequency to preserve order; and <code>"auto"</code> automatically selects <code>"order"</code> for ordered factors and <code>"rank"</code> for others.</p></dd>
 
 
-<dt id="arg-catchall">catchall<a class="anchor" aria-label="anchor" href="#arg-catchall"></a></dt>
-<dd><p>a character string for the catch-all level.</p></dd>
+<dt id="arg-others">others<a class="anchor" aria-label="anchor" href="#arg-others"></a></dt>
+<dd><p>a character string for the catch-all level (used when <code>lump = "rank"</code>).</p></dd>
 
 
-<dt id="arg-tag">tag<a class="anchor" aria-label="anchor" href="#arg-tag"></a></dt>
-<dd><p>the name of the variable.</p></dd>
-
-
-<dt id="arg-frame">frame<a class="anchor" aria-label="anchor" href="#arg-frame"></a></dt>
-<dd><p>a "factor.frame" object or a character vector that explicitly defines the levels of the variable.</p></dd>
+<dt id="arg-sep">sep<a class="anchor" aria-label="anchor" href="#arg-sep"></a></dt>
+<dd><p>a character string used to separate the start and end levels when merging ordered factors (e.g., "Level1..Level3").</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
 <dd><p>an optional numeric vector of sample weights for <code>x</code>.</p></dd>
 
 
+<dt id="arg-frame">frame<a class="anchor" aria-label="anchor" href="#arg-frame"></a></dt>
+<dd><p>a "factor.frame" object or a character vector that explicitly defines the levels of the variable.</p></dd>
+
+
+<dt id="arg-tag">tag<a class="anchor" aria-label="anchor" href="#arg-tag"></a></dt>
+<dd><p>the name of the variable.</p></dd>
+
+
 <dt id="arg-levels">levels<a class="anchor" aria-label="anchor" href="#arg-levels"></a></dt>
 <dd><p>a vector to be used as the levels of the variable.</p></dd>
+
+
+<dt id="arg-map">map<a class="anchor" aria-label="anchor" href="#arg-map"></a></dt>
+<dd><p>a named vector that maps original levels to lumped levels.</p></dd>
+
+
+<dt id="arg-original">original<a class="anchor" aria-label="anchor" href="#arg-original"></a></dt>
+<dd><p>a character vector to be used as the original levels for expanding the frame. Defaults to <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -146,8 +159,7 @@ This encoder converts the variable into a one-hot encoded (dummy) design matrix.
 <p>The primary mechanism is one-hot encoding.
 Each unique level of the input variable becomes a column in the output matrix.
 For a given observation, the column corresponding to its level is assigned a <code>1</code>, and all other columns are assigned <code>0</code>.</p>
-<p>When a variable has many unique levels (high cardinality), you can use the <code>use.catchall = TRUE</code> and <code>k</code> arguments.
-This will group the <code>k - 1</code> most frequent levels into their own columns, while all other less frequent levels are consolidated into a single <code>catchall</code> level (e.g., "(others)" by default).
+<p>When a variable has many unique levels (high cardinality), you can use the <code>lump</code> and <code>k</code> arguments to reduce dimensionality.
 This is crucial for preventing MID models from becoming overly complex.</p>
     </div>
     <div class="section level2">
@@ -159,7 +171,7 @@ This is crucial for preventing MID models from becoming overly complex.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create an encoder for a qualitative variable</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, use.catchall <span class="op">=</span> <span class="cn">FALSE</span>, tag <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, lump <span class="op">=</span> <span class="st">"none"</span>, tag <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">enc</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Factor encoder with 3 levels</span>
@@ -180,36 +192,42 @@ This is crucial for preventing MID models from becoming overly complex.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      0          0         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      0          1         0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create an encoder with a pre-defined encoding frame</span></span></span>
-<span class="r-in"><span><span class="va">frm</span> <span class="op">&lt;-</span> <span class="fu">factor.frame</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span><span class="op">)</span>, <span class="st">"other iris"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, frame <span class="op">=</span> <span class="va">frm</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Factor encoder with 3 levels</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Frame:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     setosa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  virginica</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 other iris</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span>, <span class="st">"ensata"</span>, <span class="cn">NA</span>, <span class="st">"versicolor"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa virginica other iris</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1         0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0         1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0         0          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      0         0          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      0         0          1</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create an encoder with a character vector specifying the levels</span></span></span>
-<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, frame <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"versicolor"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span>, <span class="st">"ensata"</span>, <span class="cn">NA</span>, <span class="st">"versicolor"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa versicolor</span>
+<span class="r-in"><span><span class="co"># Lumping by rank (retain top 1 + others)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, k <span class="op">=</span> <span class="fl">2</span>, lump <span class="op">=</span> <span class="st">"rank"</span>, others <span class="op">=</span> <span class="st">"other.iris"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa other.iris</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]      1          0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Lumping ordered factor (merge adjacent levels)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">3</span>, lump <span class="op">=</span> <span class="st">"order"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       A&gt;B C&gt;D E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   1   0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]   1   0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]   1   0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]   1   0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]   1   0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]   0   1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]   0   0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]   1   0 0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
