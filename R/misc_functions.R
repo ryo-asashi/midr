@@ -81,13 +81,14 @@ model.data <- function(object, env = parent.frame()) {
   NULL
 }
 
-apply.catchall <- function(x, encoder) {
-  catchall <- attr(encoder$frame, "catchall")
-  if (!is.null(catchall)) {
-    x <- factor(x, attr(encoder$frame, "levels"))
-    x[is.na(x)] <- catchall
-  }
-  x
+interaction.frame <- function(xfrm, yfrm) {
+  nx <- nrow(xfrm)
+  ny <- nrow(yfrm)
+  data.frame(
+    xfrm[rep(seq_len(nx), times = ny), , drop = FALSE],
+    yfrm[rep(seq_len(ny), each = nx), , drop = FALSE],
+    row.names = NULL, check.names = FALSE
+  )
 }
 
 adjusted.mai <- function(labels, margin = 1/16) {

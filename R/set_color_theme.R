@@ -33,8 +33,8 @@ set.color.theme <- function(
   ) {
   if (is.color.theme(kernel)) {
     args <- as.list(kernel)[c("kernel", "kernel.args", "options", "type")]
-    args$name <- ifnot.null(name, kernel$name)
-    args$source <- ifnot.null(source, kernel$source)
+    args$name <- name %||% kernel$name
+    args$source <- source %||% kernel$source
     args$env = env
     return(do.call(set.color.theme, args))
   }

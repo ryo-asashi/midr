@@ -56,8 +56,6 @@ UseMethod("ggmid")
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
 #' @param ... optional parameters passed to the main plotting layer.
 #'
-#' @importFrom rlang .data
-#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid <- function(
@@ -86,13 +84,19 @@ ggmid.mid <- function(
   }
   # main effect
   if ((len <- length(tags)) == 1L) {
-    df <- stats::na.omit(object$main.effects[[term]])
+    enc <- object$encoders$main.effects[[term]]
+    lvs <- attr(enc$frame, "original")
+    if (is.null(lvs)) {
+      df <- stats::na.omit(object$main.effects[[term]])
+    } else {
+      df <- factor.frame(lvs, tag = term)
+      df$mid <- mid.f(object, term, df)
+    }
     if (intercept)
       df$mid <- df$mid + object$intercept
     pl <- ggplot2::ggplot(
       data = df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
     # main layer
-    enc <- object$encoders[["main.effects"]][[term]]
     if (type == "effect" || type == "compound") {
       if (enc$type == "constant") {
         cols <- paste0(term, c("_min", "_max"))
@@ -113,8 +117,10 @@ ggmid.mid <- function(
         data$mid <- data$mid + object$intercept
       jit <- 0
       if (enc$type == "factor") {
-        data[[term]] <- apply.catchall(data[[term]], enc)
         jit <- jitter[1L]
+        vals <- factor(data[, term], lvs)
+        vals[is.na(vals)] <- attr(enc$frame, "others") %||% NA
+        data[, term] <- vals
       }
       pl <- pl + if (type == "data") {
         ggplot2::geom_jitter(
@@ -139,8 +145,19 @@ ggmid.mid <- function(
       pl <- pl + ggplot2::scale_y_continuous(limits = limits)
   # interaction
   } else if (len == 2L) {
-    df <- object$interactions[[term]]
-    df <- stats::na.omit(df)
+    encs <- list(object$encoders$interactions[[tags[1L]]],
+                 object$encoders$interactions[[tags[2L]]])
+    frms <- list()
+    for (i in seq_len(2L)) {
+      lvs <- attr(encs[[i]]$frame, "original")
+      frms[[i]] <- if (is.null(lvs)) {
+        encs[[i]]$frame
+      } else {
+        factor.frame(lvs, tag = tags[i])
+      }
+    }
+    df <- interaction.frame(frms[[1L]], frms[[2L]])
+    df$mid <- mid.f(object, term, df)
     if (intercept)
       df$mid <- df$mid + object$intercept
     if (main.effects) {
@@ -155,10 +172,9 @@ ggmid.mid <- function(
       }
     }
     cols <- paste0(rep(tags, each = 2L), c("_min", "_max"))
-    encs <- list(object$encoders[["interactions"]][[tags[1L]]],
-                 object$encoders[["interactions"]][[tags[2L]]])
     pl <- ggplot2::ggplot(
-      data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]]))
+      data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]])
+    )
     # main.layer
     if (type == "effect" || type == "compound") {
       use.raster <- encs[[1L]]$type == "linear" ||
@@ -168,10 +184,10 @@ ggmid.mid <- function(
         if (length(ms) == 1L)
           ms <- c(ms, ms)
         xy <- list()
-        for (i in 1L:2L) {
+        for (i in seq_len(2L)) {
           if (encs[[i]]$type == "factor") {
-            xy[[i]] <- encs[[i]]$frame[[1L]]
-            ms[i] <- encs[[i]]$n
+            xy[[i]] <- frms[[i]][[1L]]
+            ms[i] <- length(xy[[i]])
           } else {
             xy[[i]] <- seq(min(df[[cols[i * 2L - 1L]]]),
                            max(df[[cols[i * 2L]]]), length.out = ms[i])
@@ -183,10 +199,11 @@ ggmid.mid <- function(
         rdf$mid <- mid.f(object, term, rdf)
         if (intercept)
           rdf$mid <- rdf$mid + object$intercept
-        if (main.effects)
+        if (main.effects) {
           rdf$mid <- rdf$mid +
-          mid.f(object, tags[1L], rdf) +
-          mid.f(object, tags[2L], rdf)
+            mid.f(object, tags[1L], rdf) +
+            mid.f(object, tags[2L], rdf)
+        }
         mpg <- ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]],
                             fill = .data[["mid"]])
         pl <- pl + ggplot2::geom_raster(mapping = mpg, data = rdf, ...)
@@ -206,17 +223,22 @@ ggmid.mid <- function(
     }
     if (type == "data" || type == "compound") {
       jit <- c(0, 0)
-      for (i in 1L:2L) {
+      for (i in seq_len(2L)) {
         if (encs[[i]]$type == "factor") {
-          data[[tags[i]]] <- apply.catchall(data[[tags[i]]], encs[[i]])
           jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+          frm <- encs[[i]]$frame
+          vals <- factor(data[, tags[i]], attr(frm, "original"))
+          vals[is.na(vals)] <- attr(frm, "others") %||% NA
+          data[, tags[i]] <- vals
         }
       }
       if (type == "compound") {
         pl <- pl + ggplot2::geom_jitter(data = data,
                                         width = jit[1L], height = jit[2L])
       } else if (type == "data") {
-        data$mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
+        data$mid <- rowSums(
+          preds[, c(term, if (main.effects) tags), drop = FALSE]
+        )
         if (intercept)
           data$mid <- data$mid + object$intercept
         pl <- pl + ggplot2::geom_jitter(

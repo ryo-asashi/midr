@@ -53,15 +53,18 @@ mid.conditional <- function(
   if ("mid" %in% colnames(data))
     colnames(data)[colnames(data) == "mid"] <- ".mid"
   data <- model.reframe(object, data)
-  mf <- object$encoders[["main.effects"]][[variable]]$frame
-  if (is.null(mf))
-    mf <- object$encoders[["interactions"]][[variable]]$frame
-  if (inherits(mf, "numeric.frame")) {
-    br <- attr(mf, "breaks")
+  frm <- object$encoders$main.effects[[variable]]$frame %||%
+    object$encoders$interactions[[variable]]$frame
+  if (inherits(frm, "numeric.frame")) {
+    br <- attr(frm, "breaks")
     values <- seq.int(br[1L], br[length(br)], length.out = resolution)
   } else {
-    values <- mf[, 1L]
-    attr(values, "catchall") <- attr(mf, "catchall")
+    lvs <- attr(frm, "original")
+    values <- if (is.null(lvs)) frm[, 1L] else factor(lvs, levels = lvs)
+    attr(values, "others") <- attr(frm, "others")
+    vals <- factor(data[, variable], values)
+    vals[is.na(vals)] <- attr(frm, "others") %||% NA
+    data[, variable] <- vals
   }
   m <- length(values)
   n <- nrow(data)

@@ -18,8 +18,8 @@
 #' @param max.nterms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
-#' @param catchall a character string for the catchall label.
-#' @param label.format a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param others a character string for the catchall label.
+#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param ... optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
@@ -48,7 +48,7 @@
 plot.mid.breakdown <- function(
     x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    catchall = "(others)", label.format = c("%t=%v", "%t:%t"),
+    others = "others", label.pattern = c("%t=%v", "%t:%t"),
     format.args = list(), ...) {
   dots <- list(...)
   type <- match.arg(type)
@@ -58,14 +58,14 @@ plot.mid.breakdown <- function(
   use.theme <- inherits(theme, "color.theme")
   bd <- x$breakdown
   bd$term <- as.character(bd$term)
-  use.catchall <- FALSE
+  use.others <- FALSE
   if (!is.null(terms)) {
     rowid <- match(terms, bd$term, nomatch = 0L)
     resid <- bd[-rowid, "mid"]
     bd <- bd[rowid, ]
     if (length(resid) > 0L) {
       bd[nrow(bd) + 1L, "mid"] <- sum(resid)
-      use.catchall <- TRUE
+      use.others <- TRUE
     }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
@@ -73,27 +73,27 @@ plot.mid.breakdown <- function(
     resid <- sum(bd[nmax:nrow(bd), "mid"])
     bd <- bd[1L:(nmax - 1L), ]
     bd[nmax, "mid"] <- resid
-    use.catchall <- TRUE
+    use.others <- TRUE
   }
   # update labels
   format.args$x <- as.data.frame(x$data)
   values <- unlist(do.call(base::format, format.args))
-  for (i in seq_len(nrow(bd) - as.numeric(use.catchall))) {
+  for (i in seq_len(nrow(bd) - as.numeric(use.others))) {
     term <- bd[i, "term"]
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
     } else {
-      if (length(label.format) == 1L)
-        label.format <- c(label.format, "%t:%t")
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.format[2L]))
+      if (length(label.pattern) == 1L)
+        label.pattern <- c(label.pattern, "%t:%t")
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     bd[i, "term"] <- label
   }
-  if (use.catchall)
-    bd[nrow(bd), "term"] <- catchall
+  if (use.others)
+    bd[nrow(bd), "term"] <- others
   if (type == "barplot" || type == "dotchart") {
     args <- list(to = bd$mid, labels = bd$term,
                  horizontal = TRUE, xlab = "mid")
@@ -109,7 +109,7 @@ plot.mid.breakdown <- function(
     } else {
       args$type <- "b"
       args$fill <- cols
-      args$width <- ifnot.null(width, .8)
+      args$width <- width %||% .8
     }
     args <- override(args, dots)
     do.call(barplot2, args)
@@ -122,21 +122,21 @@ plot.mid.breakdown <- function(
       else
         to.colors(bd$mid, theme)
     } else "gray35"
-    width <- ifnot.null(width, .6)
+    width <- width %||% .6
     hw <- width / 2
     n <- nrow(bd)
     cs <- cumsum(c(x$intercept, bd$mid))
     bd$xmin <- cs[1L:n]
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
-                 fill = cols, horizontal = TRUE, xlab = "mid", width = width,
+                 fill = cols, horizontal = TRUE, xlab = "yhat", width = width,
                  lty = 1L, lwd = 1L, col = NULL)
     args <- override(args, dots)
     do.call(barplot2, args)
     for (i in seq_len(n)) {
       graphics::lines.default(x = rep.int(bd[i, "xmax"], 2L),
                               y = c(n + 1 - i + hw, max(n - i - hw, 1 - hw)),
-                              col = ifnot.null(args$col, 1L),
+                              col = args$col %||% 1L,
                               lty = args$lty, lwd = args$lwd)
     }
     if (vline)

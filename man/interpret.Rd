@@ -17,7 +17,6 @@ interpret(object, ...)
   link = NULL,
   k = c(NA, NA),
   type = c(1L, 1L),
-  frames = list(),
   interactions = FALSE,
   terms = NULL,
   singular.ok = FALSE,
@@ -27,9 +26,12 @@ interpret(object, ...)
   kappa = 1e+06,
   na.action = getOption("na.action"),
   verbosity = 1L,
-  encoding.digits = 3L,
-  use.catchall = FALSE,
-  catchall = "(others)",
+  frames = list(),
+  split = "quantile",
+  digits = 3L,
+  lump = "none",
+  others = "others",
+  sep = ">",
   max.nelements = 1000000000L,
   nil = 1e-07,
   tol = 1e-07,
@@ -69,9 +71,7 @@ interpret(object, ...)
 
 \item{k}{an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.}
 
-\item{type}{an integer or integer-valued vector of length two. The type of encoding. The effects of quantitative variables are modeled as piecewise linear functions if \code{type} is \code{1}, and as step functions if \code{type} is \code{0}. If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.}
-
-\item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.}
+\item{type}{a character string, an integer, or a vector of length two specifying the encoding type. Can be integer (\code{1} for linear, \code{0} for step) or character (\code{"linear"}, \code{"constant"}). If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.}
 
 \item{interactions}{logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.}
 
@@ -91,11 +91,17 @@ interpret(object, ...)
 
 \item{verbosity}{the level of verbosity. \code{0}: fatal, \code{1}: warning (default), \code{2}: info or \code{3}: debug.}
 
-\item{encoding.digits}{an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1}.}
+\item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.}
 
-\item{use.catchall}{logical. If \code{TRUE}, less frequent levels of qualitative variables are dropped and replaced by the catchall level.}
+\item{split}{a character string specifying the splitting strategy for numeric variables: \code{"quantile"} or \code{"uniform"}.}
 
-\item{catchall}{a character string specifying the catchall level.}
+\item{digits}{an integer. The rounding digits for encoding numeric variables. Used only when \code{type} is \code{1} or \code{"linear"}.}
+
+\item{lump}{a character string specifying the lumping strategy for factor variables: \code{"none"}, \code{"rank"}, \code{"order"}, or \code{"auto"}.}
+
+\item{others}{a character string specifying the others level.}
+
+\item{sep}{a character string used to separate levels when merging ordered factors or creating interaction terms.}
 
 \item{max.nelements}{an integer specifying the maximum number of elements of the design matrix. Defaults to \code{1e9}.}
 
@@ -124,7 +130,7 @@ interpret(object, ...)
 \item{intercept}{the intercept.}
 \item{encoders}{a list of variable encoders.}
 \item{main.effects}{a list of data frames representing the main effects.}
-\item{interacions}{a list of data frames representing the interactions.}
+\item{interactions}{a list of data frames representing the interactions.}
 \item{ratio}{the ratio of the sum of squared error between the target model predictions and the fitted MID values, to the sum of squared deviations of the target model predictions.}
 \item{linear.predictors}{a numeric vector of the linear predictors.}
 \item{fitted.values}{a numeric vector of the fitted values.}
@@ -158,7 +164,7 @@ In cases where the least-squares solution is still not unique due to collinearit
 The \code{...} argument can be used to pass several advanced fitting options:
 \describe{
   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
-  \item{interpolate.beta}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+  \item{interpolate}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
   \item{save.memory}{an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.}
   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}

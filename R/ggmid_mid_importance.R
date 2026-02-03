@@ -71,8 +71,8 @@ ggmid.mid.importance <- function(
       }
     } else if (type == "dotchart") {
       tli <- ggplot2::theme_get()$line
-      pl <- pl + ggplot2::geom_linerange(color = ifnot.null(tli$colour, "black"),
-        linewidth = ifnot.null(tli$linewidth, 0.5), linetype = 3L,
+      pl <- pl + ggplot2::geom_linerange(color = tli$colour %||% "black",
+        linewidth = tli$linewidth %||% 0.5, linetype = 3L,
         ggplot2::aes(xmin = 0, xmax = .data[["importance"]])) +
         ggplot2::geom_point(...)
       if (use.theme) {

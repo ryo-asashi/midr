@@ -54,8 +54,8 @@ scale_color_theme <- function(
     discrete <- theme$type == "qualitative"
   if (discrete) {
     args$palette <- theme$palette
-    args$guide <- ifnot.null(args$guide, "legend")
-    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
+    args$guide <- args$guide %||% "legend"
+    args$na.value <- args$na.value %||% theme$options$na.color
     scale <- do.call(ggplot2::discrete_scale, args)
   } else {
     if (theme$type == "qualitative")
@@ -68,8 +68,8 @@ scale_color_theme <- function(
     }
     args$palette <- theme$ramp
     args$rescaler <- rescale_fun
-    args$guide <- ifnot.null(args$guide, "colorbar")
-    args$na.value <- ifnot.null(args$na.value, theme$options$na.color)
+    args$guide <- args$guide %||% "colorbar"
+    args$na.value <- args$na.value %||% theme$options$na.color
     scale <- do.call(ggplot2::continuous_scale, args)
   }
   scale

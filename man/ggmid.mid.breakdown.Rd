@@ -13,8 +13,8 @@
   max.nterms = 15L,
   width = NULL,
   vline = TRUE,
-  catchall = "(others)",
-  label.format = c("\%t=\%v", "\%t:\%t"),
+  others = "others",
+  label.pattern = c("\%t=\%v", "\%t:\%t"),
   format.args = list(),
   ...
 )
@@ -36,9 +36,9 @@
 
 \item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
 
-\item{catchall}{a character string for the catchall label.}
+\item{others}{a character string for the catchall label.}
 
-\item{label.format}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+\item{label.pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
 
 \item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
 

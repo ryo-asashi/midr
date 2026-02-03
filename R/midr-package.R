@@ -2,6 +2,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom rlang '%||%'
+#' @importFrom rlang .data
 #' @import RcppEigen
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib midr, .registration = TRUE
