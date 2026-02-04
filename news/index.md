@@ -1,5 +1,15 @@
 # Changelog
 
+## midr 0.5.3.901
+
+- Updated
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  and encoder generators to enhance the variable encoding functionality,
+  introducing new arguments: `split` for numeric variables and `lump`
+  for factor variables.
+- The `catchall` and `encoding.digits` arguments are renamed to `others`
+  and `digits`; the `use.catchall` argument is deprecated.
+
 ## midr 0.5.3.900
 
 - Fixed incorrect calculation in

@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.900</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.901</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,11 @@ img {
       <small>Source: <a href="https://github.com/ryo-asashi/midr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.3.901" id="midr-053901">midr 0.5.3.901<a class="anchor" aria-label="anchor" href="#midr-053901"></a></h2>
+<ul><li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> and encoder generators to enhance the variable encoding functionality, introducing new arguments: <code>split</code> for numeric variables and <code>lump</code> for factor variables.</li>
+<li>The <code>catchall</code> and <code>encoding.digits</code> arguments are renamed to <code>others</code> and <code>digits</code>; the <code>use.catchall</code> argument is deprecated.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3.900" id="midr-053900">midr 0.5.3.900<a class="anchor" aria-label="anchor" href="#midr-053900"></a></h2>
 <ul><li>Fixed incorrect calculation in <code><a href="../reference/interpret.html">interpret()</a></code> when <code>singular.ok = TRUE</code> (or, more directly, <code>weighted.norm = TRUE</code>) and <code>lambda &gt; 0</code>.</li>
