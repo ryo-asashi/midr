@@ -81,6 +81,10 @@ ggmid.mid.conditional <- function(
     con <- con[con$.id %in% sample, ]
     n <- nrow(obs)
   }
+  if (n == 0L) {
+    message("no observations found")
+    return(invisible(NULL))
+  }
   pl <- ggplot2::ggplot(
     data = obs, ggplot2::aes(x = .data[[variable]], y = .data[[yvar]])
   )

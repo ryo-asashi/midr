@@ -175,8 +175,6 @@ factor.frame <- function(
   levels <- as.character(levels)
   if (!is.null(others)) {
     levels <- unique(c(levels, others))
-    if (!is.null(original))
-      original <- unique(c(original, others))
   }
   frame <- data.frame(factor(levels, levels = levels))
   frame[[2L]] <- as.integer(frame[[1L]])

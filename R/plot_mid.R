@@ -23,6 +23,7 @@
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
+#' @param transform logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -52,7 +53,7 @@
 plot.mid <- function(
     x, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
-    jitter = .3, resolution = c(100L, 100L), ...) {
+    jitter = .3, resolution = c(100L, 100L), transform = TRUE, ...) {
   dots <- list(...)
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
@@ -74,11 +75,12 @@ plot.mid <- function(
                          type = "terms", na.action = "na.pass")
     data <- model.reframe(x, data)
   }
+  transform <- isTRUE(transform) && isFALSE(main.effects)
   # main effect
   if ((len <- length(tags)) == 1L) {
     enc <- x$encoders$main.effects[[term]]
     lvs <- attr(enc$frame, "original")
-    if (is.null(lvs)) {
+    if (transform || is.null(lvs)) {
       df <- stats::na.omit(x$main.effects[[term]])
     } else {
       df <- factor.frame(lvs, tag = term)
@@ -113,37 +115,36 @@ plot.mid <- function(
       }
     }
     if (type == "data" || type == "compound") {
-      xval <- data[, term]
-      if (enc$type == "factor") {
-        xval <- factor(xval, lvs)
-        xval[is.na(xval)] <- attr(enc$frame, "others") %||% NA
-      }
       mids <- as.numeric(preds[, term])
       if (intercept)
         mids <- mids + x$intercept
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
+      vals <- data[, term]
       if (enc$type == "factor") {
         jit <- jitter[1L]
-        xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
+        lvs <- attr(enc$frame, "original")
+        vals <- if (transform || is.null(lvs))
+          enc$transform(vals) else factor(vals, lvs)
+        vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
                        ylab = "mid", xlab = term, limits = limits,
-                       x = xval, y = mids, col = cols, pch = 16L, cex = 1L)
+                       x = vals, y = mids, col = cols, pch = 16L, cex = 1L)
           args <- override(args, dots)
           do.call(barplot2, args)
           args <- args[c("x", "y", "col", "pch", "cex")]
           do.call(graphics::points.default, args)
         } else if (type == "compound") {
-          graphics::points.default(x = xval, y = mids, pch = 16L)
+          graphics::points.default(x = vals, y = mids, pch = 16L)
         }
-      } else if (enc$type != "factor") {
+      } else {
         if (type == "data") {
-            args <- list(x = xval, y = mids, xlab = term, ylab = "mid",
+            args <- list(x = vals, y = mids, xlab = term, ylab = "mid",
                          ylim = limits, type = "p", col = cols, pch = 16L)
             args <- override(args, dots)
             do.call(graphics::plot.default, args)
         } else if (type == "compound") {
-          graphics::points.default(x = xval, y = mids, pch = 16L, col = cols)
+          graphics::points.default(x = vals, y = mids, pch = 16L, col = cols)
         }
       }
     }
@@ -157,7 +158,7 @@ plot.mid <- function(
     xy <- lat <- lab <- vector("list", 2L)
     for (i in seq_len(2L)) {
       lvs <- attr(encs[[i]]$frame, "original")
-      frm <- if (is.null(lvs)) {
+      frm <- if (transform || is.null(lvs)) {
         encs[[i]]$frame
       } else {
         factor.frame(lvs, tag = tags[i])
@@ -196,21 +197,16 @@ plot.mid <- function(
     }
     pal <- theme$palette
     if (type == "data" || type == "compound") {
-      xval <- data[[tags[1L]]]
-      if (encs[[1L]]$type == "factor") {
-        jit <- jitter[1L]
-        frm <- encs[[1L]]$frame
-        xval <- factor(xval, attr(frm, "original"))
-        xval[is.na(xval)] <- attr(frm, "others") %||% NA
-        xval <- as.integer(xval) - stats::runif(length(xval), -jit, jit)
-      }
-      yval <- data[[tags[2L]]]
-      if (encs[[2L]]$type == "factor") {
-        jit <- if (length(jitter) > 1L) jitter[2L] else jitter[1L]
-        frm <- encs[[2L]]$frame
-        yval <- factor(yval, attr(frm, "original"))
-        yval[is.na(yval)] <- attr(frm, "others") %||% NA
-        yval <- as.integer(yval) - stats::runif(length(yval), -jit, jit)
+      for (i in seq_len(2L)) {
+        vals <- data[, tags[i]]
+        if (encs[[i]]$type == "factor") {
+          jit <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+          lvs <- attr(encs[[i]]$frame, "original")
+          vals <- if (transform || is.null(lvs))
+            encs[[i]]$transform(vals) else factor(vals, lvs)
+          vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
+        }
+        if (i == 1L) xval <- vals else yval <- vals
       }
     }
     if (type == "effect" || type == "compound") {

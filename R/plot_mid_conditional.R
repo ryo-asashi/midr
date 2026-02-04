@@ -78,17 +78,16 @@ plot.mid.conditional <- function(
     yvar <- ynew
   }
   if (!is.null(sample)) {
-    obs <- obs[obs$id %in% sample, ]
-    con <- con[con$id %in% sample, ]
+    obs <- obs[obs$.id %in% sample, ]
+    con <- con[con$.id %in% sample, ]
     n <- nrow(obs)
   }
-  mat <- matrix(con[[yvar]], nrow = n, ncol = length(values))
-  colnames(mat) <- values
+  mat <- matrix(con[[yvar]], nrow = n, ncol = length(values),
+                dimnames = list(obs$.id, values))
   if (n == 0L) {
     message("no observations found")
     return(invisible(mat))
   }
-  rownames(mat) <- obs$ids
   aes <- list(col = rep.int(1L, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
   if (!is.null(col <- substitute(var.color))) {
     if (is.character(col)) col <- str2lang(col)

@@ -1,3 +1,8 @@
+# midr 0.5.3.901
+
+-   Updated `interpret()` and encoder generators to enhance the variable encoding functionality, introducing new arguments: `split` for numeric variables and `lump` for factor variables.
+-   The `catchall` and `encoding.digits` arguments are renamed to `others` and `digits`; the `use.catchall` argument is deprecated.
+
 # midr 0.5.3.900
 
 -   Fixed incorrect calculation in `interpret()` when `singular.ok = TRUE` (or, more directly, `weighted.norm = TRUE`) and `lambda > 0`.

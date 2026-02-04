@@ -54,6 +54,7 @@ UseMethod("ggmid")
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale. \code{NA} values are replaced by the minimum and/or maximum MID values.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
+#' @param transform logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
 #' @param ... optional parameters passed to the main plotting layer.
 #'
 #' @exportS3Method midr::ggmid
@@ -61,7 +62,7 @@ UseMethod("ggmid")
 ggmid.mid <- function(
     object, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
-    jitter = .3, resolution = c(100L, 100L), ...) {
+    jitter = .3, resolution = c(100L, 100L), transform = TRUE, ...) {
   tags <- term.split(term)
   term <- term.check(term, mid.terms(object), stop = TRUE)
   type <- match.arg(type)
@@ -82,11 +83,12 @@ ggmid.mid <- function(
                          type = "terms", na.action = "na.pass")
     data <- model.reframe(object, data)
   }
+  transform <- isTRUE(transform) && isFALSE(main.effects)
   # main effect
   if ((len <- length(tags)) == 1L) {
     enc <- object$encoders$main.effects[[term]]
     lvs <- attr(enc$frame, "original")
-    if (is.null(lvs)) {
+    if (transform || is.null(lvs)) {
       df <- stats::na.omit(object$main.effects[[term]])
     } else {
       df <- factor.frame(lvs, tag = term)
@@ -118,8 +120,10 @@ ggmid.mid <- function(
       jit <- 0
       if (enc$type == "factor") {
         jit <- jitter[1L]
-        vals <- factor(data[, term], lvs)
-        vals[is.na(vals)] <- attr(enc$frame, "others") %||% NA
+        lvs <- attr(enc$frame, "original")
+        vals <- data[, term]
+        vals <- if (transform || is.null(lvs))
+          enc$transform(vals) else factor(vals, lvs)
         data[, term] <- vals
       }
       pl <- pl + if (type == "data") {
@@ -150,7 +154,7 @@ ggmid.mid <- function(
     frms <- list()
     for (i in seq_len(2L)) {
       lvs <- attr(encs[[i]]$frame, "original")
-      frms[[i]] <- if (is.null(lvs)) {
+      frms[[i]] <- if (transform || is.null(lvs)) {
         encs[[i]]$frame
       } else {
         factor.frame(lvs, tag = tags[i])
@@ -226,9 +230,10 @@ ggmid.mid <- function(
       for (i in seq_len(2L)) {
         if (encs[[i]]$type == "factor") {
           jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
-          frm <- encs[[i]]$frame
-          vals <- factor(data[, tags[i]], attr(frm, "original"))
-          vals[is.na(vals)] <- attr(frm, "others") %||% NA
+          lvs <- attr(encs[[i]]$frame, "original")
+          vals <- data[, tags[i]]
+          vals <- if (transform || is.null(lvs))
+            encs[[i]]$transform(vals) else factor(vals, lvs)
           data[, tags[i]] <- vals
         }
       }

@@ -42,9 +42,11 @@ mid.conditional <- function(
     object, variable, data = NULL, resolution = 100L,
     max.nsamples = 1e3L, type = c("response", "link"), keep.effects = TRUE) {
   type <- match.arg(type)
-  rf <- length(tf <- mid.terms(object, remove = variable))
-  rv <- length(tv <- mid.terms(object, require = variable))
-  if (length(variable) != 1L || rv == 0L)
+  tfix <- mid.terms(object, remove = variable)
+  tver <- mid.terms(object, require = variable)
+  rfix <- length(tfix)
+  rvar <- length(tver)
+  if (length(variable) != 1L || rvar == 0L)
     stop("'variable' must be a character string denoting a valid predictor variable")
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
@@ -60,11 +62,8 @@ mid.conditional <- function(
     values <- seq.int(br[1L], br[length(br)], length.out = resolution)
   } else {
     lvs <- attr(frm, "original")
-    values <- if (is.null(lvs)) frm[, 1L] else factor(lvs, levels = lvs)
-    attr(values, "others") <- attr(frm, "others")
-    vals <- factor(data[, variable], values)
-    vals[is.na(vals)] <- attr(frm, "others") %||% NA
-    data[, variable] <- vals
+    values <- if (is.null(lvs)) frm[[1L]] else factor(lvs, levels = lvs)
+    data[, variable] <- factor(data[, variable], levels = values)
   }
   m <- length(values)
   n <- nrow(data)
@@ -75,21 +74,22 @@ mid.conditional <- function(
     n <- nrow(data)
   }
   ids <- rownames(data)
-  pm <- matrix(0, nrow = n, ncol = rf)
-  for (i in seq_len(rf))
-    pm[, i] <- mid.f(object, tf[i], x = data)
-  pf <- rowSums(pm)
-  pm <- matrix(0, nrow = n, ncol = rv, dimnames = list(NULL, tv))
-  for (i in seq_len(rv))
-    pm[, i] <- mid.f(object, tv[i], x = data)
-  pv <- rowSums(pm)
-  yhat <- pf + pv + object$intercept
+  rownames(data) <- NULL
+  pmat <- matrix(0, nrow = n, ncol = rfix)
+  for (i in seq_len(rfix))
+    pmat[, i] <- mid.f(object, tfix[i], x = data)
+  pfix <- rowSums(pmat)
+  pmat <- matrix(0, nrow = n, ncol = rvar, dimnames = list(NULL, tver))
+  for (i in seq_len(rvar))
+    pmat[, i] <- mid.f(object, tver[i], x = data)
+  pvar <- rowSums(pmat)
+  yhat <- pfix + pvar + object$intercept
   if (type == "response" && !is.null(object$link))
     yhat <- object$link$linkinv(yhat)
   res <- list()
   res$observed <- cbind(.id = ids, yhat = yhat, data)
   if (keep.effects)
-    res$observed.effects <- pm
+    res$observed.effects <- pmat
   ldata <- list()
   for (col in colnames(data)) {
     if (col == variable) {
@@ -100,20 +100,20 @@ mid.conditional <- function(
   }
   ldata <- as.data.frame(ldata)
   colnames(ldata) <- colnames(data)
-  pm <- matrix(0, nrow = n * m, ncol = rv, dimnames = list(NULL, tv))
-  for (i in seq_len(rv))
-    pm[, i] <- mid.f(object, tv[i], x = ldata)
-  pv <- rowSums(pm)
-  pf <- rep.int(pf, m)
-  lyhat <- pf + pv + object$intercept
+  pfix <- rep.int(pfix, times = m)
+  pmat <- matrix(0, nrow = n * m, ncol = rvar, dimnames = list(NULL, tver))
+  for (i in seq_len(rvar))
+    pmat[, i] <- mid.f(object, tver[i], x = ldata)
+  pvar <- rowSums(pmat)
+  lyhat <- pfix + pvar + object$intercept
   if (type == "response" && !is.null(object$link))
     lyhat <- object$link$linkinv(lyhat)
   res$conditional <- cbind(.id = rep.int(ids, m), yhat = lyhat, ldata)
   if (keep.effects)
-    res$conditional.effects <- pm
+    res$conditional.effects <- pmat
   res$values <- values
   class(res) <- c("mid.conditional")
-  attr(res, "term.labels") <- tv
+  attr(res, "term.labels") <- tver
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res
