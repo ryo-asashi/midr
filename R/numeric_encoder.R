@@ -46,9 +46,11 @@
 #' @returns
 #' \code{numeric.encoder()} returns an object of class "encoder". This is a list containing the following components:
 #' \item{frame}{a "numeric.frame" object containing the encoding information.}
-#' \item{encode}{a function to convert a numeric vector \code{x} into a dummy matrix.}
 #' \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 #' \item{type}{a character string describing the encoding type: "linear", "constant", or "null".}
+#' \item{envir}{an environment for the \code{transform} and \code{encode} functions.}
+#' \item{transform}{a function \code{transform(x, ...)} (identity by default).}
+#' \item{encode}{a function \code{encode(x, ...)} that converts a numeric vector into a dummy matrix.}
 #'
 #' @seealso \code{\link{factor.encoder}}
 #'
@@ -128,6 +130,7 @@ numeric.encoder <- function(
   if (type == "linear") {
     encode <- function(x, ...) {
       n <- length(x)
+      x <- transform(x)
       mat <- matrix(0, nrow = n, ncol = nrep)
       itv <- findInterval(x, reps)
       mat[itv == 0, 1L] <- 1
@@ -148,6 +151,7 @@ numeric.encoder <- function(
   } else if (type == "constant") {
     encode <- function(x, ...) {
       n <- length(x)
+      x <- transform(x)
       mat <- matrix(0, nrow = n, ncol = nrep)
       itv <- findInterval(x, br, all.inside = TRUE)
       ok <- !is.na(x)
@@ -164,11 +168,17 @@ numeric.encoder <- function(
       mat
     }
   }
-  environment(encode) <- rlang::env(
+  transform <- function(x, ...) x
+  envir <- rlang::env(
     rlang::ns_env("midr"),
-    nrep = nrep, reps = reps, br = br, digits = digits
+    nrep = nrep, reps = reps, br = br, digits = digits, transform = transform
   )
-  enc <- list(frame = frame, encode = encode, n = nrep, type = type)
+  environment(transform) <- envir
+  environment(encode) <- envir
+  enc <- list(
+    frame = frame, n = nrep, type = type,
+    envir = envir, transform = transform, encode = encode
+  )
   structure(enc, class = "encoder")
 }
 

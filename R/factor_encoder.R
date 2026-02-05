@@ -30,22 +30,23 @@
 #' enc
 #'
 #' # Encode a vector with NA
-#' enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+#' enc$encode(iris$Species[c(50, 100, 150)])
 #'
-#' # Lumping by rank (retain top 1 + others)
-#' enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank", others = "other.iris")
-#' enc$encode(head(iris$Species))
+#' # Lumping by rank (retain top \code{k - 1} levels and others)
+#' enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank")
+#' enc$encode(iris$Species[c(50, 100, 150)])
 #'
-#' # Lumping ordered factor (merge adjacent levels)
-#' x <- ordered(sample(LETTERS[1:5], 20, replace = TRUE))
-#' enc <- factor.encoder(x, k = 3, lump = "order")
-#' enc$encode(x)
+#' # Lumping by order (merge adjacent levels)
+#' enc <- factor.encoder(x = iris$Species, k = 2, lump = "order")
+#' enc$encode(iris$Species[c(50, 100, 150)])
 #' @returns
 #' \code{factor.encoder()} returns an object of class "encoder". This is a list containing the following components:
 #' \item{frame}{a "factor.frame" object containing the encoding information (levels).}
-#' \item{encode}{a function to convert a vector \code{x} into a one-hot encoded matrix.}
 #' \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 #' \item{type}{a character string describing the encoding type: "factor" or "null".}
+#' \item{envir}{an environment for the \code{transform} and \code{encode} functions.}
+#' \item{transform}{a function \code{transform(x, lumped = TRUE, ...)} that converts a vector into a factor with the encoded levels.}
+#' \item{encode}{a function \code{encode(x, ...)} that converts a vector into the one-hot encoded matrix.}
 #'
 #' @seealso \code{\link{numeric.encoder}}
 #'
@@ -111,8 +112,11 @@ factor.encoder <- function(
   )
   # define encoder function --------
   if (type == "factor") {
-    transform <- function(x) {
+    transform <- function(x, lumped = TRUE, ...) {
       x <- as.character(x)
+      if (!lumped) {
+        return(factor(x, olvs))
+      }
       if (!is.null(map)) {
         x.mapped <- map[x]
         ok <- !is.na(x.mapped)
@@ -134,23 +138,23 @@ factor.encoder <- function(
       mat
     }
   } else {
-    transform <- function(x) {
-      NULL
-    }
+    transform <- function(x, lumped = TRUE, ...) x
     encode <- function(x, ...) {
       mat <- matrix(0, nrow = length(x), ncol = 1L)
       colnames(mat) <- flvs
       mat
     }
   }
-  fenv <- rlang::env(
+  envir <- rlang::env(
     rlang::ns_env("midr"),
-    nlvs = nlvs, flvs = flvs, others = others, map = map, transform = transform
+    nlvs = nlvs, flvs = flvs, others = others, map = map, olvs = olvs,
+    transform = transform
   )
-  environment(transform) <- fenv
-  environment(encode) <- fenv
+  environment(transform) <- envir
+  environment(encode) <- envir
   enc <- list(
-    frame = frame, transform = transform, encode = encode, n = nlvs, type = type
+    frame = frame, n = nlvs, type = type,
+    envir = envir, transform = transform, encode = encode
   )
   structure(enc, class = "encoder")
 }
@@ -176,7 +180,7 @@ factor.frame <- function(
   if (!is.null(others)) {
     levels <- unique(c(levels, others))
   }
-  frame <- data.frame(factor(levels, levels = levels))
+  frame <- data.frame(factor(levels, levels = levels), stringsAsFactors = FALSE)
   frame[[2L]] <- as.integer(frame[[1L]])
   colnames(frame) <- paste0(tag, c("", "_level"))
   class(frame) <- c("factor.frame", "data.frame")

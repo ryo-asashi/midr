@@ -19,7 +19,7 @@ ggmid(object, ...)
   limits = c(NA, NA),
   jitter = 0.3,
   resolution = c(100L, 100L),
-  transform = TRUE,
+  lumped = TRUE,
   ...
 )
 
@@ -48,7 +48,7 @@ ggmid(object, ...)
 
 \item{resolution}{an integer or vector of two integers specifying the resolution of the raster plot for interactions.}
 
-\item{transform}{logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.}
+\item{lumped}{logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.}
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.

@@ -48,9 +48,11 @@ numeric.frame(
 \value{
 \code{numeric.encoder()} returns an object of class "encoder". This is a list containing the following components:
 \item{frame}{a "numeric.frame" object containing the encoding information.}
-\item{encode}{a function to convert a numeric vector \code{x} into a dummy matrix.}
 \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 \item{type}{a character string describing the encoding type: "linear", "constant", or "null".}
+\item{envir}{an environment for the \code{transform} and \code{encode} functions.}
+\item{transform}{a function \code{transform(x, ...)} (identity by default).}
+\item{encode}{a function \code{encode(x, ...)} that converts a numeric vector into a dummy matrix.}
 
 \code{numeric.frame()} returns a "numeric.frame" object containing the encoding information.
 }

@@ -54,7 +54,7 @@ UseMethod("ggmid")
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale. \code{NA} values are replaced by the minimum and/or maximum MID values.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
-#' @param transform logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
+#' @param lumped logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
 #' @param ... optional parameters passed to the main plotting layer.
 #'
 #' @exportS3Method midr::ggmid
@@ -62,7 +62,7 @@ UseMethod("ggmid")
 ggmid.mid <- function(
     object, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
-    jitter = .3, resolution = c(100L, 100L), transform = TRUE, ...) {
+    jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
   tags <- term.split(term)
   term <- term.check(term, mid.terms(object), stop = TRUE)
   type <- match.arg(type)
@@ -83,15 +83,14 @@ ggmid.mid <- function(
                          type = "terms", na.action = "na.pass")
     data <- model.reframe(object, data)
   }
-  transform <- isTRUE(transform) && isFALSE(main.effects)
+  lumped <- isTRUE(lumped) && isFALSE(main.effects)
   # main effect
   if ((len <- length(tags)) == 1L) {
     enc <- object$encoders$main.effects[[term]]
-    lvs <- attr(enc$frame, "original")
-    if (transform || is.null(lvs)) {
+    if (enc$type != "factor" || lumped) {
       df <- stats::na.omit(object$main.effects[[term]])
     } else {
-      df <- factor.frame(lvs, tag = term)
+      df <- factor.frame(enc$envir$olvs, tag = term)
       df$mid <- mid.f(object, term, df)
     }
     if (intercept)
@@ -120,11 +119,7 @@ ggmid.mid <- function(
       jit <- 0
       if (enc$type == "factor") {
         jit <- jitter[1L]
-        lvs <- attr(enc$frame, "original")
-        vals <- data[, term]
-        vals <- if (transform || is.null(lvs))
-          enc$transform(vals) else factor(vals, lvs)
-        data[, term] <- vals
+        data[, term] <- enc$transform(data[, term], lumped = lumped)
       }
       pl <- pl + if (type == "data") {
         ggplot2::geom_jitter(
@@ -153,11 +148,10 @@ ggmid.mid <- function(
                  object$encoders$interactions[[tags[2L]]])
     frms <- list()
     for (i in seq_len(2L)) {
-      lvs <- attr(encs[[i]]$frame, "original")
-      frms[[i]] <- if (transform || is.null(lvs)) {
+      frms[[i]] <- if (encs[[i]]$type != "factor" || lumped) {
         encs[[i]]$frame
       } else {
-        factor.frame(lvs, tag = tags[i])
+        factor.frame(encs[[i]]$envir$olvs, tag = tags[i])
       }
     }
     df <- interaction.frame(frms[[1L]], frms[[2L]])
@@ -230,11 +224,8 @@ ggmid.mid <- function(
       for (i in seq_len(2L)) {
         if (encs[[i]]$type == "factor") {
           jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
-          lvs <- attr(encs[[i]]$frame, "original")
-          vals <- data[, tags[i]]
-          vals <- if (transform || is.null(lvs))
-            encs[[i]]$transform(vals) else factor(vals, lvs)
-          data[, tags[i]] <- vals
+          data[, tags[i]] <-
+            encs[[i]]$transform(data[, tags[i]], lumped = lumped)
         }
       }
       if (type == "compound") {

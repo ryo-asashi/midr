@@ -55,15 +55,15 @@ mid.conditional <- function(
   if ("mid" %in% colnames(data))
     colnames(data)[colnames(data) == "mid"] <- ".mid"
   data <- model.reframe(object, data)
-  frm <- object$encoders$main.effects[[variable]]$frame %||%
-    object$encoders$interactions[[variable]]$frame
-  if (inherits(frm, "numeric.frame")) {
-    br <- attr(frm, "breaks")
+  enc <- object$encoders$main.effects[[variable]] %||%
+    object$encoders$interactions[[variable]]
+  if (enc$type != "factor") {
+    br <- enc$envir$br
     values <- seq.int(br[1L], br[length(br)], length.out = resolution)
   } else {
-    lvs <- attr(frm, "original")
-    values <- if (is.null(lvs)) frm[[1L]] else factor(lvs, levels = lvs)
-    data[, variable] <- factor(data[, variable], levels = values)
+    olvs <- enc$envir$olvs
+    values <- factor(olvs, levels = olvs)
+    data[, variable] <- enc$transform(data[, variable], lumped = FALSE)
   }
   m <- length(values)
   n <- nrow(data)

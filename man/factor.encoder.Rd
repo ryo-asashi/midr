@@ -44,9 +44,11 @@ factor.frame(levels, others = NULL, map = NULL, original = NULL, tag = "x")
 \value{
 \code{factor.encoder()} returns an object of class "encoder". This is a list containing the following components:
 \item{frame}{a "factor.frame" object containing the encoding information (levels).}
-\item{encode}{a function to convert a vector \code{x} into a one-hot encoded matrix.}
 \item{n}{the number of encoding levels (i.e., columns in the design matrix).}
 \item{type}{a character string describing the encoding type: "factor" or "null".}
+\item{envir}{an environment for the \code{transform} and \code{encode} functions.}
+\item{transform}{a function \code{transform(x, lumped = TRUE, ...)} that converts a vector into a factor with the encoded levels.}
+\item{encode}{a function \code{encode(x, ...)} that converts a vector into the one-hot encoded matrix.}
 
 \code{factor.frame()} returns a "factor.frame" object containing the encoding information.
 }
@@ -73,16 +75,15 @@ enc <- factor.encoder(x = iris$Species, lump = "none", tag = "Species")
 enc
 
 # Encode a vector with NA
-enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+enc$encode(iris$Species[c(50, 100, 150)])
 
-# Lumping by rank (retain top 1 + others)
-enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank", others = "other.iris")
-enc$encode(head(iris$Species))
+# Lumping by rank (retain top \code{k - 1} levels and others)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank")
+enc$encode(iris$Species[c(50, 100, 150)])
 
-# Lumping ordered factor (merge adjacent levels)
-x <- ordered(sample(LETTERS[1:5], 20, replace = TRUE))
-enc <- factor.encoder(x, k = 3, lump = "order")
-enc$encode(x)
+# Lumping by order (merge adjacent levels)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "order")
+enc$encode(iris$Species[c(50, 100, 150)])
 }
 \seealso{
 \code{\link{numeric.encoder}}

@@ -23,7 +23,7 @@
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param jitter a numeric value specifying the amount of jitter for the data points.
 #' @param resolution an integer or vector of two integers specifying the resolution of the raster plot for interactions.
-#' @param transform logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
+#' @param lumped logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.
 #' @param ... optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -53,7 +53,7 @@
 plot.mid <- function(
     x, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
-    jitter = .3, resolution = c(100L, 100L), transform = TRUE, ...) {
+    jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
   dots <- list(...)
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
@@ -75,15 +75,14 @@ plot.mid <- function(
                          type = "terms", na.action = "na.pass")
     data <- model.reframe(x, data)
   }
-  transform <- isTRUE(transform) && isFALSE(main.effects)
+  lumped <- isTRUE(lumped) && isFALSE(main.effects)
   # main effect
   if ((len <- length(tags)) == 1L) {
     enc <- x$encoders$main.effects[[term]]
-    lvs <- attr(enc$frame, "original")
-    if (transform || is.null(lvs)) {
+    if (enc$type != "factor" || lumped) {
       df <- stats::na.omit(x$main.effects[[term]])
     } else {
-      df <- factor.frame(lvs, tag = term)
+      df <- factor.frame(enc$envir$olvs, tag = term)
       df$mid <- mid.f(x, term, df)
     }
     if (intercept)
@@ -122,9 +121,7 @@ plot.mid <- function(
       vals <- data[, term]
       if (enc$type == "factor") {
         jit <- jitter[1L]
-        lvs <- attr(enc$frame, "original")
-        vals <- if (transform || is.null(lvs))
-          enc$transform(vals) else factor(vals, lvs)
+        vals <- enc$transform(vals, lumped = lumped)
         vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
@@ -157,11 +154,10 @@ plot.mid <- function(
       ms <- c(ms, ms)
     xy <- lat <- lab <- vector("list", 2L)
     for (i in seq_len(2L)) {
-      lvs <- attr(encs[[i]]$frame, "original")
-      frm <- if (transform || is.null(lvs)) {
+      frm <- if (encs[[i]]$type != "factor" || lumped) {
         encs[[i]]$frame
       } else {
-        factor.frame(lvs, tag = tags[i])
+        factor.frame(encs[[i]]$envir$olvs, tag = tags[i])
       }
       if (encs[[i]]$type == "factor") {
         xy[[i]] <- rep(frm[[1L]], each = 2L)
@@ -201,9 +197,7 @@ plot.mid <- function(
         vals <- data[, tags[i]]
         if (encs[[i]]$type == "factor") {
           jit <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
-          lvs <- attr(encs[[i]]$frame, "original")
-          vals <- if (transform || is.null(lvs))
-            encs[[i]]$transform(vals) else factor(vals, lvs)
+          vals <- encs[[i]]$transform(vals, lumped = lumped)
           vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         }
         if (i == 1L) xval <- vals else yval <- vals
