@@ -8,7 +8,7 @@
 numeric.encoder(
   x,
   k,
-  type = c("linear", "constant"),
+  type = c("linear", "constant", "null"),
   split = c("quantile", "uniform"),
   digits = NULL,
   weights = NULL,
@@ -29,7 +29,7 @@ numeric.frame(
 
 \item{k}{an integer specifying the coarseness of the encoding. If not positive, all unique values of \code{x} are used as knots or bins.}
 
-\item{type}{a character string or an integer specifying the encoding method: \code{"linear"} / \code{1} (default) or \code{"constant"} / \code{1}.}
+\item{type}{a character string or an integer specifying the encoding method: \code{"linear"} / \code{1} (default) or \code{"constant"} / \code{0}.}
 
 \item{split}{a character string specifying the splitting strategy: \code{"quantile"} (default) creates bins/knots based on data density; \code{"uniform"} creates equally spaced bins/knots over the data range.}
 

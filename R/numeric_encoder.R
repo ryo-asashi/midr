@@ -19,7 +19,7 @@
 #'
 #' @param x a numeric vector to be encoded.
 #' @param k an integer specifying the coarseness of the encoding. If not positive, all unique values of \code{x} are used as knots or bins.
-#' @param type a character string or an integer specifying the encoding method: \code{"linear"} / \code{1} (default) or \code{"constant"} / \code{1}.
+#' @param type a character string or an integer specifying the encoding method: \code{"linear"} / \code{1} (default) or \code{"constant"} / \code{0}.
 #' @param split a character string specifying the splitting strategy: \code{"quantile"} (default) creates bins/knots based on data density; \code{"uniform"} creates equally spaced bins/knots over the data range.
 #' @param digits an integer specifying the rounding digits for the piecewise linear encoding (\code{type = "linear"}).
 #' @param weights an optional numeric vector of sample weights for \code{x}.
@@ -57,11 +57,11 @@
 #' @export numeric.encoder
 #'
 numeric.encoder <- function(
-    x, k, type = c("linear", "constant"), split = c("quantile", "uniform"),
+    x, k, type = c("linear", "constant", "null"), split = c("quantile", "uniform"),
     digits = NULL, weights = NULL, frame = NULL, tag = "x") {
   if (is.numeric(type))
-    type <- if (type <= 0) "constant" else "linear"
-  type <- match.arg(type, c("linear", "constant"))
+    type <- if (type == 0) "constant" else "linear"
+  type <- match.arg(type)
   if (!is.null(frame)) {
     if (is.vector(frame)) {
       frame <- if (type == "constant") {
@@ -198,6 +198,10 @@ numeric.encoder <- function(
 #'
 numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
                           digits = NULL, tag = "x") {
+  if (is.numeric(type))
+    type <- if (type == 0) "constant" else "linear"
+  if (is.character(type))
+    type <- match.arg(type, c("linear", "constant", "null"))
   if (is.null(reps) && is.null(breaks))
     stop("at least one of 'reps' or 'breaks' must be supplied")
   if (is.null(reps)) {
