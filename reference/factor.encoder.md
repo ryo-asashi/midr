@@ -156,7 +156,7 @@ enc$encode(iris$Species[c(50, 100, 150)])
 #> [2,]      0          1         0
 #> [3,]      0          0         1
 
-# Lumping by rank (retain top \code{k - 1} levels and others)
+# Lumping by rank (retain top k - 1 levels and others)
 enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank")
 enc$encode(iris$Species[c(50, 100, 150)])
 #>      setosa others

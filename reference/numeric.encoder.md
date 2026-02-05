@@ -14,7 +14,7 @@ object that defines the encoding scheme.
 numeric.encoder(
   x,
   k,
-  type = c("linear", "constant"),
+  type = c("linear", "constant", "null"),
   split = c("quantile", "uniform"),
   digits = NULL,
   weights = NULL,
@@ -45,7 +45,7 @@ numeric.frame(
 - type:
 
   a character string or an integer specifying the encoding method:
-  `"linear"` / `1` (default) or `"constant"` / `1`.
+  `"linear"` / `1` (default) or `"constant"` / `0`.
 
 - split:
 
@@ -171,14 +171,14 @@ enc$encode(x = c(4:8, NA, Inf))
 frm <- numeric.frame(breaks = c(3, 5, 7, 9), type = 0L)
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = frm)
 enc$encode(x = c(4:8, NA, Inf))
-#>      Void
-#> [1,]    0
-#> [2,]    0
-#> [3,]    0
-#> [4,]    0
-#> [5,]    0
-#> [6,]    0
-#> [7,]    0
+#>      [-Inf, 5) [5, 7) [7, Inf)
+#> [1,]         1      0        0
+#> [2,]         0      1        0
+#> [3,]         0      1        0
+#> [4,]         0      0        1
+#> [5,]         0      0        1
+#> [6,]         0      0        0
+#> [7,]         0      0        1
 
 # Create an encoder with a numeric vector specifying the knots
 enc <- numeric.encoder(x = iris$Sepal.Length, frame = c(3, 5, 7, 9))
