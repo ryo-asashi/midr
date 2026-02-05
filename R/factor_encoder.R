@@ -32,7 +32,7 @@
 #' # Encode a vector with NA
 #' enc$encode(iris$Species[c(50, 100, 150)])
 #'
-#' # Lumping by rank (retain top \code{k - 1} levels and others)
+#' # Lumping by rank (retain top k - 1 levels and others)
 #' enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank")
 #' enc$encode(iris$Species[c(50, 100, 150)])
 #'
