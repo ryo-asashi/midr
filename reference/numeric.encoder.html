@@ -143,14 +143,20 @@ This encoder can then be used to convert a numeric vector into a design matrix u
 <dl><dt>frame</dt>
 <dd><p>a "numeric.frame" object containing the encoding information.</p></dd>
 
-<dt>encode</dt>
-<dd><p>a function to convert a numeric vector <code>x</code> into a dummy matrix.</p></dd>
-
 <dt>n</dt>
 <dd><p>the number of encoding levels (i.e., columns in the design matrix).</p></dd>
 
 <dt>type</dt>
 <dd><p>a character string describing the encoding type: "linear", "constant", or "null".</p></dd>
+
+<dt>envir</dt>
+<dd><p>an environment for the <code>transform</code> and <code>encode</code> functions.</p></dd>
+
+<dt>transform</dt>
+<dd><p>a function <code>transform(x, ...)</code> (identity by default).</p></dd>
+
+<dt>encode</dt>
+<dd><p>a function <code>encode(x, ...)</code> that converts a numeric vector into a dummy matrix.</p></dd>
 
 
 </dl><p><code>numeric.frame()</code> returns a "numeric.frame" object containing the encoding information.</p>

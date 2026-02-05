@@ -89,10 +89,6 @@ containing the following components:
 
   a "factor.frame" object containing the encoding information (levels).
 
-- encode:
-
-  a function to convert a vector `x` into a one-hot encoded matrix.
-
 - n:
 
   the number of encoding levels (i.e., columns in the design matrix).
@@ -100,6 +96,20 @@ containing the following components:
 - type:
 
   a character string describing the encoding type: "factor" or "null".
+
+- envir:
+
+  an environment for the `transform` and `encode` functions.
+
+- transform:
+
+  a function `transform(x, lumped = TRUE, ...)` that converts a vector
+  into a factor with the encoded levels.
+
+- encode:
+
+  a function `encode(x, ...)` that converts a vector into the one-hot
+  encoded matrix.
 
 `factor.frame()` returns a "factor.frame" object containing the encoding
 information.
@@ -140,48 +150,25 @@ enc
 #> 
 
 # Encode a vector with NA
-enc$encode(x = c("setosa", "virginica", "ensata", NA, "versicolor"))
+enc$encode(iris$Species[c(50, 100, 150)])
 #>      setosa versicolor virginica
 #> [1,]      1          0         0
-#> [2,]      0          0         1
-#> [3,]      0          0         0
-#> [4,]      0          0         0
-#> [5,]      0          1         0
+#> [2,]      0          1         0
+#> [3,]      0          0         1
 
-# Lumping by rank (retain top 1 + others)
-enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank", others = "other.iris")
-enc$encode(head(iris$Species))
-#>      setosa other.iris
-#> [1,]      1          0
-#> [2,]      1          0
-#> [3,]      1          0
-#> [4,]      1          0
-#> [5,]      1          0
-#> [6,]      1          0
+# Lumping by rank (retain top \code{k - 1} levels and others)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "rank")
+enc$encode(iris$Species[c(50, 100, 150)])
+#>      setosa others
+#> [1,]      1      0
+#> [2,]      0      1
+#> [3,]      0      1
 
-# Lumping ordered factor (merge adjacent levels)
-x <- ordered(sample(LETTERS[1:5], 20, replace = TRUE))
-enc <- factor.encoder(x, k = 3, lump = "order")
-enc$encode(x)
-#>       A>B C>D E
-#>  [1,]   0   1 0
-#>  [2,]   1   0 0
-#>  [3,]   0   0 1
-#>  [4,]   0   0 1
-#>  [5,]   0   0 1
-#>  [6,]   1   0 0
-#>  [7,]   0   1 0
-#>  [8,]   0   1 0
-#>  [9,]   0   0 1
-#> [10,]   0   0 1
-#> [11,]   0   1 0
-#> [12,]   0   0 1
-#> [13,]   1   0 0
-#> [14,]   0   1 0
-#> [15,]   1   0 0
-#> [16,]   0   1 0
-#> [17,]   1   0 0
-#> [18,]   0   1 0
-#> [19,]   0   0 1
-#> [20,]   1   0 0
+# Lumping by order (merge adjacent levels)
+enc <- factor.encoder(x = iris$Species, k = 2, lump = "order")
+enc$encode(iris$Species[c(50, 100, 150)])
+#>      setosa versicolor>virginica
+#> [1,]      1                    0
+#> [2,]      0                    1
+#> [3,]      0                    1
 ```

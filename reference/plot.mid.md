@@ -19,7 +19,7 @@ plot(
   limits = NULL,
   jitter = 0.3,
   resolution = c(100L, 100L),
-  transform = TRUE,
+  lumped = TRUE,
   ...
 )
 ```
@@ -71,7 +71,7 @@ plot(
   an integer or vector of two integers specifying the resolution of the
   raster plot for interactions.
 
-- transform:
+- lumped:
 
   logical. If `TRUE`, uses the lumped factor levels; if `FALSE`, uses
   the original levels from the data. Always `FALSE` when

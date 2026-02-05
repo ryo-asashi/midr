@@ -141,14 +141,20 @@ This encoder converts the variable into a one-hot encoded (dummy) design matrix.
 <dl><dt>frame</dt>
 <dd><p>a "factor.frame" object containing the encoding information (levels).</p></dd>
 
-<dt>encode</dt>
-<dd><p>a function to convert a vector <code>x</code> into a one-hot encoded matrix.</p></dd>
-
 <dt>n</dt>
 <dd><p>the number of encoding levels (i.e., columns in the design matrix).</p></dd>
 
 <dt>type</dt>
 <dd><p>a character string describing the encoding type: "factor" or "null".</p></dd>
+
+<dt>envir</dt>
+<dd><p>an environment for the <code>transform</code> and <code>encode</code> functions.</p></dd>
+
+<dt>transform</dt>
+<dd><p>a function <code>transform(x, lumped = TRUE, ...)</code> that converts a vector into a factor with the encoded levels.</p></dd>
+
+<dt>encode</dt>
+<dd><p>a function <code>encode(x, ...)</code> that converts a vector into the one-hot encoded matrix.</p></dd>
 
 
 </dl><p><code>factor.frame()</code> returns a "factor.frame" object containing the encoding information.</p>
@@ -184,50 +190,27 @@ This is crucial for preventing MID models from becoming overly complex.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Encode a vector with NA</span></span></span>
-<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span>, <span class="st">"ensata"</span>, <span class="cn">NA</span>, <span class="st">"versicolor"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">150</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      setosa versicolor virginica</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1          0         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0          0         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0          0         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      0          0         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      0          1         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0          1         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0          0         1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Lumping by rank (retain top 1 + others)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, k <span class="op">=</span> <span class="fl">2</span>, lump <span class="op">=</span> <span class="st">"rank"</span>, others <span class="op">=</span> <span class="st">"other.iris"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa other.iris</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]      1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]      1          0</span>
+<span class="r-in"><span><span class="co"># Lumping by rank (retain top \code{k - 1} levels and others)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, k <span class="op">=</span> <span class="fl">2</span>, lump <span class="op">=</span> <span class="st">"rank"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">150</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa others</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0      1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Lumping ordered factor (merge adjacent levels)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">3</span>, lump <span class="op">=</span> <span class="st">"order"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       A&gt;B C&gt;D E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   1   0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]   1   0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]   1   0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]   1   0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]   1   0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]   0   1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]   0   0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]   1   0 0</span>
+<span class="r-in"><span><span class="co"># Lumping by order (merge adjacent levels)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span> <span class="op">&lt;-</span> <span class="fu">factor.encoder</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, k <span class="op">=</span> <span class="fl">2</span>, lump <span class="op">=</span> <span class="st">"order"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">enc</span><span class="op">$</span><span class="fu">encode</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">150</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      setosa versicolor&gt;virginica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]      1                    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]      0                    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]      0                    1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

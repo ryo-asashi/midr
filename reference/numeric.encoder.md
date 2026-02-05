@@ -88,10 +88,6 @@ containing the following components:
 
   a "numeric.frame" object containing the encoding information.
 
-- encode:
-
-  a function to convert a numeric vector `x` into a dummy matrix.
-
 - n:
 
   the number of encoding levels (i.e., columns in the design matrix).
@@ -100,6 +96,19 @@ containing the following components:
 
   a character string describing the encoding type: "linear", "constant",
   or "null".
+
+- envir:
+
+  an environment for the `transform` and `encode` functions.
+
+- transform:
+
+  a function `transform(x, ...)` (identity by default).
+
+- encode:
+
+  a function `encode(x, ...)` that converts a numeric vector into a
+  dummy matrix.
 
 `numeric.frame()` returns a "numeric.frame" object containing the
 encoding information.
