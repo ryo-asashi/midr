@@ -30,7 +30,7 @@ interpret(
   verbosity = 1L,
   frames = list(),
   split = "quantile",
-  digits = 3L,
+  digits = NULL,
   lump = "none",
   others = "others",
   sep = ">",

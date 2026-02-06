@@ -193,7 +193,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 3.2805e-05
+#> Uninterpreted Variation Ratio: 3.275e-05
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -227,7 +227,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.002203
+#> Uninterpreted Variation Ratio: 0.0022028
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -264,7 +264,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0028096
+#> Uninterpreted Variation Ratio: 0.00281
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -305,7 +305,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0075539
+#> Uninterpreted Variation Ratio: 0.0075534
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -350,7 +350,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.030267
+#> Uninterpreted Variation Ratio: 0.030268
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -386,7 +386,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0075668
+#> Uninterpreted Variation Ratio: 0.0075659
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -469,7 +469,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.031792
+#> Uninterpreted Variation Ratio: 0.03179
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 

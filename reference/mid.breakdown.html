@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.902</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,25 +136,25 @@ This decomposition makes the model's decision for a single instance fully transp
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intercept: 42.099</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 39.739</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 39.738</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             term         mid order</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp -1.5043e+01     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day  4.9770e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          Month  3.7575e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     Wind:Month  2.0404e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       Temp:Day  1.3885e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Solar.R:Month  1.3124e+00     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7           Wind  1.0227e+00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        Solar.R -9.4228e-01     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Wind:Temp -6.2914e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  Solar.R:Temp -5.6533e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day  5.0500e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Solar.R:Day -2.4755e-01     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      Wind:Day  4.2771e-02     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    Temp:Month  2.0660e-02     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Wind -3.4803e-04     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day  4.9774e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          Month  3.7573e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     Wind:Month  2.0405e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       Temp:Day  1.3882e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Solar.R:Month  1.3125e+00     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           Wind  1.0226e+00     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        Solar.R -9.4334e-01     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Wind:Temp -6.2883e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  Solar.R:Temp -5.6554e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day  5.0512e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   Solar.R:Day -2.4745e-01     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      Wind:Day  4.2728e-02     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14    Temp:Month  2.0633e-02     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Wind -1.0171e-04     2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate the breakdown for the third observation in the data</span></span></span>
 <span class="r-in"><span><span class="va">mbd</span> <span class="op">&lt;-</span> <span class="fu">mid.breakdown</span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">airquality</span>, row <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
@@ -164,25 +164,25 @@ This decomposition makes the model's decision for a single instance fully transp
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intercept: 42.099</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 9.9693</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 9.9678</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             term        mid order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp -16.686548     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day -11.078821     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3           Wind  -9.263680     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          Month   3.757459     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Solar.R:Month   0.702906     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       Wind:Day   0.501892     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Wind:Month  -0.461498     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   Solar.R:Wind   0.321963     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Month:Day   0.180867     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day   0.120489     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Solar.R:Day  -0.069100     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp -16.686976     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            Day -11.078440     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           Wind  -9.264052     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          Month   3.757259     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Solar.R:Month   0.703515     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       Wind:Day   0.502104     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     Wind:Month  -0.461564     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   Solar.R:Wind   0.321344     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      Month:Day   0.180978     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day   0.120516     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   Solar.R:Day  -0.069253     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12    Temp:Month  -0.068488     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       Solar.R  -0.034390     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     Wind:Temp  -0.030288     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Temp  -0.022524     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       Solar.R  -0.035010     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     Wind:Temp  -0.030329     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  Solar.R:Temp  -0.022898     2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

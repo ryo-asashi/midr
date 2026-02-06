@@ -108,21 +108,21 @@ print(imp)
 #> 
 #> Importance:
 #>             term importance order
-#> 1           Temp   13.87962     1
-#> 2           Wind   10.33981     1
-#> 3        Solar.R    5.02973     1
-#> 4            Day    4.89328     1
-#> 5          Month    2.15851     1
-#> 6   Solar.R:Wind    0.45096     2
-#> 7       Temp:Day    0.40189     2
-#> 8       Wind:Day    0.38731     2
+#> 1           Temp   13.87964     1
+#> 2           Wind   10.33988     1
+#> 3        Solar.R    5.02987     1
+#> 4            Day    4.89338     1
+#> 5          Month    2.15840     1
+#> 6   Solar.R:Wind    0.45055     2
+#> 7       Temp:Day    0.40191     2
+#> 8       Wind:Day    0.38748     2
 #> 9  Solar.R:Month    0.38573     2
-#> 10    Wind:Month    0.38048     2
-#> 11     Month:Day    0.31373     2
-#> 12     Wind:Temp    0.29742     2
-#> 13   Solar.R:Day    0.28369     2
-#> 14  Solar.R:Temp    0.21675     2
-#> 15    Temp:Month    0.14530     2
+#> 10    Wind:Month    0.38059     2
+#> 11     Month:Day    0.31367     2
+#> 12     Wind:Temp    0.29737     2
+#> 13   Solar.R:Day    0.28360     2
+#> 14  Solar.R:Temp    0.21667     2
+#> 15    Temp:Month    0.14529     2
 
 # Calculate MID importance using root mean square contribution
 imp <- mid.importance(mid, measure = 2)
@@ -134,19 +134,19 @@ print(imp)
 #> 
 #> Importance:
 #>             term importance order
-#> 1           Temp   16.23314     1
-#> 2           Wind   14.77143     1
-#> 3        Solar.R    7.25784     1
-#> 4            Day    5.69605     1
-#> 5          Month    2.66107     1
-#> 6     Wind:Month    0.56396     2
-#> 7   Solar.R:Wind    0.55439     2
-#> 8  Solar.R:Month    0.51836     2
-#> 9       Wind:Day    0.51705     2
-#> 10      Temp:Day    0.48822     2
-#> 11     Month:Day    0.47417     2
-#> 12     Wind:Temp    0.41892     2
-#> 13   Solar.R:Day    0.32831     2
-#> 14  Solar.R:Temp    0.30592     2
-#> 15    Temp:Month    0.20070     2
+#> 1           Temp   16.23318     1
+#> 2           Wind   14.77135     1
+#> 3        Solar.R    7.25789     1
+#> 4            Day    5.69615     1
+#> 5          Month    2.66095     1
+#> 6     Wind:Month    0.56416     2
+#> 7   Solar.R:Wind    0.55387     2
+#> 8  Solar.R:Month    0.51838     2
+#> 9       Wind:Day    0.51729     2
+#> 10      Temp:Day    0.48825     2
+#> 11     Month:Day    0.47409     2
+#> 12     Wind:Temp    0.41887     2
+#> 13   Solar.R:Day    0.32822     2
+#> 14  Solar.R:Temp    0.30586     2
+#> 15    Temp:Month    0.20071     2
 ```

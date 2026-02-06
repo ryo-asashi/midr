@@ -44,6 +44,9 @@ get.yhat(object, newdata, ...)
 # S3 method for class 'model_fit'
 get.yhat(object, newdata, target = -1L, ...)
 
+# S3 method for class 'workflow'
+get.yhat(object, newdata, target = -1L, ...)
+
 # S3 method for class 'rpf'
 get.yhat(object, newdata, target = -1L, ...)
 ```

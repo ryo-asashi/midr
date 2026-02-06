@@ -20,7 +20,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.902</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -148,21 +148,21 @@ This is a measure of feature importance that quantifies the average contribution
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Importance:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             term importance order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   13.87962     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   10.33981     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    5.02973     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    4.89328     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.15851     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   Solar.R:Wind    0.45096     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       Temp:Day    0.40189     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       Wind:Day    0.38731     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   13.87964     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   10.33988     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    5.02987     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    4.89338     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.15840     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   Solar.R:Wind    0.45055     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       Temp:Day    0.40191     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       Wind:Day    0.38748     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  Solar.R:Month    0.38573     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    Wind:Month    0.38048     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.31373     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.29742     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.28369     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.21675     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.14530     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    Wind:Month    0.38059     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.31367     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.29737     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.28360     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.21667     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.14529     2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate MID importance using root mean square contribution</span></span></span>
 <span class="r-in"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu">mid.importance</span><span class="op">(</span><span class="va">mid</span>, measure <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
@@ -174,21 +174,21 @@ This is a measure of feature importance that quantifies the average contribution
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Importance:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             term importance order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   16.23314     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   14.77143     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    7.25784     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    5.69605     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.66107     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     Wind:Month    0.56396     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   Solar.R:Wind    0.55439     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Solar.R:Month    0.51836     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       Wind:Day    0.51705     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day    0.48822     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.47417     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.41892     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.32831     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.30592     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.20070     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           Temp   16.23318     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           Wind   14.77135     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Solar.R    7.25789     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            Day    5.69615     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Month    2.66095     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     Wind:Month    0.56416     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   Solar.R:Wind    0.55387     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Solar.R:Month    0.51838     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       Wind:Day    0.51729     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      Temp:Day    0.48825     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     Month:Day    0.47409     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     Wind:Temp    0.41887     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   Solar.R:Day    0.32822     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  Solar.R:Temp    0.30586     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    Temp:Month    0.20071     2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

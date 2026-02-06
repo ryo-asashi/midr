@@ -42,7 +42,7 @@ img {
 
     <a class="navbar-brand me-2" href="index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.901</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.902</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,12 +150,12 @@ img {
 <span><span class="co">#&gt; Interactions:</span></span>
 <span><span class="co">#&gt; 66 interaction terms</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.016249</span></span>
+<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.016248</span></span>
 <span><span class="va">preds_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">valid</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.loss.html">weighted.loss</a></span><span class="op">(</span><span class="va">preds_rf</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; RMSE:  1.106763</span></span>
+<span><span class="co">#&gt; RMSE:  1.106667</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"RMSE: "</span>, <span class="fu"><a href="reference/weighted.loss.html">weighted.loss</a></span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span>, <span class="va">preds_mid</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; RMSE:  3.306072</span></span></code></pre></div>
+<span><span class="co">#&gt; RMSE:  3.306324</span></span></code></pre></div>
 <p>To visualize the main and interaction effects of the variables, apply <code><a href="reference/ggmid.html">ggmid()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> to the fitted MID model.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the main and interaction effects of the MID model</span></span>
@@ -207,7 +207,7 @@ img {
 <p><code><a href="reference/mid.conditional.html">mid.conditional()</a></code> can be used to compute the ICE curves (Goldstein et al. 2015) of the fitted MID model, as well as the breakdown of the ICE curves by main and interaction effects.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize the ICE curves of the MID model</span></span>
-<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span>, max.nsamples <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"lstat"</span>, max.nsamples <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">ice</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Individual Conditional Expectation"</span>,</span>

@@ -1,5 +1,13 @@
 # Changelog
 
+## midr 0.5.3.902
+
+- The `digits` argument of
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  now defaults to `NULL`.
+- [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
+  has new method for `workflow` objects.
+
 ## midr 0.5.3.901
 
 - Updated
