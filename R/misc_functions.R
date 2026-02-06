@@ -54,7 +54,7 @@ model.reframe <- function(object, data) {
     }
     return(res)
   }
-  data
+  as.data.frame(data)
 }
 
 model.data <- function(object, env = parent.frame()) {
@@ -62,7 +62,7 @@ model.data <- function(object, env = parent.frame()) {
   if (!is.null(fcl$data))
     return(eval(fcl$data, envir = env))
   if (!is.null(fml <- fcl$formula)) {
-    env <- ifnot.null(environment(fml), env)
+    env <- environment(fml) %||% env
     return(env)
   }
   if (!is.null(fcl$x)) {
@@ -119,7 +119,7 @@ barplot2 <- function(
   fill <- rep(fill, length.out = n)
   rng <- range(c(to, from), na.rm = TRUE)
   mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
-  limits <- ifnot.null(limits, c(rng[1L] - mgn, rng[2L] + mgn))
+  limits <- limits %||% c(rng[1L] - mgn, rng[2L] + mgn)
   at <- (if (horizontal) (n:1L) else (1L:n))
   graphics::plot.new()
   graphics::plot.window(xlim = if (horizontal) limits else c(0, n) + 0.5,
@@ -136,8 +136,8 @@ barplot2 <- function(
     } else {
       c("ybottom", "ytop", "xleft", "xright", "col", "border", "lty", "lwd")
     }
-    args[[7L]] <- ifnot.null(lty, 1L)
-    args[[8L]] <- ifnot.null(lwd, 1L)
+    args[[7L]] <- lty %||% 1L
+    args[[8L]] <- lwd %||% 1L
     for (i in seq_len(n)) {
       args[[1L]] <- from[i]
       args[[2L]] <- to[i]
@@ -152,7 +152,7 @@ barplot2 <- function(
       graphics::lines.default(
         x = if (horizontal) c(from[i], to[i]) else c(at[i], at[i]),
         y = if (horizontal) c(at[i], at[i]) else c(from[i], to[i]),
-        col = "black", lty = ifnot.null(lty, 3L), lwd = ifnot.null(lwd, 1L)
+        col = "black", lty = lty %||% 3L, lwd = lwd %||% 1L
       )
       graphics::points.default(
         x = if (horizontal) to[i] else at[i],
@@ -173,8 +173,8 @@ override <- function(args, dots,
                    title = "main", subtitle = "sub")
   ) {
   for (param in params) {
-    arg <- ifnot.null(read.as[[param]], param)
-    args[[arg]] <- ifnot.null(dots[[param]], args[[arg]])
+    arg <- read.as[[param]] %||% param
+    args[[arg]] <- dots[[param]] %||% args[[arg]]
   }
   args
 }

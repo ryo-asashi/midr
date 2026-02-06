@@ -128,7 +128,7 @@ interpret.default <- function(
     k = c(NA, NA), type = c(1L, 1L), interactions = FALSE, terms = NULL,
     singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0, kappa = 1e6,
     na.action = getOption("na.action"), verbosity = 1L, frames = list(),
-    split = "quantile", digits = 3L, lump = "none", others = "others", sep = ">",
+    split = "quantile", digits = NULL, lump = "none", others = "others", sep = ">",
     max.nelements = 1e9L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()

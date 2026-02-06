@@ -1,3 +1,8 @@
+# midr 0.5.3.902
+
+-   The `digits` argument of `interpret()` now defaults to `NULL`.
+-   `get.yhat()` has new method for `workflow` objects.
+
 # midr 0.5.3.901
 
 -   Updated `interpret()` and encoder generators to enhance the variable encoding functionality, introducing new arguments: `split` for numeric variables and `lump` for factor variables.

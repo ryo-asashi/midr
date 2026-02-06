@@ -86,12 +86,12 @@ mid
 #> Interactions:
 #> 66 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.016249
+#> Uninterpreted Variation Ratio: 0.016248
 preds_mid <- predict(mid, valid)
 cat("RMSE: ", weighted.loss(preds_rf, preds_mid))
-#> RMSE:  1.106763
+#> RMSE:  1.106667
 cat("RMSE: ", weighted.loss(valid$medv, preds_mid))
-#> RMSE:  3.306072
+#> RMSE:  3.306324
 ```
 
 To visualize the main and interaction effects of the variables, apply
@@ -167,7 +167,7 @@ curves by main and interaction effects.
 
 ``` r
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", max.nsamples = 150)
+ice <- mid.conditional(mid, "lstat", max.nsamples = 200)
 grid.arrange(
   ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",

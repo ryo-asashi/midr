@@ -278,17 +278,14 @@ make.theme <- function(
   type <- match.arg(type, c("sequential", "diverging", "qualitative"))
   kcl <- kernel.class(kernel, args = kernel.args)
   if (kcl == "color") {
-    kernel.args$mode <- ifnot.null(
-      kernel.args$mode, switch(type, qualitative = "palette", "ramp")
-    )
+    kernel.args$mode <- kernel.args$mode %||%
+      switch(type, qualitative = "palette", "ramp")
     kernel.args$alpha <- kernel.args$alpha %||% NA
   }
-  options$kernel.size <- ifnot.null(options$kernel.size,
-                                    kernel.size(kernel, args = kernel.args))
-  options$palette.formatter <- ifnot.null(
-    options$palette.formatter,
+  options$kernel.size <- options$kernel.size %||%
+    kernel.size(kernel, args = kernel.args)
+  options$palette.formatter <- options$palette.formatter %||%
     switch(type, qualitative = "recycle", "interpolate")
-  )
   options$palette.reverse <- options$palette.reverse %||% FALSE
   options$ramp.rescaler <- options$ramp.rescaler %||% c(0, 1)
   options$na.color <- options$na.color %||% NA

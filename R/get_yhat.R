@@ -259,6 +259,27 @@ get.yhat.model_fit <- function(object, newdata, target = -1L, ...) {
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
+get.yhat.workflow <- function(object, newdata, target = -1L, ...) {
+  fit <- object$fit$fit
+  if (fit$spec$mode == "regression") {
+    yhat <- stats::predict(object = object, new_data = newdata,
+                           type = "numeric")
+    yhat <- yhat$.pred
+  } else if (fit$spec$mode == "classification") {
+    yhat <- stats::predict(object = object, new_data = newdata, type = "prob")
+    yhat <- as.matrix(yhat)
+    if (is.matrix(yhat) && ncol(yhat) > 1L) {
+      colnames(yhat) <- fit$lvl
+      yhat <- rowSums(yhat[, target, drop = FALSE])
+    }
+  }
+  as.numeric(yhat)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
 get.yhat.rpf <- function(object, newdata, target = -1L, ...) {
   if (object$mode == "regression") {
     yhat <- stats::predict(object = object, new_data = newdata,

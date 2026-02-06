@@ -131,7 +131,7 @@ grid.arrange(nrow = 1L,
 
 ```{r mid_conditional}
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", max.nsamples = 150)
+ice <- mid.conditional(mid, "lstat", max.nsamples = 200)
 grid.arrange(
   ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",
