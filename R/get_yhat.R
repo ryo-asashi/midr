@@ -295,3 +295,26 @@ get.yhat.rpf <- function(object, newdata, target = -1L, ...) {
   }
   as.numeric(yhat)
 }
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.bundle <- function(
+    object, newdata, ...
+) {
+  dots <- list(...)
+  m <- length(object)
+  res <- matrix(0, nrow = nrow(newdata), ncol = m)
+  nms <- names(object) %||% vapply(object, function(x) class(x)[1L], "")
+  colnames(res) <- nms
+  for (i in seq_len(m)) {
+    name <- nms[i]
+    pred.fun <- dots[[paste0("pred.fun.", name)]] %||%
+      dots[["pred.fun"]] %||% get.yhat
+    pred.args <- dots[[paste0("pred.args.", name)]] %||%
+      dots[["pred.args"]] %||% dots
+    res[, i] <- do.call(pred.fun, c(list(object[[i]], newdata), pred.args))
+  }
+  res
+}

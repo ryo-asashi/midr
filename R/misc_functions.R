@@ -218,6 +218,7 @@ verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
 }
 
 examples <- function(x, n = 3L, ...) {
+  if (is.data.frame(x)) x <- as.matrix(x)
   dts <- if (length(x) > n) ", ..." else ""
   n <- min(length(x), n)
   paste0(paste(trimws(format(x[seq_len(n)]), ...), collapse = ", "), dts)
