@@ -16,6 +16,7 @@
 \alias{get.yhat.model_fit}
 \alias{get.yhat.workflow}
 \alias{get.yhat.rpf}
+\alias{get.yhat.bundle}
 \title{Wrapper Prediction Function}
 \usage{
 get.yhat(object, newdata, ...)
@@ -47,6 +48,8 @@ get.yhat(object, newdata, ...)
 \method{get.yhat}{workflow}(object, newdata, target = -1L, ...)
 
 \method{get.yhat}{rpf}(object, newdata, target = -1L, ...)
+
+\method{get.yhat}{bundle}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a fitted model object.}

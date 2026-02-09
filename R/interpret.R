@@ -27,7 +27,7 @@
 #' \describe{
 #'   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
 #'   \item{interpolation}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
-#'   \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
+#'   \item{max.niterations}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
 #'   \item{save.memory}{an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.}
 #'   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
 #'   \item{weighted.encoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}
@@ -140,7 +140,7 @@ interpret.default <- function(
   if (missing(singular.ok) && !is.null(dots$ok)) singular.ok <- dots$ok
   fit.intercept <- dots$fit.intercept %||% FALSE
   interpolation <- dots$interpolation %||% "iterative"
-  maxit <- dots$maxit %||% 1e4L
+  max.niterations <- dots$max.niterations %||% 1e4L
   weighted.norm <- dots$weighted.norm %||% singular.ok
   weighted.encoding <- dots$weighted.encoding %||% FALSE
   save.memory <- dots$save.memory %||% 1L
@@ -183,17 +183,15 @@ interpret.default <- function(
                      examples(y, 3L)), verbosity, 3L)
     }
   }
+  ref <- if (is.factor(y)) levels(y)[1L] else if (is.character(y))
+    sort(unique(as.vector(y)))[1L] else NULL
+  if (!is.null(ref)) y <- (y != ref)
   y <- as.matrix(y)
   ntargets <- ncol(y)
   if (nrow(y) != nrow(x))
     stop("length of 'y' doesn't match the number of rows in 'x'")
-  if (is.null(colnames(y))) {
-    if (ntargets == 1L)
-      colnames(y) <- "y" else colnames(y) <- paste0("y", seq_len(ntargets))
-  }
-  if (is.character(y)) y <- as.factor(y)
-  if (is.factor(y)) y <- (y != levels(y)[1L])
-  if (!is.numeric(y)) y <- as.numeric(y)
+  if (is.null(colnames(y)) && ntargets > 1L)
+    colnames(y) <- paste0("y", seq_len(ntargets))
   if (!is.null(link)){
     if (is.character(link)) link <- get.link(link)
     yres <- y
@@ -210,7 +208,7 @@ interpret.default <- function(
     x <- x[-naa.y, , drop = FALSE]
     weights <- weights[-naa.y]
     if (!is.null(link))
-      yres <- if (malti.target) yres[-naa.y, , drop = FALSE] else yres[-naa.y]
+      yres <- yres[-naa.y, , drop = FALSE]
     naai$ids <- naai$ids[-naa.y]
     attr(y, "na.action") <- NULL
   }
@@ -505,11 +503,12 @@ interpret.default <- function(
   }
   ## ridge regularization
   if (nreg > 0L) {
+    min.neighbors <- if (isFALSE(dots$penalize.edges)) 2L else 1L
     for (i in seq_len(nreg)) {
       m <- lreg[[i]][1L]
       a <- lreg[[i]][-1L]
       a <- a[!vnil[a]]
-      if (length(a) == 0L) next
+      if (length(a) < min.neighbors) next
       if (weighted.norm) {
         X[n + i, m] <- length(a) * rl
         X[n + i, a] <- (- 1) * sqrt(delt[m]) / sqrt(delt[a]) * rl
@@ -534,16 +533,17 @@ interpret.default <- function(
     gc(verbose = FALSE, full = FALSE)
   }
   # solve the least squares problem --------
-  if (ntargets > 1L)
-    method <- -1L
   verbose(paste0("least squares estimation initiated with 'mode' ", mode,
                  " and 'method' ", method), verbosity, 2L, FALSE)
   if (mode == 1L) {
     r <- 0L
     z <- if (method >= 0L) {
-      try(RcppEigen::fastLmPure(X, Y, method), silent = TRUE)
+      if (ntargets == 1L)
+        try(RcppEigen::fastLmPure(X, Y, method), silent = TRUE)
+      else
+        try(fastLmMatrix(X, Y, method), silent = TRUE)
     } else {
-      try(stats::lm.fit(X, Y))
+      try(stats::lm.fit(X, Y), silent = TRUE)
     }
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
@@ -595,17 +595,16 @@ interpret.default <- function(
     verbose("interpolating inestimable parameters ...",
             verbosity, 3L)
     if (interpolation == "iterative" || isTRUE(interpolation)) {
-      midx <- vapply(lnil, `[`, 0, 1L)
-      aidx <- lapply(lnil, `[`, -1)
-      pntr <- cumsum(c(1L, vapply(aidx, length, 0)))
-      aidx <- unlist(aidx)
-      for (j in seq_len(ntargets)) {
-        res <- cpp_interpolate_beta(beta[, j], midx, aidx, pntr, tol, maxit)
-        verbose(text = paste0(
-          "interpolation ", if (res$converged) "converged" else "stopped",
-          " after ", res$iter," iterations"), verbosity, 3L)
-        beta[, j] <- res$beta
-      }
+      nils <- vapply(lnil, `[`, 1L, 1L)
+      adjs <- lapply(lnil, `[`, -1)
+      pnts <- cumsum(c(1L, vapply(adjs, length, 1L)))
+      res <- LaplacianSmoothing(
+        beta, nils, as.integer(unlist(adjs)), pnts, tol, max.niterations
+      )
+      verbose(text = paste0(
+        "interpolation ", if (res$converged) "converged" else "stopped",
+        " after ", res$n_iter," iterations"), verbosity, 3L)
+      beta <- res$coefficients
     } else {
       B <- diag(1, npar)
       for (i in seq_len(nnil)) {
@@ -623,8 +622,9 @@ interpret.default <- function(
   # summarize results of the decomposition --------
   ## intercept
   if(fit.intercept)
-    intercept <- beta[1L, ]
-  lp <- matrix(rep(intercept, each = n), nrow = n, ncol = ntargets)
+    intercept <- structure(beta[1L, ], names = colnames(y))
+  lp <- matrix(rep(intercept, each = n), nrow = n, ncol = ntargets,
+               dimnames = list(NULL, colnames(y)))
   ## main effects
   ret.main.effects <- list()
   for (i in seq_len(p)) {
@@ -665,10 +665,11 @@ interpret.default <- function(
   }
   # output the result --------
   obj <- list()
-  class(obj) <- c("mid")
+  class(obj) <- c("mid", if (ntargets > 1L) "mids")
   obj$model.class <- attr(object, "class")
   obj$call <- cl
   obj$terms <- stats::terms(make.formula(terms, "..y", env = globalenv()))
+  obj$targets <- if (ntargets > 1L) colnames(y) else NULL
   obj$link <- link
   obj$intercept <- if (ntargets == 1L) as.numeric(intercept) else intercept
   obj$encoders <- list()
@@ -701,7 +702,8 @@ interpret.default <- function(
     uir <- attract(rss / tss, nil)
     verbose(paste0("uninterpreted variation ratio (response): ",
                    format(uir)), verbosity, 3L)
-    obj$ratio <- c(working = obj$ratio, response = uir)
+    obj$ratio <- if (ntargets == 1L) c(working = obj$ratio, response = uir) else
+      rbind(working = obj$ratio, response = uir)
   }
   if (length(naai$ids) < naai$n.init) {
     naacl <- attr(attr(do.call(na.action, list(NA)), "na.action"), "class")

@@ -1,7 +1,3 @@
-ifnot.null <- function(x, y) {
-  if (!is.null(x)) x else y
-}
-
 attract <- function(x, margin) {
   x[abs(x) <= margin] <- 0
   x
@@ -89,6 +85,43 @@ interaction.frame <- function(xfrm, yfrm) {
     yfrm[rep(seq_len(ny), each = nx), , drop = FALSE],
     row.names = NULL, check.names = FALSE
   )
+}
+
+extract.effects <- function(x, targets) {
+  if (!all(targets %in% colnames(x$mid)))
+    stop("invalid 'targets' found")
+  ntargets <- length(targets)
+  x$mid <- if (ntargets > 1L)
+    I(x$mid[, targets]) else as.numeric(x$mid[, targets])
+  x
+}
+
+extract.mids <- function(object, targets = object$targets[1L]) {
+  if (!inherits(object, "mids"))
+    return(object)
+  if (is.numeric(targets))
+    targets <- object$targets[targets]
+  if (!all(targets %in% object$targets))
+    stop("'target' can't be found in 'object'")
+  if (length(targets) == 1L) class(object) <- "mid"
+  object$targets <- targets
+  object$intercept <- object$intercept[targets]
+  if (length(targets))
+  me <- object$main.effects
+  if (!is.null(me)) {
+    object$main.effects <- lapply(me, extract.effects, targets)
+  }
+  ie <- object$interactions
+  if (!is.null(ie)) {
+    object$interactions <- lapply(ie, extract.effects, targets)
+  }
+  object$fitted.values <- object$fitted.values[, targets]
+  object$residuals <- object$residuals[, targets]
+  object$linear.predictors <- object$linear.predictors[, targets]
+  object$response.residuals <- object$response.residuals[, targets]
+  uvr <- object$ratio
+  object$ratio <- if (is.matrix(uvr)) uvr[, targets] else uvr[targets]
+  object
 }
 
 adjusted.mai <- function(labels, margin = 1/16) {

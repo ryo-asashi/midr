@@ -11,25 +11,39 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// cpp_interpolate_beta
-Rcpp::List cpp_interpolate_beta(Eigen::VectorXd beta, const Rcpp::IntegerVector& indices, const Rcpp::IntegerVector& neighbors, const Rcpp::IntegerVector& pointers, const double tol, const int maxit);
-RcppExport SEXP _midr_cpp_interpolate_beta(SEXP betaSEXP, SEXP indicesSEXP, SEXP neighborsSEXP, SEXP pointersSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+// LaplacianSmoothing
+Rcpp::List LaplacianSmoothing(Eigen::MatrixXd coefficients, const Rcpp::IntegerVector& indices, const Rcpp::IntegerVector& adjacencies, const Rcpp::IntegerVector& pointers, const double tol, const int max_iter);
+RcppExport SEXP _midr_LaplacianSmoothing(SEXP coefficientsSEXP, SEXP indicesSEXP, SEXP adjacenciesSEXP, SEXP pointersSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type coefficients(coefficientsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type indices(indicesSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type neighbors(neighborsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type adjacencies(adjacenciesSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type pointers(pointersSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const int >::type maxit(maxitSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_interpolate_beta(beta, indices, neighbors, pointers, tol, maxit));
+    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(LaplacianSmoothing(coefficients, indices, adjacencies, pointers, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fastLmMatrix
+Rcpp::List fastLmMatrix(Rcpp::NumericMatrix Xr, Rcpp::NumericMatrix yr, int type);
+RcppExport SEXP _midr_fastLmMatrix(SEXP XrSEXP, SEXP yrSEXP, SEXP typeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Xr(XrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type yr(yrSEXP);
+    Rcpp::traits::input_parameter< int >::type type(typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(fastLmMatrix(Xr, yr, type));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_midr_cpp_interpolate_beta", (DL_FUNC) &_midr_cpp_interpolate_beta, 6},
+    {"_midr_LaplacianSmoothing", (DL_FUNC) &_midr_LaplacianSmoothing, 6},
+    {"_midr_fastLmMatrix", (DL_FUNC) &_midr_fastLmMatrix, 3},
     {NULL, NULL, 0}
 };
 
