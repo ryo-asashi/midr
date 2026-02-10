@@ -43,6 +43,10 @@
 mid.breakdown <- function(
     object, data = NULL, row = NULL, sort = TRUE
   ) {
+  if (inherits(object, "midlist"))
+    return(lapply(object, mid.breakdown, data = data, row = row, sort = sort))
+  if (!inherits(object, "mid"))
+    stop("'object' must be 'mid' or 'midlist'")
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))

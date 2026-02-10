@@ -41,6 +41,12 @@
 mid.conditional <- function(
     object, variable, data = NULL, resolution = 100L,
     max.nsamples = 1e3L, type = c("response", "link"), keep.effects = TRUE) {
+  if (inherits(object, "midlist"))
+    return(lapply(object, mid.conditional, variable = variable, data = data,
+                  resolution = resolution, max.nsamples = max.nsamples,
+                  type = type, keep.effects = keep.effects))
+  if (!inherits(object, "mid"))
+    stop("'object' must be 'mid' or 'midlist'")
   type <- match.arg(type)
   tfix <- mid.terms(object, remove = variable)
   tver <- mid.terms(object, require = variable)

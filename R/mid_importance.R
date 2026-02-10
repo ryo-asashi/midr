@@ -42,6 +42,11 @@
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
     max.nsamples = 1e4L) {
+  if (inherits(object, "midlist"))
+    return(lapply(object, mid.importance, data = data, weights = weights,
+                  sort = sort, measure = measure, max.nsamples = max.nsamples))
+  if (!inherits(object, "mid"))
+    stop("'object' must be 'mid' or 'midlist'")
   if (is.null(data)) {
     data <- model.data(object, env = parent.frame())
     if (is.null(data))

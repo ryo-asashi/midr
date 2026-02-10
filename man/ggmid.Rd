@@ -4,6 +4,7 @@
 \alias{ggmid}
 \alias{ggmid.mid}
 \alias{autoplot.mid}
+\alias{ggmid.midlist}
 \title{Plot MID Component Functions with ggplot2}
 \usage{
 ggmid(object, ...)
@@ -24,6 +25,8 @@ ggmid(object, ...)
 )
 
 \method{autoplot}{mid}(object, ...)
+
+\method{ggmid}{midlist}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object to be visualized.}
@@ -52,6 +55,7 @@ ggmid(object, ...)
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.
+\code{ggmid.midlist()} returns a list of "ggplot" objects.
 }
 \description{
 \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.

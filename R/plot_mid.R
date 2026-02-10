@@ -45,6 +45,7 @@
 #' plot(mid, "clarity:color", theme = "RdBu")
 #' @returns
 #' \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
+#' \code{plot.midlist()} produces multiple plots for each mid object.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid}}
 #'
@@ -239,5 +240,14 @@ plot.mid <- function(
       do.call(graphics::points.default, args)
     }
   }
+  invisible(NULL)
+}
+
+#' @rdname plot.mid
+#'
+#' @exportS3Method base::plot
+#'
+plot.midlist <- function(object, ...) {
+  lapply(object, plot.mid, ...)
   invisible(NULL)
 }

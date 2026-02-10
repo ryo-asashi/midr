@@ -36,47 +36,49 @@
 #' @export mid.effect
 #'
 mid.effect <- function(object, term, x, y = NULL) {
+  if (inherits(object, "midlist"))
+    sapply(object, mid.effect, term = term, x = x, y = NULL)
+  if (!inherits(object, "mid"))
+    stop("'object' must be 'mid' or 'midlist'")
+  checked <- term.check(term, mid.terms(object), stop = FALSE)
   tags <- term.split(term)
-  ie <- length(tags) == 2L
+  ie <- (length(tags) == 2L)
   if (is.matrix(x) || is.data.frame(x)) {
-    if (ie)
-      y <- x[, tags[2L]]
+    if (ie) y <- x[, tags[2L]]
     x <- x[, tags[1L]]
   }
-  n <- length(x)
-  .term <- term.check(term, mid.terms(object), stop = FALSE)
-  if (is.na(.term))
+  if (ie && is.null(y))
+    stop("'y' is missing and can't be extracted from 'x'")
+  nx <- length(x)
+  ny <- length(y)
+  n <- if (ie) max(nx, ny) else nx
+  if (is.na(checked))
     return(numeric(n))
-  if (!ie) {
-    enc <- object$encoders[["main.effects"]][[.term]]
-    X <- enc$encode(x)
-    mid <- object$main.effects[[.term]]$mid
-  } else {
-    ny <- length(y)
-    if (ny != n) {
-      if (n == 1L) {
-        x <- rep.int(x, ny)
-        n <- ny
-      } else if (ny == 1L) {
-        y <- rep.int(y, n)
-      } else {
-        stop("x and y must have the same length")
-      }
+  if (ie && nx != ny) {
+    if (nx == 1L) {
+      x <- rep.int(x, ny)
+    } else if (ny == 1L) {
+      y <- rep.int(y, nx)
+    } else {
+      stop("'x' and 'y' must have the same length")
     }
-    encs <- list(object$encoders[["interactions"]][[tags[1L]]],
-                 object$encoders[["interactions"]][[tags[2L]]])
-    mats <- list(encs[[1L]]$encode(x), encs[[2L]]$encode(y))
-    r <- if (term == .term) 0L else 1L
-    uni <- as.matrix(expand.grid(1L:encs[[1L + r]]$n, 1L:encs[[2L - r]]$n))
-    X <- matrix(0, nrow = n, ncol = nrow(uni))
-    for (j in seq_len(nrow(uni))) {
-      X[, j] <- as.numeric(mats[[1L + r]][, uni[j, 1L]] *
-                             mats[[2L - r]][, uni[j, 2L]])
-    }
-    mid <- object$interactions[[.term]]$mid
   }
-  mid[is.na(mid)] <- 0
-  as.numeric(X %*% mid)
+  if (!ie) {
+    X <- object$encoders$main.effects[[checked]]$encode(x)
+    as.numeric(X %*% object$main.effects[[checked]]$mid)
+  } else {
+    if (term != checked) {
+      tags <- rev(tags)
+      temp <- x; x <- y; y <- temp
+    }
+    X <- object$encoders$interactions[[tags[1L]]]$encode(x)
+    Y <- object$encoders$interactions[[tags[2L]]]$encode(y)
+    W <- matrix(
+      object$interactions[[checked]]$mid, nrow = ncol(X), ncol = ncol(Y)
+    )
+    W[is.na(W)] <- 0
+    rowSums((X %*% W) * Y)
+  }
 }
 
 #' @rdname mid.effect

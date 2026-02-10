@@ -34,6 +34,7 @@
 #' predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 #' @returns
 #' \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+#' \code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{mid.effect}}, \code{\link{get.yhat}}
 #'
@@ -99,4 +100,17 @@ predict.mid <- function(
     preds <- stats::napredict(naa, preds)
   }
   return(structure(preds, na.action = naa))
+}
+
+#' @rdname predict.mid
+#'
+#' @exportS3Method stats::predict
+#'
+predict.midlist <- function(
+    object, type = "response", ...
+  ) {
+  if (type == "response" || type == "link")
+    sapply(object, predict.mid, type = type, ...)
+  else
+    lapply(object, predict.mid, type = type, ...)
 }

@@ -1,24 +1,23 @@
 #'
-#' @exportS3Method base::names
-#'
-names.midlist <- function(x)
-  names(x$intercept)
-
-#'
 #' @export
 #'
 `[.midlist` <- function(
     x, i, drop = if (missing(i)) TRUE else length(i) == 1L
   ) {
-  nm <- names(x)
+  nm <- names(x$intercept)
   if (missing(i)) {
     i <- seq_along(nm)
   } else if (is.character(i)) {
-    i <- pmatch(i, nm, duplicates.ok = TRUE)
-    if (anyNA(i)) stop("undefined targets selected")
+    i <- match(i, nm)
   } else if (is.logical(i)) {
     i <- which(rep(i, length.out = length(nm)))
+  } else if (is.numeric(i)) {
+    i <- as.integer(i)
   }
+  if (anyNA(i))
+    stop("undefined target(s) selected")
+  if (is.numeric(i) && any(i > length(nm) | i < 1L))
+    stop("subscript out of bounds")
   x$intercept <- x$intercept[i]
   me <- x$main.effects
   if (!is.null(me)) x$main.effects <- lapply(me, extract.effects, i, drop)
@@ -34,8 +33,10 @@ names.midlist <- function(x)
     x$ratio[, i, drop = drop] else x$ratio[i]
   if (drop && length(i) == 1L) {
     names(x$intercept) <- NULL
-    names(x$ratio) <- NULL
+    if (length(x$ratio) == 1L) names(x$ratio) <- NULL
     class(x) <- "mid"
+  } else {
+    class(x) <- "midlist"
   }
   x
 }
@@ -55,4 +56,12 @@ extract.effects <- function(x, i, drop = FALSE) {
   x$mid <- if (drop && length(i) == 1L)
     as.numeric(x$mid[, i]) else I(x$mid[, i, drop = FALSE])
   x
+}
+
+#'
+#' @exportS3Method base::as.list
+#'
+as.list.midlist <- function(x, ...) {
+  nm <- names(x$intercept)
+  lapply(setNames(nm, nm), function(x) mid[[x]])
 }
