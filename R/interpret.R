@@ -264,8 +264,16 @@ interpret.default <- function(
     ), verbosity, 3L)
   if (length(type) == 1L)
     type <- c(type, type)
+  if (!any(mode == 1L:2L)) {
+    verbose("invalid 'mode' found: defaulted to 1", verbosity, 3L, FALSE)
+    mode <- 1L
+  }
   if (is.null(method))
     method <- if (!singular.ok) 0L else 5L
+  if (!any(method == c(-1L, 0L:6L))) {
+    verbose("invalid 'method' found: defaulted to 0", verbosity, 3L, FALSE)
+    method <- 0L
+  }
   if (!singular.ok && any(method == 1L:2L))
     verbose("when 'method' is set to 1 or 2, singular fits cannot be detected",
             verbosity, level = 1L)
@@ -537,14 +545,7 @@ interpret.default <- function(
                  " and 'method' ", method), verbosity, 2L, FALSE)
   if (mode == 1L) {
     r <- 0L
-    z <- if (method >= 0L) {
-      if (ntargets == 1L)
-        try(RcppEigen::fastLmPure(X, Y, method), silent = TRUE)
-      else
-        try(fastLmMatrix(X, Y, method), silent = TRUE)
-    } else {
-      try(stats::lm.fit(X, Y), silent = TRUE)
-    }
+    z <- try(solveOLS(X, Y, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     beta <- as.matrix(z$coefficients)
@@ -556,24 +557,18 @@ interpret.default <- function(
                      format(max_error, digits = 6L)),
               verbosity, level = 1L)
     }
-  } else if (mode == 2L) {
+  } else {
     Msvd <- svd(M, nv = npar)
     r <- sum(Msvd$d > tol)
     if (r == dim(Msvd$v)[2L])
       stop("no coefficients to evaluate found")
     vr <- as.matrix(Msvd$v[, (r + 1L):npar])
-    z <- if (method >= 0L) {
-      try(RcppEigen::fastLmPure(X %*% vr, Y, method), silent = TRUE)
-    } else {
-      try(stats::lm.fit(X %*% vr, Y))
-    }
+    z <- try(solveOLS(X %*% vr, Y, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     coef <- as.matrix(z$coefficients)
     coef[is.na(coef)] <- 0
     beta <- as.matrix(vr %*% coef)
-  } else {
-    stop("'mode' must be 1 or 2")
   }
   if (!(any(method == 1L:2L)) && z$rank < npar - r) {
     if (!singular.ok) {
@@ -613,7 +608,7 @@ interpret.default <- function(
         B[m, a] <- - 1
         B[m, m] <- length(a)
       }
-      beta <- as.matrix(stats::lm.fit(B, beta)$coefficients)
+      beta <- as.matrix(solveOLS(B, beta, method)$coefficients)
     }
     beta[is.na(beta)] <- 0
   }
@@ -665,11 +660,10 @@ interpret.default <- function(
   }
   # output the result --------
   obj <- list()
-  class(obj) <- c("mid", if (ntargets > 1L) "mids")
+  class(obj) <- if (ntargets == 1L) "mid" else "midlist"
   obj$model.class <- attr(object, "class")
   obj$call <- cl
   obj$terms <- stats::terms(make.formula(terms, "..y", env = globalenv()))
-  obj$targets <- if (ntargets > 1L) colnames(y) else NULL
   obj$link <- link
   obj$intercept <- if (ntargets == 1L) as.numeric(intercept) else intercept
   obj$encoders <- list()
@@ -688,7 +682,8 @@ interpret.default <- function(
   tss <- colSums(sweep(y, 2L, intercept, "-") ^ 2 * weights)
   rss <- colSums(residuals ^ 2 * weights)
   uir <- attract(rss / tss, nil)
-  verbose(paste0("uninterpreted variation ratio: ", format(uir)), verbosity, 3L)
+  verbose(paste0("uninterpreted variation ratio: ",
+                 examples(uir)), verbosity, 3L)
   obj$ratio <- uir
   if (!is.null(link)) {
     obj$linear.predictors <- obj$fitted.values
@@ -701,7 +696,7 @@ interpret.default <- function(
     rss <- colSums(resres ^ 2 * weights)
     uir <- attract(rss / tss, nil)
     verbose(paste0("uninterpreted variation ratio (response): ",
-                   format(uir)), verbosity, 3L)
+                   examples(uir)), verbosity, 3L)
     obj$ratio <- if (ntargets == 1L) c(working = obj$ratio, response = uir) else
       rbind(working = obj$ratio, response = uir)
   }

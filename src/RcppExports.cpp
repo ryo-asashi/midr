@@ -28,15 +28,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // fastLmMatrix
-Rcpp::List fastLmMatrix(Rcpp::NumericMatrix Xr, Rcpp::NumericMatrix yr, int type);
-RcppExport SEXP _midr_fastLmMatrix(SEXP XrSEXP, SEXP yrSEXP, SEXP typeSEXP) {
+Rcpp::List fastLmMatrix(Rcpp::NumericMatrix X, Rcpp::NumericMatrix y, int method);
+RcppExport SEXP _midr_fastLmMatrix(SEXP XSEXP, SEXP ySEXP, SEXP methodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Xr(XrSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type yr(yrSEXP);
-    Rcpp::traits::input_parameter< int >::type type(typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastLmMatrix(Xr, yr, type));
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(fastLmMatrix(X, y, method));
     return rcpp_result_gen;
 END_RCPP
 }

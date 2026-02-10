@@ -5,7 +5,7 @@ LaplacianSmoothing <- function(coefficients, indices, adjacencies, pointers, tol
     .Call(`_midr_LaplacianSmoothing`, coefficients, indices, adjacencies, pointers, tol, max_iter)
 }
 
-fastLmMatrix <- function(Xr, yr, type = 0L) {
-    .Call(`_midr_fastLmMatrix`, Xr, yr, type)
+fastLmMatrix <- function(X, y, method = 0L) {
+    .Call(`_midr_fastLmMatrix`, X, y, method)
 }
 
