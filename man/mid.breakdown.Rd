@@ -21,6 +21,8 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 \item{data}{the data frame containing the predictor variable values used for the prediction.}
 \item{intercept}{the intercept of the MID model.}
 \item{prediction}{the predicted value from the MID model.}
+
+For "midlist", \code{mid.breakdown()} returns an object of class "midlist.breakdown", a list of "mid.breakdown" objects.
 }
 \description{
 \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.

@@ -34,6 +34,7 @@
 #' predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 #' @returns
 #' \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+#'
 #' \code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{mid.effect}}, \code{\link{get.yhat}}
@@ -110,7 +111,7 @@ predict.midlist <- function(
     object, type = "response", ...
   ) {
   if (type == "response" || type == "link")
-    sapply(object, predict.mid, type = type, ...)
+    sapply(X = object, FUN = predict.mid, type = type, ...)
   else
-    lapply(object, predict.mid, type = type, ...)
+    lapply(X = object, FUN = predict.mid, type = type, ...)
 }

@@ -33,6 +33,8 @@ mid.plots <- function(
     object, terms = mid.terms(object, interactions = FALSE),
     limits = c(NA, NA), intercept = FALSE, main.effects = FALSE,
     max.nplots = NULL, engine = c("ggplot2", "graphics"), ...) {
+  if (!inherits(object, "mid"))
+    stop("'object' must be 'mid'")
   engine <- match.arg(engine)
   if (length(terms) == 0L)
     return(NULL)

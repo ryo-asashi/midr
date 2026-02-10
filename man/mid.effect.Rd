@@ -20,6 +20,8 @@ mid.f(object, term, x, y = NULL)
 }
 \value{
 \code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
+
+For "midlist", \code{mid.effect()} returns a matrix of the term contributions.
 }
 \description{
 \code{mid.effect()} calculates the contribution of a single component function of a fitted MID model.

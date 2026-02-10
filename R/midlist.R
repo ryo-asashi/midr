@@ -63,5 +63,12 @@ extract.effects <- function(x, i, drop = FALSE) {
 #'
 as.list.midlist <- function(x, ...) {
   nm <- names(x$intercept)
-  lapply(setNames(nm, nm), function(x) mid[[x]])
+  lapply(stats::setNames(nm, nm), function(x) x[[x]])
+}
+
+#'
+#' @exportS3Method stats::formula
+#'
+formula.midlist <- function(x, ...) {
+  formula.mid(x, ...)
 }

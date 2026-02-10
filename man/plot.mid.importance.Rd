@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_mid_importance.R
 \name{plot.mid.importance}
 \alias{plot.mid.importance}
+\alias{plot.midlist.importance}
 \title{Plot MID Importance}
 \usage{
 \method{plot}{mid.importance}(
@@ -12,6 +13,8 @@
   max.nterms = 30L,
   ...
 )
+
+\method{plot}{midlist.importance}(x, ...)
 }
 \arguments{
 \item{x}{a "mid.importance" object to be visualized.}
@@ -28,6 +31,8 @@
 }
 \value{
 \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
+
+\code{plot.midlist.importance()} produces multiple plots for each "mid.importance" object.
 }
 \description{
 For "mid.importance" objects, \code{plot()} visualizes the importance of component functions of the fitted MID model.

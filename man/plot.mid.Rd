@@ -20,7 +20,7 @@
   ...
 )
 
-\method{plot}{midlist}(object, ...)
+\method{plot}{midlist}(x, ...)
 }
 \arguments{
 \item{x}{a "mid" object to be visualized.}
@@ -49,7 +49,8 @@
 }
 \value{
 \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
-\code{plot.midlist()} produces multiple plots for each mid object.
+
+\code{plot.midlist()} produces multiple plots for each "mid" object.
 }
 \description{
 For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.

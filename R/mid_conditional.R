@@ -34,6 +34,8 @@
 #' \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 #' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation}
 #'
+#' For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}
 #'
 #' @export mid.conditional
@@ -41,10 +43,15 @@
 mid.conditional <- function(
     object, variable, data = NULL, resolution = 100L,
     max.nsamples = 1e3L, type = c("response", "link"), keep.effects = TRUE) {
-  if (inherits(object, "midlist"))
-    return(lapply(object, mid.conditional, variable = variable, data = data,
-                  resolution = resolution, max.nsamples = max.nsamples,
-                  type = type, keep.effects = keep.effects))
+  if (inherits(object, "midlist")) {
+    out <- lapply(
+      X = object, FUN = mid.conditional, variable = variable, data = data,
+      resolution = resolution, max.nsamples = max.nsamples, type = type,
+      keep.effects = keep.effects
+    )
+    class(out) <- "midlist.conditional"
+    return(out)
+  }
   if (!inherits(object, "mid"))
     stop("'object' must be 'mid' or 'midlist'")
   type <- match.arg(type)

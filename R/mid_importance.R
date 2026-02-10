@@ -35,6 +35,8 @@
 #' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nsamples}, this matrix contains a sampled subset.}
 #' \item{measure}{a character string describing the type of the importance measure used.}
 #'
+#' For "midlist", \code{mid.importance()} returns an object of class "midlist.importance", a list of "mid.importance" objects.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
 #'
 #' @export mid.importance
@@ -42,9 +44,14 @@
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
     max.nsamples = 1e4L) {
-  if (inherits(object, "midlist"))
-    return(lapply(object, mid.importance, data = data, weights = weights,
-                  sort = sort, measure = measure, max.nsamples = max.nsamples))
+  if (inherits(object, "midlist")) {
+    out <- lapply(
+      X = object, FUN = mid.importance, data = data, weights = weights,
+      sort = sort, measure = measure, max.nsamples = max.nsamples
+    )
+    class(out) <- "midlist.importance"
+    return(out)
+  }
   if (!inherits(object, "mid"))
     stop("'object' must be 'mid' or 'midlist'")
   if (is.null(data)) {

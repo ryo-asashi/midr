@@ -61,7 +61,7 @@ interpret(object, ...)
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
-\item{y}{an optional numeric vector of the model predictions or the response variable.}
+\item{y}{an optional (numeric) vector or matrix of the model predictions or the response variable.}
 
 \item{weights}{a numeric vector of sample weights for each observation in \code{x}.}
 
@@ -136,6 +136,8 @@ interpret(object, ...)
 \item{fitted.values}{a numeric vector of the fitted values.}
 \item{residuals}{a numeric vector of the working residuals.}
 \item{na.action}{information about the special handling of \code{NA}s.}
+
+If a matrix is provided for \code{y}, \code{interpret()} returns an object of class "midlist".
 }
 \description{
 \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.

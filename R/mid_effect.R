@@ -31,13 +31,17 @@
 #' @returns
 #' \code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
 #'
+#' For "midlist", \code{mid.effect()} returns a matrix of the term contributions.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
 #'
 #' @export mid.effect
 #'
 mid.effect <- function(object, term, x, y = NULL) {
-  if (inherits(object, "midlist"))
-    sapply(object, mid.effect, term = term, x = x, y = NULL)
+  if (inherits(object, "midlist")) {
+    out <- sapply(object, mid.effect, term = term, x = x, y = NULL)
+    return(out)
+  }
   if (!inherits(object, "mid"))
     stop("'object' must be 'mid' or 'midlist'")
   checked <- term.check(term, mid.terms(object), stop = FALSE)

@@ -267,5 +267,5 @@ autoplot.mid <- function(object, ...) {
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midlist <- function(object, ...) {
-  lapply(object, ggmid.mid, ...)
+  lapply(X = object, FUN = ggmid.mid, ...)
 }

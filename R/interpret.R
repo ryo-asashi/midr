@@ -84,6 +84,8 @@
 #' \item{residuals}{a numeric vector of the working residuals.}
 #' \item{na.action}{information about the special handling of \code{NA}s.}
 #'
+#' If a matrix is provided for \code{y}, \code{interpret()} returns an object of class "midlist".
+#'
 #' @seealso \code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.plots}}, \code{\link{mid.effect}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
 #'
 #' @references Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, \url{https://arxiv.org/abs/2506.08338}.
@@ -96,7 +98,7 @@ UseMethod("interpret")
 #'
 #' @rdname interpret
 #' @param x a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.
-#' @param y an optional numeric vector of the model predictions or the response variable.
+#' @param y an optional (numeric) vector or matrix of the model predictions or the response variable.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
 #' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.

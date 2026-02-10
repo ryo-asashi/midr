@@ -45,7 +45,8 @@
 #' plot(mid, "clarity:color", theme = "RdBu")
 #' @returns
 #' \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
-#' \code{plot.midlist()} produces multiple plots for each mid object.
+#'
+#' \code{plot.midlist()} produces multiple plots for each "mid" object.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid}}
 #'
@@ -247,7 +248,7 @@ plot.mid <- function(
 #'
 #' @exportS3Method base::plot
 #'
-plot.midlist <- function(object, ...) {
-  lapply(object, plot.mid, ...)
+plot.midlist <- function(x, ...) {
+  lapply(X = x, FUN = plot.mid, ...)
   invisible(NULL)
 }

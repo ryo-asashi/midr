@@ -31,6 +31,7 @@
 }
 \value{
 \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+
 \code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
 }
 \description{
