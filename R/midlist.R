@@ -5,7 +5,7 @@ names.midlist <- function(x)
   names(x$intercept)
 
 #'
-#' @exportS3Method base::`[`
+#' @export
 #'
 `[.midlist` <- function(
     x, i, drop = if (missing(i)) TRUE else length(i) == 1L
@@ -26,19 +26,22 @@ names.midlist <- function(x)
   if (!is.null(ie)) x$interactions <- lapply(ie, extract.effects, i, drop)
   x$fitted.values <- x$fitted.values[, i, drop = drop]
   x$residuals <- x$residuals[, i, drop = drop]
-  x$linear.predictors <- x$linear.predictors[, i, drop = drop]
-  x$response.residuals <- x$response.residuals[, i, drop = drop]
+  if (!is.null(x$linear.predictors))
+    x$linear.predictors <- x$linear.predictors[, i, drop = drop]
+  if (!is.null(x$response.residuals))
+    x$response.residuals <- x$response.residuals[, i, drop = drop]
   x$ratio <- if (is.matrix(x$ratio))
     x$ratio[, i, drop = drop] else x$ratio[i]
   if (drop && length(i) == 1L) {
     names(x$intercept) <- NULL
     names(x$ratio) <- NULL
+    class(x) <- "mid"
   }
   x
 }
 
 #'
-#' @exportS3Method base::`[[`
+#' @export
 #'
 `[[.midlist` <- function(x, i, exact = TRUE) {
   if (length(i) != 1L)
@@ -49,6 +52,7 @@ names.midlist <- function(x)
 }
 
 extract.effects <- function(x, i, drop = FALSE) {
-  x$mid <- if (drop && length(i) == 1L) as.numeric(x$mid[, i]) else I(x$mid[, i])
+  x$mid <- if (drop && length(i) == 1L)
+    as.numeric(x$mid[, i]) else I(x$mid[, i, drop = FALSE])
   x
 }
