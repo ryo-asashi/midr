@@ -1,4 +1,3 @@
-#'
 #' @export
 #'
 `[.midlist` <- function(
@@ -41,7 +40,6 @@
   x
 }
 
-#'
 #' @export
 #'
 `[[.midlist` <- function(x, i, exact = TRUE) {
@@ -58,17 +56,39 @@ extract.effects <- function(x, i, drop = FALSE) {
   x
 }
 
-#'
 #' @exportS3Method base::as.list
 #'
 as.list.midlist <- function(x, ...) {
   nm <- names(x$intercept)
-  lapply(stats::setNames(nm, nm), function(x) x[[x]])
+  lapply(stats::setNames(nm, nm), function(name) x[[name]])
 }
 
-#'
 #' @exportS3Method stats::formula
 #'
 formula.midlist <- function(x, ...) {
   formula.mid(x, ...)
+}
+
+#' @export
+#'
+`[.midlist.importance` <- function(x, i, ...) {
+  x <- unclass(x)[i, ...]
+  if (!is.object(x)) class(x) <- "midlist.importance"
+  x
+}
+
+#' @export
+#'
+`[.midlist.conditional` <- function(x, i, ...) {
+  x <- unclass(x)[i, ...]
+  if (!is.object(x)) class(x) <- "midlist.conditional"
+  x
+}
+
+#' @export
+#'
+`[.midlist.breakdown` <- function(x, i, ...) {
+  x <- unclass(x)[i, ...]
+  if (!is.object(x)) class(x) <- "midlist.breakdown"
+  x
 }

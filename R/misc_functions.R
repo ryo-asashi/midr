@@ -186,7 +186,7 @@ barplot2 <- function(
 override <- function(args, dots,
     params = c("fill", "color", "colour", "col", "size", "cex", "shape", "pch",
                "linetype", "lty", "linewidth", "lwd",
-               "title", "main", "subtitle", "sub", "xlab", "ylab"),
+               "title", "main", "subtitle", "sub", "xlab", "ylab", "limits"),
     read.as = list(color = "col", colour = "col", size = "cex",
                    shape = "pch", linetype = "lty", linewidth = "lwd",
                    title = "main", subtitle = "sub")
