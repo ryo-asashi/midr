@@ -46,7 +46,7 @@
   if (length(i) != 1L)
     stop("attempt to select more than one element in vectorIndex")
   if (is.character(i) && !exact)
-    i <- pmatch(i, names(x))
+    i <- pmatch(i, names(x$intercept))
   x[i, drop = TRUE]
 }
 
