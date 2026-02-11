@@ -57,6 +57,7 @@ plot.mid <- function(
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
     jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
   dots <- list(...)
+  if (!is.logical(main.effects)) dots$main <- dots$main %||% main.effects
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
   type <- match.arg(type)

@@ -268,8 +268,9 @@ formula.mid <- function(x, ...) {
     res <- stats::formula(stats::terms(x))
     environment(res) <- environment(fm)
     res
+  } else {
+    stats::formula(stats::terms(x))
   }
-  else stats::formula(stats::terms(x))
 }
 
 

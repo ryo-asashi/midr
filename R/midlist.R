@@ -4,6 +4,12 @@
     x, i, drop = if (missing(i)) TRUE else length(i) == 1L
   ) {
   nm <- names(x$intercept)
+  if (is.null(nm)) {
+    x <- unclass(x)
+    x <- if (length(i) == 1L && drop) x[[i]] else
+      structure(x[i], class = "midlist")
+    return(x)
+  }
   if (missing(i)) {
     i <- seq_along(nm)
   } else if (is.character(i)) {
@@ -31,6 +37,7 @@
   x$ratio <- if (is.matrix(x$ratio))
     x$ratio[, i, drop = drop] else x$ratio[i]
   if (drop && length(i) == 1L) {
+    x$model.class[length(x$model.class) + 1L] <-  names(x$intercept)
     names(x$intercept) <- NULL
     if (length(x$ratio) == 1L) names(x$ratio) <- NULL
     class(x) <- "mid"
@@ -46,7 +53,7 @@
   if (length(i) != 1L)
     stop("attempt to select more than one element in vectorIndex")
   if (is.character(i) && !exact)
-    i <- pmatch(i, names(x$intercept))
+    i <- pmatch(i, names(x$intercept %||% x))
   x[i, drop = TRUE]
 }
 
@@ -60,7 +67,10 @@ extract.effects <- function(x, i, drop = FALSE) {
 #'
 as.list.midlist <- function(x, ...) {
   nm <- names(x$intercept)
-  lapply(stats::setNames(nm, nm), function(name) x[[name]])
+  if (is.null(nm)) return(x)
+  out <- lapply(stats::setNames(nm, nm), function(name) x[[name]])
+  class(out) <- "midlist"
+  out
 }
 
 #' @exportS3Method stats::formula
@@ -91,4 +101,10 @@ formula.midlist <- function(x, ...) {
   x <- unclass(x)[i, ...]
   if (!is.object(x)) class(x) <- "midlist.breakdown"
   x
+}
+
+#' @exportS3Method stats::model.frame
+#'
+model.frame.midlist <- function(object, ...) {
+  model.frame.mid(object, ...)
 }
