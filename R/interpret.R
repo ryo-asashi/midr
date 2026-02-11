@@ -194,7 +194,8 @@ interpret.default <- function(
     stop("length of 'y' doesn't match the number of rows in 'x'")
   if (is.null(colnames(y)) && ntargets > 1L)
     colnames(y) <- paste0("y", seq_len(ntargets))
-  colnames(y) <- make.unique(colnames(y))
+  if (is.character(colnames(y)))
+    colnames(y) <- make.unique(colnames(y))
   if (!is.null(link)){
     if (is.character(link)) link <- get.link(link)
     yres <- y
