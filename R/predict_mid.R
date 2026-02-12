@@ -67,7 +67,7 @@ predict.mid <- function(
   } else {
     preds <- rep(object$intercept, n)
   }
-  ltag <- strsplit(terms, ":")
+  ltag <- strsplit(terms %||% character(), ":")
   tlen <- sapply(ltag, length)
   imat <- list()
   for (tag in unique(unlist(ltag[tlen == 2L]))) {
@@ -108,10 +108,11 @@ predict.mid <- function(
 #' @exportS3Method stats::predict
 #'
 predict.midlist <- function(
-    object, type = "response", ...
+    object, ...
   ) {
-  if (type == "response" || type == "link")
-    sapply(X = object, FUN = predict.mid, type = type, ...)
-  else
-    lapply(X = object, FUN = predict.mid, type = type, ...)
+  out <- lapply(X = object, FUN = predict.mid, ...)
+  if (all(sapply(out, is.vector))) {
+    out <- do.call(cbind, out)
+  }
+  out
 }

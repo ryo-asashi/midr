@@ -14,7 +14,7 @@
   ...
 )
 
-\method{predict}{midlist}(object, type = "response", ...)
+\method{predict}{midlist}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object to be used to make predictions.}
