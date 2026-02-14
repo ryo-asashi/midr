@@ -1,5 +1,21 @@
 # Changelog
 
+## midr 0.5.3.903
+
+- Multivariate Response Support:
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  now accepts a matrix for the response variable `y`, allowing for
+  simultaneous modeling of multiple responses.
+- Introduction of “midlist”: Implemented the “midlist” class to handle
+  multiple MID models efficiently. Methods such as
+  [`predict()`](https://rdrr.io/r/stats/predict.html) and
+  [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
+  have been vectorized to handle “midlist” objects using optimized
+  matrix operations.
+- Performance Optimization: Significant reduction in compilation time
+  and binary size by removing the heavy dependency on **RcppEigen**
+  headers for the core Laplacian smoothing algorithm.
+
 ## midr 0.5.3.902
 
 - The `digits` argument of

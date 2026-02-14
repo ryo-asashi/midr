@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.902</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,12 @@ img {
       <small>Source: <a href="https://github.com/ryo-asashi/midr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.3.903" id="midr-053903">midr 0.5.3.903<a class="anchor" aria-label="anchor" href="#midr-053903"></a></h2>
+<ul><li>Multivariate Response Support: <code><a href="../reference/interpret.html">interpret()</a></code> now accepts a matrix for the response variable <code>y</code>, allowing for simultaneous modeling of multiple responses.</li>
+<li>Introduction of “midlist”: Implemented the “midlist” class to handle multiple MID models efficiently. Methods such as <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code><a href="../reference/mid.effect.html">mid.effect()</a></code> have been vectorized to handle “midlist” objects using optimized matrix operations.</li>
+<li>Performance Optimization: Significant reduction in compilation time and binary size by removing the heavy dependency on <strong>RcppEigen</strong> headers for the core Laplacian smoothing algorithm.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3.902" id="midr-053902">midr 0.5.3.902<a class="anchor" aria-label="anchor" href="#midr-053902"></a></h2>
 <ul><li>The <code>digits</code> argument of <code><a href="../reference/interpret.html">interpret()</a></code> now defaults to <code>NULL</code>.</li>
