@@ -65,7 +65,8 @@ predict.mid <- function(
   if (type == "terms") {
     preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, terms))
   } else {
-    preds <- rep(object$intercept, n)
+    k <- length(object$intercept)
+    preds <- matrix(object$intercept, nrow = n, ncol = k, byrow = TRUE)
   }
   ltag <- strsplit(terms %||% character(), ":")
   tlen <- sapply(ltag, length)
@@ -76,15 +77,25 @@ predict.mid <- function(
   for (i in seq_len(m)) {
     tags <- ltag[[i]]
     if (length(tags) == 1L) {
+      bmat <- object$main.effects[[tags]]$mid
       mmat <- object$encoders$main.effects[[tags]]$encode(newdata[, tags])
-      term_preds <- as.numeric(mmat %*% object$main.effects[[tags]]$mid)
+      term_preds <- mmat %*% bmat
       mmat <- NULL
     } else if (length(tags) == 2L) {
-      W <- matrix(
-        object$interactions[[terms[i]]]$mid,
-        nrow = ncol(imat[[tags[1L]]]), ncol = ncol(imat[[tags[2L]]])
-      )
-      term_preds <- rowSums((imat[[tags[1L]]] %*% W) * imat[[tags[2L]]])
+      bmat <- object$interactions[[terms[i]]]$mid
+      mat1 <- imat[[tags[1L]]]
+      mat2 <- imat[[tags[2L]]]
+      m1 <- ncol(mat1)
+      m2 <- ncol(mat2)
+      if (NCOL(bmat) == 1L) {
+        W <- matrix(as.numeric(bmat), nrow = m1, ncol = m2)
+        W[is.na(W)] <- 0
+        term_preds <- rowSums((mat1 %*% W) * mat2)
+      } else {
+        mat3 <- mat1[, rep(seq_len(m1), times = m2), drop = FALSE] *
+          mat2[, rep(seq_len(m2), each = m1), drop = FALSE]
+        term_preds <- mat3 %*% bmat
+      }
     }
     if (type == "terms") {
       preds[, i] <- term_preds
@@ -100,6 +111,8 @@ predict.mid <- function(
   if (inherits(naa, "exclude")) {
     preds <- stats::napredict(naa, preds)
   }
+  if (type != "terms" && ncol(preds) == 1L)
+    preds <- as.vector(preds)
   return(structure(preds, na.action = naa))
 }
 
@@ -110,9 +123,9 @@ predict.mid <- function(
 predict.midlist <- function(
     object, ...
   ) {
-  out <- lapply(X = object, FUN = predict.mid, ...)
-  if (all(sapply(out, is.vector))) {
-    out <- do.call(cbind, out)
+  type <- list(...)$type
+  if (!is.null(type) && type == "terms") {
+    return(lapply(X = object, FUN = predict.mid, ...))
   }
-  out
+  predict.mid(object, ...)
 }

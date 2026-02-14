@@ -20,7 +20,7 @@
     i <- as.integer(i)
   }
   if (anyNA(i))
-    stop("undefined target(s) selected")
+    stop("undefined item selected")
   if (is.numeric(i) && any(i > length(nm) | i < 1L))
     stop("subscript out of bounds")
   x$intercept <- x$intercept[i]
@@ -37,7 +37,7 @@
   x$ratio <- if (is.matrix(x$ratio))
     x$ratio[, i, drop = drop] else x$ratio[i]
   if (drop && length(i) == 1L) {
-    x$model.class[length(x$model.class) + 1L] <-  names(x$intercept)
+    x$label <- names(x$intercept)
     names(x$intercept) <- NULL
     if (length(x$ratio) == 1L) names(x$ratio) <- NULL
     class(x) <- "mid"
@@ -52,8 +52,9 @@
 `[[.midlist` <- function(x, i, exact = TRUE) {
   if (length(i) != 1L)
     stop("attempt to select more than one element in vectorIndex")
-  if (is.character(i) && !exact)
-    i <- pmatch(i, names(x$intercept %||% x))
+  if (is.character(i) && !exact) {
+    i <- pmatch(i, names(x$intercept))
+  }
   x[i, drop = TRUE]
 }
 
