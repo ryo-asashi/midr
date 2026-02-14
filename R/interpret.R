@@ -669,9 +669,9 @@ interpret.default <- function(
       W <- matrix(beta[cols], nrow = n1, ncol = n2)
       lp <- lp + rowSums((mat1 %*% W) * mat2)
     } else {
-      Xint <- mat1[, rep(seq_len(n1), times = n2), drop = FALSE] *
+      mat3 <- mat1[, rep(seq_len(n1), times = n2), drop = FALSE] *
         mat2[, rep(seq_len(n2), each = n1), drop = FALSE]
-      lp <- lp + (Xint %*% bmat)
+      lp <- lp + (mat3 %*% bmat)
     }
     mat1 <- mat2 <- NULL
   }

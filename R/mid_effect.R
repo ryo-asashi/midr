@@ -38,11 +38,7 @@
 #' @export mid.effect
 #'
 mid.effect <- function(object, term, x, y = NULL) {
-  if (inherits(object, "midlist")) {
-    out <- sapply(object, mid.effect, term = term, x = x, y = NULL)
-    return(out)
-  }
-  if (!inherits(object, "mid"))
+  if (!inherits(object, "mid") && !inherits(object, "midlist"))
     stop("'object' must be 'mid' or 'midlist'")
   checked <- term.check(term, mid.terms(object), stop = FALSE)
   tags <- term.split(term)
@@ -56,33 +52,51 @@ mid.effect <- function(object, term, x, y = NULL) {
   nx <- length(x)
   ny <- length(y)
   n <- if (ie) max(nx, ny) else nx
-  if (is.na(checked))
+  if (is.na(checked)) {
+    if (inherits(object, "midlist")) {
+      k <- length(object$intercept)
+      return(matrix(0, nrow = n, ncol = k))
+    }
     return(numeric(n))
+  }
   if (ie && nx != ny) {
     if (nx == 1L) {
       x <- rep.int(x, ny)
+      nx <- ny
     } else if (ny == 1L) {
       y <- rep.int(y, nx)
+      ny <- nx
     } else {
       stop("'x' and 'y' must have the same length")
     }
   }
   if (!ie) {
-    X <- object$encoders$main.effects[[checked]]$encode(x)
-    as.numeric(X %*% object$main.effects[[checked]]$mid)
+    bmat <- object$main.effects[[checked]]$mid
+    mmat <- object$encoders$main.effects[[checked]]$encode(x)
+    out <- mmat %*% bmat
+    if (ncol(out) == 1L)
+      out <- as.numeric(out)
   } else {
     if (term != checked) {
       tags <- rev(tags)
       temp <- x; x <- y; y <- temp
     }
-    X <- object$encoders$interactions[[tags[1L]]]$encode(x)
-    Y <- object$encoders$interactions[[tags[2L]]]$encode(y)
-    W <- matrix(
-      object$interactions[[checked]]$mid, nrow = ncol(X), ncol = ncol(Y)
-    )
-    W[is.na(W)] <- 0
-    rowSums((X %*% W) * Y)
+    bmat <- object$interactions[[checked]]$mid
+    xmat <- object$encoders$interactions[[tags[1L]]]$encode(x)
+    ymat <- object$encoders$interactions[[tags[2L]]]$encode(y)
+    mx <- ncol(xmat)
+    my <- ncol(ymat)
+    if (NCOL(bmat) == 1L) {
+      W <- matrix(as.numeric(bmat), nrow = mx, ncol = my)
+      W[is.na(W)] <- 0
+      out <- rowSums((xmat %*% W) * ymat)
+    } else {
+      imat <- xmat[, rep(seq_len(mx), times = my), drop = FALSE] *
+        ymat[, rep(seq_len(my), each = mx), drop = FALSE]
+      out <- imat %*% bmat
+    }
   }
+  out
 }
 
 #' @rdname mid.effect

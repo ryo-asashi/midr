@@ -68,9 +68,7 @@ extract.effects <- function(x, i, drop = FALSE) {
 as.list.midlist <- function(x, ...) {
   nm <- names(x$intercept)
   if (is.null(nm)) return(x)
-  out <- lapply(stats::setNames(nm, nm), function(name) x[[name]])
-  class(out) <- "midlist"
-  out
+  lapply(stats::setNames(nm, nm), function(name) x[[name]])
 }
 
 #' @exportS3Method stats::formula
@@ -78,6 +76,13 @@ as.list.midlist <- function(x, ...) {
 formula.midlist <- function(x, ...) {
   formula.mid(x, ...)
 }
+
+#' @exportS3Method stats::model.frame
+#'
+model.frame.midlist <- function(object, ...) {
+  model.frame.mid(object, ...)
+}
+
 
 #' @export
 #'
@@ -101,10 +106,4 @@ formula.midlist <- function(x, ...) {
   x <- unclass(x)[i, ...]
   if (!is.object(x)) class(x) <- "midlist.breakdown"
   x
-}
-
-#' @exportS3Method stats::model.frame
-#'
-model.frame.midlist <- function(object, ...) {
-  model.frame.mid(object, ...)
 }
