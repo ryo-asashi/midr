@@ -69,6 +69,9 @@ a list containing the following components:
 
   a character string describing the type of the importance measure used.
 
+For "midlist", `mid.importance()` returns an object of class
+"midlist.importance", a list of "mid.importance" objects.
+
 ## Details
 
 The MID importance of a component function \\g_S\\, where \\S\\

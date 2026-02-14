@@ -41,6 +41,8 @@ summary(
 
 `summary.mid()` returns the original "mid" object invisibly.
 
+`summary.midlist()` returns the original "midlist" object invisibly.
+
 ## Details
 
 The S3 method `summary.mid()` generates a comprehensive overview of the

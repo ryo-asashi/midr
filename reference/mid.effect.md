@@ -40,6 +40,9 @@ mid.f(object, term, x, y = NULL)
 `mid.effect()` returns a numeric vector of the calculated term
 contributions, with the same length as `x` and `y`.
 
+For "midlist", `mid.effect()` returns a matrix of the term
+contributions.
+
 ## Details
 
 `mid.effect()` is a low-level function designed to calculate the

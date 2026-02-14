@@ -26,6 +26,9 @@ ggmid(
 
 # S3 method for class 'mid.conditional'
 autoplot(object, ...)
+
+# S3 method for class 'midlist.conditional'
+ggmid(object, ...)
 ```
 
 ## Arguments
@@ -86,6 +89,8 @@ autoplot(object, ...)
 ## Value
 
 `ggmid.mid.conditional()` returns a "ggplot" object.
+
+`ggmid.midlist.conditional()` returns a list of "ggplot" objects.
 
 ## Details
 

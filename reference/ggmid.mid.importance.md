@@ -20,6 +20,9 @@ ggmid(
 
 # S3 method for class 'mid.importance'
 autoplot(object, ...)
+
+# S3 method for class 'midlist.importance'
+ggmid(object, ...)
 ```
 
 ## Arguments
@@ -55,6 +58,8 @@ autoplot(object, ...)
 ## Value
 
 `ggmid.mid.importance()` returns a "ggplot" object.
+
+`ggmid.midlist.importance()` returns a list of "ggplot" objects.
 
 ## Details
 

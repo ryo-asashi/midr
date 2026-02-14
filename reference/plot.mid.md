@@ -22,6 +22,9 @@ plot(
   lumped = TRUE,
   ...
 )
+
+# S3 method for class 'midlist'
+plot(x, ...)
 ```
 
 ## Arguments
@@ -87,6 +90,8 @@ plot(
 
 `plot.mid()` produces a plot as a side-effect and returns `NULL`
 invisibly.
+
+`plot.midlist()` produces multiple plots for each "mid" object.
 
 ## Details
 

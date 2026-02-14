@@ -79,8 +79,8 @@ interpret(
 
 - y:
 
-  an optional numeric vector of the model predictions or the response
-  variable.
+  an optional (numeric) vector or matrix of the model predictions or the
+  response variable.
 
 - weights:
 
@@ -138,16 +138,22 @@ interpret(
 - mode:
 
   an integer specifying the method of calculation. If `mode` is `1`, the
-  centralization constraints are treated as penalties for the least
-  squares problem. If `mode` is `2`, the constraints are used to reduce
-  the number of free parameters.
+  centering constraints are treated as penalties for the least squares
+  problem. If `mode` is `2`, the constraints are used to reduce the
+  number of free parameters.
 
 - method:
 
-  an integer specifying the method to be used to solve the least squares
-  problem. A non-negative value will be passed to
-  [`RcppEigen::fastLmPure()`](https://rdrr.io/pkg/RcppEigen/man/fastLm.html).
-  If negative, [`stats::lm.fit()`](https://rdrr.io/r/stats/lmfit.html)
+  an integer or a character string specifying the method to be used to
+  solve the least squares problem. An integer from `0` to `5` will be
+  passed to
+  [`RcppEigen::fastLmPure()`](https://rdrr.io/pkg/RcppEigen/man/fastLm.html):
+  `0` or "qr" for the column-pivoted QR decomposition, `1` or
+  "unpivoted.qr" for the unpivoted QR decomposition, `2` or "llt" for
+  the LLT Cholesky, `3` or "ldlt" for the LDLT Cholesky, `4` or "svd"
+  for the Jacobi singular value decomposition (SVD) and `5` of "eigen"
+  for a method based on the eigenvalue-eigenvector decomposition. If
+  `-1` or "lm", [`stats::.lm.fit()`](https://rdrr.io/r/stats/lmfit.html)
   is used.
 
 - lambda:
@@ -302,6 +308,9 @@ following components:
 
   information about the special handling of `NA`s.
 
+If a matrix is provided for `y`, `interpret()` returns an object of
+class "midlist".
+
 ## Details
 
 Maximum Interpretation Decomposition (MID) is a functional decomposition
@@ -349,14 +358,14 @@ The `...` argument can be used to pass several advanced fitting options:
   squares problem. If `FALSE` (default), it is calculated as the
   weighted mean of the response.
 
-- interpolate:
+- interpolation:
 
   a character string specifying the method for interpolating inestimable
   coefficients (betas) that arise from sparse data regions. Can be
   "iterative" for an iterative smoothing process, "direct" for solving a
   linear system, or "none" to disable interpolation.
 
-- maxit:
+- max.niterations:
 
   an integer specifying the maximum number of iterations for the
   "iterative" interpolation method.

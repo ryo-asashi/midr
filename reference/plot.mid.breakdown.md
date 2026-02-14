@@ -21,6 +21,9 @@ plot(
   format.args = list(),
   ...
 )
+
+# S3 method for class 'midlist.breakdown'
+plot(x, ...)
 ```
 
 ## Arguments
@@ -84,6 +87,9 @@ plot(
 
 `plot.mid.breakdown()` produces a plot as a side effect and returns
 `NULL` invisibly.
+
+`plot.midlist.breakdown()` produces multiple plots for each
+"mid.breakdown" object.
 
 ## Details
 

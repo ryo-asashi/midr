@@ -16,6 +16,9 @@ plot(
   max.nterms = 30L,
   ...
 )
+
+# S3 method for class 'midlist.importance'
+plot(x, ...)
 ```
 
 ## Arguments
@@ -54,6 +57,9 @@ plot(
 
 `plot.mid.importance()` produces a plot as a side effect and returns
 `NULL` invisibly.
+
+`plot.midlist.importance()` produces multiple plots for each
+"mid.importance" object.
 
 ## Details
 

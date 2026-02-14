@@ -138,7 +138,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>an optional numeric vector of the model predictions or the response variable.</p></dd>
+<dd><p>an optional (numeric) vector or matrix of the model predictions or the response variable.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -174,11 +174,11 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>an integer specifying the method of calculation. If <code>mode</code> is <code>1</code>, the centralization constraints are treated as penalties for the least squares problem. If <code>mode</code> is <code>2</code>, the constraints are used to reduce the number of free parameters.</p></dd>
+<dd><p>an integer specifying the method of calculation. If <code>mode</code> is <code>1</code>, the centering constraints are treated as penalties for the least squares problem. If <code>mode</code> is <code>2</code>, the constraints are used to reduce the number of free parameters.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>. If negative, <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">stats::lm.fit()</a></code> is used.</p></dd>
+<dd><p>an integer or a character string specifying the method to be used to solve the least squares problem. An integer from <code>0</code> to <code>5</code> will be passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>: <code>0</code> or "qr" for the column-pivoted QR decomposition, <code>1</code> or "unpivoted.qr" for the unpivoted QR decomposition, <code>2</code> or "llt" for the LLT Cholesky, <code>3</code> or "ldlt" for the LDLT Cholesky, <code>4</code> or "svd" for the Jacobi singular value decomposition (SVD) and <code>5</code> of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If <code>-1</code> or "lm", <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">stats::.lm.fit()</a></code> is used.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
@@ -299,7 +299,9 @@ MID models are additive, highly interpretable models composed of functions, each
 <dt>na.action</dt>
 <dd><p>information about the special handling of <code>NA</code>s.</p></dd>
 
-</dl></div>
+
+</dl><p>If a matrix is provided for <code>y</code>, <code>interpret()</code> returns an object of class "midlist".</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Maximum Interpretation Decomposition (MID) is a functional decomposition framework designed to serve as a faithful surrogate for complex, black-box models.
@@ -320,10 +322,10 @@ In cases where the least-squares solution is still not unique due to collinearit
 <p>The <code>...</code> argument can be used to pass several advanced fitting options:</p><dl><dt>fit.intercept</dt>
 <dd><p>logical. If <code>TRUE</code>, the intercept term is fitted as part of the least squares problem. If <code>FALSE</code> (default), it is calculated as the weighted mean of the response.</p></dd>
 
-  <dt>interpolate</dt>
+  <dt>interpolation</dt>
 <dd><p>a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.</p></dd>
 
-  <dt>maxit</dt>
+  <dt>max.niterations</dt>
 <dd><p>an integer specifying the maximum number of iterations for the "iterative" interpolation method.</p></dd>
 
   <dt>save.memory</dt>

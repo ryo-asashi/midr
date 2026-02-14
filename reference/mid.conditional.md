@@ -76,6 +76,9 @@ is a list with the following components:
   a vector of the sample points for the `variable` used in the ICE
   calculation
 
+For "midlist", `mid.conditional()` returns an object of class
+"midlist.conditional", a list of "mid.conditional" objects.
+
 ## Details
 
 This function generates Individual Conditional Expectation (ICE) data by

@@ -33,6 +33,8 @@ print(x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...)
 
 `print.mid()` returns the original "mid" object invisibly.
 
+`print.midlist()` returns the original "midlist" object invisibly.
+
 ## Details
 
 By default, the [`print()`](https://rdrr.io/r/base/print.html) method

@@ -6,13 +6,10 @@ obtaining predictions from various fitted model objects.
 ## Usage
 
 ``` r
-get.yhat(object, newdata, ...)
+get.yhat(object, newdata, ..., target)
 
 # Default S3 method
-get.yhat(object, newdata, target = -1L, ...)
-
-# S3 method for class 'mid'
-get.yhat(object, newdata, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'lm'
 get.yhat(object, newdata, ...)
@@ -20,35 +17,47 @@ get.yhat(object, newdata, ...)
 # S3 method for class 'glm'
 get.yhat(object, newdata, ...)
 
+# S3 method for class 'mid'
+get.yhat(object, newdata, ...)
+
+# S3 method for class 'midlist'
+get.yhat(object, newdata, ..., target = NULL)
+
 # S3 method for class 'rpart'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'randomForest'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'ranger'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'svm'
 get.yhat(object, newdata, target = -1L, ...)
 
 # S3 method for class 'ksvm'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'AccurateGLM'
-get.yhat(object, newdata, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'glmnet'
-get.yhat(object, newdata, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'model_fit'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'workflow'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'rpf'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
+
+# S3 method for class 'rfsrc'
+get.yhat(object, newdata, ...)
+
+# S3 method for class 'bundle'
+get.yhat(object, newdata, ..., target = NULL)
 ```
 
 ## Arguments
@@ -63,7 +72,7 @@ get.yhat(object, newdata, target = -1L, ...)
 
 - ...:
 
-  optional arguments passed on to the underlying
+  optional named arguments passed on to the underlying
   [`predict()`](https://rdrr.io/r/stats/predict.html) method for the
   `object`'s class.
 

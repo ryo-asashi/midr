@@ -16,6 +16,9 @@ predict(
   terms = mid.terms(object),
   ...
 )
+
+# S3 method for class 'midlist'
+predict(object, ...)
 ```
 
 ## Arguments
@@ -52,6 +55,9 @@ predict(
 
 `predict.mid()` returns a numeric vector of MID model predictions, or a
 matrix if `type = "terms"`.
+
+`predict.midlist()` returns a matrix of predictions, or a list of matrix
+if `type = "terms"`.
 
 ## Details
 

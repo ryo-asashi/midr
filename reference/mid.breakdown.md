@@ -56,6 +56,9 @@ list with the following components:
 
   the predicted value from the MID model.
 
+For "midlist", `mid.breakdown()` returns an object of class
+"midlist.breakdown", a list of "mid.breakdown" objects.
+
 ## Details
 
 This function provides local interpretability for a specific observation

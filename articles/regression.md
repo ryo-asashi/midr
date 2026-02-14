@@ -193,7 +193,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 3.275e-05
+#> Uninterpreted Variation Ratio: 0
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
