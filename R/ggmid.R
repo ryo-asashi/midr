@@ -34,6 +34,7 @@
 #' ggmid(mid, "clarity:color", theme = "RdBu")
 #' @returns
 #' \code{ggmid.mid()} returns a "ggplot" object.
+#' \code{ggmid.midlist()} returns a list of "ggplot" objects.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid.mid.importance}}, \code{\link{ggmid.mid.conditional}}, \code{\link{ggmid.mid.breakdown}}, \code{\link{plot.mid}}
 #'
@@ -259,4 +260,12 @@ ggmid.mid <- function(
 #'
 autoplot.mid <- function(object, ...) {
   ggmid.mid(object = object, ...)
+}
+
+#' @rdname ggmid
+#'
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midlist <- function(object, ...) {
+  lapply(X = object, FUN = ggmid.mid, ...)
 }

@@ -42,6 +42,8 @@
 #' @returns
 #' \code{ggmid.mid.conditional()} returns a "ggplot" object.
 #'
+#' \code{ggmid.midlist.conditional()} returns a list of "ggplot" objects.
+#'
 #' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
 #'
 #' @exportS3Method midr::ggmid
@@ -139,13 +141,24 @@ ggmid.mid.conditional <- function(
   pl
 }
 
-
 #' @rdname ggmid.mid.conditional
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mid.conditional <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(midr::ggmid)
+  mcall[[1L]] <- quote(ggmid.mid.conditional)
   mcall[["object"]] <- object
+  eval(mcall, parent.frame())
+}
+
+#' @rdname ggmid.mid.conditional
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midlist.conditional <- function(object, ...) {
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(lapply)
+  mcall[["object"]] <- NULL
+  mcall[["X"]] <- object
+  mcall[["FUN"]] <- quote(ggmid.mid.conditional)
   eval(mcall, parent.frame())
 }

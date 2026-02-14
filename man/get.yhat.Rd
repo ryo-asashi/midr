@@ -3,9 +3,10 @@
 \name{get.yhat}
 \alias{get.yhat}
 \alias{get.yhat.default}
-\alias{get.yhat.mid}
 \alias{get.yhat.lm}
 \alias{get.yhat.glm}
+\alias{get.yhat.mid}
+\alias{get.yhat.midlist}
 \alias{get.yhat.rpart}
 \alias{get.yhat.randomForest}
 \alias{get.yhat.ranger}
@@ -16,44 +17,52 @@
 \alias{get.yhat.model_fit}
 \alias{get.yhat.workflow}
 \alias{get.yhat.rpf}
+\alias{get.yhat.rfsrc}
+\alias{get.yhat.bundle}
 \title{Wrapper Prediction Function}
 \usage{
-get.yhat(object, newdata, ...)
+get.yhat(object, newdata, ..., target)
 
-\method{get.yhat}{default}(object, newdata, target = -1L, ...)
-
-\method{get.yhat}{mid}(object, newdata, ...)
+\method{get.yhat}{default}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{lm}(object, newdata, ...)
 
 \method{get.yhat}{glm}(object, newdata, ...)
 
-\method{get.yhat}{rpart}(object, newdata, target = -1L, ...)
+\method{get.yhat}{mid}(object, newdata, ...)
 
-\method{get.yhat}{randomForest}(object, newdata, target = -1L, ...)
+\method{get.yhat}{midlist}(object, newdata, ..., target = NULL)
 
-\method{get.yhat}{ranger}(object, newdata, target = -1L, ...)
+\method{get.yhat}{rpart}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{randomForest}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{ranger}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{svm}(object, newdata, target = -1L, ...)
 
-\method{get.yhat}{ksvm}(object, newdata, target = -1L, ...)
+\method{get.yhat}{ksvm}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{AccurateGLM}(object, newdata, ...)
+\method{get.yhat}{AccurateGLM}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{glmnet}(object, newdata, ...)
+\method{get.yhat}{glmnet}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{model_fit}(object, newdata, target = -1L, ...)
+\method{get.yhat}{model_fit}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{workflow}(object, newdata, target = -1L, ...)
+\method{get.yhat}{workflow}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{rpf}(object, newdata, target = -1L, ...)
+\method{get.yhat}{rpf}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{rfsrc}(object, newdata, ...)
+
+\method{get.yhat}{bundle}(object, newdata, ..., target = NULL)
 }
 \arguments{
 \item{object}{a fitted model object.}
 
 \item{newdata}{a data.frame or matrix.}
 
-\item{...}{optional arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.}
+\item{...}{optional named arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.}
 
 \item{target}{an integer or character vector specifying the target levels used for the classification models that return a matrix or data frame of class probabilities. The default, \code{-1}, represents the probability of not being the base level.}
 }

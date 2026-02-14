@@ -24,6 +24,8 @@
 #' @returns
 #' \code{print.mid()} returns the original "mid" object invisibly.
 #'
+#' \code{print.midlist()} returns the original "midlist" object invisibly.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{summary.mid}}
 #'
 #' @exportS3Method base::print
@@ -34,7 +36,7 @@ print.mid <- function(
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   if (!is.null(x$model.class))
     cat(paste0("\nModel Class: ", paste0(x$model.class, collapse = ", "), "\n"))
-  cat(paste0("\nIntercept: ", format(x$intercept, digits = digits),
+  cat(paste0("\nIntercept: ", examples(x$intercept, digits = digits),
              "\n", collapse = ""))
   m <- length(x$main.effects)
   if (m > 0L) {
@@ -60,7 +62,19 @@ print.mid <- function(
                m, " interaction term", if (m > 1L) "s", "\n"))
   }
   ur <- x$ratio
-  cat(paste0("\nUninterpreted Variation Ratio: ", format(ur[1L], digits = digits), "\n"))
+  ur <- if (inherits(x, "mid")) ur[1L] else if (is.matrix(ur)) ur[1L, ] else ur
+  cat(paste0("\nUninterpreted Variation Ratio: ",
+             examples(ur, digits = digits), "\n"))
   invisible(x)
 }
 
+#' @exportS3Method base::print
+#'
+print.midlist <- function(x, ...) {
+  if (!is.null(x$intercept)) {
+    print.mid(x, ...)
+  } else {
+    print.default(x, ...)
+  }
+  invisible(x)
+}

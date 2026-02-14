@@ -61,7 +61,7 @@ interpret(object, ...)
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
-\item{y}{an optional numeric vector of the model predictions or the response variable.}
+\item{y}{an optional (numeric) vector or matrix of the model predictions or the response variable.}
 
 \item{weights}{a numeric vector of sample weights for each observation in \code{x}.}
 
@@ -79,9 +79,9 @@ interpret(object, ...)
 
 \item{singular.ok}{logical. If \code{FALSE}, a singular fit is an error.}
 
-\item{mode}{an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.}
+\item{mode}{an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.}
 
-\item{method}{an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.}
+\item{method}{an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} will be passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.}
 
 \item{lambda}{the penalty factor for pseudo smoothing. The default is \code{0}.}
 
@@ -136,6 +136,8 @@ interpret(object, ...)
 \item{fitted.values}{a numeric vector of the fitted values.}
 \item{residuals}{a numeric vector of the working residuals.}
 \item{na.action}{information about the special handling of \code{NA}s.}
+
+If a matrix is provided for \code{y}, \code{interpret()} returns an object of class "midlist".
 }
 \description{
 \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.
@@ -164,8 +166,8 @@ In cases where the least-squares solution is still not unique due to collinearit
 The \code{...} argument can be used to pass several advanced fitting options:
 \describe{
   \item{fit.intercept}{logical. If \code{TRUE}, the intercept term is fitted as part of the least squares problem. If \code{FALSE} (default), it is calculated as the weighted mean of the response.}
-  \item{interpolate}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
-  \item{maxit}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
+  \item{interpolation}{a character string specifying the method for interpolating inestimable coefficients (betas) that arise from sparse data regions. Can be "iterative" for an iterative smoothing process, "direct" for solving a linear system, or "none" to disable interpolation.}
+  \item{max.niterations}{an integer specifying the maximum number of iterations for the "iterative" interpolation method.}
   \item{save.memory}{an integer (0, 1, or 2) specifying the memory-saving level. Higher values reduce memory usage at the cost of increased computation time.}
   \item{weighted.norm}{logical. If \code{TRUE}, the columns of the design matrix are normalized by the square root of their weighted sum. This is required to ensure the minimum-norm least squares solution obtained by appropriate methods (i.e., \code{4} or \code{5}) of \code{fastLmPure()} is the minimum-norm solution in a \emph{weighted} sense.}
   \item{weighted.encoding}{logical. If \code{TRUE}, sample weights are used during the encoding process (e.g., for calculating quantiles to determine knots).}

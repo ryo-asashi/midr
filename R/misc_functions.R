@@ -1,5 +1,9 @@
-ifnot.null <- function(x, y) {
-  if (!is.null(x)) x else y
+solveOLS <- function(x, y, tol = 1e-7, method = 0L, ...) {
+  if (method >= 0) {
+    RcppEigen::fastLmPure(x, y, method)
+  } else {
+    stats::.lm.fit(x, y, tol = tol)
+  }
 }
 
 attract <- function(x, margin) {
@@ -167,7 +171,7 @@ barplot2 <- function(
 override <- function(args, dots,
     params = c("fill", "color", "colour", "col", "size", "cex", "shape", "pch",
                "linetype", "lty", "linewidth", "lwd",
-               "title", "main", "subtitle", "sub", "xlab", "ylab"),
+               "title", "main", "subtitle", "sub", "xlab", "ylab", "limits"),
     read.as = list(color = "col", colour = "col", size = "cex",
                    shape = "pch", linetype = "lty", linewidth = "lwd",
                    title = "main", subtitle = "sub")
@@ -218,9 +222,10 @@ verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
 }
 
 examples <- function(x, n = 3L, ...) {
+  if (is.data.frame(x)) x <- as.matrix(x)
   dts <- if (length(x) > n) ", ..." else ""
   n <- min(length(x), n)
-  paste0(paste(trimws(format(x[seq_len(n)]), ...), collapse = ", "), dts)
+  paste0(paste(trimws(format(x[seq_len(n)], ...)), collapse = ", "), dts)
 }
 
 mid.frames <- function(object, ...) {
@@ -248,8 +253,9 @@ formula.mid <- function(x, ...) {
     res <- stats::formula(stats::terms(x))
     environment(res) <- environment(fm)
     res
+  } else {
+    stats::formula(stats::terms(x))
   }
-  else stats::formula(stats::terms(x))
 }
 
 

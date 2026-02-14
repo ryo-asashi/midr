@@ -17,6 +17,8 @@
 }
 \value{
 \code{print.mid()} returns the original "mid" object invisibly.
+
+\code{print.midlist()} returns the original "midlist" object invisibly.
 }
 \description{
 \code{print.mid()} is an S3 method for "mid" objects that prints a concise summary of a fitted MID model.

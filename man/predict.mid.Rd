@@ -2,6 +2,7 @@
 % Please edit documentation in R/predict_mid.R
 \name{predict.mid}
 \alias{predict.mid}
+\alias{predict.midlist}
 \title{Predict Method for fitted MID Models}
 \usage{
 \method{predict}{mid}(
@@ -12,6 +13,8 @@
   terms = mid.terms(object),
   ...
 )
+
+\method{predict}{midlist}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object to be used to make predictions.}
@@ -28,6 +31,8 @@
 }
 \value{
 \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+
+\code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
 }
 \description{
 \code{predict.mid()} is an S3 method for "mid" objects that obtains predictions from a fitted MID model.

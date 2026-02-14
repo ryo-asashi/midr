@@ -19,7 +19,7 @@
 #' @param object a fitted model object.
 #' @param newdata a data.frame or matrix.
 #' @param target an integer or character vector specifying the target levels used for the classification models that return a matrix or data frame of class probabilities. The default, \code{-1}, represents the probability of not being the base level.
-#' @param ... optional arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.
+#' @param ... optional named arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.
 #'
 #' @examples
 #' data(trees, package = "datasets")
@@ -38,99 +38,135 @@
 #'
 #' @export get.yhat
 #'
-get.yhat <- function(object, newdata, ...)
+get.yhat <- function(object, newdata, ..., target)
 UseMethod("get.yhat")
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
-#'
-get.yhat.default <- function(object, newdata, target = -1L, ...) {
-  yhat <- stats::predict(object, newdata, ...)
-  if ((is.matrix(yhat) || is.data.frame(yhat)) && ncol(yhat) > 1L)
-    yhat <- rowSums(yhat[, target, drop = FALSE])
-  as.numeric(yhat)
+checkout <- function(yhat, newdata, target = NULL, exclude = NULL) {
+  if (!is.numeric(yhat))
+    stop("non-numeric predictions found: ", examples(yhat))
+  out <- if (NCOL(yhat) == 1L) {
+    as.vector(yhat)
+  } else if (is.null(target)) {
+    as.matrix(yhat)
+  } else {
+    rowSums(yhat[, target, drop = FALSE])
+  }
+  out <- stats::napredict(exclude, out)
+  if (NROW(out) != NROW(newdata))
+    stop("number of predictions doesn't match number of observations")
+  out
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.mid <- function(object, newdata, ...) {
-  yhat <- stats::predict(object = object, newdata = newdata,
-                         type = "response", na.action = "na.pass", ...)
-  as.numeric(yhat)
+get.yhat.default <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  args <- list(object, newdata)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.lm <- function(object, newdata, ...) {
-  yhat <- stats::predict(object = object, newdata = newdata,
-                         type = "response", na.action = "na.pass", ...)
-  as.numeric(yhat)
+get.yhat.lm <- function(
+    object, newdata, ...
+  ) {
+  args <- list(object = object, newdata = newdata, type = "response",
+               na.action = stats::na.pass)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.glm <- function(object, newdata, ...) {
-  yhat <- stats::predict(object = object, newdata = newdata,
-                         type = "response", na.action = "na.pass", ...)
-  as.numeric(yhat)
+get.yhat.glm <- function(
+    object, newdata, ...
+  ) {
+  args <- list(object = object, newdata = newdata, type = "response",
+               na.action = stats::na.pass)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict.glm, args), newdata)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.rpart <- function(object, newdata, target = -1L, ...) {
+get.yhat.mid <- function(
+    object, newdata, ...
+  ) {
+  args <- list(object = object, newdata = newdata, type = "response",
+               na.action = stats::na.pass)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(predict.mid, args), newdata)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.midlist <- function(
+    object, newdata, ..., target = NULL
+  ) {
+  args <- list(object = object, newdata = newdata, type = "response",
+               na.action = stats::na.pass)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(predict.midlist, args), newdata, target)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.rpart <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  args <- list(object = object, newdata = newdata, na.action = stats::na.pass)
   nclass <- length(attr(object, "ylevels"))
-  if (nclass > 0L) {
-    yhat <- stats::predict(object = object, newdata = newdata,
-                           type = "prob", na.action = "na.pass", ...)
-    if (is.matrix(yhat) && ncol(yhat) > 1L)
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-  } else {
-    yhat <- stats::predict(object = object, newdata = newdata,
-                           type = "vector", na.action = "na.pass", ...)
-  }
-  as.numeric(yhat)
+  args$type <- if (nclass > 0L) "prob" else "vector"
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.randomForest <- function(object, newdata, target = -1L, ...) {
-  if (object$type == "regression") {
-    yhat <- stats::predict(object = object, newdata = newdata, ...)
-  } else {
-    yhat <- stats::predict(object = object, newdata = newdata,
-                           type = "prob", ...)
-    if (is.matrix(yhat) && ncol(yhat) > 1L)
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-  }
-  as.numeric(yhat)
+get.yhat.randomForest <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  args <- list(object = object, newdata = newdata)
+  args$type <- if (object$type == "regression") "response" else "prob"
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.ranger <- function(object, newdata, target = -1L, ...) {
-  if (object$treetype == "Regression") {
-    yhat <- stats::predict(object = object, data = newdata, ...)$predictions
-  } else if (object$treetype == "Probability estimation") {
-    yhat <- stats::predict(object = object, data = newdata, ...)$predictions
-    if (is.matrix(yhat) && ncol(yhat) > 1L)
-      yhat <- rowSums(yhat[, target, drop = FALSE])
+get.yhat.ranger <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  treetype <- object$treetype
+  args <- list(object = object, data = newdata, type = "response")
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  if (treetype == "Survival") {
+    target <- NULL
+    yhat <- pred$survival
   } else {
-    stop("'treetype' must be 'Regression' or 'Probability estimation'")
+    yhat <- pred$predictions
   }
-  as.numeric(yhat)
+  checkout(yhat, newdata, target)
 }
 
 
@@ -138,160 +174,152 @@ get.yhat.ranger <- function(object, newdata, target = -1L, ...) {
 #' @exportS3Method midr::get.yhat
 #'
 get.yhat.svm <- function(object, newdata, target = -1L, ...) {
-  if (object$type == 0) {
-    yhat <- stats::predict(
-      object = object, newdata = newdata, probability = TRUE,
-      na.action = stats::na.exclude, ...
-    )
+  args <- list(object = object, newdata = newdata,
+               na.action = stats::na.exclude)
+  args$probability <- (object$type < 3L)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  yhat <- do.call(stats::predict, args)
+  if (args$probability)
     yhat <- attr(yhat, "probabilities")
-    if (is.matrix(yhat) && ncol(yhat) > 1L)
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-  } else {
-    yhat <- stats::predict(object = object, newdata = newdata,
-                           na.action = stats::na.exclude, ...)
-  }
-  as.numeric(yhat)
+  checkout(yhat, newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.ksvm <- function(object, newdata, target = -1L, ...) {
-  dots <- list(...)
-  if (na.exists <- anyNA(newdata)) {
-    newdata <- stats::na.exclude(newdata)
-    naa <- stats::na.action(newdata)
-  }
+get.yhat.ksvm <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  newdata <- stats::na.exclude(newdata)
+  exclude <- stats::na.action(newdata)
   args <- list(object = object, newdata = newdata)
-  if (any(object@type == c("eps-svr", "eps-bsvr", "nu-svr"))) {
-    args$type <- "response"
+  args$type <- if (any(object@type == c("eps-svr", "eps-bsvr", "nu-svr"))) {
+    "response"
   } else if (any(object@type == c("C-svc", "nu-svc", "C-bsvm", "spoc-svc"))) {
-    args$type <- "probabilities"
+    "probabilities"
   }
-  for (item in names(dots)) {
-    if (item %in% c("object", "newdata", "type"))
-      next
-    args[[item]] <- dots[[item]]
-  }
-  yhat <- do.call("predict", args = args)
-  if (is.matrix(yhat) && ncol(yhat) > 1L)
-    yhat <- rowSums(yhat[, target, drop = FALSE])
-  if (na.exists)
-    yhat <- stats::napredict(naa, yhat)
-  as.numeric(yhat)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call("predict", args), newdata, target, exclude)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.AccurateGLM <- function(object, newdata, ...) {
-  dots <- list(...)
-  if (na.exists <- anyNA(newdata)) {
-    newdata <- stats::na.exclude(newdata)
-    naa <- stats::na.action(newdata)
-  }
+get.yhat.AccurateGLM <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  newdata <- stats::na.exclude(newdata)
+  exclude <- stats::na.action(newdata)
   predvars <- sapply(object@vars_info, function(x) x$name)
   if (length(setdiff(colnames(newdata), predvars)) > 0L)
     newdata <- newdata[, predvars, drop = FALSE]
-  args <- list(object = object, newx = newdata, type = "response")
-  for (item in names(dots)) {
-    if (item %in% c("object", "newx", "type"))
-      next
-    args[[item]] <- dots[[item]]
-  }
-  if (is.null(args$s))
-    args$s <- 0
-  yhat <- do.call(stats::predict, args)
-  if (na.exists)
-    yhat <- stats::napredict(naa, yhat)
-  as.numeric(yhat)
+  args <- list(object = object, newx = newdata, type = "response", s = 0)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata, target, exclude)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.glmnet <- function(object, newdata, ...) {
-  dots <- list(...)
-  if (na.exists <- anyNA(newdata)) {
-    newdata <- stats::na.exclude(newdata)
-    naa <- stats::na.action(newdata)
-  }
-  if (!is.matrix(newdata))
-    newdata <- as.matrix(newdata)
-  args <- list(object = object, newx = newdata, type = "response")
-  for (item in names(dots)) {
-    if (item %in% c("object", "newx", "type"))
-      next
-    args[[item]] <- dots[[item]]
-  }
-  if (is.null(args$s))
-    args$s <- 0
-  yhat <- do.call(stats::predict, args)
-  if (na.exists)
-    yhat <- stats::napredict(naa, yhat)
-  as.numeric(yhat)
+get.yhat.glmnet <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  newdata <- stats::na.exclude(newdata)
+  exclude <- stats::na.action(newdata)
+  newdata <- as.matrix(newdata)
+  args <- list(object = object, newx = newdata, type = "response", s = 0)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  checkout(do.call(stats::predict, args), newdata, target, exclude)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.model_fit <- function(object, newdata, target = -1L, ...) {
-  if (object$spec$mode == "regression") {
-    yhat <- stats::predict(object = object, new_data = newdata,
-                           type = "numeric")
-    yhat <- yhat$.pred
-  } else if (object$spec$mode == "classification") {
-    yhat <- stats::predict(object = object, new_data = newdata, type = "prob")
-    yhat <- as.matrix(yhat)
-    if (is.matrix(yhat) && ncol(yhat) > 1L) {
-      colnames(yhat) <- object$lvl
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-    }
+get.yhat.model_fit <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  mode <- object$spec$mode
+  args <- list(object = object, new_data = newdata)
+  args$type <- switch(mode, "regression" = "numeric",
+                      "classification" = "prob", "survival")
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  yhat <- if (args$type == "numeric") {
+    pred$.pred
+  } else if (any(args$type == c("prob", "survival", "hazard", "quantile"))) {
+    as.matrix(pred$.pred)
   }
-  as.numeric(yhat)
+  checkout(yhat, newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.workflow <- function(object, newdata, target = -1L, ...) {
-  fit <- object$fit$fit
-  if (fit$spec$mode == "regression") {
-    yhat <- stats::predict(object = object, new_data = newdata,
-                           type = "numeric")
-    yhat <- yhat$.pred
-  } else if (fit$spec$mode == "classification") {
-    yhat <- stats::predict(object = object, new_data = newdata, type = "prob")
-    yhat <- as.matrix(yhat)
-    if (is.matrix(yhat) && ncol(yhat) > 1L) {
-      colnames(yhat) <- fit$lvl
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-    }
+get.yhat.workflow <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  mode <- object$fit$fit$spec$mode
+  args <- list(object = object, new_data = newdata)
+  args$type <- switch(mode, "regression" = "numeric", "classification" = "prob")
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  yhat <- if (args$type == "numeric") {
+    pred$.pred
+  } else if (any(args$type == c("prob", "survival", "hazard", "quantile"))) {
+    as.matrix(pred$.pred)
   }
-  as.numeric(yhat)
+  checkout(yhat, newdata, target)
 }
 
 
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.rpf <- function(object, newdata, target = -1L, ...) {
-  if (object$mode == "regression") {
-    yhat <- stats::predict(object = object, new_data = newdata,
-                           type = "numeric")
-    yhat <- yhat$.pred
-  } else if (object$mode == "classification") {
-    yhat <- stats::predict(object = object, new_data = newdata, type = "prob")
-    yhat <- as.matrix(yhat)
-    if (is.matrix(yhat) && ncol(yhat) > 1L) {
-      colnames(yhat) <- object$lvl
-      yhat <- rowSums(yhat[, target, drop = FALSE])
-    }
+get.yhat.rpf <- function(
+    object, newdata, ..., target = -1L
+  ) {
+  mode <- object$mode
+  args <- list(object = object, new_data = newdata)
+  args$type <- switch(mode, "regression" = "numeric", "classification" = "prob")
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  yhat <- if (args$type == "numeric") {
+    pred$.pred
+  } else if (any(args$type == c("prob", "survival", "hazard", "quantile"))) {
+    as.matrix(pred$.pred)
   }
-  as.numeric(yhat)
+  checkout(yhat, newdata, target)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.rfsrc <- function(
+    object, newdata, ...
+  ) {
+  args <- list(object = object, newdata = newdata)
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  yhat <- checkout(pred$survival, newdata)
+  colnames(yhat) <- object$time.interest
+  yhat
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.bundle <- function(
+    object, newdata, ..., target = NULL
+) {
+  out <- lapply(X = object, FUN = get.yhat, newdata = newdata, ...,
+                target = target)
+  names(out) <- names(object) %||% vapply(object, function(x) class(x)[1L], "")
+  checkout(do.call(cbind, out), newdata, target)
 }

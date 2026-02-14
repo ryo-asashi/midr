@@ -46,6 +46,8 @@
 #' @returns
 #' \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
 #'
+#' \code{plot.midlist()} produces multiple plots for each "mid" object.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid}}
 #'
 #' @exportS3Method base::plot
@@ -55,6 +57,7 @@ plot.mid <- function(
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
     jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
   dots <- list(...)
+  if (!is.logical(main.effects)) dots$main <- dots$main %||% main.effects
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
   type <- match.arg(type)
@@ -239,5 +242,14 @@ plot.mid <- function(
       do.call(graphics::points.default, args)
     }
   }
+  invisible(NULL)
+}
+
+#' @rdname plot.mid
+#'
+#' @exportS3Method base::plot
+#'
+plot.midlist <- function(x, ...) {
+  lapply(X = x, FUN = plot.mid, ...)
   invisible(NULL)
 }

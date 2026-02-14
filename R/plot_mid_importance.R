@@ -40,6 +40,8 @@
 #' @returns
 #' \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
+#' \code{plot.midlist.importance()} produces multiple plots for each "mid.importance" object.
+#'
 #' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.mid.importance}}
 #'
 #' @exportS3Method base::plot
@@ -137,5 +139,13 @@ plot.mid.importance <- function(
     names(args)[2L:3L] <- c("col", "border")
     do.call(graphics::boxplot.default, args)
   }
+  invisible(NULL)
+}
+
+#' @rdname plot.mid.importance
+#' @exportS3Method base::plot
+#'
+plot.midlist.importance <- function(x, ...) {
+  lapply(X = x, FUN = plot.mid.importance, ...)
   invisible(NULL)
 }

@@ -34,6 +34,8 @@ mid.conditional(
 \item{observed}{a data frame of the original observations used, along with their predictions.}
 \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation}
+
+For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
 }
 \description{
 \code{mid.conditional()} calculates the data required to draw Individual Conditional Expectation (ICE) curves from a fitted MID model.

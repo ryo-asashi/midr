@@ -40,6 +40,8 @@
 #' @returns
 #' \code{ggmid.mid.importance()} returns a "ggplot" object.
 #'
+#' \code{ggmid.midlist.importance()} returns a list of "ggplot" objects.
+#'
 #' @seealso \code{\link{mid.importance}}, \code{\link{ggmid}}, \code{\link{plot.mid.importance}}
 #'
 #' @exportS3Method midr::ggmid
@@ -127,4 +129,11 @@ ggmid.mid.importance <- function(
 #'
 autoplot.mid.importance <- function(object, ...) {
   ggmid.mid.importance(object = object, ...)
+}
+
+#' @rdname ggmid.mid.importance
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midlist.importance <- function(object, ...) {
+  lapply(X = object, FUN = ggmid.mid.importance, ...)
 }

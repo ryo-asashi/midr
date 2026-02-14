@@ -28,6 +28,8 @@
 #' @returns
 #' \code{summary.mid()} returns the original "mid" object invisibly.
 #'
+#' \code{summary.midlist()} returns the original "midlist" object invisibly.
+#'
 #' @seealso \code{\link{interpret}}, \code{\link{print.mid}}
 #'
 #' @exportS3Method base::summary
@@ -35,22 +37,28 @@
 summary.mid <- function(
     object, diagnosis = FALSE, digits = max(3L, getOption("digits") - 2L), ...
   ) {
-  use.link <- !is.null(object$link)
-  rsd <- object$residuals
   # call
   cl <- paste0(trimws(deparse(object$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   # link
-  if(use.link)
+  if(use.link <- !is.null(object$link))
     cat(paste0("\nLink: ", object$link$name, "\n", collapse = ""))
   # ratio
   cat(paste0("\nUninterpreted Variation Ratio:\n"))
   print.default(object$ratio, digits = digits)
   # residuals
+  rsd <- object$residuals
   cat(paste0("\n", if (use.link) "Working ", "Residuals:\n"))
-  if (length(rsd) > 5L) {
-    nam <- c("Min", "1Q", "Median", "3Q", "Max")
-    rq <- structure(zapsmall(stats::quantile(rsd), digits + 1L), names = nam)
+  if (NROW(rsd) > 5L) {
+    nm <- c("Min", "1Q", "Median", "3Q", "Max")
+    if (is.matrix(rsd)) {
+      rq <- apply(rsd, 2L, stats::quantile)
+      rownames(rq) <- nm
+    } else {
+      rq <- stats::quantile(rsd)
+      names(rq) <- nm
+    }
+    rq <- zapsmall(rq, digits + 1L)
     print(rq, digits = digits)
   } else {
     print(rsd, digits = digits)
@@ -59,7 +67,7 @@ summary.mid <- function(
   cat("\nEncoding:\n")
   print.data.frame(mid.encoding.scheme(object))
   # diagnosis
-  if (diagnosis) {
+  if (diagnosis && inherits(object, "mid")) {
     yhat <- if (use.link) object$linear.predictors else object$fitted.values
     graphics::plot.default(
       yhat, rsd,
@@ -79,8 +87,8 @@ summary.mid <- function(
 
 mid.encoding.scheme <- function(object, ...) {
   fun <- function(enc) paste0(enc$type, "(", enc$n, ")")
-  mencs <- sapply(object$encoders[["main.effects"]], fun)
-  iencs <- sapply(object$encoders[["interactions"]], fun)
+  mencs <- sapply(object$encoders$main.effects, fun)
+  iencs <- sapply(object$encoders$interactions, fun)
   tags <- unique(c(mtags <- names(mencs), itags <- names(iencs)))
   df <- data.frame(row.names = tags)
   if (length(mtags) > 0L) {
@@ -94,4 +102,15 @@ mid.encoding.scheme <- function(object, ...) {
       df[tag, "interaction"] <- iencs[tag]
   }
   df
+}
+
+#' @exportS3Method base::summary
+#'
+summary.midlist <- function(object, ...) {
+  if (!is.null(object$intercept)) {
+    summary.mid(object, ...)
+  } else {
+    summary.default(unclass(object), ...)
+  }
+  invisible(object)
 }

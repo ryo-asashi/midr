@@ -22,6 +22,8 @@
 }
 \value{
 \code{summary.mid()} returns the original "mid" object invisibly.
+
+\code{summary.midlist()} returns the original "midlist" object invisibly.
 }
 \description{
 For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID model.

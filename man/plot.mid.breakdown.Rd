@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_mid_breakdown.R
 \name{plot.mid.breakdown}
 \alias{plot.mid.breakdown}
+\alias{plot.midlist.breakdown}
 \title{Plot MID Breakdowns}
 \usage{
 \method{plot}{mid.breakdown}(
@@ -17,6 +18,8 @@
   format.args = list(),
   ...
 )
+
+\method{plot}{midlist.breakdown}(x, ...)
 }
 \arguments{
 \item{x}{a "mid.breakdown" object to be visualized.}
@@ -43,6 +46,8 @@
 }
 \value{
 \code{plot.mid.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
+
+\code{plot.midlist.breakdown()} produces multiple plots for each "mid.breakdown" object.
 }
 \description{
 For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
