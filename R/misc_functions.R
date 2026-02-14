@@ -1,23 +1,8 @@
-solveOLS <- function(x, y, method = 0L, solver = NULL, ...) {
-  choices <- c(
-    "fastLmMatrix",
-    "RcppEigen::fastLmPure",
-    "stats::lm.fit"
-  )
-  if (is.null(solver)) {
-    solver <- if (any(method == 0L:6L)) {
-      if (NCOL(y) == 1L) "RcppEigen::fastLmPure" else "fastLmMatrix"
-    } else {
-      "stats::lm.fit"
-    }
-  }
-  solver <- match.arg(solver, choices = choices)
-  if (solver == "fastLmMatrix") {
-    fastLmMatrix(as.matrix(x), as.matrix(y), method)
-  } else if (solver == "RcppEigen::fastLmPure") {
+solveOLS <- function(x, y, tol = 1e-7, method = 0L, ...) {
+  if (method >= 0) {
     RcppEigen::fastLmPure(x, y, method)
   } else {
-    stats::lm.fit(x, y, method = "qr", ...)
+    stats::.lm.fit(x, y, tol = tol)
   }
 }
 

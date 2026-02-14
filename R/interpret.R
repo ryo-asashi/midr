@@ -108,8 +108,8 @@ UseMethod("interpret")
 #' @param interactions logical. If \code{TRUE} and if \code{terms} and \code{formula} are not supplied, all interactions for each pair of variables are modeled and calculated.
 #' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
-#' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centralization constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
-#' @param method an integer specifying the method to be used to solve the least squares problem. A non-negative value will be passed to \code{RcppEigen::fastLmPure()}. If negative, \code{stats::lm.fit()} is used.
+#' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
+#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} will be passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.
 #' @param lambda the penalty factor for pseudo smoothing. The default is \code{0}.
 #' @param kappa the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
@@ -272,15 +272,25 @@ interpret.default <- function(
     verbose("invalid 'mode' found: defaulted to 1", verbosity, 3L, FALSE)
     mode <- 1L
   }
+  .methods <- c("lm", "qr", "unpivoted.qr", "llt", "ldlt", "svd", "eigen")
+  if (is.character(method))
+    method <- pmatch(method, .methods) - 2L
   if (is.null(method))
-    method <- if (!singular.ok) 0L else 5L
-  if (!any(method == c(-1L, 0L:6L))) {
-    verbose("invalid 'method' found: defaulted to 0", verbosity, 3L, FALSE)
+    method <- if (ntargets > 1L) -1L else if (!singular.ok) 0L else 5L
+  method <- as.integer(method)
+  if (ntargets > 1L && method != -1L) {
+    verbose("for matrix 'y', method is set to lm(-1)", verbosity, 2L, FALSE)
+    method <- -1L
+  }
+  if (is.na(method) || !any(method == c(-1L, 0L:5L))) {
+    verbose("invalid 'method' found: defaulted to qr(0)", verbosity, 2L, FALSE)
     method <- 0L
   }
   if (!singular.ok && any(method == 1L:2L))
-    verbose("when 'method' is set to 1 or 2, singular fits cannot be detected",
-            verbosity, level = 1L)
+    verbose(sprintf(
+      "when 'method' is set to %s(%s), singular fits cannot be detected",
+      .methods[method + 2L], method
+    ), verbosity, level = 1L)
   # get variable encoders and encoded matrices --------
   if (me <- (p > 0L)) {
     menc <- list()
@@ -434,7 +444,8 @@ interpret.default <- function(
   verbose(paste0(
     npar, " parameters", if (nnil > 0L) paste0(" (", nnil, " inestimable)"),
     ", ", n, " observations, ", ncon, " centering constraints",
-    if (nreg > 0L) paste0(", ", nreg, " smoothing constraints")
+    if (nreg > 0L) paste0(", ", nreg, " smoothing constraints"),
+    if (ntargets > 1L) paste0(", ", ntargets, " responses")
   ), verbosity, 3L, FALSE)
   # construct design matrix --------
   rw <- sqrt(weights)
@@ -545,11 +556,13 @@ interpret.default <- function(
     gc(verbose = FALSE, full = FALSE)
   }
   # solve the least squares problem --------
-  verbose(paste0("least squares estimation initiated with 'mode' ", mode,
-                 " and 'method' ", method), verbosity, 2L, FALSE)
+  verbose(sprintf(
+    "least squares estimation initiated with mode: %s, method: '%s(%s)'",
+    mode, .methods[method + 2L], method
+  ), verbosity, 2L, FALSE)
   if (mode == 1L) {
     r <- 0L
-    z <- try(solveOLS(X, Y, method), silent = verbosity < 3L)
+    z <- try(solveOLS(X, Y, tol, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     beta <- as.matrix(z$coefficients)
@@ -567,7 +580,7 @@ interpret.default <- function(
     if (r == dim(Msvd$v)[2L])
       stop("no coefficients to evaluate found")
     vr <- as.matrix(Msvd$v[, (r + 1L):npar])
-    z <- try(solveOLS(X %*% vr, Y, method), silent = verbosity < 3L)
+    z <- try(solveOLS(X %*% vr, Y, tol, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     coef <- as.matrix(z$coefficients)
@@ -612,7 +625,7 @@ interpret.default <- function(
         B[m, a] <- - 1
         B[m, m] <- length(a)
       }
-      beta <- as.matrix(solveOLS(B, beta, method)$coefficients)
+      beta <- as.matrix(solveOLS(B, beta, tol, method)$coefficients)
     }
     beta[is.na(beta)] <- 0
   }
@@ -680,6 +693,7 @@ interpret.default <- function(
     obj$encoders[["interactions"]] <- ienc
   }
   obj$weights <- weights
+  obj$method <- .methods[method + 2L]
   obj$fitted.values <- if (ntargets == 1L) as.numeric(lp) else lp
   residuals <- y - lp
   obj$residuals <- if (ntargets == 1L) as.numeric(residuals) else residuals

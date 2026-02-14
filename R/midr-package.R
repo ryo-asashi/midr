@@ -4,7 +4,6 @@
 ## usethis namespace: start
 #' @importFrom rlang '%||%'
 #' @importFrom rlang .data
-#' @import RcppEigen
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib midr, .registration = TRUE
 ## usethis namespace: end
