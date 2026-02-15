@@ -147,11 +147,11 @@ factor.encoder <- function(
   }
   envir <- rlang::env(
     rlang::ns_env("midr"),
-    nlvs = nlvs, flvs = flvs, others = others, map = map, olvs = olvs,
-    transform = transform
+    nlvs = nlvs, flvs = flvs, others = others, map = map, olvs = olvs
   )
-  environment(transform) <- envir
   environment(encode) <- envir
+  environment(transform) <- envir
+  envir$transform <- transform
   enc <- list(
     frame = frame, n = nlvs, type = type,
     envir = envir, transform = transform, encode = encode

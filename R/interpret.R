@@ -196,6 +196,7 @@ interpret.default <- function(
     colnames(y) <- paste0("y", seq_len(ntargets))
   if (is.character(colnames(y)))
     colnames(y) <- make.unique(colnames(y))
+  rownames(y) <- NULL
   if (!is.null(link)){
     if (is.character(link)) link <- get.link(link)
     yres <- y
@@ -673,7 +674,7 @@ interpret.default <- function(
         mat2[, rep(seq_len(n2), each = n1), drop = FALSE]
       lp <- lp + (mat3 %*% bmat)
     }
-    mat1 <- mat2 <- NULL
+    mat1 <- mat2 <- mat3 <- NULL
   }
   # output the result --------
   obj <- list()

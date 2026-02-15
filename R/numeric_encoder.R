@@ -171,10 +171,11 @@ numeric.encoder <- function(
   transform <- function(x, ...) x
   envir <- rlang::env(
     rlang::ns_env("midr"),
-    nrep = nrep, reps = reps, br = br, digits = digits, transform = transform
+    nrep = nrep, reps = reps, br = br, digits = digits
   )
-  environment(transform) <- envir
   environment(encode) <- envir
+  environment(transform) <- envir
+  envir$transform <- transform
   enc <- list(
     frame = frame, n = nrep, type = type,
     envir = envir, transform = transform, encode = encode
