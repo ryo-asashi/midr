@@ -138,7 +138,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>an optional (numeric) vector or matrix of the model predictions or the response variable.</p></dd>
+<dd><p>an optional vector or matrix of the model predictions or the response variables.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -178,7 +178,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>an integer or a character string specifying the method to be used to solve the least squares problem. An integer from <code>0</code> to <code>5</code> will be passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>: <code>0</code> or "qr" for the column-pivoted QR decomposition, <code>1</code> or "unpivoted.qr" for the unpivoted QR decomposition, <code>2</code> or "llt" for the LLT Cholesky, <code>3</code> or "ldlt" for the LDLT Cholesky, <code>4</code> or "svd" for the Jacobi singular value decomposition (SVD) and <code>5</code> of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If <code>-1</code> or "lm", <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">stats::.lm.fit()</a></code> is used.</p></dd>
+<dd><p>an integer or a character string specifying the method to be used to solve the least squares problem. An integer from <code>0</code> to <code>5</code> is passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>: <code>0</code> or "qr" for the column-pivoted QR decomposition, <code>1</code> or "unpivoted.qr" for the unpivoted QR decomposition, <code>2</code> or "llt" for the LLT Cholesky, <code>3</code> or "ldlt" for the LDLT Cholesky, <code>4</code> or "svd" for the Jacobi singular value decomposition (SVD) and <code>5</code> of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If <code>-1</code> or "lm", <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">stats::.lm.fit()</a></code> is used.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>

@@ -79,8 +79,8 @@ interpret(
 
 - y:
 
-  an optional (numeric) vector or matrix of the model predictions or the
-  response variable.
+  an optional vector or matrix of the model predictions or the response
+  variables.
 
 - weights:
 
@@ -145,8 +145,8 @@ interpret(
 - method:
 
   an integer or a character string specifying the method to be used to
-  solve the least squares problem. An integer from `0` to `5` will be
-  passed to
+  solve the least squares problem. An integer from `0` to `5` is passed
+  to
   [`RcppEigen::fastLmPure()`](https://rdrr.io/pkg/RcppEigen/man/fastLm.html):
   `0` or "qr" for the column-pivoted QR decomposition, `1` or
   "unpivoted.qr" for the unpivoted QR decomposition, `2` or "llt" for

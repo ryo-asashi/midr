@@ -32,6 +32,9 @@ get.yhat(object, newdata, ..., target = -1L)
 # S3 method for class 'ranger'
 get.yhat(object, newdata, ..., target = -1L)
 
+# S3 method for class 'rfsrc'
+get.yhat(object, newdata, ..., target = -1L)
+
 # S3 method for class 'svm'
 get.yhat(object, newdata, target = -1L, ...)
 
@@ -53,10 +56,7 @@ get.yhat(object, newdata, ..., target = -1L)
 # S3 method for class 'rpf'
 get.yhat(object, newdata, ..., target = -1L)
 
-# S3 method for class 'rfsrc'
-get.yhat(object, newdata, ...)
-
-# S3 method for class 'bundle'
+# S3 method for class 'fitlist'
 get.yhat(object, newdata, ..., target = NULL)
 ```
 
