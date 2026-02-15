@@ -98,7 +98,7 @@ UseMethod("interpret")
 #'
 #' @rdname interpret
 #' @param x a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.
-#' @param y an optional (numeric) vector or matrix of the model predictions or the response variable.
+#' @param y an optional vector or matrix of the model predictions or the response variables.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
 #' @param link a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions \code{linkfun()} and \code{linkinv()}. See \code{help(make.link)}.
@@ -109,7 +109,7 @@ UseMethod("interpret")
 #' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
-#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} will be passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.
+#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.
 #' @param lambda the penalty factor for pseudo smoothing. The default is \code{0}.
 #' @param kappa the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
@@ -173,7 +173,7 @@ interpret.default <- function(
   }
   if (is.null(y)) {
     if (!is.object(object) && is.list(object))
-      class(object) <- c("bundle", class(object))
+      class(object) <- c("fitlist", class(object))
     y <- try(do.call(pred.fun, c(list(object, x), pred.args)), silent = TRUE)
     if (inherits(y, "try-error"))
       stop("'y' is not supplied and the model prediction failed")

@@ -163,8 +163,29 @@ get.yhat.ranger <- function(
   if (treetype == "Survival") {
     target <- NULL
     yhat <- pred$survival
+    colnames(yhat) <- pred$unique.death.times
   } else {
     yhat <- pred$predictions
+  }
+  checkout(yhat, newdata, target)
+}
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.rfsrc <- function(
+    object, newdata, ..., target = -1L
+) {
+  args <- list(object = object, newdata = newdata, na.action = "na.impute")
+  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  pred <- do.call(stats::predict, args)
+  if (inherits(object, "surv")) {
+    target <- NULL
+    yhat <- pred$survival
+    colnames(yhat) <- pred$time.interest
+  } else {
+    yhat <- pred$predicted
   }
   checkout(yhat, newdata, target)
 }
@@ -300,22 +321,7 @@ get.yhat.rpf <- function(
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.rfsrc <- function(
-    object, newdata, ...
-  ) {
-  args <- list(object = object, newdata = newdata)
-  args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  pred <- do.call(stats::predict, args)
-  yhat <- checkout(pred$survival, newdata)
-  colnames(yhat) <- object$time.interest
-  yhat
-}
-
-
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
-#'
-get.yhat.bundle <- function(
+get.yhat.fitlist <- function(
     object, newdata, ..., target = NULL
 ) {
   out <- lapply(X = object, FUN = get.yhat, newdata = newdata, ...,

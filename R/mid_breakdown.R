@@ -46,9 +46,10 @@ mid.breakdown <- function(
     object, data = NULL, row = NULL, sort = TRUE
   ) {
   if (inherits(object, "midlist")) {
-    out <- lapply(
+    out <- suppressMessages(lapply(
       X = object, FUN = mid.breakdown, data = data, row = row, sort = sort
-    )
+    ))
+    attr(out, "term.labels") <- attr(out[[1L]], "term.labels", TRUE)
     class(out) <- "midlist.breakdown"
     return(out)
   }
@@ -103,4 +104,27 @@ print.mid.breakdown <- function(
   }
   cat("\nBreakdown of Effects:\n")
   print.data.frame(x$breakdown, digits = digits, ...)
+  invisible(x)
+}
+
+#' @exportS3Method base::print
+#'
+print.midlist.breakdown <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+) {
+  cat("\nMID Breakdown of a Prediction\n")
+  intercept <- vapply(X = x, FUN = function(y) y$intercept, 0.0)
+  cat(paste0("\nIntercept: ", examples(intercept, digits = digits), "\n"))
+  lp <- x[[1L]]$linear.predictor
+  if (!is.null(lp)) {
+    lp <- vapply(X = x, FUN = function(y) y$linear.predictor, 0.0)
+    cat(paste0("\nLinear Predictor: ", examples(lp, digits = digits), "\n"))
+  } else {
+    prediction <- vapply(X = x, FUN = function(y) y$prediction, 0.0)
+    cat(paste0("\nPrediction: ", examples(prediction, digits = digits), "\n"))
+  }
+  cat("\nBreakdown of Effects:\n")
+  smry <- summary.midlist.breakdown(x)
+  print.data.frame(as.data.frame(smry), digits = digits, ...)
+  invisible(smry)
 }

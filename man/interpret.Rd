@@ -61,7 +61,7 @@ interpret(object, ...)
 
 \item{x}{a matrix or data.frame of predictor variables to be used in the fitting process. The response variable should not be included.}
 
-\item{y}{an optional (numeric) vector or matrix of the model predictions or the response variable.}
+\item{y}{an optional vector or matrix of the model predictions or the response variables.}
 
 \item{weights}{a numeric vector of sample weights for each observation in \code{x}.}
 
@@ -81,7 +81,7 @@ interpret(object, ...)
 
 \item{mode}{an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.}
 
-\item{method}{an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} will be passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.}
+\item{method}{an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{stats::.lm.fit()} is used.}
 
 \item{lambda}{the penalty factor for pseudo smoothing. The default is \code{0}.}
 

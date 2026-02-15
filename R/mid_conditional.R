@@ -44,11 +44,14 @@ mid.conditional <- function(
     object, variable, data = NULL, resolution = 100L,
     max.nsamples = 1e3L, type = c("response", "link"), keep.effects = TRUE) {
   if (inherits(object, "midlist")) {
-    out <- lapply(
+    if (missing(max.nsamples)) max.nsamples <- 1L
+    if (missing(keep.effects)) keep.effects <- FALSE
+    out <- suppressMessages(lapply(
       X = object, FUN = mid.conditional, variable = variable, data = data,
       resolution = resolution, max.nsamples = max.nsamples, type = type,
       keep.effects = keep.effects
-    )
+    ))
+    attr(out, "variable") <- attr(out[[1L]], "variable")
     class(out) <- "midlist.conditional"
     return(out)
   }
@@ -136,12 +139,33 @@ mid.conditional <- function(
 #' @exportS3Method base::print
 #'
 print.mid.conditional <- function(
-    x, digits = max(3L, getOption("digits") - 2L), ...
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
   ) {
-  n <- attr(x, "n")
+  nobs <- attr(x, "n", exact = TRUE)
   cat(paste0("\nIndividual Conditional Expectation for ",
-             n, " Observation", if (n > 1L) "s", "\n"))
-  cat(paste0("\nVariable: ", attr(x, "variable"), "\n"))
-  cat("\nSample Points:\n")
-  print(x$values, digits = digits, ...)
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  variable <- attr(x, "variable", exact = TRUE)
+  cat(paste0("\nVariable: ", variable, "\n"))
+  cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
+  cat("\nConditional Expectations:\n")
+  print.data.frame(utils::head(x$conditional[, c(".id", "yhat", variable)], n),
+                   digits = digits, ...)
+  invisible(x)
+}
+
+#' @exportS3Method base::print
+#'
+print.midlist.conditional <- function(
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
+) {
+  nobs <- attr(x[[1L]], "n", exact = TRUE)
+  cat(paste0("\nIndividual Conditional Expectation for ",
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  variable <- attr(x, "variable") %||% attr(x[[1L]], "variable")
+  cat(paste0("\nVariable: ", variable, "\n"))
+  cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
+  cat("\nConditional Expectations:\n")
+  smry <- summary.midlist.conditional(x)
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
+  invisible(smry)
 }

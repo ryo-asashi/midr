@@ -45,10 +45,12 @@ mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
     max.nsamples = 1e4L) {
   if (inherits(object, "midlist")) {
-    out <- lapply(
+    if (missing(max.nsamples)) max.nsamples <- 1e4L %/% length(object$intercept)
+    out <- suppressMessages(lapply(
       X = object, FUN = mid.importance, data = data, weights = weights,
       sort = sort, measure = measure, max.nsamples = max.nsamples
-    )
+    ))
+    attr(out, "term.labels") <- attr(out[[1L]], "term.labels", exact = TRUE)
     class(out) <- "midlist.importance"
     return(out)
   }
@@ -100,11 +102,27 @@ mid.importance <- function(
 print.mid.importance <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
   ) {
-  n <- attr(x, "n")
+  n <- attr(x, "n", exact = TRUE)
   cat(paste0("\nMID Importance based on ",
              n, " Observation", if (n > 1L) "s", "\n"))
   cat(paste0("\nMeasure: ", x$measure, "\n"))
   cat("\nImportance:\n")
   print.data.frame(x$importance, digits = digits, ...)
+  invisible(x)
 }
 
+
+#' @exportS3Method base::print
+#'
+print.midlist.importance <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+) {
+  n <- attr(x[[1L]], "n", exact = TRUE)
+  cat(paste0("\nMID Importance based on ",
+             n, " Observation", if (n > 1L) "s", "\n"))
+  cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
+  cat("\nImportance:\n")
+  smry <- summary.midlist.importance(x)
+  print.data.frame(as.data.frame(smry), digits = digits, ...)
+  invisible(smry)
+}

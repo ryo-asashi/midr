@@ -108,3 +108,61 @@ model.frame.midlist <- function(object, ...) {
   if (!is.object(x)) class(x) <- "midlist.breakdown"
   x
 }
+
+
+#' @exportS3Method base::summary
+#'
+summary.midlist.importance <- function(
+    object, terms = NULL, ...
+  ) {
+  terms <- (terms %||% attr(object, "term.labels")) %||% mid.terms(object[[1L]])
+  fun <- function(x, terms) {
+    dat <- x$importance
+    idx <- match(terms, dat$term)
+    res <- dat$importance[idx]
+    res[is.na(res)] <- 0
+    res
+  }
+  out <- vapply(
+    X = object, FUN = fun, FUN.VALUE = numeric(length(terms)), terms = terms
+  )
+  rownames(out) <- terms
+  out
+}
+
+#' @exportS3Method base::summary
+#'
+summary.midlist.breakdown <- function(
+    object, terms = NULL, ...
+) {
+  terms <- (terms %||% attr(object, "term.labels")) %||% mid.terms(object[[1L]])
+  fun <- function(x, terms) {
+    dat <- x$breakdown
+    idx <- match(terms, dat$term)
+    res <- dat$mid[idx]
+    res[is.na(res)] <- 0
+    res
+  }
+  out <- vapply(
+    X = object, FUN = fun, FUN.VALUE = numeric(length(terms)), terms = terms
+  )
+  rownames(out) <- terms
+  out
+}
+
+#' @exportS3Method base::summary
+#'
+summary.midlist.conditional <- function(
+    object, ...
+) {
+  variable <- attr(object, "variable") %||% attr(object[[1L]], "variable")
+  nms <- names(object)
+  if (is.null(nms)) nms <- as.character(seq_along(object))
+  fun <- function(nm) {
+    dat <- object[[nm]]$conditional[, c(".id", "yhat", variable)]
+    dat$.name <- nm
+    dat
+  }
+  out <- lapply(X = nms, FUN = fun)
+  do.call(rbind, out)
+}
