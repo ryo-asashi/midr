@@ -322,10 +322,11 @@ get.yhat.rpf <- function(
 #' @exportS3Method midr::get.yhat
 #'
 get.yhat.fitlist <- function(
-    object, newdata, ..., target = NULL
+    object, newdata, ..., target = -1L
 ) {
-  out <- lapply(X = object, FUN = get.yhat, newdata = newdata, ...,
-                target = target)
+  out <- lapply(
+    X = object, FUN = get.yhat, newdata = newdata, ..., target = target
+  )
   names(out) <- names(object) %||% vapply(object, function(x) class(x)[1L], "")
-  checkout(do.call(cbind, out), newdata, target)
+  checkout(as.matrix(do.call(cbind, out)), newdata)
 }

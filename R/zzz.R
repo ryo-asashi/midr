@@ -109,7 +109,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "viridisLite", type = "sequential",
         kernel = c(text = "viridis", namespace = "viridisLite"),
-        kernel.args = list(option = x, alpha = 1, begin = 0, end = 1, direction = 1),
+        kernel.args = list(option = x, alpha = 1, begin = 0.15, end = 0.85, direction = 1),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$direction <- - kernel.args$direction"
@@ -140,7 +140,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
         name = x, source = "khroma", type = info[i, 2L],
         kernel = c(text = sprintf("color(palette = '%s')", x),
                    namespace = "khroma"),
-        kernel.args = list(range = c(0, 1)),
+        kernel.args = list(range = c(0.0, 1.0)),
         options = list(kernel.size = info[i, 3L],
                        na.color = info[i, 4L])
       )

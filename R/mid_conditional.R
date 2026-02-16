@@ -58,18 +58,16 @@ mid.conditional <- function(
   if (!inherits(object, "mid"))
     stop("'object' must be 'mid' or 'midlist'")
   type <- match.arg(type)
+  tvar <- mid.terms(object, require = variable)
+  nvar <- length(tvar)
   tfix <- mid.terms(object, remove = variable)
-  tver <- mid.terms(object, require = variable)
-  rfix <- length(tfix)
-  rvar <- length(tver)
-  if (length(variable) != 1L || rvar == 0L)
+  nfix <- length(tfix)
+  if (length(variable) != 1L || nvar == 0L)
     stop("'variable' must be a character string denoting a valid predictor variable")
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))
     data <- as.data.frame(data)
-  if ("mid" %in% colnames(data))
-    colnames(data)[colnames(data) == "mid"] <- ".mid"
   data <- model.reframe(object, data)
   enc <- object$encoders$main.effects[[variable]] %||%
     object$encoders$interactions[[variable]]
@@ -91,13 +89,13 @@ mid.conditional <- function(
   }
   ids <- rownames(data)
   rownames(data) <- NULL
-  pmat <- matrix(0, nrow = n, ncol = rfix)
-  for (i in seq_len(rfix))
+  pmat <- matrix(0, nrow = n, ncol = nfix)
+  for (i in seq_len(nfix))
     pmat[, i] <- mid.f(object, tfix[i], x = data)
   pfix <- rowSums(pmat)
-  pmat <- matrix(0, nrow = n, ncol = rvar, dimnames = list(NULL, tver))
-  for (i in seq_len(rvar))
-    pmat[, i] <- mid.f(object, tver[i], x = data)
+  pmat <- matrix(0, nrow = n, ncol = nvar, dimnames = list(NULL, tvar))
+  for (i in seq_len(nvar))
+    pmat[, i] <- mid.f(object, tvar[i], x = data)
   pvar <- rowSums(pmat)
   yhat <- pfix + pvar + object$intercept
   if (type == "response" && !is.null(object$link))
@@ -106,30 +104,26 @@ mid.conditional <- function(
   res$observed <- cbind(.id = ids, yhat = yhat, data)
   if (keep.effects)
     res$observed.effects <- pmat
-  ldata <- list()
-  for (col in colnames(data)) {
-    if (col == variable) {
-      ldata[[col]] <- rep(values, each = n)
-    } else {
-      ldata[[col]] <- rep.int(data[[col]], times = m)
-    }
-  }
-  ldata <- as.data.frame(ldata)
-  colnames(ldata) <- colnames(data)
+  tags <- unique(term.split(tvar))
+  tags <- tags[tags != variable]
+  names(tags) <- tags
+  longdata <- lapply(tags, function(tag) rep.int(data[, tag], times = m))
+  longdata[[variable]] <- rep(values, each = n)
+  longdata <- as.data.frame(longdata, check.names = FALSE)
   pfix <- rep.int(pfix, times = m)
-  pmat <- matrix(0, nrow = n * m, ncol = rvar, dimnames = list(NULL, tver))
-  for (i in seq_len(rvar))
-    pmat[, i] <- mid.f(object, tver[i], x = ldata)
+  pmat <- matrix(0, nrow = n * m, ncol = nvar, dimnames = list(NULL, tvar))
+  for (i in seq_len(nvar))
+    pmat[, i] <- mid.f(object, tvar[i], x = longdata)
   pvar <- rowSums(pmat)
-  lyhat <- pfix + pvar + object$intercept
+  longyhat <- pfix + pvar + object$intercept
   if (type == "response" && !is.null(object$link))
-    lyhat <- object$link$linkinv(lyhat)
-  res$conditional <- cbind(.id = rep.int(ids, m), yhat = lyhat, ldata)
+    longyhat <- object$link$linkinv(longyhat)
+  res$conditional <- cbind(.id = rep.int(ids, m), yhat = longyhat, longdata)
   if (keep.effects)
     res$conditional.effects <- pmat
   res$values <- values
   class(res) <- c("mid.conditional")
-  attr(res, "term.labels") <- tver
+  attr(res, "term.labels") <- tvar
   attr(res, "variable") <- variable
   attr(res, "n") <- n
   res
