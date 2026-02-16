@@ -55,7 +55,7 @@ get.yhat(object, newdata, ..., target)
 
 \method{get.yhat}{rpf}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{fitlist}(object, newdata, ..., target = NULL)
+\method{get.yhat}{fitlist}(object, newdata, ..., target = -1L)
 }
 \arguments{
 \item{object}{a fitted model object.}
