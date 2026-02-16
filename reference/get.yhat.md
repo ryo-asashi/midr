@@ -57,7 +57,7 @@ get.yhat(object, newdata, ..., target = -1L)
 get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'fitlist'
-get.yhat(object, newdata, ..., target = NULL)
+get.yhat(object, newdata, ..., target = -1L)
 ```
 
 ## Arguments
