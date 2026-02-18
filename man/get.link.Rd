@@ -7,11 +7,11 @@
 get.link(link, ..., simplify = TRUE)
 }
 \arguments{
-\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity",  "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link}.}
+\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity",  "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.}
 
 \item{...}{named arguments passed to the specific link generation logic. See Details for available parameters and defaults.}
 
-\item{simplify}{logical. If \code{TRUE} (default), the function returns a standard link object (via \code{stats::make.link}) or recursively calls \code{get.link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).}
+\item{simplify}{logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{get.link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).}
 }
 \value{
 \code{get.link()} returns an object of class "link-glm" (and \code{"parametric.link"}) containing:
@@ -23,7 +23,7 @@ get.link(link, ..., simplify = TRUE)
 }
 \description{
 \code{get.link()} creates a link function object (inheriting from "link-glm") capable of handling parametric transformations such as Box-Cox, Yeo-Johnson, and shifted logarithms.
-This function serves as a wrapper and extension to \code{stats::make.link()}.
+This function serves as a wrapper and extension to \code{\link[stats]{make.link()}}.
 }
 \details{
 The available links and their parameters are:
@@ -31,7 +31,7 @@ The available links and their parameters are:
   \item "log1p": shifted log link \eqn{\eta = \log(\mu + 1)}.
   \item "shifted.log": shifted log link \eqn{\eta = \log(\mu + h)} with a shift parameter \code{h} (default 1).
   \item "shifted.identity": shifted identity link \eqn{\eta = \mu + h} with a shift parameter \code{h} (default 1).
-  \item "robit": robit link using the Student's t-distribution CDF. \eqn{\eta = F_{t}^{-1}(\mu, \nu)} with a degrees of freedom parameter \code{df} (default 7).
+  \item "robit": robit link using the Student's t-distribution CDF. \eqn{\eta = F_{t}^{-1}(\mu, \nu)} with a degrees of freedom parameter \code{df} (or alias \code{nu}, default 7).
   \item "asinh": inverse hyperbolic sine transformation \eqn{\eta = \text{asinh}(\lambda \mu)} with a scale parameter \code{lambda} (default 1).
   \item "scobit": skewed logit link \eqn{\eta = \text{logit}(\mu^{1/\alpha})}. The parameter \code{alpha} (default 1) controls the asymmetry of the tails. \code{alpha=1} corresponds to standard logistic regression.
   \item "box-cox": Box-Cox transformation \eqn{\eta = (\mu^\lambda - 1)/\lambda} with a power parameter \code{lambda} (default 0).
@@ -50,12 +50,13 @@ plot(x <- seq(-100, 100, length.out = 50), lk$linkfun(x), type = "l")
 
 # Robit link with df=2 (Heavier tails than probit)
 lk <- get.link("robit", df = 2)
+print(lk)
 plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 lk <- get.link("robit", df = 1)
-print(lk) # cauchit
+cat(lk$name) # cauchit
 points(x, lk$linkinv(x), type = "l", lty = 2L)
 lk <- get.link("robit", df = Inf)
-print(lk) # probit
+cat(lk$name) # probit
 points(x, lk$linkinv(x), type = "l", lty = 3L)
 
 # Scobit link with alpha=0.5 (Skewed)
@@ -65,7 +66,7 @@ plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 # Inverse Hyperbolic Sine (Alternative to log for zero-inflated data)
 lk <- get.link("asinh", lambda = 10)
 plot(x <- seq(0, 5, length.out = 50), lk$linkfun(x), type = "l")
-lk <- get.link("log")
+lk <- get.link("log1p")
 points(x, lk$linkfun(x), type = "l", lty = 2L)
 
 # Shifted log simplifies to log1p when h=1
