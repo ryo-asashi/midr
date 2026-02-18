@@ -54,11 +54,11 @@ effect_plots <- function(object) {
 }
 
 interaction_plot <- function(object) {
-  ggmid(object, "x.1:x.2", main.effects = TRUE, theme = "Zissou 1") +
+  ggmid(object, "x.1:x.2", main.effects = TRUE, theme = "sunset") +
     ggtitle("interaction effect")
 }
 
-ice_theme <- color.theme("Zissou 1@seq")
+ice_theme <- color.theme("mako")
 ice_plot <- function(object, data = train[1:200, ]) {
   ggmid(mid.conditional(object, "x.1", data = data),
         var.color = x.2, type = "centered", theme = ice_theme) +
@@ -76,7 +76,7 @@ eval_plot <- function(model, mid, data = test, ...) {
   actual <- test$y
   rmse_vs_test <- rmse(pred, actual)
   rmse_vs_mid <-  rmse(pred, pred_mid)
-  ggplot() + scale_color_theme("highlight?accent='#F5191C'") +
+  ggplot() + scale_color_theme("highlight?accent='steelblue'") +
     geom_point(aes(x = pred, y = actual, col = "vs test")) +
     geom_point(aes(x = pred, y = pred_mid, col = "vs mid")) +
     geom_abline(slope = 1, intercept = 0, col = "black", lty = 2) +

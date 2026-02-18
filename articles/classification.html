@@ -42,7 +42,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.903</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,10 +156,8 @@ model using the same dataset. We then evaluate the predictive accuracy
 of the target model by AUC and the representation accuracy of the
 surrogate model by the Spearman’s rank correlation coefficient between
 two predicted probabilities.</p>
-<p>In the following examples, we use two specialized link functions for
-classification tasks: <code>translogit</code> (transformed-logit) and
-<code>transprobit</code> (transformed-probit). These two link functions
-are transformed so that
+<p>In the following examples, we use two scaled link functions for
+classification tasks. These two link functions are transformed so that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">g(0.5) = 0.5</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g'(0.5) = 1</annotation></semantics></math>.
@@ -180,7 +178,7 @@ predicted probabilities.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">interaction_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
-<span>    <span class="va">object</span>, <span class="va">term</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">theme</span> <span class="op">=</span> <span class="st">"shap"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">object</span>, <span class="va">term</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">theme</span> <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">term</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.terms.html">mid.terms</a></span><span class="op">(</span><span class="fu"><a href="../reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, main.effect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="fl">1L</span><span class="op">]</span></span>
 <span>  <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">term</span>, type <span class="op">=</span> <span class="st">"data"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">titanic</span><span class="op">)</span>, </span>
@@ -230,12 +228,12 @@ predicted probabilities.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">==</span> <span class="st">"yes"</span> <span class="op">~</span> <span class="va">.</span>, family <span class="op">=</span> <span class="st">"binomial"</span>, data <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="st">"translogit"</span><span class="op">)</span></span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="va">scaled_logit_link</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  link = "translogit")</span></span>
+<span><span class="co">#&gt;  link = scaled_logit_link)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: glm, lm</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -269,13 +267,13 @@ predicted probabilities.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">nnet</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, size <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1e3</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="st">"transprobit"</span>,</span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="va">scaled_probit_link</span>,</span>
 <span>                 lambda <span class="op">=</span> <span class="fl">.01</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  link = "transprobit", lambda = 0.01)</span></span>
+<span><span class="co">#&gt;  link = scaled_probit_link, lambda = 0.01)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: nnet.formula, nnet</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -313,13 +311,13 @@ predicted probabilities.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     element</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html" class="external-link">svm</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, kernel <span class="op">=</span> <span class="st">"radial"</span>, probability <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="st">"transprobit"</span>,</span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="va">scaled_probit_link</span>,</span>
 <span>                 pred.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>target <span class="op">=</span> <span class="st">"yes"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  pred.args = list(target = "yes"), link = "transprobit")</span></span>
+<span><span class="co">#&gt;  pred.args = list(target = "yes"), link = scaled_probit_link)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: svm.formula, svm</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -354,12 +352,12 @@ predicted probabilities.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span>, <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">train</span><span class="op">)</span>, probability <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>,</span>
-<span>                 link <span class="op">=</span> <span class="st">"transprobit"</span>, lambda <span class="op">=</span> <span class="fl">.01</span><span class="op">)</span></span>
+<span>                 link <span class="op">=</span> <span class="va">scaled_probit_link</span>, lambda <span class="op">=</span> <span class="fl">.01</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  link = "transprobit", lambda = 0.01)</span></span>
+<span><span class="co">#&gt;  link = scaled_probit_link, lambda = 0.01)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: ranger</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -402,14 +400,15 @@ predicted probabilities.</p>
 <span><span class="va">frames</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">age</span>, <span class="fl">9.5</span>, <span class="fl">54.5</span>, <span class="fl">36.5</span><span class="op">)</span></span>
 <span><span class="va">frames</span><span class="op">$</span><span class="va">fare</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">fare</span>, <span class="fl">26.63</span>, <span class="fl">24.56</span><span class="op">)</span></span>
 <span><span class="va">frames</span><span class="op">$</span><span class="va">sibsp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">frames</span><span class="op">$</span><span class="va">fare</span>, <span class="fl">2.5</span><span class="op">)</span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="st">"transprobit"</span>,</span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span>, link <span class="op">=</span> <span class="va">scaled_probit_link</span>,</span>
 <span>                 singular.ok <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="fl">0</span>, frames <span class="op">=</span> <span class="va">frames</span><span class="op">)</span></span>
 <span><span class="co">#&gt; singular fit encountered</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, model = model,</span></span>
-<span><span class="co">#&gt;  link = "transprobit", singular.ok = TRUE, type = 0, frames = frames)</span></span>
+<span><span class="co">#&gt;  link = scaled_probit_link, singular.ok = TRUE, type = 0,</span></span>
+<span><span class="co">#&gt;  frames = frames)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: rpart</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -437,31 +436,15 @@ predicted probabilities.</p>
 <h2 id="other-models">Other Models<a class="anchor" aria-label="anchor" href="#other-models"></a>
 </h2>
 <div class="section level3">
-<h3 id="predictive-mid">Predictive MID<a class="anchor" aria-label="anchor" href="#predictive-mid"></a>
+<h3 id="predictive-mid-without-link">Predictive MID (without link)<a class="anchor" aria-label="anchor" href="#predictive-mid-without-link"></a>
 </h3>
-<p>To fit a MID model for the Titanic classification task, we can use
-“one-sided” link functions: <code>identity-gaussian</code> or
-<code>identity-logistic</code>. These link functions map
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
-to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
-to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
-while the inverse link functions map any real number to the value in the
-unit interval
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>.</p>
-<p><img src="classification_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>,</span>
-<span>                 link <span class="op">=</span> <span class="st">"identity-gaussian"</span>, lambda <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">survived</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, lambda <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'model' not passed: response variable in 'data' is used</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, link = "identity-gaussian",</span></span>
-<span><span class="co">#&gt;  lambda = 0.1)</span></span>
+<span><span class="co">#&gt; interpret(formula = survived ~ .^2, data = train, lambda = 0.5)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Intercept: 0.32285</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -471,7 +454,7 @@ unit interval
 <span><span class="co">#&gt; Interactions:</span></span>
 <span><span class="co">#&gt; 21 interaction terms</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.61458</span></span>
+<span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.6307</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu">effect_plots</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/midr_interpret-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">

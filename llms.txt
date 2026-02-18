@@ -275,6 +275,8 @@ and Graphical Statistics*, *24*(1), 44–65.
 
 - [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
   : Wrapper Prediction Function
+- [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
+  : Extended Parametric Link Functions
 
 ### Variable encoders
 
@@ -326,18 +328,6 @@ and Graphical Statistics*, *24*(1), 44–65.
   models.
 
 ### How to visualize MID models
-
-- [Visualization with graphics
-  package](https://ryo-asashi.github.io/midr/articles/graphics.md):
-
-  Provides a gallery of examples for creating graphics-based plots using
-  functions from the midr package.
-
-- [Visualization with ggplot2
-  package](https://ryo-asashi.github.io/midr/articles/ggplot2.md):
-
-  Provides a gallery of examples for creating ggplot2-based plots using
-  functions from the midr package.
 
 - [Getting Started with Color
   Themes](https://ryo-asashi.github.io/midr/articles/colortheme.md):

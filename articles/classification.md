@@ -61,9 +61,8 @@ of the target model by AUC and the representation accuracy of the
 surrogate model by the Spearman’s rank correlation coefficient between
 two predicted probabilities.
 
-In the following examples, we use two specialized link functions for
-classification tasks: `translogit` (transformed-logit) and `transprobit`
-(transformed-probit). These two link functions are transformed so that
+In the following examples, we use two scaled link functions for
+classification tasks. These two link functions are transformed so that
 $g(0.5) = 0.5$ and $g\prime(0.5) = 1$. With these link functions, the
 effects on the linear predictor can be approximately interpreted as the
 upper bound of the effects on the predicted probabilities.
@@ -83,7 +82,7 @@ effect_plots <- function(object) {
 }
 
 interaction_plot <- function(
-    object, term = NULL, theme = "shap") {
+    object, term = NULL, theme = "mako") {
   if (is.null(term))
     term <- mid.terms(mid.importance(object), main.effect = FALSE)[1L]
   ggmid(object, term, type = "data", data = na.omit(titanic), 
@@ -132,12 +131,12 @@ evaluation_plot <- function(model, mid, ...) {
 
 ``` r
 model <- glm(survived == "yes" ~ ., family = "binomial", data = train)
-mid <- interpret(survived ~ .^2, train, model, link = "translogit")
+mid <- interpret(survived ~ .^2, train, model, link = scaled_logit_link)
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = survived ~ .^2, data = train, model = model,
-#>  link = "translogit")
+#>  link = scaled_logit_link)
 #> 
 #> Model Class: glm, lm
 #> 
@@ -173,13 +172,13 @@ grid.arrange(nrow = 2L,
 library(nnet)
 set.seed(42)
 model <- nnet(survived ~ ., train, size = 5, maxit = 1e3, trace = FALSE)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  lambda = .01)
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = survived ~ .^2, data = train, model = model,
-#>  link = "transprobit", lambda = 0.01)
+#>  link = scaled_probit_link, lambda = 0.01)
 #> 
 #> Model Class: nnet.formula, nnet
 #> 
@@ -219,13 +218,13 @@ library(e1071)
 #> 
 #>     element
 model <- svm(survived ~ ., train, kernel = "radial", probability = TRUE)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  pred.args = list(target = "yes"))
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = survived ~ .^2, data = train, model = model,
-#>  pred.args = list(target = "yes"), link = "transprobit")
+#>  pred.args = list(target = "yes"), link = scaled_probit_link)
 #> 
 #> Model Class: svm.formula, svm
 #> 
@@ -262,12 +261,12 @@ library(ranger)
 set.seed(42)
 model <- ranger(survived ~ ., na.omit(train), probability = TRUE)
 mid <- interpret(survived ~ .^2, train, model,
-                 link = "transprobit", lambda = .01)
+                 link = scaled_probit_link, lambda = .01)
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = survived ~ .^2, data = train, model = model,
-#>  link = "transprobit", lambda = 0.01)
+#>  link = scaled_probit_link, lambda = 0.01)
 #> 
 #> Model Class: ranger
 #> 
@@ -314,14 +313,15 @@ frames <- lapply(train, fun)
 frames$age <- c(frames$age, 9.5, 54.5, 36.5)
 frames$fare <- c(frames$fare, 26.63, 24.56)
 frames$sibsp <- c(frames$fare, 2.5)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  singular.ok = TRUE, type = 0, frames = frames)
 #> singular fit encountered
 print(mid)
 #> 
 #> Call:
 #> interpret(formula = survived ~ .^2, data = train, model = model,
-#>  link = "transprobit", singular.ok = TRUE, type = 0, frames = frames)
+#>  link = scaled_probit_link, singular.ok = TRUE, type = 0,
+#>  frames = frames)
 #> 
 #> Model Class: rpart
 #> 
@@ -351,25 +351,15 @@ grid.arrange(nrow = 2L,
 
 ## Other Models
 
-### Predictive MID
-
-To fit a MID model for the Titanic classification task, we can use
-“one-sided” link functions: `identity-gaussian` or `identity-logistic`.
-These link functions map $0$ to $0$ and $1$ to $1$, while the inverse
-link functions map any real number to the value in the unit interval
-$(0,1)$.
-
-![](classification_files/figure-html/unnamed-chunk-3-1.png)
+### Predictive MID (without link)
 
 ``` r
-mid <- interpret(survived ~ .^2, train,
-                 link = "identity-gaussian", lambda = .1)
+mid <- interpret(survived ~ .^2, train, lambda = .5)
 #> 'model' not passed: response variable in 'data' is used
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = survived ~ .^2, data = train, link = "identity-gaussian",
-#>  lambda = 0.1)
+#> interpret(formula = survived ~ .^2, data = train, lambda = 0.5)
 #> 
 #> Intercept: 0.32285
 #> 
@@ -379,7 +369,7 @@ print(mid)
 #> Interactions:
 #> 21 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.61458
+#> Uninterpreted Variation Ratio: 0.6307
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 

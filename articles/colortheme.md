@@ -60,7 +60,7 @@ nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 
 ``` r
 viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
-#> [1] "#46337F" "#31658D" "#21908C" "#38B976" "#99D83B"
+#> [1] "#404486" "#2E6C8D" "#21908C" "#2EB37B" "#79D151"
 ```
 
 You can modify themes by **reversing** the color order or **changing**

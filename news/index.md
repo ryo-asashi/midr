@@ -1,5 +1,12 @@
 # Changelog
 
+## midr 0.5.3.904
+
+- Fixed memory issues in
+  [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
+  and added support for parametric link functions (including Box-Cox,
+  Yeo-Johnson, Robit, and Scobit).
+
 ## midr 0.5.3.903
 
 - Multivariate Response Support:

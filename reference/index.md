@@ -79,6 +79,8 @@
 
 - [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
   : Wrapper Prediction Function
+- [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
+  : Extended Parametric Link Functions
 
 ### Variable encoders
 
