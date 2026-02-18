@@ -45,18 +45,27 @@ test  <- titanic[ test_rows, -5]
 str(test[, -9])
 ```
 
-For each model type, we fit a classification model using the training dataset of 1707 people and an interpretative MID surrogate of the target model using the same dataset. We then evaluate the predictive accuracy of the target model by AUC and the representation accuracy of the surrogate model by the Spearman's rank correlation coefficient between two predicted probabilities.
+For each model type, we fit a classification model using the training dataset of 1707 people and an interpretative MID surrogate of the target model using the same dataset.
+We then evaluate the predictive accuracy of the target model by AUC and the representation accuracy of the surrogate model by the Spearman's rank correlation coefficient between two predicted probabilities.
 
-In the following examples, we use two specialized link functions for classification tasks: `translogit` (transformed-logit) and `transprobit` (transformed-probit). These two link functions are transformed so that $g(0.5) = 0.5$ and $g'(0.5) = 1$. With these link functions, the effects on the linear predictor can be approximately interpreted as the upper bound of the effects on the predicted probabilities.
+In the following examples, we use two scaled link functions for classification tasks.
+These two link functions are transformed so that $g(0.5) = 0.5$ and $g'(0.5) = 1$.
+With these link functions, the effects on the linear predictor can be approximately interpreted as the upper bound of the effects on the predicted probabilities.
 
 ```{r, echo = FALSE, fig.height = 3, fig.width = 6}
 par.midr(mfrow = c(1, 2))
-link <- midr:::get.link("translogit")
-curve(link$linkfun(x), 0, 1)
+scaled_logit_link <- list(
+  linkfun = function(mu) qlogis(mu, location = .5, scale = .25),
+  linkinv = function(eta) plogis(eta, location = .5, scale = .25)
+)
+scaled_probit_link <- list(
+  linkfun = function(mu) qnorm(mu, mean = .5, sd = sqrt(0.5 / pi)),
+  linkinv = function(eta) pnorm(eta, mean = .5, sd = sqrt(0.5 / pi))
+)
+curve(scaled_logit_link$linkfun(x), 0, 1)
 title("transformed-logit")
 abline(0, 1, lty = 3)
-link <- midr:::get.link("transprobit")
-curve(link$linkfun(x), 0, 1)
+curve(scaled_probit_link$linkfun(x), 0, 1)
 title("transformed-probit")
 abline(0, 1, lty = 3)
 ```
@@ -74,7 +83,7 @@ effect_plots <- function(object) {
 }
 
 interaction_plot <- function(
-    object, term = NULL, theme = "shap") {
+    object, term = NULL, theme = "mako") {
   if (is.null(term))
     term <- mid.terms(mid.importance(object), main.effect = FALSE)[1L]
   ggmid(object, term, type = "data", data = na.omit(titanic), 
@@ -123,7 +132,7 @@ evaluation_plot <- function(model, mid, ...) {
 
 ```{r stats_glm}
 model <- glm(survived == "yes" ~ ., family = "binomial", data = train)
-mid <- interpret(survived ~ .^2, train, model, link = "translogit")
+mid <- interpret(survived ~ .^2, train, model, link = scaled_logit_link)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,
@@ -141,7 +150,7 @@ grid.arrange(nrow = 2L,
 library(nnet)
 set.seed(42)
 model <- nnet(survived ~ ., train, size = 5, maxit = 1e3, trace = FALSE)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
@@ -159,7 +168,7 @@ grid.arrange(nrow = 2L,
 ```{r e1071_svm}
 library(e1071)
 model <- svm(survived ~ ., train, kernel = "radial", probability = TRUE)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  pred.args = list(target = "yes"))
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
@@ -179,7 +188,7 @@ library(ranger)
 set.seed(42)
 model <- ranger(survived ~ ., na.omit(train), probability = TRUE)
 mid <- interpret(survived ~ .^2, train, model,
-                 link = "transprobit", lambda = .01)
+                 link = scaled_probit_link, lambda = .01)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,
@@ -202,7 +211,7 @@ frames <- lapply(train, fun)
 frames$age <- c(frames$age, 9.5, 54.5, 36.5)
 frames$fare <- c(frames$fare, 26.63, 24.56)
 frames$sibsp <- c(frames$fare, 2.5)
-mid <- interpret(survived ~ .^2, train, model, link = "transprobit",
+mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  singular.ok = TRUE, type = 0, frames = frames)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
@@ -215,24 +224,10 @@ grid.arrange(nrow = 2L,
 
 ## Other Models
 
-### Predictive MID
-
-To fit a MID model for the Titanic classification task, we can use "one-sided" link functions: `identity-gaussian` or `identity-logistic`. These link functions map $0$ to $0$ and $1$ to $1$, while the inverse link functions map any real number to the value in the unit interval $(0, 1)$.
-
-```{r, echo = FALSE, fig.height = 3, fig.width = 6}
-par.midr(mfrow = c(1, 2))
-link <- midr:::get.link("identity-gaussian")
-curve(link$linkfun(x), 0, 1)
-title("link: identity")
-abline(0, 1, lty = 3)
-curve(link$linkinv(x), -.8, 1.8)
-title("inverse link: gaussian QDF")
-abline(0, 1, lty = 3)
-```
+### Predictive MID (without link)
 
 ```{r midr_interpret}
-mid <- interpret(survived ~ .^2, train,
-                 link = "identity-gaussian", lambda = .1)
+mid <- interpret(survived ~ .^2, train, lambda = .5)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(nrow = 2L,

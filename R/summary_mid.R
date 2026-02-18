@@ -41,8 +41,10 @@ summary.mid <- function(
   cl <- paste0(trimws(deparse(object$call)), sep = "", collapse = "\n ")
   cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
   # link
-  if(use.link <- !is.null(object$link))
-    cat(paste0("\nLink: ", object$link$name, "\n", collapse = ""))
+  if(use.link <- !is.null(object$link)) {
+    ln <- object$link$name %||% attr(object$link, "name", exact = TRUE)
+    cat(paste0("\nLink: ", ln %||% "custom", "\n", collapse = ""))
+  }
   # ratio
   cat(paste0("\nUninterpreted Variation Ratio:\n"))
   print.default(object$ratio, digits = digits)

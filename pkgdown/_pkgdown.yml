@@ -94,6 +94,7 @@ reference:
 - subtitle: Prediction Function
   contents:
   - get.yhat
+  - get.link
 - subtitle: Variable encoders
   contents:
   - factor.encoder

@@ -33,7 +33,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
     name = "bicolor", source = "midr", type = "diverging",
     kernel = c(text = "function(x, first, second) ifelse(x <= 0.5, first, second)",
                namespace = "base"),
-    kernel.args = list(first = "#6A0DAD", second = "#00A0A0")
+    kernel.args = list(first = "steelblue", second = "maroon")
   )
   set.color.theme(
     name = "highlight", source = "midr", type = "qualitative",
@@ -109,7 +109,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       set.color.theme(
         name = x, source = "viridisLite", type = "sequential",
         kernel = c(text = "viridis", namespace = "viridisLite"),
-        kernel.args = list(option = x, alpha = 1, begin = 0.15, end = 0.85, direction = 1),
+        kernel.args = list(option = x, alpha = 1, begin = 0.2, end = 0.8, direction = 1),
         options = list(
           kernel.size = Inf,
           reverse.method = "kernel.args$direction <- - kernel.args$direction"

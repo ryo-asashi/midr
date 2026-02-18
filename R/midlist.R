@@ -37,7 +37,6 @@
   x$ratio <- if (is.matrix(x$ratio))
     x$ratio[, i, drop = drop] else x$ratio[i]
   if (drop && length(i) == 1L) {
-    x$label <- names(x$intercept)
     names(x$intercept) <- NULL
     if (length(x$ratio) == 1L) names(x$ratio) <- NULL
     class(x) <- "mid"

@@ -1,3 +1,7 @@
+# midr 0.5.3.904
+
+-   Fixed memory issues in `get.link()` and added support for parametric link functions (including Box-Cox, Yeo-Johnson, Robit, and Scobit).
+
 # midr 0.5.3.903
 
 -   Multivariate Response Support: `interpret()` now accepts a matrix for the response variable `y`, allowing for simultaneous modeling of multiple responses.
