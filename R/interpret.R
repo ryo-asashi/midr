@@ -762,14 +762,13 @@ interpret.formula <- function(
                      examples(y, 3L)), verbosity, 3L)
     }
   }
-  if (is.matrix(data))
-    data <- as.data.frame(data)
   mf <- match.call(expand.dots = FALSE)
   m <- match(
     c("formula", "data", "subset", "weights", "na.action", "drop.unused.levels"),
     names(mf), nomatch = 0L
   )
   mf <- mf[c(1L, m)]
+  if (is.matrix(data)) mf$data <- as.data.frame(data)
   if (use.yhat) mf$.yhat <- y
   if (is.null(mf$weights) && !is.null(attr(data, "weights"))) {
     mf$weights <- attr(data, "weights")
@@ -781,8 +780,10 @@ interpret.formula <- function(
     if (length(f) == 3L) {
       f[[2L]] <- NULL
       mf$formula <- f
+      data <- eval(mf, envir = parent.frame())
+    } else {
+      stop(attr(data, "condition")$message, call. = FALSE)
     }
-    data <- eval(mf, envir = parent.frame())
   }
   naa <- stats::na.action(data)
   n <- nrow(data) + length(naa)
