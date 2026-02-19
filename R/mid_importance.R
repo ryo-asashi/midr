@@ -17,6 +17,7 @@
 #' @param sort logical. If \code{TRUE}, the output data frame is sorted by importance in descending order.
 #' @param measure an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.
 #' @param max.nsamples an integer specifying the maximum number of samples to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.
+#' @param seed an integer seed for random sampling. Default is \code{NULL}.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -43,9 +44,11 @@
 #'
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
-    max.nsamples = 1e4L) {
+    max.nsamples = 1e4L, seed = NULL) {
   if (inherits(object, "midlist")) {
-    if (missing(max.nsamples)) max.nsamples <- 1e4L %/% length(object$intercept)
+    if (missing(max.nsamples))
+      max.nsamples <- max(100L, 1e4L %/% length(object$intercept))
+    if (missing(seed)) seed <- sample(1e6L, 1L)
     out <- suppressMessages(lapply(
       X = object, FUN = mid.importance, data = data, weights = weights,
       sort = sort, measure = measure, max.nsamples = max.nsamples
@@ -82,8 +85,9 @@ mid.importance <- function(
   out <- list()
   out$importance <- df
   if (!is.null(max.nsamples) && n > max.nsamples) {
-    keepids <- sample(n, max.nsamples, replace = FALSE, prob = weights)
-    preds <- preds[keepids, , drop = FALSE]
+    if (!is.null(seed)) set.seed(seed)
+    keeprows <- sample(n, max.nsamples, replace = FALSE, prob = weights)
+    preds <- preds[keeprows, , drop = FALSE]
   }
   out$predictions <- preds
   out$measure <- switch(measure,
@@ -115,14 +119,14 @@ print.mid.importance <- function(
 #' @exportS3Method base::print
 #'
 print.midlist.importance <- function(
-    x, digits = max(3L, getOption("digits") - 2L), ...
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
-  n <- attr(x[[1L]], "n", exact = TRUE)
+  nobs <- attr(x[[1L]], "n", exact = TRUE)
   cat(paste0("\nMID Importance based on ",
-             n, " Observation", if (n > 1L) "s", "\n"))
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
   cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
   cat("\nImportance:\n")
-  smry <- summary.midlist.importance(x)
-  print.data.frame(as.data.frame(smry), digits = digits, ...)
+  smry <- summary.midlist.importance(x, shape = "wide")
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

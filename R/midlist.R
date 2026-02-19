@@ -112,56 +112,105 @@ model.frame.midlist <- function(object, ...) {
 #' @exportS3Method base::summary
 #'
 summary.midlist.importance <- function(
-    object, terms = NULL, ...
+    object, shape = c("wide", "long"), terms = attr(object, "term.labels"), ...
   ) {
-  terms <- (terms %||% attr(object, "term.labels")) %||% mid.terms(object[[1L]])
-  fun <- function(x, terms) {
-    dat <- x$importance
-    idx <- match(terms, dat$term)
-    res <- dat$importance[idx]
-    res[is.na(res)] <- 0
-    res
+  shape <- match.arg(shape)
+  if (shape == "wide") {
+    info <- data.frame(term = terms)
+    fun <- function(x) {
+      res <- x$importance
+      idx <- match(terms, res$term)
+      res <- res$importance[idx]
+      res[is.na(res)] <- 0
+      res
+    }
+    out <- vapply(
+      X = object, FUN = fun, FUN.VALUE = numeric(length(terms))
+    )
+    out <- cbind(info, out)
+    rownames(out) <- NULL
+  } else {
+    nms <- names(object) %||% as.character(seq_along(object))
+    fun <- function(nm) {
+      res <- object[[nm]]$importance
+      res <- res[res$term %in% terms, ]
+      res$label <- nm
+      res
+    }
+    out <- lapply(X = nms, FUN = fun)
+    out <- do.call(rbind, out)
   }
-  out <- vapply(
-    X = object, FUN = fun, FUN.VALUE = numeric(length(terms)), terms = terms
-  )
-  rownames(out) <- terms
   out
 }
 
 #' @exportS3Method base::summary
 #'
 summary.midlist.breakdown <- function(
-    object, terms = NULL, ...
+    object, shape = c("wide", "long"), terms = attr(object, "term.labels"), ...
 ) {
-  terms <- (terms %||% attr(object, "term.labels")) %||% mid.terms(object[[1L]])
-  fun <- function(x, terms) {
-    dat <- x$breakdown
-    idx <- match(terms, dat$term)
-    res <- dat$mid[idx]
-    res[is.na(res)] <- 0
-    res
+  shape <- match.arg(shape)
+  if (shape == "wide") {
+    info <- data.frame(term = terms)
+    fun <- function(x) {
+      res <- x$breakdown
+      idx <- match(terms, res$term)
+      res <- res$mid[idx]
+      res[is.na(res)] <- 0
+      res
+    }
+    out <- vapply(
+      X = object, FUN = fun, FUN.VALUE = numeric(length(terms))
+    )
+    out <- cbind(info, out)
+    rownames(out) <- NULL
+  } else {
+    nms <- names(object) %||% as.character(seq_along(object))
+    fun <- function(nm) {
+      res <- object[[nm]]$breakdown
+      res <- res[res$term %in% terms, ]
+      res$label <- nm
+      res
+    }
+    out <- lapply(X = nms, FUN = fun)
+    out <- do.call(rbind, out)
   }
-  out <- vapply(
-    X = object, FUN = fun, FUN.VALUE = numeric(length(terms)), terms = terms
-  )
-  rownames(out) <- terms
   out
 }
 
 #' @exportS3Method base::summary
 #'
 summary.midlist.conditional <- function(
-    object, ...
+    object, shape = c("long", "wide"), ids = attr(object, "ids"), ...
 ) {
-  variable <- attr(object, "variable") %||% attr(object[[1L]], "variable")
-  nms <- names(object)
-  if (is.null(nms)) nms <- as.character(seq_along(object))
-  fun <- function(nm) {
-    dat <- object[[nm]]$conditional[, c(".id", "yhat", variable)]
-    dat$.name <- nm
-    dat
+  shape <- match.arg(shape)
+  ids <- ids %||% object[[1L]]$ids
+  variable <- attr(object, "variable") %||% object[[1L]]$variable
+  values <- attr(object, "values") %||% object[[1L]]$values
+  if (shape == "wide") {
+    info <- object[[1L]]$conditional
+    info <- info[info$.id %in% ids, c(".id", variable), drop = FALSE]
+    fun <- function(x) {
+      res <- x$conditional
+      res <- res$yhat[res$.id %in% ids]
+      res[is.na(res)] <- 0
+      res
+    }
+    out <- vapply(
+      X = object, FUN = fun, FUN.VALUE = numeric(length(ids) * length(values))
+    )
+    out <- cbind(info, out)
+    rownames(out) <- NULL
+  } else {
+    nms <- names(object) %||% as.character(seq_along(object))
+    fun <- function(nm) {
+      res <- object[[nm]]$conditional
+      res <- res[res$.id %in% ids, c(".id", variable, "yhat"), drop = FALSE]
+      res$label <- nm
+      res
+    }
+    out <- lapply(X = nms, FUN = fun)
+    out <- do.call(rbind, out)
+    rownames(out) <- NULL
   }
-  out <- lapply(X = nms, FUN = fun)
-  do.call(rbind, out)
+  out
 }

@@ -110,7 +110,7 @@ print.mid.breakdown <- function(
 #' @exportS3Method base::print
 #'
 print.midlist.breakdown <- function(
-    x, digits = max(3L, getOption("digits") - 2L), ...
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   cat("\nMID Breakdown of a Prediction\n")
   intercept <- vapply(X = x, FUN = function(y) y$intercept, 0.0)
@@ -124,7 +124,7 @@ print.midlist.breakdown <- function(
     cat(paste0("\nPrediction: ", examples(prediction, digits = digits), "\n"))
   }
   cat("\nBreakdown of Effects:\n")
-  smry <- summary.midlist.breakdown(x)
-  print.data.frame(as.data.frame(smry), digits = digits, ...)
+  smry <- summary.midlist.breakdown(x, shape = "wide")
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

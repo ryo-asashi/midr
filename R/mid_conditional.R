@@ -18,6 +18,7 @@
 #' @param data a data frame containing the observations to be used for the ICE calculations. If not provided, data is automatically extracted based on the function call.
 #' @param resolution an integer specifying the number of evaluation points for the \code{variable}'s range.
 #' @param max.nsamples an integer specifying the maximum number of samples. If the number of observations exceeds this limit, the \code{data} is randomly sampled.
+#' @param seed an integer seed for random sampling. Default is \code{NULL}.
 #' @param type the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.
 #' @param keep.effects logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.
 #'
@@ -32,6 +33,7 @@
 #' \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
 #' \item{observed}{a data frame of the original observations used, along with their predictions.}
 #' \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
+#' \item{variable}{name of the target variable.}
 #' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 #'
 #' For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
@@ -41,17 +43,21 @@
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, variable, data = NULL, resolution = 100L,
-    max.nsamples = 1e3L, type = c("response", "link"), keep.effects = TRUE) {
+    object, variable, data = NULL, resolution = 100L, max.nsamples = 1e3L,
+    seed = NULL, type = c("response", "link"), keep.effects = TRUE) {
   if (inherits(object, "midlist")) {
-    if (missing(max.nsamples)) max.nsamples <- 1L
+    if (missing(max.nsamples))
+      max.nsamples <- max(10L, 1e3L %/% length(object$intercept))
     if (missing(keep.effects)) keep.effects <- FALSE
+    if (missing(seed)) seed <- sample(1e6L, 1L)
     out <- suppressMessages(lapply(
       X = object, FUN = mid.conditional, variable = variable, data = data,
-      resolution = resolution, max.nsamples = max.nsamples, type = type,
-      keep.effects = keep.effects
+      resolution = resolution, max.nsamples = max.nsamples, seed = seed,
+      type = type, keep.effects = keep.effects
     ))
-    attr(out, "variable") <- attr(out[[1L]], "variable")
+    attr(out, "ids") <- out[[1L]]$ids
+    attr(out, "variable") <- out[[1L]]$variable
+    attr(out, "values") <- out[[1L]]$values
     class(out) <- "midlist.conditional"
     return(out)
   }
@@ -84,6 +90,7 @@ mid.conditional <- function(
   if (!is.null(max.nsamples) && n > max.nsamples) {
     message("number of observations exceeds 'max.nsamples': a sample of ",
     max.nsamples," observations from 'data' is used")
+    if (!is.null(seed)) set.seed(seed)
     data <- data[sample(n, max.nsamples, replace = FALSE), ]
     n <- nrow(data)
   }
@@ -121,10 +128,11 @@ mid.conditional <- function(
   res$conditional <- cbind(.id = rep.int(ids, m), yhat = longyhat, longdata)
   if (keep.effects)
     res$conditional.effects <- pmat
+  res$ids <- ids
+  res$variable <- variable
   res$values <- values
   class(res) <- c("mid.conditional")
   attr(res, "term.labels") <- tvar
-  attr(res, "variable") <- variable
   attr(res, "n") <- n
   res
 }
@@ -138,7 +146,7 @@ print.mid.conditional <- function(
   nobs <- attr(x, "n", exact = TRUE)
   cat(paste0("\nIndividual Conditional Expectation for ",
              nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  variable <- attr(x, "variable", exact = TRUE)
+  variable <- x$variable
   cat(paste0("\nVariable: ", variable, "\n"))
   cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
   cat("\nConditional Expectations:\n")
@@ -155,11 +163,11 @@ print.midlist.conditional <- function(
   nobs <- attr(x[[1L]], "n", exact = TRUE)
   cat(paste0("\nIndividual Conditional Expectation for ",
              nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  variable <- attr(x, "variable") %||% attr(x[[1L]], "variable")
+  variable <- x$variable %||% x[[1L]]$variable
   cat(paste0("\nVariable: ", variable, "\n"))
   cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
   cat("\nConditional Expectations:\n")
-  smry <- summary.midlist.conditional(x)
+  smry <- summary.midlist.conditional(x, shape = "long")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

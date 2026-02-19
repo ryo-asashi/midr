@@ -55,7 +55,7 @@ ggmid.mid.conditional <- function(
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
-  variable <- attr(object, "variable")
+  variable <- object$variable
   n <- attr(object, "n")
   obs <- object$observed
   con <- object$conditional

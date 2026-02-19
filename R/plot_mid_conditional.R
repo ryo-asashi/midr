@@ -56,7 +56,7 @@ plot.mid.conditional <- function(
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
-  variable <- attr(x, "variable")
+  variable <- x$variable
   n <- attr(x, "n")
   obs <- x$observed
   con <- x$conditional

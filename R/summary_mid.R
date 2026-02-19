@@ -16,7 +16,7 @@
 #' }
 #'
 #' @param object a "mid" object to be summarized.
-#' @param diagnosis logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.
+#' @param diagnose logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.
 #' @param digits the number of significant digits for printing numeric values.
 #' @param ... arguments to be passed to \code{graphics::panel.smooth()} for the diagnosis plot.
 #'
@@ -35,7 +35,7 @@
 #' @exportS3Method base::summary
 #'
 summary.mid <- function(
-    object, diagnosis = FALSE, digits = max(3L, getOption("digits") - 2L), ...
+    object, diagnose = FALSE, digits = max(3L, getOption("digits") - 2L), ...
   ) {
   # call
   cl <- paste0(trimws(deparse(object$call)), sep = "", collapse = "\n ")
@@ -69,20 +69,26 @@ summary.mid <- function(
   cat("\nEncoding:\n")
   print.data.frame(mid.encoding.scheme(object))
   # diagnosis
-  if (diagnosis && inherits(object, "mid")) {
-    yhat <- if (use.link) object$linear.predictors else object$fitted.values
-    graphics::plot.default(
-      yhat, rsd,
-      xlab = ifelse(use.link, "Linear Predictors", "Fitted Values"),
-      ylab = paste0(if (use.link) "Working ", "Residuals"),
-      main = "Residuals vs Fitted Values", font.main = 1L, type = "n"
-    )
-    args <- list(...)
-    args$x <- yhat
-    args$y <- rsd
-    args$iter <- args$iter %||% 3L
-    do.call(graphics::panel.smooth, args)
-    graphics::abline(h = 0L, lty = 3L, col = "gray65")
+  if (diagnose) {
+    plot.diagnosis <- function(.obj) {
+      yhat <- if (use.link) .obj$linear.predictors else .obj$fitted.values
+      .rsd <- .obj$residuals
+      graphics::plot.default(
+        yhat, .rsd,
+        xlab = ifelse(use.link, "Linear Predictors", "Fitted Values"),
+        ylab = paste0(if (use.link) "Working ", "Residuals"),
+        main = "Residuals vs Fitted Values", font.main = 1L, type = "n"
+      )
+      args <- list(x = yhat, y = .rsd, iter = 3L)
+      args <- utils::modifyList(args, list(...))
+      do.call(graphics::panel.smooth, args)
+      graphics::abline(h = 0L, lty = 3L, col = "gray65")
+    }
+    if (inherits(object, "mid")) {
+      plot.diagnosis(.obj = object)
+    } else if (inherits(object, "midlist")) {
+      lapply(X = as.list.midlist(object), FUN = plot.diagnosis)
+    }
   }
   invisible(object)
 }
@@ -109,10 +115,5 @@ mid.encoding.scheme <- function(object, ...) {
 #' @exportS3Method base::summary
 #'
 summary.midlist <- function(object, ...) {
-  if (!is.null(object$intercept)) {
-    summary.mid(object, ...)
-  } else {
-    summary.default(unclass(object), ...)
-  }
-  invisible(object)
+  summary.mid(object, ...)
 }
