@@ -13,7 +13,8 @@ mid.importance(
   weights = NULL,
   sort = TRUE,
   measure = 1L,
-  max.nsamples = 10000L
+  max.nsamples = 10000L,
+  seed = NULL
 )
 ```
 
@@ -49,6 +50,10 @@ mid.importance(
   an integer specifying the maximum number of samples to retain in the
   `predictions` component of the returned object. If the number of
   observations exceeds this value, a weighted random sample is taken.
+
+- seed:
+
+  an integer seed for random sampling. Default is `NULL`.
 
 ## Value
 

@@ -14,6 +14,7 @@ mid.conditional(
   data = NULL,
   resolution = 100L,
   max.nsamples = 1000L,
+  seed = NULL,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -46,6 +47,10 @@ mid.conditional(
   an integer specifying the maximum number of samples. If the number of
   observations exceeds this limit, the `data` is randomly sampled.
 
+- seed:
+
+  an integer seed for random sampling. Default is `NULL`.
+
 - type:
 
   the type of prediction to return. "response" (default) for the
@@ -70,6 +75,10 @@ is a list with the following components:
 
   a data frame of the hypothetical observations and their corresponding
   predictions.
+
+- variable:
+
+  name of the target variable.
 
 - values:
 

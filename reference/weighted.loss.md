@@ -63,7 +63,8 @@ mid <- interpret(dist ~ speed, cars)
 1 - weighted.loss(cars$dist, predict(mid, cars), method = "r2")
 #> [1] 0.2263636
 mid$ratio
-#> [1] 0.2263636
+#>         y 
+#> 0.2263636 
 
 # Verify uninterpreted variation ratio of a fitted MID model with weights
 w <- 1:nrow(cars)
@@ -72,5 +73,6 @@ mid <- interpret(dist ~ speed, cars, weights = w)
 1 - weighted.loss(cars$dist, predict(mid, cars), w = w, method = "r2")
 #> [1] 0.2864814
 mid$ratio
-#> [1] 0.2864814
+#>         y 
+#> 0.2864814 
 ```

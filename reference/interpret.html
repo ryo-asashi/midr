@@ -150,7 +150,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-link">link<a class="anchor" aria-label="anchor" href="#arg-link"></a></dt>
-<dd><p>a character string specifying the link function: one of "logit", "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2", "inverse", "translogit", "transprobit", "identity-logistic" and "identity-gaussian", or an object containing two functions <code>linkfun()</code> and <code>linkinv()</code>. See <code><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">help(make.link)</a></code>.</p></dd>
+<dd><p>a character string specifying the link function. This can be one of the links from <code><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link()</a></code> (e.g., "log", "logit", "probit", "cauchit"), one of the links from <code><a href="get.link.html">get.link()</a></code> (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object containing at least the <code>linkfun()</code> and <code>linkinv()</code> functions.</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
@@ -178,7 +178,7 @@ MID models are additive, highly interpretable models composed of functions, each
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>an integer or a character string specifying the method to be used to solve the least squares problem. An integer from <code>0</code> to <code>5</code> is passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>: <code>0</code> or "qr" for the column-pivoted QR decomposition, <code>1</code> or "unpivoted.qr" for the unpivoted QR decomposition, <code>2</code> or "llt" for the LLT Cholesky, <code>3</code> or "ldlt" for the LDLT Cholesky, <code>4</code> or "svd" for the Jacobi singular value decomposition (SVD) and <code>5</code> of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If <code>-1</code> or "lm", <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">stats::.lm.fit()</a></code> is used.</p></dd>
+<dd><p>an integer or a character string specifying the method to be used to solve the least squares problem. An integer from <code>0</code> to <code>5</code> is passed to <code><a href="https://rdrr.io/pkg/RcppEigen/man/fastLm.html" class="external-link">RcppEigen::fastLmPure()</a></code>: <code>0</code> or "qr" for the column-pivoted QR decomposition, <code>1</code> or "unpivoted.qr" for the unpivoted QR decomposition, <code>2</code> or "llt" for the LLT Cholesky, <code>3</code> or "ldlt" for the LDLT Cholesky, <code>4</code> or "svd" for the Jacobi singular value decomposition (SVD) and <code>5</code> of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If <code>-1</code> or "lm", <code><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">.lm.fit()</a></code> is used.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>

@@ -213,7 +213,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = mtrain, model = model)</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: lm</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -245,7 +245,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = train[, -11], model = model,</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = train[, -11], model = model,</span></span>
 <span><span class="co">#&gt;  pred.args = list(s = model$lambda[9]))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: elnet, glmnet</span></span>
@@ -345,7 +345,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = mtrain, model = model)</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: nnet.formula, nnet</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -384,7 +384,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = mtrain, model = model)</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: svm.formula, svm</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -427,7 +427,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = as.matrix(mtrain), model = model)</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = as.matrix(mtrain), model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: xgboost, xgb.Booster</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -459,7 +459,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = mtrain, model = model)</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = mtrain, model = model)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: ranger</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -503,7 +503,7 @@ model prediction or the two predictions, respectively.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = ~.^2, data = mtrain, model = model, type = 0,</span></span>
+<span><span class="co">#&gt; interpret(formula = y ~ .^2, data = mtrain, model = model, type = 0,</span></span>
 <span><span class="co">#&gt;  frames = frames)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: rpart</span></span>

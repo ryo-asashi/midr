@@ -106,7 +106,7 @@ mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: lm
 #> 
@@ -142,7 +142,7 @@ mid <- interpret(y ~ .^2, train[, -11], model,
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = train[, -11], model = model,
+#> interpret(formula = y ~ .^2, data = train[, -11], model = model,
 #>  pred.args = list(s = model$lambda[9]))
 #> 
 #> Model Class: elnet, glmnet
@@ -252,7 +252,7 @@ mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: nnet.formula, nnet
 #> 
@@ -293,7 +293,7 @@ mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: svm.formula, svm
 #> 
@@ -338,7 +338,7 @@ mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = as.matrix(mtrain), model = model)
+#> interpret(formula = y ~ .^2, data = as.matrix(mtrain), model = model)
 #> 
 #> Model Class: xgboost, xgb.Booster
 #> 
@@ -374,7 +374,7 @@ mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: ranger
 #> 
@@ -422,7 +422,7 @@ mid <- interpret(y ~ .^2, mtrain, model, type = 0, frames = frames)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = ~.^2, data = mtrain, model = model, type = 0,
+#> interpret(formula = y ~ .^2, data = mtrain, model = model, type = 0,
 #>  frames = frames)
 #> 
 #> Model Class: rpart

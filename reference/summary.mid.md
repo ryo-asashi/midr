@@ -10,7 +10,7 @@ comprehensive summary of a fitted MID model.
 # S3 method for class 'mid'
 summary(
   object,
-  diagnosis = FALSE,
+  diagnose = FALSE,
   digits = max(3L, getOption("digits") - 2L),
   ...
 )
@@ -22,7 +22,7 @@ summary(
 
   a "mid" object to be summarized.
 
-- diagnosis:
+- diagnose:
 
   logical. If `TRUE`, the diagnosis plot is displayed. Defaults to
   `FALSE`.
@@ -81,7 +81,8 @@ summary(mid)
 #> interpret(formula = dist ~ speed, data = cars)
 #> 
 #> Uninterpreted Variation Ratio:
-#> [1] 0.22636
+#>       y 
+#> 0.22636 
 #> 
 #> Residuals:
 #>       Min        1Q    Median        3Q       Max 

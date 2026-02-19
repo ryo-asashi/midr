@@ -4,7 +4,7 @@
 capable of handling parametric transformations such as Box-Cox,
 Yeo-Johnson, and shifted logarithms. This function serves as a wrapper
 and extension to
-[`stats::make.link()`](https://rdrr.io/r/stats/make.link.html).
+[`make.link()`](https://rdrr.io/r/stats/make.link.html).
 
 ## Usage
 
@@ -19,7 +19,7 @@ get.link(link, ..., simplify = TRUE)
   a character string naming the link function: "log1p", "shifted.log",
   "shifted.identity", "box-cox", "box-cox2", or "yeo-johnson". Standard
   links (e.g., "logit", "probit", "log") are passed to
-  [`stats::make.link`](https://rdrr.io/r/stats/make.link.html).
+  [`stats::make.link()`](https://rdrr.io/r/stats/make.link.html).
 
 - ...:
 
@@ -29,11 +29,9 @@ get.link(link, ..., simplify = TRUE)
 - simplify:
 
   logical. If `TRUE` (default), the function returns a standard link
-  object (via
-  [`stats::make.link`](https://rdrr.io/r/stats/make.link.html)) or
-  recursively calls `get.link` when parameters equate to a simpler and
-  more computationally efficient form (e.g., `box-cox` with `lambda=0`
-  becomes `log`).
+  object or recursively calls `get.link` when parameters equate to a
+  simpler and more computationally efficient form (e.g., `box-cox` with
+  `lambda=0` becomes `log`).
 
 ## Value
 
@@ -73,8 +71,8 @@ The available links and their parameters are:
   shift parameter `h` (default 1).
 
 - "robit": robit link using the Student's t-distribution CDF. \\\eta =
-  F\_{t}^{-1}(\mu, \nu)\\ with a degrees of freedom parameter `df`
-  (default 7).
+  F\_{t}^{-1}(\mu, \nu)\\ with a degrees of freedom parameter `df` (or
+  alias `nu`, default 7).
 
 - "asinh": inverse hyperbolic sine transformation \\\eta =
   \text{asinh}(\lambda \mu)\\ with a scale parameter `lambda` (default
@@ -113,70 +111,16 @@ plot(x <- seq(-100, 100, length.out = 50), lk$linkfun(x), type = "l")
 
 # Robit link with df=2 (Heavier tails than probit)
 lk <- get.link("robit", df = 2)
+print(lk)
+#> Link function: robit(df = 2)
 plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 lk <- get.link("robit", df = 1)
-print(lk) # cauchit
-#> $linkfun
-#> function (mu) 
-#> qcauchy(mu)
-#> <environment: namespace:stats>
-#> 
-#> $linkinv
-#> function (eta) 
-#> {
-#>     thresh <- -qcauchy(.Machine$double.eps)
-#>     eta <- pmin(pmax(eta, -thresh), thresh)
-#>     pcauchy(eta)
-#> }
-#> <environment: namespace:stats>
-#> 
-#> $mu.eta
-#> function (eta) 
-#> pmax(dcauchy(eta), .Machine$double.eps)
-#> <environment: namespace:stats>
-#> 
-#> $valideta
-#> function (eta) 
-#> TRUE
-#> <environment: namespace:stats>
-#> 
-#> $name
-#> [1] "cauchit"
-#> 
-#> attr(,"class")
-#> [1] "link-glm"
+cat(lk$name) # cauchit
+#> cauchit
 points(x, lk$linkinv(x), type = "l", lty = 2L)
 lk <- get.link("robit", df = Inf)
-print(lk) # probit
-#> $linkfun
-#> function (mu) 
-#> qnorm(mu)
-#> <environment: namespace:stats>
-#> 
-#> $linkinv
-#> function (eta) 
-#> {
-#>     thresh <- -qnorm(.Machine$double.eps)
-#>     eta <- pmin(pmax(eta, -thresh), thresh)
-#>     pnorm(eta)
-#> }
-#> <environment: namespace:stats>
-#> 
-#> $mu.eta
-#> function (eta) 
-#> pmax(dnorm(eta), .Machine$double.eps)
-#> <environment: namespace:stats>
-#> 
-#> $valideta
-#> function (eta) 
-#> TRUE
-#> <environment: namespace:stats>
-#> 
-#> $name
-#> [1] "probit"
-#> 
-#> attr(,"class")
-#> [1] "link-glm"
+cat(lk$name) # probit
+#> probit
 points(x, lk$linkinv(x), type = "l", lty = 3L)
 
 
@@ -188,7 +132,7 @@ plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 # Inverse Hyperbolic Sine (Alternative to log for zero-inflated data)
 lk <- get.link("asinh", lambda = 10)
 plot(x <- seq(0, 5, length.out = 50), lk$linkfun(x), type = "l")
-lk <- get.link("log")
+lk <- get.link("log1p")
 points(x, lk$linkfun(x), type = "l", lty = 2L)
 
 

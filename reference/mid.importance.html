@@ -76,7 +76,8 @@ This is a measure of feature importance that quantifies the average contribution
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  measure <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  max.nsamples <span class="op">=</span> <span class="fl">10000L</span></span>
+<span>  max.nsamples <span class="op">=</span> <span class="fl">10000L</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,10 @@ This is a measure of feature importance that quantifies the average contribution
 
 <dt id="arg-max-nsamples">max.nsamples<a class="anchor" aria-label="anchor" href="#arg-max-nsamples"></a></dt>
 <dd><p>an integer specifying the maximum number of samples to retain in the <code>predictions</code> component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.</p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>an integer seed for random sampling. Default is <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

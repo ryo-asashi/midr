@@ -95,12 +95,12 @@ interpret(
 
 - link:
 
-  a character string specifying the link function: one of "logit",
-  "probit", "cauchit", "cloglog", "identity", "log", "sqrt", "1/mu^2",
-  "inverse", "translogit", "transprobit", "identity-logistic" and
-  "identity-gaussian", or an object containing two functions `linkfun()`
-  and `linkinv()`. See
-  [`help(make.link)`](https://rdrr.io/r/stats/make.link.html).
+  a character string specifying the link function. This can be one of
+  the links from [`make.link()`](https://rdrr.io/r/stats/make.link.html)
+  (e.g., "log", "logit", "probit", "cauchit"), one of the links from
+  [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
+  (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object
+  containing at least the `linkfun()` and `linkinv()` functions.
 
 - k:
 
@@ -153,8 +153,8 @@ interpret(
   the LLT Cholesky, `3` or "ldlt" for the LDLT Cholesky, `4` or "svd"
   for the Jacobi singular value decomposition (SVD) and `5` of "eigen"
   for a method based on the eigenvalue-eigenvector decomposition. If
-  `-1` or "lm", [`stats::.lm.fit()`](https://rdrr.io/r/stats/lmfit.html)
-  is used.
+  `-1` or "lm", [`.lm.fit()`](https://rdrr.io/r/stats/lmfit.html) is
+  used.
 
 - lambda:
 
