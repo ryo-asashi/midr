@@ -6,7 +6,7 @@
 \usage{
 \method{summary}{mid}(
   object,
-  diagnosis = FALSE,
+  diagnose = FALSE,
   digits = max(3L, getOption("digits") - 2L),
   ...
 )
@@ -14,7 +14,7 @@
 \arguments{
 \item{object}{a "mid" object to be summarized.}
 
-\item{diagnosis}{logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.}
+\item{diagnose}{logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.}
 
 \item{digits}{the number of significant digits for printing numeric values.}
 

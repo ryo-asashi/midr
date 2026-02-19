@@ -131,13 +131,13 @@ summary.midlist.importance <- function(
     rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun <- function(nm) {
+    fun.long <- function(nm) {
       res <- object[[nm]]$importance
       res <- res[res$term %in% terms, ]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun)
+    out <- lapply(X = nms, FUN = fun.long)
     out <- do.call(rbind, out)
   }
   out
@@ -165,13 +165,13 @@ summary.midlist.breakdown <- function(
     rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun <- function(nm) {
+    fun.long <- function(nm) {
       res <- object[[nm]]$breakdown
       res <- res[res$term %in% terms, ]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun)
+    out <- lapply(X = nms, FUN = fun.long)
     out <- do.call(rbind, out)
   }
   out
@@ -202,13 +202,13 @@ summary.midlist.conditional <- function(
     rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun <- function(nm) {
+    fun.long <- function(nm) {
       res <- object[[nm]]$conditional
       res <- res[res$.id %in% ids, c(".id", variable, "yhat"), drop = FALSE]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun)
+    out <- lapply(X = nms, FUN = fun.long)
     out <- do.call(rbind, out)
     rownames(out) <- NULL
   }

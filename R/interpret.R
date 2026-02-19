@@ -101,7 +101,7 @@ UseMethod("interpret")
 #' @param y an optional vector or matrix of the model predictions or the response variables.
 #' @param weights a numeric vector of sample weights for each observation in \code{x}.
 #' @param pred.fun a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.
-#' @param link a character string specifying the link function. This can be one of the links from \code{\link[stats]{make.link()}} (e.g., "log", "logit", "probit", "cauchit"), one of the links from \code{\link{get.link()}} (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object containing at least the \code{linkfun()} and \code{linkinv()} functions.
+#' @param link a character string specifying the link function. This can be one of the links from \code{\link[stats]{make.link}()} (e.g., "log", "logit", "probit", "cauchit"), one of the links from \code{\link{get.link}()} (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object containing at least the \code{linkfun()} and \code{linkinv()} functions.
 #' @param k an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.
 #' @param type a character string, an integer, or a vector of length two specifying the encoding type. Can be integer (\code{1} for linear, \code{0} for step) or character (\code{"linear"}, \code{"constant"}). If a vector is passed, \code{type[1L]} is used for main effects and \code{type[2L]} is used for interactions.
 #' @param frames a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.
@@ -109,7 +109,7 @@ UseMethod("interpret")
 #' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
-#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{\link[stats]{.lm.fit()}} is used.
+#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{\link[stats]{.lm.fit}()} is used.
 #' @param lambda the penalty factor for pseudo smoothing. The default is \code{0}.
 #' @param kappa the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
@@ -193,7 +193,7 @@ interpret.default <- function(
   if (nrow(y) != nrow(x))
     stop("length of 'y' doesn't match the number of rows in 'x'")
   if (is.null(colnames(y)))
-    colnames(y) <- rep.int("y", length.out = ncol(y))
+    colnames(y) <- rep.int("y", times = ncol(y))
   if (any(ng <- (colnames(y) == "" | is.na(colnames(y)))))
     colnames(y)[ng] <- "y"
   colnames(y) <- make.unique(colnames(y))
@@ -228,10 +228,12 @@ interpret.default <- function(
     stop("length of 'weights' doesn't match the number of rows in 'x'")
   if (any(weights < 0))
     stop("negative weights not allowed")
+  if ((sumw <- sum(weights)) <= 0)
+    stop("sum of 'weights' must be strictly positive")
   if (is.matrix(x)) x <- as.data.frame(x)
   n <- nrow(x)
   if (n == 0L) stop("no observations found")
-  weights <- weights / sum(weights) * n
+  weights <- weights / sumw * n
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
   if (is.null(terms)) {
@@ -750,7 +752,7 @@ interpret.formula <- function(
   ystr <- if (use.yhat) "predictions" else "response variable"
   if (use.yhat) {
     if (!is.object(model) && is.list(model))
-      class(model) <- c("bundle", class(model))
+      class(model) <- c("fit.list", class(model))
     y <- do.call(pred.fun, c(list(model, data), pred.args))
     if (is.matrix(y) || is.data.frame(y)) {
       verbose(paste0(nrow(y), " x ", ncol(y), " predictions obtained from 'model': ",
@@ -762,20 +764,27 @@ interpret.formula <- function(
   }
   if (is.matrix(data))
     data <- as.data.frame(data)
-  args <- list(formula = formula, data = data, subset = numeric())
-  ftry <- try(do.call(stats::model.frame.default, args), silent = TRUE)
-  if (inherits(ftry, "try-error")) {
-    formula[[2L]] <- NULL
-    args$formula <- formula
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(
+    c("formula", "data", "subset", "weights", "na.action", "drop.unused.levels"),
+    names(mf), nomatch = 0L
+  )
+  mf <- mf[c(1L, m)]
+  if (use.yhat) mf$.yhat <- y
+  if (is.null(mf$weights) && !is.null(attr(data, "weights"))) {
+    mf$weights <- attr(data, "weights")
   }
-  args$subset <- eval(substitute(subset), data, parent.frame())
-  args$na.action <- na.action
-  args$drop.unused.levels <- drop.unused.levels
-  if (use.yhat) args$.yhat <- y
-  args$weights <- eval(substitute(weights), data, parent.frame())
-  if (is.null(args$weights)) args$weights <- attr(data, "weights")
-  data <- do.call(stats::model.frame.default, args)
-  naa <- na.action(data)
+  mf[[1L]] <- quote(stats::model.frame)
+  data <- try(eval(mf, envir = parent.frame()), silent = TRUE)
+  if (inherits(data, "try-error")) {
+    f <- stats::as.formula(mf$formula)
+    if (length(f) == 3L) {
+      f[[2L]] <- NULL
+      mf$formula <- f
+    }
+    data <- eval(mf, envir = parent.frame())
+  }
+  naa <- stats::na.action(data)
   n <- nrow(data) + length(naa)
   naai <- list(n.init = n, ids = seq_len(n))
   if (!is.null(naa)) {

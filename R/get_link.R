@@ -1,7 +1,7 @@
 #' Extended Parametric Link Functions
 #'
 #' \code{get.link()} creates a link function object (inheriting from "link-glm") capable of handling parametric transformations such as Box-Cox, Yeo-Johnson, and shifted logarithms.
-#' This function serves as a wrapper and extension to \code{\link[stats]{make.link()}}.
+#' This function serves as a wrapper and extension to \code{\link[stats]{make.link}()}.
 #'
 #' @details
 #' The available links and their parameters are:

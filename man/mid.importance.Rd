@@ -10,7 +10,8 @@ mid.importance(
   weights = NULL,
   sort = TRUE,
   measure = 1L,
-  max.nsamples = 10000L
+  max.nsamples = 10000L,
+  seed = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ mid.importance(
 \item{measure}{an integer specifying the measure of importance. Possible alternatives are \code{1} for the mean absolute effect, \code{2} for the root mean square effect, and \code{3} for the median absolute effect.}
 
 \item{max.nsamples}{an integer specifying the maximum number of samples to retain in the \code{predictions} component of the returned object. If the number of observations exceeds this value, a weighted random sample is taken.}
+
+\item{seed}{an integer seed for random sampling. Default is \code{NULL}.}
 }
 \value{
 \code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:

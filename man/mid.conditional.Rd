@@ -10,6 +10,7 @@ mid.conditional(
   data = NULL,
   resolution = 100L,
   max.nsamples = 1000L,
+  seed = NULL,
   type = c("response", "link"),
   keep.effects = TRUE
 )
@@ -25,6 +26,8 @@ mid.conditional(
 
 \item{max.nsamples}{an integer specifying the maximum number of samples. If the number of observations exceeds this limit, the \code{data} is randomly sampled.}
 
+\item{seed}{an integer seed for random sampling. Default is \code{NULL}.}
+
 \item{type}{the type of prediction to return. "response" (default) for the original scale or "link" for the scale of the linear predictor.}
 
 \item{keep.effects}{logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.}
@@ -33,6 +36,7 @@ mid.conditional(
 \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
 \item{observed}{a data frame of the original observations used, along with their predictions.}
 \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
+\item{variable}{name of the target variable.}
 \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 
 For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
