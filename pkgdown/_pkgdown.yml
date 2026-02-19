@@ -51,8 +51,8 @@ articles:
   - articles/classification
 - title: How to visualize MID models
   contents:
-  - articles/graphics
-  - articles/ggplot2
+  # - articles/graphics
+  # - articles/ggplot2
   - articles/colortheme
 
 reference:
