@@ -192,11 +192,16 @@ interpret.default <- function(
   ntargets <- ncol(y)
   if (nrow(y) != nrow(x))
     stop("length of 'y' doesn't match the number of rows in 'x'")
-  if (is.null(colnames(y)))
-    colnames(y) <- rep.int("y", times = ncol(y))
-  if (any(ng <- (colnames(y) == "" | is.na(colnames(y)))))
-    colnames(y)[ng] <- "y"
-  colnames(y) <- make.unique(colnames(y))
+  if (ntargets > 1L) {
+    if (is.null(colnames(y)))
+      colnames(y) <- rep.int("Y", times = ncol(y))
+    if (any(ng <- (colnames(y) == "" | is.na(colnames(y)))))
+      colnames(y)[ng] <- "Y"
+    colnames(y) <- stats::ave(
+      colnames(y), colnames(y),
+      FUN = function(v) if (length(v) > 1L) paste0(v, seq_along(v)) else v
+    )
+  }
   rownames(y) <- NULL
   if (!is.null(link)){
     if (is.character(link)) link <- get.link(link)
@@ -561,7 +566,7 @@ interpret.default <- function(
   }
   # solve the least squares problem --------
   verbose(sprintf(
-    "least squares estimation initiated with mode: %s, method: '%s(%s)'",
+    "least squares estimation initiated with mode: %s, method: %s(%s)",
     mode, .methods[method + 2L], method
   ), verbosity, 2L, FALSE)
   if (mode == 1L) {
@@ -752,7 +757,7 @@ interpret.formula <- function(
   ystr <- if (use.yhat) "predictions" else "response variable"
   if (use.yhat) {
     if (!is.object(model) && is.list(model))
-      class(model) <- c("fit.list", class(model))
+      class(model) <- c("fitlist", class(model))
     y <- do.call(pred.fun, c(list(model, data), pred.args))
     if (is.matrix(y) || is.data.frame(y)) {
       verbose(paste0(nrow(y), " x ", ncol(y), " predictions obtained from 'model': ",

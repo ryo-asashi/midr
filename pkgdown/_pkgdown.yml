@@ -91,7 +91,6 @@ reference:
   - plot.mid.conditional
   - ggmid.mid.conditional
 - title: Other functions
-- subtitle: Prediction Function
   contents:
   - get.yhat
   - get.link
