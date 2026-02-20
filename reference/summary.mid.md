@@ -81,8 +81,7 @@ summary(mid)
 #> interpret(formula = dist ~ speed, data = cars)
 #> 
 #> Uninterpreted Variation Ratio:
-#>       y 
-#> 0.22636 
+#> [1] 0.22636
 #> 
 #> Residuals:
 #>       Min        1Q    Median        3Q       Max 

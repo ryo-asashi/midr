@@ -121,8 +121,7 @@ img {
 <span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"r2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
 <span class="r-in"><span><span class="va">mid</span><span class="op">$</span><span class="va">ratio</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2263636 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2263636</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Verify uninterpreted variation ratio of a fitted MID model with weights</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span></span>
@@ -131,8 +130,7 @@ img {
 <span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu">weighted.loss</span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">dist</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">cars</span><span class="op">)</span>, w <span class="op">=</span> <span class="va">w</span>, method <span class="op">=</span> <span class="st">"r2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2864814</span>
 <span class="r-in"><span><span class="va">mid</span><span class="op">$</span><span class="va">ratio</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2864814 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2864814</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
