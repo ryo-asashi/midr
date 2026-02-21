@@ -21,17 +21,15 @@ term.split <- function(x) {
 
 term.check <- function(x, terms, stop = TRUE) {
   if (is.na(x)) {
-    if (stop)
-      stop("term can't be NA")
-    return(NA)
+    if (stop) stop("term can't be NA")
+    return(NA_character_)
   }
   if (!any(x == terms)) {
     rx <- paste0(rev(term.split(x)), collapse = ":")
     if (!any(rx == terms)) {
-      if (stop)
-        stop("term '", x, "' does not exist")
+      if (stop) stop("term '", x, "' does not exist")
       message("term '", x, "' does not exist")
-      return(NA)
+      return(NA_character_)
     }
     return(rx)
   }
@@ -46,39 +44,39 @@ make.formula <- function(xlabels, ylabel = NULL, env = parent.frame()) {
 }
 
 model.reframe <- function(object, data) {
-  if (!is.null(object$call$formula)) {
-    fm <- stats::formula(object)
-    if (!is.data.frame(data) && !is.environment(data))
-      data <- as.data.frame(data)
-    res <- try(stats::model.frame.default(fm, data, na.action = "na.pass"),
-               silent = TRUE)
-    if (inherits(res, "try-error")) {
-      fm[[2L]] <- NULL
-      res <- stats::model.frame.default(fm, data, na.action = "na.pass")
-    }
-    return(res)
+  if (is.null(object$call$formula)) {
+    return(as.data.frame(data))
   }
-  as.data.frame(data)
+  fm <- stats::formula(object)
+  if (!is.data.frame(data) && !is.environment(data)) {
+    data <- as.data.frame(data)
+  }
+  tryCatch(
+    stats::model.frame.default(fm, data, na.action = "na.pass"),
+    error = function(e) {
+      fm[[2L]] <- NULL
+      stats::model.frame.default(fm, data, na.action = "na.pass")
+    }
+  )
 }
 
 model.data <- function(object, env = parent.frame()) {
   fcl <- object$call
-  if (!is.null(fcl$data))
+  if (!is.null(fcl$data)) {
     return(eval(fcl$data, envir = env))
+  }
   if (!is.null(fml <- fcl$formula)) {
     env <- environment(fml) %||% env
-    return(env)
+    return(stats::get_all_vars(fml, data = env))
   }
   if (!is.null(fcl$x)) {
     x <- eval(fcl$x, envir = env)
-    if (!is.null(dim(x)[2L]) && is.null(colnames(x)))
-      colnames(x) <- paste0("x", seq_len(dim(x)[2L]))
-    if (!is.data.frame(x))
-      x <- as.data.frame(x)
+    if (!is.null(ncol(x)) && is.null(colnames(x))) {
+      colnames(x) <- paste0("x", seq_len(ncol(x)))
+    }
+    x <- as.data.frame(x)
     if (!is.null(fcl$y)) {
-      y <- eval(fcl$y, envir = env)
-      x <- cbind.data.frame(x, y)
-      colnames(x)[[ncol(x)]] <- "y"
+      x$y <- eval(fcl$y, envir = env)
     }
     return(x)
   }
@@ -203,8 +201,8 @@ examples <- function(x, n = 3L, ...) {
 }
 
 mid.frames <- function(object, ...) {
-  mfl <- lapply(object$encoders[["main.effects"]], function(enc) enc$frame)
-  ifl <- lapply(object$encoders[["interactions"]], function(enc) enc$frame)
+  mfl <- lapply(object$encoders$main.effects, function(x) x$frame)
+  ifl <- lapply(object$encoders$interactions, function(x) x$frame)
   tags <- unique(c(names(mfl), names(ifl)))
   res <- list()
   for (tag in tags) {
@@ -218,7 +216,6 @@ mid.frames <- function(object, ...) {
   res
 }
 
-
 #' @exportS3Method stats::formula
 #'
 formula.mid <- function(x, ...) {
@@ -231,7 +228,6 @@ formula.mid <- function(x, ...) {
     stats::formula(stats::terms(x))
   }
 }
-
 
 #' @exportS3Method stats::model.frame
 #'

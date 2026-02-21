@@ -115,31 +115,26 @@ summary.midlist.importance <- function(
     object, shape = c("wide", "long"), terms = attr(object, "term.labels"), ...
   ) {
   shape <- match.arg(shape)
+  terms <- terms %||% mid.terms(object[[1L]])
   if (shape == "wide") {
-    info <- data.frame(term = terms)
     fun <- function(x) {
-      res <- x$importance
-      idx <- match(terms, res$term)
-      res <- res$importance[idx]
-      res[is.na(res)] <- 0
-      res
+      res <- x$importance$importance[match(terms, x$importance$term)]
+      replace(res, is.na(res), 0)
     }
-    out <- vapply(
-      X = object, FUN = fun, FUN.VALUE = numeric(length(terms))
+    out <- data.frame(
+      term = terms, as.data.frame(lapply(object, fun)), check.names = FALSE
     )
-    out <- cbind(info, out)
-    rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun.long <- function(nm) {
-      res <- object[[nm]]$importance
-      res <- res[res$term %in% terms, ]
+    fun.long <- function(x, nm) {
+      res <- x$importance[x$importance$term %in% terms, ]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun.long)
+    out <- Map(fun.long, object, nms)
     out <- do.call(rbind, out)
   }
+  rownames(out) <- NULL
   out
 }
 
@@ -149,31 +144,26 @@ summary.midlist.breakdown <- function(
     object, shape = c("wide", "long"), terms = attr(object, "term.labels"), ...
 ) {
   shape <- match.arg(shape)
+  terms <- terms %||% mid.terms(object[[1L]])
   if (shape == "wide") {
-    info <- data.frame(term = terms)
     fun <- function(x) {
-      res <- x$breakdown
-      idx <- match(terms, res$term)
-      res <- res$mid[idx]
-      res[is.na(res)] <- 0
-      res
+      res <- x$breakdown$mid[match(terms, x$breakdown$term)]
+      replace(res, is.na(res), 0)
     }
-    out <- vapply(
-      X = object, FUN = fun, FUN.VALUE = numeric(length(terms))
+    out <- data.frame(
+      term = terms, as.data.frame(lapply(object, fun)), check.names = FALSE
     )
-    out <- cbind(info, out)
-    rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun.long <- function(nm) {
-      res <- object[[nm]]$breakdown
-      res <- res[res$term %in% terms, ]
+    fun.long <- function(x, nm) {
+      res <- x$breakdown[x$breakdown$term %in% terms, ]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun.long)
+    out <- Map(fun.long, object, nms)
     out <- do.call(rbind, out)
   }
+  rownames(out) <- NULL
   out
 }
 
@@ -185,32 +175,29 @@ summary.midlist.conditional <- function(
   shape <- match.arg(shape)
   ids <- ids %||% object[[1L]]$ids
   variable <- attr(object, "variable") %||% object[[1L]]$variable
-  values <- attr(object, "values") %||% object[[1L]]$values
   if (shape == "wide") {
+    values <- attr(object, "values") %||% object[[1L]]$values
     info <- object[[1L]]$conditional
     info <- info[info$.id %in% ids, c(".id", variable), drop = FALSE]
     fun <- function(x) {
-      res <- x$conditional
-      res <- res$yhat[res$.id %in% ids]
-      res[is.na(res)] <- 0
-      res
+      res <- x$conditional$yhat[x$conditional$.id %in% ids]
+      replace(res, is.na(res), 0)
     }
-    out <- vapply(
-      X = object, FUN = fun, FUN.VALUE = numeric(length(ids) * length(values))
+    out <- data.frame(
+      info, as.data.frame(lapply(X = object, FUN = fun)), check.names = FALSE
     )
-    out <- cbind(info, out)
-    rownames(out) <- NULL
   } else {
     nms <- names(object) %||% as.character(seq_along(object))
-    fun.long <- function(nm) {
-      res <- object[[nm]]$conditional
-      res <- res[res$.id %in% ids, c(".id", variable, "yhat"), drop = FALSE]
+    fun.long <- function(x, nm) {
+      res <- x$conditional[
+        x$conditional$.id %in% ids, c(".id", variable, "yhat"), drop = FALSE
+      ]
       res$label <- nm
       res
     }
-    out <- lapply(X = nms, FUN = fun.long)
+    out <- Map(fun.long, object, nms)
     out <- do.call(rbind, out)
-    rownames(out) <- NULL
   }
+  rownames(out) <- NULL
   out
 }
