@@ -4,25 +4,28 @@
     x, i, drop = if (missing(i)) TRUE else length(i) == 1L
   ) {
   nm <- names(x$intercept)
-  if (is.null(nm)) {
-    x <- unclass(x)
-    x <- if (length(i) == 1L && drop) x[[i]] else
-      structure(x[i], class = "midlist")
-    return(x)
-  }
   if (missing(i)) {
     i <- seq_along(nm)
-  } else if (is.character(i)) {
+  } else if (is.character(i) && !anyNA(i)) {
     i <- match(i, nm)
-  } else if (is.logical(i)) {
+  } else if (is.logical(i) && !anyNA(i)) {
     i <- which(rep(i, length.out = length(nm)))
-  } else if (is.numeric(i)) {
+  } else if (is.numeric(i) && !anyNA(i)) {
     i <- as.integer(i)
+    if (any(i < 0L)) {
+      if (any(i > 0L))
+        stop("only 0's may be mixed with negative subscripts")
+      i <- seq_along(nm)[i]
+    }
   }
   if (anyNA(i))
     stop("undefined item selected")
-  if (is.numeric(i) && any(i > length(nm) | i < 1L))
+  if (is.numeric(i) && any(i > length(nm) | i < 0L))
     stop("subscript out of bounds")
+  if (is.numeric(i)) {
+    i <- i[i != 0L]
+  }
+  if (length(i) == 0L) return(NULL)
   x$intercept <- x$intercept[i]
   me <- x$main.effects
   if (!is.null(me)) x$main.effects <- lapply(me, extract.effects, i, drop)
