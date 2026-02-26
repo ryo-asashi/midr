@@ -1,10 +1,10 @@
 #' Plot MID Importance
 #'
 #' @description
-#' For "mid.importance" objects, \code{plot()} visualizes the importance of component functions of the fitted MID model.
+#' For "midimp" objects, \code{plot()} visualizes the importance of component functions of the fitted MID model.
 #'
 #' @details
-#' This is an S3 method for the \code{plot()} generic that produces an importance plot from a "mid.importance" object, visualizing the average contribution of component functions to the fitted MID model.
+#' This is an S3 method for the \code{plot()} generic that produces an importance plot from a "midimp" object, visualizing the average contribution of component functions to the fitted MID model.
 #'
 #' The \code{type} argument controls the visualization style.
 #' The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
@@ -12,7 +12,7 @@
 #' The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
 #' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the variability of each term's effect.
 #'
-#' @param x a "mid.importance" object to be visualized.
+#' @param x a "midimp" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
@@ -38,13 +38,13 @@
 #' # Create a boxplot to see the distribution of effects
 #' plot(imp, type = "boxplot")
 #' @returns
-#' \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
+#' \code{plot.midimp()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.mid.importance}}
+#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.midimp}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.mid.importance <- function(
+plot.midimp <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
     theme = NULL, terms = NULL, max.nterms = 30L, ...) {
   dots <- list(...)
@@ -55,9 +55,9 @@ plot.mid.importance <- function(
   use.theme <- inherits(theme, "color.theme")
   imp <- x$importance
   if (!is.null(terms))
-    imp <- imp[match(terms, imp$term, nomatch = 0L), ]
+    imp <- imp[match(terms, imp$term, nomatch = 0L), , drop = FALSE]
   if (type != "heatmap")
-    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
+    imp <- utils::head(imp, max.nterms)
   imp$term <- factor(imp$term, levels = rev(imp$term))
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
@@ -93,7 +93,8 @@ plot.mid.importance <- function(
           if (!term %in% terms)
             term <- paste0(tags[j], ":", tags[i])
         }
-        mat[i, j] <- imp[term, "importance"]
+        if (term %in% rownames(imp))
+          mat[i, j] <- imp[term, "importance"]
       }
     }
     if (!use.theme)

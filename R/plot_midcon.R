@@ -1,20 +1,20 @@
 #' Plot MID Conditional Expectations
 #'
 #' @description
-#' For "mid.conditional" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
+#' For "midcon" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
 #'
 #' @details
-#' This is an S3 method for the \code{plot()} generic that produces ICE curves from a "mid.conditional" object.
+#' This is an S3 method for the \code{plot()} generic that produces ICE curves from a "midcon" object.
 #' ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
 #' This function plots one line for each observation in the data.
 #'
 #' The \code{type} argument controls the visualization style:
-#' The default, \code{type = "iceplot"}, plots the row ICE curves.
-#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted so start at zero, which makes it easier to compare the slopes of the curves.
+#' The default, \code{type = "iceplot"}, plots the raw ICE curves.
+#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero, making it easier to compare the slopes of the curves.
 #'
 #' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
-#' @param x a "mid.conditional" object to be visualized.
+#' @param x a "midcon" object to be visualized.
 #' @param type the plotting style. One of "iceplot" or "centered".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
@@ -40,13 +40,13 @@
 #' plot(ice, type = "centered", theme = "Purple-Yellow",
 #'      var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
-#' \code{plot.mid.conditional()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
+#' \code{plot.midcon()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
 #'
-#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.mid.conditional}}
+#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.midcon}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.mid.conditional <- function(
+plot.midcon <- function(
     x, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
     reference = 1L, dots = TRUE, sample = NULL, ...) {
@@ -141,7 +141,7 @@ plot.mid.conditional <- function(
     args$y <- mat[i + 1L,]
     for (p in c("col", "lty", "lwd"))
       args[[p]] <- aes[[p]][i + 1L]
-    do.call(graphics::points.default, args)
+    do.call(graphics::lines.default, args)
   }
   if (dots) {
     if (fv) {

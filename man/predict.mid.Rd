@@ -2,6 +2,7 @@
 % Please edit documentation in R/predict_mid.R
 \name{predict.mid}
 \alias{predict.mid}
+\alias{predict.mids}
 \title{Predict Method for fitted MID Models}
 \usage{
 \method{predict}{mid}(
@@ -12,9 +13,11 @@
   terms = mid.terms(object),
   ...
 )
+
+\method{predict}{mids}(object, ...)
 }
 \arguments{
-\item{object}{a "mid" object to be used to make predictions.}
+\item{object}{a fitted model object of class "mid", or a collection object ("mids") to be used for prediction.}
 
 \item{newdata}{a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.}
 
@@ -24,15 +27,15 @@
 
 \item{terms}{a character vector of term labels, specifying a subset of component functions to use for predictions.}
 
-\item{...}{arguments to be passed to other methods (not used in this method).}
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
-\code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+For a single "mid" object, \code{predict.mid()} returns a numeric vector if \code{type} is "response" or "link", or a numeric matrix if \code{type = "terms"}.
 
-\code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
+For a collection ("mids"), \code{predict.mids()} returns a numeric matrix where each column corresponds to a model if \code{type} is "response" or "link", or a list of numeric matrices if \code{type = "terms"}.
 }
 \description{
-\code{predict.mid()} is an S3 method for "mid" objects that obtains predictions from a fitted MID model.
+\code{predict()} methods for obtaining predictions from a fitted MID model ("mid") or a collection of MID models ("mids").
 It can be used to predict on new data or to retrieve the fitted values from the original data.
 }
 \details{

@@ -1,10 +1,10 @@
 #' Plot MID Conditional Expectations with ggplot2
 #'
 #' @description
-#' For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
+#' For "midcon" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
 #'
 #' @details
-#' This is an S3 method for the \code{ggmid()} generic that produces ICE curves from a "mid.conditional" object.
+#' This is an S3 method for the \code{ggmid()} generic that produces ICE curves from a "midcon" object.
 #' ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
 #' This function plots one line for each observation in the data.
 #'
@@ -14,7 +14,7 @@
 #'
 #' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
-#' @param object a "mid.conditional" object to be visualized.
+#' @param object a "midcon" object to be visualized.
 #' @param type the plotting style. One of "iceplot" or "centered".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
@@ -29,7 +29,6 @@
 #'
 #' @examples
 #' data(airquality, package = "datasets")
-#' library(midr)
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 0.1)
 #' ice <- mid.conditional(mid, "Temp", data = airquality)
 #'
@@ -40,13 +39,13 @@
 #' ggmid(ice, type = "centered", theme = "Purple-Yellow",
 #'       var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
-#' \code{ggmid.mid.conditional()} returns a "ggplot" object.
+#' \code{ggmid.midcon()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.mid.conditional}}
+#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.midcon}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.mid.conditional <- function(
+ggmid.midcon <- function(
     object, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
     reference = 1L, dots = TRUE, sample = NULL, ...) {
@@ -139,12 +138,12 @@ ggmid.mid.conditional <- function(
   pl
 }
 
-#' @rdname ggmid.mid.conditional
+#' @rdname ggmid.midcon
 #' @exportS3Method ggplot2::autoplot
 #'
-autoplot.mid.conditional <- function(object, ...) {
+autoplot.midcon <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(ggmid.mid.conditional)
+  mcall[[1L]] <- quote(ggmid.midcon)
   mcall[["object"]] <- object
   eval(mcall, parent.frame())
 }

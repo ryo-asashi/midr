@@ -27,16 +27,16 @@
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #'
 #' # Calculate the ICE values for a fitted MID model
-#' ice <- mid.conditional(mid, variable = "Wind", data = airquality)
-#' print(ice)
+#' con <- mid.conditional(mid, variable = "Wind", data = airquality)
+#' print(con)
 #' @returns
-#' \code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
+#' \code{mid.conditional()} returns an object of class "midcon". This is a list with the following components:
 #' \item{observed}{a data frame of the original observations used, along with their predictions.}
 #' \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 #' \item{variable}{name of the target variable.}
 #' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 #'
-#' For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
+#' For "midlist", \code{mid.conditional()} returns an object of class "midcon"-"midlist", a list of "midcon" objects.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}
 #'
@@ -45,7 +45,7 @@
 mid.conditional <- function(
     object, variable, data = NULL, resolution = 100L, max.nsamples = 1e3L,
     seed = NULL, type = c("response", "link"), keep.effects = TRUE) {
-  if (inherits(object, "midlist")) {
+  if (inherits(object, "mids")) {
     if (missing(max.nsamples))
       max.nsamples <- max(10L, 1e3L %/% length(object$intercept))
     if (missing(keep.effects)) keep.effects <- FALSE
@@ -55,10 +55,7 @@ mid.conditional <- function(
       resolution = resolution, max.nsamples = max.nsamples, seed = seed,
       type = type, keep.effects = keep.effects
     ))
-    attr(out, "ids") <- out[[1L]]$ids
-    attr(out, "variable") <- out[[1L]]$variable
-    attr(out, "values") <- out[[1L]]$values
-    class(out) <- "midlist.conditional"
+    class(out) <- c("midcons", "midlist")
     return(out)
   }
   if (!inherits(object, "mid"))
@@ -131,7 +128,7 @@ mid.conditional <- function(
   res$ids <- ids
   res$variable <- variable
   res$values <- values
-  class(res) <- c("mid.conditional")
+  class(res) <- c("midcon")
   attr(res, "term.labels") <- tvar
   attr(res, "n") <- n
   res
@@ -140,7 +137,7 @@ mid.conditional <- function(
 
 #' @exportS3Method base::print
 #'
-print.mid.conditional <- function(
+print.midcon <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
   ) {
   nobs <- attr(x, "n", exact = TRUE)
@@ -150,14 +147,14 @@ print.mid.conditional <- function(
   cat(paste0("\nVariable: ", variable, "\n"))
   cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
   cat("\nConditional Expectations:\n")
-  print.data.frame(utils::head(x$conditional[, c(".id", "yhat", variable)], n),
+  print.data.frame(utils::head(x$conditional[, c(".id", variable, "yhat")], n),
                    digits = digits, ...)
   invisible(x)
 }
 
 #' @exportS3Method base::print
 #'
-print.midlist.conditional <- function(
+print.midcons <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x[[1L]], "n", exact = TRUE)
@@ -167,7 +164,7 @@ print.midlist.conditional <- function(
   cat(paste0("\nVariable: ", variable, "\n"))
   cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
   cat("\nConditional Expectations:\n")
-  smry <- summary.midlist.conditional(x, shape = "long")
+  smry <- summary(x, shape = "long")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

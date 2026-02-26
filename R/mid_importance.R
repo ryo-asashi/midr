@@ -31,12 +31,12 @@
 #' imp <- mid.importance(mid, measure = 2)
 #' print(imp)
 #' @returns
-#' \code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:
+#' \code{mid.importance()} returns an object of class "midimp". This is a list containing the following components:
 #' \item{importance}{a data frame with the calculated importance values, sorted by default.}
 #' \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nsamples}, this matrix contains a sampled subset.}
 #' \item{measure}{a character string describing the type of the importance measure used.}
 #'
-#' For "midlist", \code{mid.importance()} returns an object of class "midlist.importance", a list of "mid.importance" objects.
+#' For "midlist", \code{mid.importance()} returns an object of class "midimps"-"midlist", a list of "midimp" objects.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
 #'
@@ -45,7 +45,7 @@
 mid.importance <- function(
     object, data = NULL, weights = NULL, sort = TRUE, measure = 1L,
     max.nsamples = 1e4L, seed = NULL) {
-  if (inherits(object, "midlist")) {
+  if (inherits(object, "mids")) {
     if (missing(max.nsamples))
       max.nsamples <- max(100L, 1e4L %/% length(labels(object)))
     if (missing(seed)) seed <- sample(1e6L, 1L)
@@ -53,8 +53,7 @@ mid.importance <- function(
       X = object, FUN = mid.importance, data = data, weights = weights,
       sort = sort, measure = measure, max.nsamples = max.nsamples
     ))
-    attr(out, "term.labels") <- attr(out[[1L]], "term.labels", exact = TRUE)
-    class(out) <- "midlist.importance"
+    class(out) <- c("midimps", "midlist")
     return(out)
   }
   if (!inherits(object, "mid"))
@@ -96,14 +95,14 @@ mid.importance <- function(
                         "Median Absolute Contribution")
   attr(out, "n") <- n
   attr(out, "term.labels") <- as.character(df$term)
-  class(out) <- c("mid.importance")
+  class(out) <- c("midimp")
   out
 }
 
 
 #' @exportS3Method base::print
 #'
-print.mid.importance <- function(
+print.midimp <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
   ) {
   n <- attr(x, "n", exact = TRUE)
@@ -118,7 +117,7 @@ print.mid.importance <- function(
 
 #' @exportS3Method base::print
 #'
-print.midlist.importance <- function(
+print.midimps <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x[[1L]], "n", exact = TRUE)
@@ -126,7 +125,7 @@ print.midlist.importance <- function(
              nobs, " Observation", if (nobs > 1L) "s", "\n"))
   cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
   cat("\nImportance:\n")
-  smry <- summary.midlist.importance(x, shape = "wide")
+  smry <- summary(x, shape = "wide")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

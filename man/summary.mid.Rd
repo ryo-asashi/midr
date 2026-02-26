@@ -12,21 +12,24 @@
 )
 }
 \arguments{
-\item{object}{a "mid" object to be summarized.}
+\item{object}{a "mid" or "mids" object to be summarized.}
 
 \item{diagnose}{logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.}
 
 \item{digits}{the number of significant digits for printing numeric values.}
 
 \item{...}{arguments to be passed to \code{graphics::panel.smooth()} for the diagnosis plot.}
+
+\item{max.nmodels}{an integer specifying the maximum number of models to summarize for a "mids" collection.}
 }
 \value{
 \code{summary.mid()} returns the original "mid" object invisibly.
 
-\code{summary.midlist()} returns the original "midlist" object invisibly.
+\code{summary.mids()} returns the original "mids" object invisibly.
 }
 \description{
-For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID model.
+\code{summary()} methods for a fitted MID model ("mid") or a collection of models ("mids").
+It prints a comprehensive summary of the model structure and fit quality.
 }
 \details{
 The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
@@ -37,7 +40,7 @@ The output includes:
   \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
   \item \strong{Residuals}: five-number summary of (working) residuals.
   \item \strong{Encoding}: summary of encoding schemes per variable.
-  \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnosis = TRUE}).
+  \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
 }
 }
 \examples{

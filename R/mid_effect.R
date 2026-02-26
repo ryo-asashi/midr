@@ -7,15 +7,16 @@
 #' @details
 #' \code{mid.effect()} is a low-level function designed to calculate the contribution of a single component function.
 #' Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{mid.effect()} is more flexible.
-#' It accepts vectors, as well as data frames, as input for \code{x} and \code{y}, making it particularly useful for visualizing a component's effect in combination with other functions, such as \code{graphics::curve()}.
+#' It accepts vectors, as well as matrices or data frames, as input for \code{x} and \code{y}. If \code{x} is a data frame, the necessary columns are automatically extracted.
+#' This makes it particularly useful for visualizing a component's effect in combination with standard plotting functions, such as \code{graphics::curve()}.
 #'
 #' For a main effect, the function evaluates the component function \eqn{f_j(x_j)} for a vector of values \eqn{x_j}.
 #' For an interaction, it evaluates \eqn{f_{jk}(x_j, x_k)} using vectors \eqn{x_j} and \eqn{x_k}.
 #'
-#' @param object a "mid" object.
+#' @param object a "mid" object or a collection of models ("mids").
 #' @param term a character string specifying the component function (term) to evaluate.
-#' @param x a vector of values for the first variable in the term. If a matrix or data frame is provided, values of the related variables are extracted from it.
-#' @param y a vector of values for the second variable in an interaction term.
+#' @param x a vector of values for the first variable in the term. If a matrix or data frame is provided, values of the related variables are automatically extracted from it.
+#' @param y a vector of values for the second variable in an interaction term. Ignored if \code{x} is a data frame containing both variables.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -29,17 +30,25 @@
 #' curve(mid.f(mid, "Wind:Temp", x, 60), 0, 25, add = TRUE, lty = 2)
 #' curve(mid.f(mid, "Wind:Temp", x, 70), 0, 25, add = TRUE, lty = 3)
 #' @returns
-#' \code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
+#' \code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x}.
 #'
-#' For "midlist", \code{mid.effect()} returns a matrix of the term contributions.
+#' For a collection of models ("mids"), \code{mid.effect()} returns a numeric matrix where each column corresponds to a model.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
 #'
 #' @export mid.effect
 #'
 mid.effect <- function(object, term, x, y = NULL) {
-  if (!inherits(object, "mid") && !inherits(object, "midrib"))
-    stop("'object' must be 'mid' or 'midrib'")
+  if (inherits(object, "mids") && inherits(object, "midlist")) {
+    res <- sapply(as.list(object), mid.effect, term = term, x = x, y = y)
+    if (!is.matrix(res)) {
+      res <- matrix(res, nrow = NROW(x), ncol = length(object))
+    }
+    colnames(res) <- labels(object)
+    return(res)
+  }
+  if (!inherits(object, "mid") && !inherits(object, "mids"))
+    stop("'object' must be a 'mid' object or a 'mids' collection")
   checked <- term.check(term, mid.terms(object), stop = FALSE)
   tags <- term.split(term)
   ie <- (length(tags) == 2L)
@@ -53,9 +62,11 @@ mid.effect <- function(object, term, x, y = NULL) {
   ny <- length(y)
   n <- if (ie) max(nx, ny) else nx
   if (is.na(checked)) {
-    if (inherits(object, "midlist")) {
+    if (inherits(object, "midrib")) {
       k <- length(object$intercept)
-      return(matrix(0, nrow = n, ncol = k))
+      res <- matrix(0, nrow = n, ncol = k)
+      colnames(res) <- labels(object)
+      return(res)
     }
     return(numeric(n))
   }
@@ -74,8 +85,6 @@ mid.effect <- function(object, term, x, y = NULL) {
     bmat <- object$main.effects[[checked]]$mid
     mmat <- object$encoders$main.effects[[checked]]$encode(x)
     out <- mmat %*% bmat
-    if (ncol(out) == 1L)
-      out <- as.numeric(out)
   } else {
     if (term != checked) {
       tags <- rev(tags)
@@ -95,6 +104,12 @@ mid.effect <- function(object, term, x, y = NULL) {
         ymat[, rep(seq_len(my), each = mx), drop = FALSE]
       out <- imat %*% bmat
     }
+  }
+  if (inherits(object, "midrib")) {
+    if (!is.matrix(out)) out <- as.matrix(out)
+    colnames(out) <- labels(object)
+  } else {
+    out <- as.numeric(out)
   }
   out
 }

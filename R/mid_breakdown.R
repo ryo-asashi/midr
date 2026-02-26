@@ -23,20 +23,20 @@
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #'
 #' # Calculate the breakdown for the first observation in the data
-#' mbd <- mid.breakdown(mid, data = airquality, row = 1)
-#' print(mbd)
+#' brk <- mid.breakdown(mid, data = airquality, row = 1)
+#' print(brk)
 #'
 #' # Calculate the breakdown for the third observation in the data
-#' mbd <- mid.breakdown(mid, data = airquality, row = 3)
-#' print(mbd)
+#' brk <- mid.breakdown(mid, data = airquality, row = 3)
+#' print(brk)
 #' @returns
-#' \code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:
+#' \code{mid.breakdown()} returns an object of class "midbrk". This is a list with the following components:
 #' \item{breakdown}{a data frame containing the breakdown of the prediction.}
 #' \item{data}{the data frame containing the predictor variable values used for the prediction.}
 #' \item{intercept}{the intercept of the MID model.}
 #' \item{prediction}{the predicted value from the MID model.}
 #'
-#' For "midlist", \code{mid.breakdown()} returns an object of class "midlist.breakdown", a list of "mid.breakdown" objects.
+#' For "midlist", \code{mid.breakdown()} returns an object of class "midbrks"-"midlist", a list of "midbrk" objects.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
 #'
@@ -45,12 +45,11 @@
 mid.breakdown <- function(
     object, data = NULL, row = NULL, sort = TRUE
   ) {
-  if (inherits(object, "midlist")) {
+  if (inherits(object, "mids")) {
     out <- suppressMessages(lapply(
       X = object, FUN = mid.breakdown, data = data, row = row, sort = sort
     ))
-    attr(out, "term.labels") <- attr(out[[1L]], "term.labels", TRUE)
-    class(out) <- "midlist.breakdown"
+    class(out) <- c("midbrks", "midlist")
     return(out)
   }
   if (!inherits(object, "mid"))
@@ -84,14 +83,14 @@ mid.breakdown <- function(
     out$prediction <- object$intercept + sum(preds)
   }
   attr(out, "term.labels") <- as.character(df$term)
-  class(out) <- c("mid.breakdown")
+  class(out) <- c("midbrk")
   out
 }
 
 
 #' @exportS3Method base::print
 #'
-print.mid.breakdown <- function(
+print.midbrk <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
   ) {
   cat("\nMID Breakdown of a Prediction\n")
@@ -109,7 +108,7 @@ print.mid.breakdown <- function(
 
 #' @exportS3Method base::print
 #'
-print.midlist.breakdown <- function(
+print.midbrks <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   cat("\nMID Breakdown of a Prediction\n")
@@ -124,7 +123,7 @@ print.midlist.breakdown <- function(
     cat(paste0("\nPrediction: ", examples(prediction, digits = digits), "\n"))
   }
   cat("\nBreakdown of Effects:\n")
-  smry <- summary.midlist.breakdown(x, shape = "wide")
+  smry <- summary(x, shape = "wide")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(smry)
 }

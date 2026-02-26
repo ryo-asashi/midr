@@ -1,7 +1,7 @@
 #' Predict Method for fitted MID Models
 #'
 #' @description
-#' \code{predict.mid()} is an S3 method for "mid" objects that obtains predictions from a fitted MID model.
+#' \code{predict()} methods for obtaining predictions from a fitted MID model ("mid") or a collection of MID models ("mids").
 #' It can be used to predict on new data or to retrieve the fitted values from the original data.
 #'
 #' @details
@@ -12,12 +12,12 @@
 #'
 #' The \code{terms} argument allows for predictions based on a subset of the model's component functions, excluding others.
 #'
-#' @param object a "mid" object to be used to make predictions.
+#' @param object a fitted model object of class "mid", or a collection object ("mids") to be used for prediction.
 #' @param newdata a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.
 #' @param na.action a function or character string specifying what should happen when the data contain \code{NA} values.
 #' @param type the type of prediction required. One of "response", "link", or "terms".
 #' @param terms a character vector of term labels, specifying a subset of component functions to use for predictions.
-#' @param ... arguments to be passed to other methods (not used in this method).
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @examples
 #' data(airquality, package = "datasets")
@@ -33,9 +33,9 @@
 #' # Get the contributions of specific terms
 #' predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 #' @returns
-#' \code{predict.mid()} returns a numeric vector of MID model predictions, or a matrix if \code{type = "terms"}.
+#' For a single "mid" object, \code{predict.mid()} returns a numeric vector if \code{type} is "response" or "link", or a numeric matrix if \code{type = "terms"}.
 #'
-#' \code{predict.midlist()} returns a matrix of predictions, or a list of matrix if \code{type = "terms"}.
+#' For a collection ("mids"), \code{predict.mids()} returns a numeric matrix where each column corresponds to a model if \code{type} is "response" or "link", or a list of numeric matrices if \code{type = "terms"}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{mid.effect}}, \code{\link{get.yhat}}
 #'
@@ -117,9 +117,10 @@ predict.mid <- function(
 }
 
 
+#' @rdname predict.mid
 #' @exportS3Method stats::predict
 #'
-predict.midlist <- function(
+predict.mids <- function(
     object, ...
 ) {
   type <- list(...)$type

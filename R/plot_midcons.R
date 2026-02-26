@@ -1,4 +1,4 @@
-#' Compare MID Conditional Expectations in a Collection
+#' Compare MID Conditional Expectations
 #'
 #' @description
 #' For "midlist.conditional" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.

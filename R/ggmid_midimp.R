@@ -1,10 +1,10 @@
 #' Plot MID Importance with ggplot2
 #'
 #' @description
-#' For "mid.importance" objects, \code{ggmid()} visualizes the importance of component functions of the fitted MID model.
+#' For "midimp" objects, \code{ggmid()} visualizes the importance of component functions of the fitted MID model.
 #'
 #' @details
-#' This is an S3 method for the \code{ggmid()} generic that creates an importance plot from a "mid.importance" object, visualizing the average contribution of component functions to the fitted MID model.
+#' This is an S3 method for the \code{ggmid()} generic that creates an importance plot from a "midimp" object, visualizing the average contribution of component functions to the fitted MID model.
 #'
 #' The \code{type} argument controls the visualization style.
 #' The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
@@ -12,7 +12,7 @@
 #' The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
 #' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the variability of each term's effect.
 #'
-#' @param object a "mid.importance" object to be visualized.
+#' @param object a "midimp" object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
@@ -38,13 +38,13 @@
 #' # Create a boxplot to see the distribution of effects
 #' ggmid(imp, type = "boxplot")
 #' @returns
-#' \code{ggmid.mid.importance()} returns a "ggplot" object.
+#' \code{ggmid.midimp()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid}}, \code{\link{plot.mid.importance}}
+#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid}}, \code{\link{plot.midimp}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.mid.importance <- function(
+ggmid.midimp <- function(
     object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
     theme = NULL, terms = NULL, max.nterms = 30L, ...) {
   type <- match.arg(type)
@@ -56,7 +56,7 @@ ggmid.mid.importance <- function(
   if (!is.null(terms))
     imp <- imp[match(terms, imp$term, nomatch = 0L), ]
   if (type != "heatmap")
-    imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
+    imp <- utils::head(imp, max.nterms)
   imp$term <- factor(imp$term, levels = rev(imp$term))
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
@@ -123,10 +123,9 @@ ggmid.mid.importance <- function(
   }
 }
 
-
-#' @rdname ggmid.mid.importance
+#' @rdname ggmid.midimp
 #' @exportS3Method ggplot2::autoplot
 #'
-autoplot.mid.importance <- function(object, ...) {
-  ggmid.mid.importance(object = object, ...)
+autoplot.midimp <- function(object, ...) {
+  ggmid.midimp(object = object, ...)
 }

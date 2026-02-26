@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midlist.R
 \name{plot.midlist}
 \alias{plot.midlist}
-\title{Compare MID Component Functions across Multiple Models}
+\title{Compare MID Component Functions}
 \usage{
 \method{plot}{midlist}(x, ...)
 }

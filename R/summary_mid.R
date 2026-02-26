@@ -1,7 +1,8 @@
 #' Summarize MID Models
 #'
 #' @description
-#' For "mid" objects, an S3 method of \code{summary()} prints a comprehensive summary of a fitted MID model.
+#' \code{summary()} methods for a fitted MID model ("mid") or a collection of models ("mids").
+#' It prints a comprehensive summary of the model structure and fit quality.
 #'
 #' @details
 #' The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
@@ -12,12 +13,13 @@
 #'   \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
 #'   \item \strong{Residuals}: five-number summary of (working) residuals.
 #'   \item \strong{Encoding}: summary of encoding schemes per variable.
-#'   \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnosis = TRUE}).
+#'   \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
 #' }
 #'
-#' @param object a "mid" object to be summarized.
+#' @param object a "mid" or "mids" object to be summarized.
 #' @param diagnose logical. If \code{TRUE}, the diagnosis plot is displayed. Defaults to \code{FALSE}.
 #' @param digits the number of significant digits for printing numeric values.
+#' @param max.nmodels an integer specifying the maximum number of models to summarize for a "mids" collection.
 #' @param ... arguments to be passed to \code{graphics::panel.smooth()} for the diagnosis plot.
 #'
 #' @examples
@@ -28,7 +30,7 @@
 #' @returns
 #' \code{summary.mid()} returns the original "mid" object invisibly.
 #'
-#' \code{summary.midlist()} returns the original "midlist" object invisibly.
+#' \code{summary.mids()} returns the original "mids" object invisibly.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{print.mid}}
 #'
@@ -84,10 +86,10 @@ summary.mid <- function(
       do.call(graphics::panel.smooth, args)
       graphics::abline(h = 0L, lty = 3L, col = "gray65")
     }
-    if (inherits(object, "mid")) {
+    if (inherits(object, "mids")) {
+      invisible(lapply(X = as.list(object), FUN = plot.diagnosis))
+    } else {
       plot.diagnosis(.obj = object)
-    } else if (inherits(object, "midlist")) {
-      lapply(X = as.list(object), FUN = plot.diagnosis)
     }
   }
   invisible(object)
@@ -115,9 +117,9 @@ mid.encoding.scheme <- function(object, ...) {
 
 #' @exportS3Method base::summary
 #'
-summary.midlist <- function(object, max.nmodels = 3L, ...) {
+summary.mids <- function(object, max.nmodels = 1L, ...) {
   if (inherits(object, "midrib"))
-    return(summary.mid(object))
+    return(summary.mid(object, ...))
   nms <- labels(object)
   nmodels <- length(nms)
   n <- min(nmodels, max.nmodels)
@@ -128,6 +130,6 @@ summary.midlist <- function(object, max.nmodels = 3L, ...) {
     }, object[seq_len(n), drop = FALSE], nms[seq_len(n)]
   )
   if (n < nmodels)
-    cat(sprintf("\n... and %d more models", nmodels - max.nmodels))
+    cat(sprintf("\n... and %d more models\n", nmodels - max.nmodels))
   invisible(object)
 }

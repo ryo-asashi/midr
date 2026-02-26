@@ -1,17 +1,17 @@
 #' Plot MID Breakdowns with ggplot2
 #'
 #' @description
-#' For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
+#' For "midbrk" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
 #'
 #' @details
-#' This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction.
+#' This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "midbrk" object, visualizing the contribution of each component function to a single prediction.
 #'
 #' The \code{type} argument controls the visualization style.
-#' The default, \code{type = "waterfall"} (default), creates a waterfall plot that shows how the prediction is built up from the intercept, with each term's contribution sequentially added or subtracted.
+#' The default, \code{type = "waterfall"}, creates a waterfall plot that shows how the prediction is built up from the intercept, with each term's contribution sequentially added or subtracted.
 #' The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
 #' The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
 #'
-#' @param object a "mid.breakdown" object to be visualized.
+#' @param object a "midbrk" object to be visualized.
 #' @param type the plotting style. One of "waterfall", "barplot" or "dotchart".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
@@ -39,13 +39,13 @@
 #' # Create a dot chart
 #' ggmid(mbd, type = "dotchart", size = 3)
 #' @returns
-#' \code{ggmid.mid.breakdown()} returns a "ggplot" object.
+#' \code{ggmid.midbrk()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
+#' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid}}, \code{\link{plot.midbrk}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.mid.breakdown <- function(
+ggmid.midbrk <- function(
     object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
     others = "others", label.pattern = c("%t=%v", "%t:%t"),
@@ -60,12 +60,16 @@ ggmid.mid.breakdown <- function(
   bd$term <- as.character(bd$term)
   use.others <- FALSE
   if (!is.null(terms)) {
-    rowid <- match(terms, bd$term, nomatch = 0L)
-    resid <- bd[-rowid, "mid"]
-    bd <- bd[rowid, ]
-    if (length(resid) > 0L) {
-      bd[nrow(bd) + 1L, "mid"] <- sum(resid)
-      use.others <- TRUE
+    idx <- match(terms, bd$term)
+    idx <- idx[!is.na(idx)]
+    if (length(idx) > 0L) {
+      resid_idx <- setdiff(seq_len(nrow(bd)), idx)
+      resid_sum <- sum(bd$mid[resid_idx])
+      bd <- bd[idx, , drop = FALSE]
+      if (length(resid_idx) > 0L) {
+        bd[nrow(bd) + 1L, "mid"] <- resid_sum
+        use.others <- TRUE
+      }
     }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
@@ -171,9 +175,9 @@ ggmid.mid.breakdown <- function(
   }
 }
 
-#' @rdname ggmid.mid.breakdown
+#' @rdname ggmid.midbrk
 #' @exportS3Method ggplot2::autoplot
 #'
-autoplot.mid.breakdown <- function(object, ...) {
-  ggmid.mid.breakdown(object = object, ...)
+autoplot.midbrk <- function(object, ...) {
+  ggmid.midbrk(object = object, ...)
 }

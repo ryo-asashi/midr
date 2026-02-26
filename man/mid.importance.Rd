@@ -30,12 +30,12 @@ mid.importance(
 \item{seed}{an integer seed for random sampling. Default is \code{NULL}.}
 }
 \value{
-\code{mid.importance()} returns an object of class "mid.importance". This is a list containing the following components:
+\code{mid.importance()} returns an object of class "midimp". This is a list containing the following components:
 \item{importance}{a data frame with the calculated importance values, sorted by default.}
 \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nsamples}, this matrix contains a sampled subset.}
 \item{measure}{a character string describing the type of the importance measure used.}
 
-For "midlist", \code{mid.importance()} returns an object of class "midlist.importance", a list of "mid.importance" objects.
+For "midlist", \code{mid.importance()} returns an object of class "midimps"-"midlist", a list of "midimp" objects.
 }
 \description{
 \code{mid.importance()} calculates the MID importance of a fitted MID model.

@@ -1,16 +1,19 @@
 #' Print MID Models
 #'
 #' @description
-#' \code{print.mid()} is an S3 method for "mid" objects that prints a concise summary of a fitted MID model.
+#' \code{print()} methods for a fitted MID model ("mid") or a collection of models ("mids").
 #'
 #' @details
 #' By default, the \code{print()} method for "mid" objects provides a quick overview of the model structure by listing the number of main effect and interaction terms.
 #' If \code{main.effects = TRUE} is specified, the method will also print the contribution of each main effect at its sample points, providing a more detailed look at the model's components.
 #'
-#' @param x a "mid" object to be printed.
+#' For a collection of models in the structure-of-array format ("midrib"), the method prints a summarized overview. For array-of-structures collections ("midlist"), it prints the first few models up to \code{max.nmodels}.
+#'
+#' @param x a "mid" or "mids" object to be printed.
 #' @param digits an integer specifying the number of significant digits for printing.
-#' @param main.effects logical. If \code{TRUE}, the MID values of each main effect are also printed.
-#' @param ... arguments to be passed to other methods (not used in this method).
+#' @param main.effects logical. If \code{TRUE}, the MID values of each main effect are also printed (only applicable for single "mid" objects).
+#' @param max.nmodels an integer specifying the maximum number of models to print for a "midlist" collection.
+#' @param ... arguments to be passed to other methods.
 #'
 #' @examples
 #' data(cars, package = "datasets")
@@ -24,7 +27,7 @@
 #' @returns
 #' \code{print.mid()} returns the original "mid" object invisibly.
 #'
-#' \code{print.midlist()} returns the original "midlist" object invisibly.
+#' \code{print.mids()} returns the original "mids" object invisibly.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{summary.mid}}
 #'
@@ -69,11 +72,15 @@ print.mid <- function(
 }
 
 
+#' @rdname print.mid
 #' @exportS3Method base::print
 #'
-print.midlist <- function(x, max.nmodels = 1L, ...) {
-  if (inherits(x, "midrib"))
-    return(print.mid(x))
+print.mids <- function(x, max.nmodels = 1L, ...) {
+  if (inherits(x, "midrib")) {
+    args <- list(...)
+    args$main.effects <- FALSE
+    return(do.call(print.mid, c(list(x = x), args)))
+  }
   nms <- labels(x)
   nmodels <- length(nms)
   n <- min(nmodels, max.nmodels)
@@ -84,6 +91,6 @@ print.midlist <- function(x, max.nmodels = 1L, ...) {
     }, x[seq_len(n), drop = FALSE], nms[seq_len(n)]
   )
   if (n < nmodels && n > 0L)
-    cat(sprintf("\n... and %d more models", nmodels - max.nmodels))
+    cat(sprintf("\n... and %d more models\n", nmodels - n))
   invisible(x)
 }

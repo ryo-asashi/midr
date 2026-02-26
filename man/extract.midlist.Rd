@@ -5,7 +5,7 @@
 \alias{[.midrib}
 \alias{[[.midrib}
 \alias{[.midlist}
-\title{Subset MID Models in a Collection}
+\title{Subset MID Objects}
 \usage{
 \method{[}{midrib}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
 
@@ -14,28 +14,48 @@
 \method{[}{midlist}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
 }
 \arguments{
-\item{x}{a "midrib" object, a "midlist" object, or its summary objects (e.g., "midlist.importance").}
+\item{x}{a collection object of class "midlist" or "midrib".}
 
 \item{i}{indices specifying elements to extract. Can be numeric, character, or logical vectors.}
 
-\item{drop}{logical. If \code{TRUE} the result is coerced to the lowest possible dimension. For a "midrib", extracting a single element drops it to a "mid" object.}
+\item{drop}{logical. If \code{TRUE} the result is coerced to the lowest possible dimension. For a collection (e.g., "mids"), extracting a single element drops it to a base object (e.g., "mid").}
 
 \item{exact}{logical. If \code{TRUE}, exact matching is used for character strings.}
 }
 \value{
-\code{[} returns a "midrib", "midlist" or "mid" object.
+\code{[} returns a subsetted collection object (e.g., "midrib", "midlist") or a single base object if \code{drop = TRUE}.
 
-\code{[[} returns a single "mid" object.
+\code{[[} returns a single base object (e.g., "mid").
 }
 \description{
-S3 methods to extract parts of a "midrib" or "midlist" object.
+S3 methods to extract parts of a "midrib" or "midlist" collection object.
 }
 \details{
-The "midrib" object stores multiple fitted MID models in a optimized struct-of-arrays format.
+A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".
 
-When extracting multiple models using \code{[}, it returns a subsetted "midrib" or "midlist" object.
-By default, if a single model is extracted (\code{length(i) == 1L}) and \code{drop = TRUE}, the object is simplified to a single "mid" object.
-\code{[[} always extracts a single model as a "mid" object.
+When extracting items using \code{[}, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps").
+By default, if a single base object is extracted (\code{length(i) == 1L}) and \code{drop = TRUE}, the object is simplified to a single base object (e.g., "mid", "midimp").
+\code{[[} always extracts a single base object.
+}
+\examples{
+# Fit a multivariate linear model
+fit <- lm(cbind(y1, y2, y3) ~ x1 + I(x1^2), data = anscombe)
 
-Similar extraction rules apply to summary objects like "midlist.importance".
+# Interpret the linear models
+mid_collection <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit)
+
+# Check the default labels
+labels(mid_collection)
+
+# Rename the models in the collection
+labels(mid_collection) <- letters[1L:3L]
+labels(mid_collection)
+
+# Extract a single base "mid" object by its new name using [[
+mid <- mid_collection[["a"]]
+class(mid)
+
+# Subset the collection to keep only the first two models using [
+mid_subset <- mid_collection[1:2]
+class(mid_subset) # Maintains the collection class (e.g., "mids"-"midrib")
 }

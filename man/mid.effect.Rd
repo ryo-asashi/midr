@@ -10,18 +10,18 @@ mid.effect(object, term, x, y = NULL)
 mid.f(object, term, x, y = NULL)
 }
 \arguments{
-\item{object}{a "mid" object.}
+\item{object}{a "mid" object or a collection of models ("mids").}
 
 \item{term}{a character string specifying the component function (term) to evaluate.}
 
-\item{x}{a vector of values for the first variable in the term. If a matrix or data frame is provided, values of the related variables are extracted from it.}
+\item{x}{a vector of values for the first variable in the term. If a matrix or data frame is provided, values of the related variables are automatically extracted from it.}
 
-\item{y}{a vector of values for the second variable in an interaction term.}
+\item{y}{a vector of values for the second variable in an interaction term. Ignored if \code{x} is a data frame containing both variables.}
 }
 \value{
-\code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x} and \code{y}.
+\code{mid.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x}.
 
-For "midlist", \code{mid.effect()} returns a matrix of the term contributions.
+For a collection of models ("mids"), \code{mid.effect()} returns a numeric matrix where each column corresponds to a model.
 }
 \description{
 \code{mid.effect()} calculates the contribution of a single component function of a fitted MID model.
@@ -32,7 +32,8 @@ It serves as a low-level helper function for making predictions or for direct an
 \details{
 \code{mid.effect()} is a low-level function designed to calculate the contribution of a single component function.
 Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{mid.effect()} is more flexible.
-It accepts vectors, as well as data frames, as input for \code{x} and \code{y}, making it particularly useful for visualizing a component's effect in combination with other functions, such as \code{graphics::curve()}.
+It accepts vectors, as well as matrices or data frames, as input for \code{x} and \code{y}. If \code{x} is a data frame, the necessary columns are automatically extracted.
+This makes it particularly useful for visualizing a component's effect in combination with standard plotting functions, such as \code{graphics::curve()}.
 
 For a main effect, the function evaluates the component function \eqn{f_j(x_j)} for a vector of values \eqn{x_j}.
 For an interaction, it evaluates \eqn{f_{jk}(x_j, x_k)} using vectors \eqn{x_j} and \eqn{x_k}.

@@ -33,13 +33,13 @@ mid.conditional(
 \item{keep.effects}{logical. If \code{TRUE}, the effects of individual component functions are stored in the output object.}
 }
 \value{
-\code{mid.conditional()} returns an object of class "mid.conditional". This is a list with the following components:
+\code{mid.conditional()} returns an object of class "midcon". This is a list with the following components:
 \item{observed}{a data frame of the original observations used, along with their predictions.}
 \item{conditional}{a data frame of the hypothetical observations and their corresponding predictions.}
 \item{variable}{name of the target variable.}
 \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 
-For "midlist", \code{mid.conditional()} returns an object of class "midlist.conditional", a list of "mid.conditional" objects.
+For "midlist", \code{mid.conditional()} returns an object of class "midcon"-"midlist", a list of "midcon" objects.
 }
 \description{
 \code{mid.conditional()} calculates the data required to draw Individual Conditional Expectation (ICE) curves from a fitted MID model.
@@ -59,8 +59,8 @@ data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 
 # Calculate the ICE values for a fitted MID model
-ice <- mid.conditional(mid, variable = "Wind", data = airquality)
-print(ice)
+con <- mid.conditional(mid, variable = "Wind", data = airquality)
+print(con)
 }
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}

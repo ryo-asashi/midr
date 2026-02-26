@@ -16,13 +16,13 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 \item{sort}{logical. If \code{TRUE}, the output data frame is sorted by the absolute contribution of each effect.}
 }
 \value{
-\code{mid.breakdown()} returns an object of class "mid.breakdown". This is a list with the following components:
+\code{mid.breakdown()} returns an object of class "midbrk". This is a list with the following components:
 \item{breakdown}{a data frame containing the breakdown of the prediction.}
 \item{data}{the data frame containing the predictor variable values used for the prediction.}
 \item{intercept}{the intercept of the MID model.}
 \item{prediction}{the predicted value from the MID model.}
 
-For "midlist", \code{mid.breakdown()} returns an object of class "midlist.breakdown", a list of "mid.breakdown" objects.
+For "midlist", \code{mid.breakdown()} returns an object of class "midbrks"-"midlist", a list of "midbrk" objects.
 }
 \description{
 \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.
@@ -42,12 +42,12 @@ data(airquality, package = "datasets")
 mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 
 # Calculate the breakdown for the first observation in the data
-mbd <- mid.breakdown(mid, data = airquality, row = 1)
-print(mbd)
+brk <- mid.breakdown(mid, data = airquality, row = 1)
+print(brk)
 
 # Calculate the breakdown for the third observation in the data
-mbd <- mid.breakdown(mid, data = airquality, row = 3)
-print(mbd)
+brk <- mid.breakdown(mid, data = airquality, row = 3)
+print(brk)
 }
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}

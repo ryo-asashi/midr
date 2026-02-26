@@ -2,30 +2,37 @@
 % Please edit documentation in R/print_mid.R
 \name{print.mid}
 \alias{print.mid}
+\alias{print.mids}
 \title{Print MID Models}
 \usage{
 \method{print}{mid}(x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...)
+
+\method{print}{mids}(x, max.nmodels = 1L, ...)
 }
 \arguments{
-\item{x}{a "mid" object to be printed.}
+\item{x}{a "mid" or "mids" object to be printed.}
 
 \item{digits}{an integer specifying the number of significant digits for printing.}
 
-\item{main.effects}{logical. If \code{TRUE}, the MID values of each main effect are also printed.}
+\item{main.effects}{logical. If \code{TRUE}, the MID values of each main effect are also printed (only applicable for single "mid" objects).}
 
-\item{...}{arguments to be passed to other methods (not used in this method).}
+\item{...}{arguments to be passed to other methods.}
+
+\item{max.nmodels}{an integer specifying the maximum number of models to print for a "midlist" collection.}
 }
 \value{
 \code{print.mid()} returns the original "mid" object invisibly.
 
-\code{print.midlist()} returns the original "midlist" object invisibly.
+\code{print.mids()} returns the original "mids" object invisibly.
 }
 \description{
-\code{print.mid()} is an S3 method for "mid" objects that prints a concise summary of a fitted MID model.
+\code{print()} methods for a fitted MID model ("mid") or a collection of models ("mids").
 }
 \details{
 By default, the \code{print()} method for "mid" objects provides a quick overview of the model structure by listing the number of main effect and interaction terms.
 If \code{main.effects = TRUE} is specified, the method will also print the contribution of each main effect at its sample points, providing a more detailed look at the model's components.
+
+For a collection of models in the structure-of-array format ("midrib"), the method prints a summarized overview. For array-of-structures collections ("midlist"), it prints the first few models up to \code{max.nmodels}.
 }
 \examples{
 data(cars, package = "datasets")
