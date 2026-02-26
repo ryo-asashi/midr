@@ -16,9 +16,6 @@ predict(
   terms = mid.terms(object),
   ...
 )
-
-# S3 method for class 'midlist'
-predict(object, ...)
 ```
 
 ## Arguments

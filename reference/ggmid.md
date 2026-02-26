@@ -28,9 +28,6 @@ ggmid(
 
 # S3 method for class 'mid'
 autoplot(object, ...)
-
-# S3 method for class 'midlist'
-ggmid(object, ...)
 ```
 
 ## Arguments
@@ -93,8 +90,9 @@ ggmid(object, ...)
 
 ## Value
 
-`ggmid.mid()` returns a "ggplot" object. `ggmid.midlist()` returns a
-list of "ggplot" objects.
+`ggmid.mid()` returns a "ggplot" object.
+[`ggmid.midlist()`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.md)
+returns a list of "ggplot" objects.
 
 ## Details
 

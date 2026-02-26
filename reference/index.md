@@ -8,7 +8,6 @@
 ### Methods
 
 - [`plot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  [`plot(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
   : Plot MID Component Functions
 - [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
   [`autoplot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
@@ -16,7 +15,6 @@
 - [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/mid.plots.md)
   : Plot Multiple MID Component Functions
 - [`predict(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
-  [`predict(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   : Predict Method for fitted MID Models
 - [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
   [`mid.f()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
@@ -28,6 +26,26 @@
 - [`mid.terms()`](https://ryo-asashi.github.io/midr/reference/mid.terms.md)
   : Extract Terms from MID Models
 
+## Collection of MID models
+
+- [`midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+  : Create a Collection of MID Models
+
+### Methods
+
+- [`labels(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midrib.md)
+  [`` `labels<-`() ``](https://ryo-asashi.github.io/midr/reference/labels.midrib.md)
+  : Modify Labels of a Collection of MID Models
+- [`` `[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+  [`` `[[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+  [`` `[`( ``*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+  : Extract Parts of a Collection of MID Models
+- [`plot(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midlist.md)
+  : Compare MID Component Functions across Multiple Models
+- [`ggmid(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.md)
+  [`autoplot(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.md)
+  : Compare MID Component Functions across Multiple Models with ggplot2
+
 ## Importance of effects
 
 - [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
@@ -36,12 +54,15 @@
 ### Methods
 
 - [`plot(`*`<mid.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.importance.md)
-  [`plot(`*`<midlist.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.importance.md)
   : Plot MID Importance
 - [`ggmid(`*`<mid.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
   [`autoplot(`*`<mid.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
-  [`ggmid(`*`<midlist.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
   : Plot MID Importance with ggplot2
+- [`plot(`*`<midlist.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midlist.importance.md)
+  : Compare MID Importance across Multiple Models
+- [`ggmid(`*`<midlist.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.importance.md)
+  [`autoplot(`*`<midlist.importance>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.importance.md)
+  : Compare MID Importance across Multiple Models with ggplot2
 
 ## Breakdown of predictions
 
@@ -51,12 +72,15 @@
 ### Methods
 
 - [`plot(`*`<mid.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
-  [`plot(`*`<midlist.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
   : Plot MID Breakdowns
 - [`ggmid(`*`<mid.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
   [`autoplot(`*`<mid.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
-  [`ggmid(`*`<midlist.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
   : Plot MID Breakdowns with ggplot2
+- [`plot(`*`<midlist.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midlist.breakdown.md)
+  : Compare MID Breakdowns across Multiple Models
+- [`ggmid(`*`<midlist.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.breakdown.md)
+  [`autoplot(`*`<midlist.breakdown>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.breakdown.md)
+  : Compare MID Breakdowns across Multiple Models with ggplot2
 
 ## Conditional expectations
 
@@ -66,12 +90,16 @@
 ### Methods
 
 - [`plot(`*`<mid.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.conditional.md)
-  [`plot(`*`<midlist.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.conditional.md)
   : Plot MID Conditional Expectations
 - [`ggmid(`*`<mid.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md)
   [`autoplot(`*`<mid.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md)
-  [`ggmid(`*`<midlist.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md)
   : Plot MID Conditional Expectations with ggplot2
+- [`plot(`*`<midlist.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midlist.conditional.md)
+  : Compare MID Conditional Expectations across Multiple Models
+- [`ggmid(`*`<midlist.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.conditional.md)
+  [`autoplot(`*`<midlist.conditional>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.conditional.md)
+  : Compare MID Conditional Expectations across Multiple Models with
+  ggplot2
 
 ## Other functions
 

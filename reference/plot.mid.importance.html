@@ -75,10 +75,7 @@ img {
 <span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max.nterms <span class="op">=</span> <span class="fl">30L</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'midlist.importance'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -112,7 +109,6 @@ img {
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>plot.mid.importance()</code> produces a plot as a side effect and returns <code>NULL</code> invisibly.</p>
-<p><code>plot.midlist.importance()</code> produces multiple plots for each "mid.importance" object.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -142,7 +138,7 @@ The <code>type = "boxplot"</code> option creates a box plot where each box shows
 <span class="r-plt img"><img src="plot.mid.importance-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a dot chart</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"Okabe-Ito"</span>, size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"Okabe-Ito"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.mid.importance-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a heatmap</span></span></span>

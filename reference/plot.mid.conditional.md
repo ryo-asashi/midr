@@ -23,9 +23,6 @@ plot(
   sample = NULL,
   ...
 )
-
-# S3 method for class 'midlist.conditional'
-plot(x, ...)
 ```
 
 ## Arguments
@@ -87,9 +84,6 @@ plot(x, ...)
 
 `plot.mid.conditional()` produces an ICE plot as a side-effect and
 invisibly returns the ICE matrix used for the plot.
-
-`plot.midlist.conditional()` produces multiple plots for each
-"mid.conditional" object.
 
 ## Details
 

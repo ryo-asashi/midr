@@ -24,9 +24,6 @@ ggmid(
 
 # S3 method for class 'mid.breakdown'
 autoplot(object, ...)
-
-# S3 method for class 'midlist.breakdown'
-ggmid(object, ...)
 ```
 
 ## Arguments
@@ -87,8 +84,6 @@ ggmid(object, ...)
 ## Value
 
 `ggmid.mid.breakdown()` returns a "ggplot" object.
-
-`ggmid.midlist.breakdown()` returns a list of "ggplot" objects.
 
 ## Details
 

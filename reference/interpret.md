@@ -308,8 +308,9 @@ following components:
 
   information about the special handling of `NA`s.
 
-If a matrix is provided for `y`, `interpret()` returns an object of
-class "midlist".
+If a matrix is provided for `y`, `interpret()` returns a "midrib"
+object, which inherits from "midlist" and contains a list of "mid"
+objects.
 
 ## Details
 

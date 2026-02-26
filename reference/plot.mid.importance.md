@@ -16,9 +16,6 @@ plot(
   max.nterms = 30L,
   ...
 )
-
-# S3 method for class 'midlist.importance'
-plot(x, ...)
 ```
 
 ## Arguments
@@ -57,9 +54,6 @@ plot(x, ...)
 
 `plot.mid.importance()` produces a plot as a side effect and returns
 `NULL` invisibly.
-
-`plot.midlist.importance()` produces multiple plots for each
-"mid.importance" object.
 
 ## Details
 
@@ -100,7 +94,7 @@ plot(imp)
 
 
 # Create a dot chart
-plot(imp, type = "dotchart", theme = "Okabe-Ito", size = 1.5)
+plot(imp, type = "dotchart", theme = "Okabe-Ito", cex = 1.5)
 
 
 # Create a heatmap
