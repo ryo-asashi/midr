@@ -17,18 +17,18 @@
 #' @returns
 #' \code{ggmid.midlist.breakdown()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{ggmid.mid.breakdown}}, \code{\link{plot.mid.breakdown}}
+#' @seealso \code{\link{ggmid.midbrk}}, \code{\link{plot.midbrks}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.midlist.breakdown <- function(object, ...) {
-  lapply(X = object, FUN = ggmid.mid.breakdown, ...)
+ggmid.midbrks <- function(object, ...) {
+  lapply(X = object, FUN = ggmid.midbrk, ...)
 }
 
-#' @rdname ggmid.midlist.breakdown
+#' @rdname ggmid.midbrk
 #'
 #' @exportS3Method ggplot2::autoplot
 #'
-autoplot.midlist.breakdown <- function(object, ...) {
-  ggmid.midlist.breakdown(object = object, ...)
+autoplot.midbrks <- function(object, ...) {
+  ggmid.midbrks(object = object, ...)
 }

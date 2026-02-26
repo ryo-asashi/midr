@@ -38,7 +38,7 @@
 #'
 #' For "midlist", \code{mid.conditional()} returns an object of class "midcon"-"midlist", a list of "midcon" objects.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.midcon}}, \code{\link{ggmid.midcon}}
 #'
 #' @export mid.conditional
 #'

@@ -19,11 +19,11 @@
 #' @returns
 #' \code{plot.midlist()} produces a plot as a side-effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid.midlist}}
+#' @seealso \code{\link{plot.mid}}, \code{\link{ggmid.mids}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.midlist <- function(x, ...) {
+plot.mids <- function(x, ...) {
   lapply(X = x, FUN = plot.mid, ...)
   invisible(NULL)
 }

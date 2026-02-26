@@ -69,45 +69,42 @@ reference:
   - print.mid
   - summary.mid
   - mid.terms
-- title: Collection of MID models
+- title: Combine MID models
   contents:
   - midlist
 - subtitle: Methods
   contents:
-  - labels.midrib
+  - labels.midlist
   - extract.midlist
-  - plot.midlist
-  - ggmid.midlist
-  # - predict.midlist
-  # - print.midlist
-  # - summary.midlist
+  - plot.mids
+  - ggmid.mids
 - title: Importance of effects
   contents:
   - mid.importance
 - subtitle: Methods
   contents:
-  - plot.mid.importance
-  - ggmid.mid.importance
-  - plot.midlist.importance
-  - ggmid.midlist.importance
+  - plot.midimp
+  - ggmid.midimp
+  - plot.midimps
+  - ggmid.midimps
 - title: Breakdown of predictions
   contents:
   - mid.breakdown
 - subtitle: Methods
   contents:
-  - plot.mid.breakdown
-  - ggmid.mid.breakdown
-  - plot.midlist.breakdown
-  - ggmid.midlist.breakdown
+  - plot.midbrk
+  - ggmid.midbrk
+  - plot.midbrks
+  - ggmid.midbrks
 - title: Conditional expectations
   contents:
   - mid.conditional
 - subtitle: Methods
   contents:
-  - plot.mid.conditional
-  - ggmid.mid.conditional
-  - plot.midlist.conditional
-  - ggmid.midlist.conditional
+  - plot.midcon
+  - ggmid.midcon
+  - plot.midcons
+  - ggmid.midcons
 - title: Other functions
   contents:
   - get.yhat

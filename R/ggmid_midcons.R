@@ -20,11 +20,11 @@
 #' @returns
 #' \code{ggmid.midlist.conditional()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{ggmid.mid.conditional}}, \code{\link{plot.midlist.conditional}}
+#' @seealso \code{\link{ggmid.midcon}}, \code{\link{plot.midcons}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.midlist.conditional <- function(object, ...) {
+ggmid.midcons <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
   mcall[[1L]] <- quote(lapply)
   mcall[["object"]] <- NULL
@@ -33,11 +33,11 @@ ggmid.midlist.conditional <- function(object, ...) {
   eval(mcall, parent.frame())
 }
 
-#' @rdname ggmid.midlist.conditional
+#' @rdname ggmid.midcons
 #'
 #' @exportS3Method ggplot2::autoplot
 #'
-autoplot.midlist.conditional <- function(object, ...) {
+autoplot.midcons <- function(object, ...) {
   message("not implemented")
   return(NULL)
 }

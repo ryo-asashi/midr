@@ -2,6 +2,7 @@
 % Please edit documentation in R/summary_mid.R
 \name{summary.mid}
 \alias{summary.mid}
+\alias{summary.mids}
 \title{Summarize MID Models}
 \usage{
 \method{summary}{mid}(
@@ -10,6 +11,8 @@
   digits = max(3L, getOption("digits") - 2L),
   ...
 )
+
+\method{summary}{mids}(object, max.nmodels = 1L, ...)
 }
 \arguments{
 \item{object}{a "mid" or "mids" object to be summarized.}

@@ -13,7 +13,7 @@ make_mock_midrib <- function() {
     residuals = matrix(0.1, nrow = 2, ncol = 3),
     ratio = c(m1 = 0.5, m2 = 0.6, m3 = 0.7)
   )
-  class(x) <- c("midrib", "midlist")
+  class(x) <- c("mids", "midrib")
   x
 }
 
@@ -26,8 +26,8 @@ make_mock_importance <- function() {
       importance = data.frame(term = c("A", "B"), importance = c(0.7, 0.3))
     )
   )
-  attr(x, "term.labels") <- c("A", "B")
-  class(x) <- c("midlist.importance")
+  attr(x$m1, "term.labels") <- c("A", "B")
+  class(x) <- c("midimps", "midlist")
   x
 }
 
@@ -40,8 +40,8 @@ make_mock_breakdown <- function() {
       breakdown = data.frame(term = c("A", "B"), mid = c(0.7, -0.3))
     )
   )
-  attr(x, "term.labels") <- c("A", "B")
-  class(x) <- c("midlist.breakdown")
+  attr(x$m1, "term.labels") <- c("A", "B")
+  class(x) <- c("midbrks", "midlist")
   x
 }
 
@@ -54,10 +54,10 @@ make_mock_conditional <- function() {
       conditional = data.frame(.id = 1:2, varA = c(10, 20), yhat = c(1.6, 2.6))
     )
   )
-  attr(x, "ids") <- 1:2
-  attr(x, "variable") <- "varA"
-  attr(x, "values") <- c(10, 20)
-  class(x) <- c("midlist.conditional")
+  x$m1$ids <- 1:2
+  x$m1$variable <- "varA"
+  x$m1$values <- c(10, 20)
+  class(x) <- c("midcons", "midlist")
   x
 }
 
@@ -165,5 +165,5 @@ test_that("summary.midlist.conditional works for wide and long shapes", {
 test_that("[.midlist.importance preserves class", {
   ml_imp <- make_mock_importance()
   sub_imp <- ml_imp[1, drop = FALSE]
-  expect_s3_class(sub_imp, "midlist.importance")
+  expect_s3_class(sub_imp, "midimps")
 })

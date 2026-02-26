@@ -20,16 +20,11 @@
 #' @returns
 #' \code{plot.midlist.conditional()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
 #'
-#' @seealso \code{\link{plot.mid.conditional}}, \code{\link{ggmid.midlist.conditional}}
+#' @seealso \code{\link{plot.midcon}}, \code{\link{ggmid.midcons}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.midlist.conditional <- function(x, ...) {
-  mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(lapply)
-  mcall[["x"]] <- NULL
-  mcall[["X"]] <- x
-  mcall[["FUN"]] <- quote(plot.mid.conditional)
-  eval(mcall, parent.frame())
+plot.midcons <- function(x, ...) {
+
   invisible(NULL)
 }

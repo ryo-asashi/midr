@@ -87,5 +87,5 @@ ggmid(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
 ggmid(mid, "clarity:color", theme = "RdBu")
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{ggmid.mid.importance}}, \code{\link{ggmid.mid.conditional}}, \code{\link{ggmid.mid.breakdown}}, \code{\link{plot.mid}}
+\code{\link{interpret}}, \code{\link{ggmid.midimp}}, \code{\link{ggmid.midcon}}, \code{\link{ggmid.midbrk}}, \code{\link{plot.mid}}
 }

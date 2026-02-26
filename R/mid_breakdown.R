@@ -38,7 +38,7 @@
 #'
 #' For "midlist", \code{mid.breakdown()} returns an object of class "midbrks"-"midlist", a list of "midbrk" objects.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrk}}
 #'
 #' @export mid.breakdown
 #'

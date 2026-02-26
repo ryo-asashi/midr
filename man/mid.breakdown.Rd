@@ -50,5 +50,5 @@ brk <- mid.breakdown(mid, data = airquality, row = 3)
 print(brk)
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
+\code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrk}}
 }

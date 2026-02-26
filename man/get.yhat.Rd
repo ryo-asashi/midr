@@ -6,7 +6,7 @@
 \alias{get.yhat.lm}
 \alias{get.yhat.glm}
 \alias{get.yhat.mid}
-\alias{get.yhat.midlist}
+\alias{get.yhat.mids}
 \alias{get.yhat.rpart}
 \alias{get.yhat.randomForest}
 \alias{get.yhat.ranger}
@@ -31,7 +31,7 @@ get.yhat(object, newdata, ..., target)
 
 \method{get.yhat}{mid}(object, newdata, ...)
 
-\method{get.yhat}{midlist}(object, newdata, ..., target = NULL)
+\method{get.yhat}{mids}(object, newdata, ..., target = NULL)
 
 \method{get.yhat}{rpart}(object, newdata, ..., target = -1L)
 

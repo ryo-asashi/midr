@@ -75,15 +75,15 @@ labels.mid <- function(object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.importance <- function(object, ...)
+labels.midimp <- function(object, ...)
   mid.terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.breakdown <- function(object, ...)
+labels.midbrk <- function(object, ...)
   mid.terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.mid.conditional <- function(object, ...)
+labels.midcon <- function(object, ...)
   mid.terms(object = object, ...)

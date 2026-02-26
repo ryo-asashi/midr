@@ -115,6 +115,7 @@ mid.encoding.scheme <- function(object, ...) {
 }
 
 
+#' @rdname summary.mid
 #' @exportS3Method base::summary
 #'
 summary.mids <- function(object, max.nmodels = 1L, ...) {

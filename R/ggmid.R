@@ -36,7 +36,7 @@
 #' \code{ggmid.mid()} returns a "ggplot" object.
 #' \code{ggmid.midlist()} returns a list of "ggplot" objects.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{ggmid.mid.importance}}, \code{\link{ggmid.mid.conditional}}, \code{\link{ggmid.mid.breakdown}}, \code{\link{plot.mid}}
+#' @seealso \code{\link{interpret}}, \code{\link{ggmid.midimp}}, \code{\link{ggmid.midcon}}, \code{\link{ggmid.midbrk}}, \code{\link{plot.mid}}
 #'
 #' @export ggmid
 #'

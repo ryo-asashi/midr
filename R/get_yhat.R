@@ -113,13 +113,13 @@ get.yhat.mid <- function(
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.midlist <- function(
+get.yhat.mids <- function(
     object, newdata, ..., target = NULL
   ) {
   args <- list(object = object, newdata = newdata, type = "response",
                na.action = stats::na.pass)
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  checkout(do.call(predict.midlist, args), newdata, target)
+  checkout(do.call(predict.mids, args), newdata, target)
 }
 
 

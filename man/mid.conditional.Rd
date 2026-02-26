@@ -63,5 +63,5 @@ con <- mid.conditional(mid, variable = "Wind", data = airquality)
 print(con)
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{plot.mid.conditional}}, \code{\link{ggmid.mid.conditional}}
+\code{\link{interpret}}, \code{\link{plot.midcon}}, \code{\link{ggmid.midcon}}
 }

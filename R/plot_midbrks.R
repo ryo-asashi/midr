@@ -17,11 +17,10 @@
 #' @returns
 #' \code{plot.midlist.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.mid.breakdown}}, \code{\link{ggmid.midlist.breakdown}}
+#' @seealso \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrks}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.midlist.breakdown <- function(x, ...) {
-  lapply(X = x, FUN = plot.mid.breakdown, ...)
+plot.midbrks <- function(x, ...) {
   invisible(NULL)
 }

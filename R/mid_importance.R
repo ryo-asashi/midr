@@ -38,7 +38,7 @@
 #'
 #' For "midlist", \code{mid.importance()} returns an object of class "midimps"-"midlist", a list of "midimp" objects.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{plot.mid.importance}}, \code{\link{ggmid.mid.importance}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{ggmid.midimp}}
 #'
 #' @export mid.importance
 #'

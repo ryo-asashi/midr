@@ -112,7 +112,7 @@ model.frame.midrib <- function(object, ...) {
     fun_long <- function(x, nm) {
       inner <- x[[dfname]]
       res <- inner[inner[[keycol]] %in% targets, c(keys, valcol), drop = FALSE]
-      res$label <- nm
+      res$label <- rep.int(nm, nrow(res))
       res
     }
     out <- do.call(rbind, Map(fun_long, object, nms))
