@@ -1,122 +1,72 @@
+#' Create a Collection of MID Models
+#'
+#' @description
+#' Combines multiple "mid", "midlist", or "midrib" objects into a single "midlist" object.
+#' This is useful for grouping models together for comparison, summary, or visualization.
+#'
+#' @details
+#' A "midlist" is a standard R list containing only "mid" objects.
+#' When multiple arguments are passed to \code{midlist()}, they are coerced and flattened into a single list of models.
+#'
+#' If a single "midrib" object is provided, it is returned as-is, preserving its optimized struct-of-arrays format.
+#' However, if a "midrib" object is combined with other objects via \code{...}, it is automatically coerced into a pure list (array of structures) to ensure structural consistency before concatenation.
+#'
+#' @param ... "mid", "midlist", or "midrib" objects to be combined.
+#'
+#' @returns
+#' A "midlist" object, which is a list of "mid" objects. If a single "midrib" object is provided in \code{...}, the original object is returned as-is.
+#'
 #' @export
 #'
-`[.midlist` <- function(
-    x, i, drop = if (missing(i)) TRUE else length(i) == 1L
-  ) {
-  nm <- names(x$intercept)
-  if (missing(i)) {
-    i <- seq_along(nm)
-  } else if (is.character(i) && !anyNA(i)) {
-    i <- match(i, nm)
-  } else if (is.logical(i) && !anyNA(i)) {
-    i <- which(rep(i, length.out = length(nm)))
-  } else if (is.numeric(i) && !anyNA(i)) {
-    i <- as.integer(i)
-    if (any(i < 0L)) {
-      if (any(i > 0L))
-        stop("only 0's may be mixed with negative subscripts")
-      i <- seq_along(nm)[i]
-    }
-  }
-  if (anyNA(i))
-    stop("undefined item selected")
-  if (is.numeric(i) && any(i > length(nm) | i < 0L))
-    stop("subscript out of bounds")
-  if (is.numeric(i)) {
-    i <- i[i != 0L]
-  }
-  if (length(i) == 0L) return(NULL)
-  x$intercept <- x$intercept[i]
-  me <- x$main.effects
-  if (!is.null(me)) x$main.effects <- lapply(me, extract.effects, i, drop)
-  ie <- x$interactions
-  if (!is.null(ie)) x$interactions <- lapply(ie, extract.effects, i, drop)
-  x$fitted.values <- x$fitted.values[, i, drop = drop]
-  x$residuals <- x$residuals[, i, drop = drop]
-  if (!is.null(x$linear.predictors))
-    x$linear.predictors <- x$linear.predictors[, i, drop = drop]
-  if (!is.null(x$response.residuals))
-    x$response.residuals <- x$response.residuals[, i, drop = drop]
-  x$ratio <- if (is.matrix(x$ratio))
-    x$ratio[, i, drop = drop] else x$ratio[i]
-  if (drop && length(i) == 1L) {
-    names(x$intercept) <- NULL
-    if (length(x$ratio) == 1L) names(x$ratio) <- NULL
-    class(x) <- "mid"
-  } else {
-    class(x) <- "midlist"
-  }
-  x
+midlist <- function(...) {
+  x <- list(...)
+  if (length(x) == 0L)
+    return(structure(list(), class = "midlist"))
+  if (length(x) == 1L && inherits(x[[1]], "midrib"))
+    return(x[[1L]])
+  structure(do.call(c, lapply(x, as.midlist)), class = "midlist")
 }
 
-#' @export
-#'
-`[[.midlist` <- function(x, i, exact = TRUE) {
-  if (length(i) != 1L)
-    stop("attempt to select more than one element in vectorIndex")
-  if (is.character(i) && !exact) {
-    i <- pmatch(i, names(x$intercept))
+as.midlist <- function(x, force = TRUE) {
+  if (force && inherits(x, "midrib"))
+    return(structure(as.list.midrib(x), class = "midlist"))
+  if (inherits(x, "midlist"))
+    return(x)
+  if (inherits(x, "mid"))
+    return(structure(list(x), class = "midlist"))
+  if (is.list(x) && all(vapply(x, inherits, logical(1L), "mid"))) {
+    class(x) <- unique(c("midlist", class(x)))
+    return(x)
   }
-  x[i, drop = TRUE]
+  stop("'x' cannot be coerced to a 'midlist' object")
 }
 
-extract.effects <- function(x, i, drop = FALSE) {
-  x$mid <- if (drop && length(i) == 1L)
-    as.numeric(x$mid[, i]) else I(x$mid[, i, drop = FALSE])
-  x
-}
 
 #' @exportS3Method base::as.list
 #'
-as.list.midlist <- function(x, ...) {
-  nm <- names(x$intercept)
-  if (is.null(nm)) return(x)
-  lapply(stats::setNames(nm, nm), function(name) x[[name]])
+as.list.midrib <- function(x, ...) {
+  nm <- labels(x)
+  out <- lapply(stats::setNames(nm, nm), function(nm) x[[nm]])
+  structure(out, class = "midlist")
 }
 
 #' @exportS3Method stats::formula
 #'
-formula.midlist <- function(x, ...) {
+formula.midrib <- function(x, ...) {
   formula.mid(x, ...)
 }
 
 #' @exportS3Method stats::model.frame
 #'
-model.frame.midlist <- function(object, ...) {
+model.frame.midrib <- function(object, ...) {
   model.frame.mid(object, ...)
 }
-
-
-#' @export
-#'
-`[.midlist.importance` <- function(x, i, ...) {
-  x <- unclass(x)[i, ...]
-  if (!is.object(x)) class(x) <- "midlist.importance"
-  x
-}
-
-#' @export
-#'
-`[.midlist.conditional` <- function(x, i, ...) {
-  x <- unclass(x)[i, ...]
-  if (!is.object(x)) class(x) <- "midlist.conditional"
-  x
-}
-
-#' @export
-#'
-`[.midlist.breakdown` <- function(x, i, ...) {
-  x <- unclass(x)[i, ...]
-  if (!is.object(x)) class(x) <- "midlist.breakdown"
-  x
-}
-
 
 #' @exportS3Method base::summary
 #'
 summary.midlist.importance <- function(
     object, shape = c("wide", "long"), terms = attr(object, "term.labels"), ...
-  ) {
+) {
   shape <- match.arg(shape)
   terms <- terms %||% mid.terms(object[[1L]])
   if (shape == "wide") {
@@ -124,11 +74,12 @@ summary.midlist.importance <- function(
       res <- x$importance$importance[match(terms, x$importance$term)]
       replace(res, is.na(res), 0)
     }
+    if (is.null(names(object))) names(object) <- labels(object)
     out <- data.frame(
       term = terms, as.data.frame(lapply(object, fun)), check.names = FALSE
     )
   } else {
-    nms <- names(object) %||% as.character(seq_along(object))
+    nms <- labels(object)
     fun.long <- function(x, nm) {
       res <- x$importance[x$importance$term %in% terms, ]
       res$label <- nm
@@ -153,11 +104,12 @@ summary.midlist.breakdown <- function(
       res <- x$breakdown$mid[match(terms, x$breakdown$term)]
       replace(res, is.na(res), 0)
     }
+    if (is.null(names(object))) names(object) <- labels(object)
     out <- data.frame(
       term = terms, as.data.frame(lapply(object, fun)), check.names = FALSE
     )
   } else {
-    nms <- names(object) %||% as.character(seq_along(object))
+    nms <- labels(object)
     fun.long <- function(x, nm) {
       res <- x$breakdown[x$breakdown$term %in% terms, ]
       res$label <- nm
@@ -186,11 +138,12 @@ summary.midlist.conditional <- function(
       res <- x$conditional$yhat[x$conditional$.id %in% ids]
       replace(res, is.na(res), 0)
     }
+    if (is.null(names(object))) names(object) <- labels(object)
     out <- data.frame(
       info, as.data.frame(lapply(X = object, FUN = fun)), check.names = FALSE
     )
   } else {
-    nms <- names(object) %||% as.character(seq_along(object))
+    nms <- labels(object)
     fun.long <- function(x, nm) {
       res <- x$conditional[
         x$conditional$.id %in% ids, c(".id", variable, "yhat"), drop = FALSE

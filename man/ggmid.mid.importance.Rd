@@ -3,7 +3,6 @@
 \name{ggmid.mid.importance}
 \alias{ggmid.mid.importance}
 \alias{autoplot.mid.importance}
-\alias{ggmid.midlist.importance}
 \title{Plot MID Importance with ggplot2}
 \usage{
 \method{ggmid}{mid.importance}(
@@ -16,8 +15,6 @@
 )
 
 \method{autoplot}{mid.importance}(object, ...)
-
-\method{ggmid}{midlist.importance}(object, ...)
 }
 \arguments{
 \item{object}{a "mid.importance" object to be visualized.}
@@ -34,8 +31,6 @@
 }
 \value{
 \code{ggmid.mid.importance()} returns a "ggplot" object.
-
-\code{ggmid.midlist.importance()} returns a list of "ggplot" objects.
 }
 \description{
 For "mid.importance" objects, \code{ggmid()} visualizes the importance of component functions of the fitted MID model.

@@ -30,7 +30,7 @@
 #' plot(imp)
 #'
 #' # Create a dot chart
-#' plot(imp, type = "dotchart", theme = "Okabe-Ito", size = 1.5)
+#' plot(imp, type = "dotchart", theme = "Okabe-Ito", cex = 1.5)
 #'
 #' # Create a heatmap
 #' plot(imp, type = "heatmap")
@@ -39,8 +39,6 @@
 #' plot(imp, type = "boxplot")
 #' @returns
 #' \code{plot.mid.importance()} produces a plot as a side effect and returns \code{NULL} invisibly.
-#'
-#' \code{plot.midlist.importance()} produces multiple plots for each "mid.importance" object.
 #'
 #' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.mid.importance}}
 #'
@@ -60,6 +58,7 @@ plot.mid.importance <- function(
     imp <- imp[match(terms, imp$term, nomatch = 0L), ]
   if (type != "heatmap")
     imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
+  imp$term <- factor(imp$term, levels = rev(imp$term))
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     cols <- if (use.theme) {
@@ -107,8 +106,8 @@ plot.mid.importance <- function(
                  axes = FALSE, xlab = "", ylab = "", lty = 1L, lwd = 1L)
     args <- override(args, dots)
     lcol <- args$col[1L]
-    args$col <- NULL
-    names(args)[4L] <- "col"
+    args$col <- args$fill
+    args$fill <- NULL
     do.call(graphics::image.default, args)
     at <- seq_len(m + 2) - 1
     graphics::axis(1L, at = at, labels = c("", tags, ""))
@@ -136,16 +135,12 @@ plot.mid.importance <- function(
     args <- list(x = plist, fill = cols, col = "black", pch = 16L,
                  xlab = "mid", ylab = NULL, horizontal = TRUE)
     args <- override(args, dots)
-    names(args)[2L:3L] <- c("col", "border")
+    args$border <- args$col
+    args$col <- args$fill
+    args$fill <- NULL
+    args$boxwex <- args$width
+    args$width <- NULL
     do.call(graphics::boxplot.default, args)
   }
-  invisible(NULL)
-}
-
-#' @rdname plot.mid.importance
-#' @exportS3Method base::plot
-#'
-plot.midlist.importance <- function(x, ...) {
-  lapply(X = x, FUN = plot.mid.importance, ...)
   invisible(NULL)
 }

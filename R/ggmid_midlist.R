@@ -1,0 +1,37 @@
+#' Compare MID Component Functions across Multiple Models with ggplot2
+#'
+#' @description
+#' \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.
+#' For "mid" objects (i.e., fitted MID models), it visualizes a single component function specified by the \code{term} argument.
+#'
+#' @details
+#' For "mid" objects, \code{ggmid()} creates a "ggplot" object that visualizes a component function of the fitted MID model.
+#'
+#' The \code{type} argument controls the visualization style.
+#' The default, \code{type = "effect"}, plots the component function itself.
+#' In this style, the plotting method is automatically selected based on the effect's type:
+#' a line plot for quantitative main effects; a bar plot for qualitative main effects; and a raster plot for interactions.
+#' The \code{type = "data"} option creates a scatter plot of \code{data}, colored by the values of the component function.
+#' The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
+#'
+#' @param object a "mid" object to be visualized.
+#' @param ... optional parameters.
+#'
+#' @returns
+#' \code{ggmid.midlist()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid}}, \code{\link{plot.midlist}}
+#'
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midlist <- function(object, ...) {
+  lapply(X = object, FUN = ggmid.mid, ...)
+}
+
+#' @rdname ggmid.midlist
+#'
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.midlist <- function(object, ...) {
+  ggmid.midlist(object = object, ...)
+}

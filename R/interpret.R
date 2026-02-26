@@ -84,7 +84,7 @@
 #' \item{residuals}{a numeric vector of the working residuals.}
 #' \item{na.action}{information about the special handling of \code{NA}s.}
 #'
-#' If a matrix is provided for \code{y}, \code{interpret()} returns an object of class "midlist".
+#' If a matrix is provided for \code{y}, \code{interpret()} returns a "midrib" object, which inherits from "midlist" and contains a list of "mid" objects.
 #'
 #' @seealso \code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.plots}}, \code{\link{mid.effect}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
 #'
@@ -686,7 +686,7 @@ interpret.default <- function(
   }
   # output the result --------
   obj <- list()
-  class(obj) <- if (ntargets == 1L) "mid" else "midlist"
+  class(obj) <- if (ntargets == 1L) "mid" else c("midrib", "midlist")
   obj$model.class <- attr(object, "class")
   obj$call <- cl
   obj$terms <- stats::terms(make.formula(terms, "..y", env = globalenv()))

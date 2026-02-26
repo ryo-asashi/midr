@@ -261,11 +261,3 @@ ggmid.mid <- function(
 autoplot.mid <- function(object, ...) {
   ggmid.mid(object = object, ...)
 }
-
-#' @rdname ggmid
-#'
-#' @exportS3Method midr::ggmid
-#'
-ggmid.midlist <- function(object, ...) {
-  lapply(X = object, FUN = ggmid.mid, ...)
-}

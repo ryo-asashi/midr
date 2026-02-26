@@ -2,7 +2,6 @@
 % Please edit documentation in R/plot_mid_conditional.R
 \name{plot.mid.conditional}
 \alias{plot.mid.conditional}
-\alias{plot.midlist.conditional}
 \title{Plot MID Conditional Expectations}
 \usage{
 \method{plot}{mid.conditional}(
@@ -19,8 +18,6 @@
   sample = NULL,
   ...
 )
-
-\method{plot}{midlist.conditional}(x, ...)
 }
 \arguments{
 \item{x}{a "mid.conditional" object to be visualized.}
@@ -49,8 +46,6 @@
 }
 \value{
 \code{plot.mid.conditional()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
-
-\code{plot.midlist.conditional()} produces multiple plots for each "mid.conditional" object.
 }
 \description{
 For "mid.conditional" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.

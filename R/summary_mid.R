@@ -87,7 +87,7 @@ summary.mid <- function(
     if (inherits(object, "mid")) {
       plot.diagnosis(.obj = object)
     } else if (inherits(object, "midlist")) {
-      lapply(X = as.list.midlist(object), FUN = plot.diagnosis)
+      lapply(X = as.list(object), FUN = plot.diagnosis)
     }
   }
   invisible(object)
@@ -112,8 +112,22 @@ mid.encoding.scheme <- function(object, ...) {
   df
 }
 
+
 #' @exportS3Method base::summary
 #'
-summary.midlist <- function(object, ...) {
-  summary.mid(object, ...)
+summary.midlist <- function(object, max.nmodels = 3L, ...) {
+  if (inherits(object, "midrib"))
+    return(summary.mid(object))
+  nms <- labels(object)
+  nmodels <- length(nms)
+  n <- min(nmodels, max.nmodels)
+  Map(
+    function(obj, nm) {
+      cat("\n$", nm, "\n", sep = "")
+      summary.mid(obj, ...)
+    }, object[seq_len(n), drop = FALSE], nms[seq_len(n)]
+  )
+  if (n < nmodels)
+    cat(sprintf("\n... and %d more models", nmodels - max.nmodels))
+  invisible(object)
 }

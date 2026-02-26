@@ -68,13 +68,22 @@ print.mid <- function(
   invisible(x)
 }
 
+
 #' @exportS3Method base::print
 #'
-print.midlist <- function(x, ...) {
-  if (!is.null(x$intercept)) {
-    print.mid(x, ...)
-  } else {
-    print.default(x, ...)
-  }
+print.midlist <- function(x, max.nmodels = 1L, ...) {
+  if (inherits(x, "midrib"))
+    return(print.mid(x))
+  nms <- labels(x)
+  nmodels <- length(nms)
+  n <- min(nmodels, max.nmodels)
+  Map(
+    function(obj, nm) {
+      cat("\n$", nm, "\n", sep = "")
+      print.mid(obj, ...)
+    }, x[seq_len(n), drop = FALSE], nms[seq_len(n)]
+  )
+  if (n < nmodels && n > 0L)
+    cat(sprintf("\n... and %d more models", nmodels - max.nmodels))
   invisible(x)
 }

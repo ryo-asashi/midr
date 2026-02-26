@@ -103,9 +103,22 @@ adjusted.mai <- function(labels, margin = 1/16) {
   mai
 }
 
+make_mat <- function(x, nrow, ncol) {
+  if (length(x) == ncol && ncol > 1L) {
+    matrix(x, nrow = nrow, ncol = ncol, byrow = TRUE)
+  } else if (length(x) == nrow) {
+    matrix(x, nrow = nrow, ncol = ncol, byrow = FALSE)
+  } else if (length(x) == 1L) {
+    matrix(x, nrow = nrow, ncol = ncol)
+  } else {
+    message("length of 'x' doesn't match 'nrow' nor 'ncol'")
+    matrix(x, nrow = nrow, ncol = ncol)
+  }
+}
+
 barplot2 <- function(
-    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL, width = .9,
-    type = c("b", "d", "n"), col = NA, fill = "gray65", lty = NULL, lwd = 1L,
+    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL, width = NULL,
+    type = c("b", "d", "n"), col = NA, fill = "gray65", lty = NULL, lwd = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, cex = 1, pch = 16, ...
 ) {
   type <- match.arg(type)
@@ -114,11 +127,13 @@ barplot2 <- function(
     on.exit(graphics::par(opar))
     graphics::par(mai = adjusted.mai(labels = labels), las = 1L)
   }
-  n <- max(length(to), length(from))
-  to <- rep(to, length.out = n)
-  from <- rep(from, length.out = n)
-  col <- rep(col, length.out = n)
-  fill <- rep(fill, length.out = n)
+  to <- as.matrix(to)
+  n <- nrow(to)
+  m <- ncol(to)
+  from <- make_mat(from, n, m)
+  col <- make_mat(col, n, m)
+  fill <- make_mat(fill, n, m)
+  pch <- make_mat(pch, n, m)
   rng <- range(c(to, from), na.rm = TRUE)
   mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
   limits <- limits %||% c(rng[1L] - mgn, rng[2L] + mgn)
@@ -131,7 +146,9 @@ barplot2 <- function(
   graphics::axis(side = if (horizontal) 1L else 2L)
   graphics::axis(side = if (horizontal) 2L else 1L, at = at, labels = labels)
   if (type == "b") {
-    hw <- width / 2
+    bw <- (width %||% 0.9) / m
+    offsets <- (seq_len(m) - (m + 1) / 2) * bw
+    hw <- bw / 2
     args <- as.list(numeric(8L))
     names(args) <- if (horizontal) {
       c("xleft", "xright", "ybottom", "ytop", "col", "border", "lty", "lwd")
@@ -141,26 +158,34 @@ barplot2 <- function(
     args[[7L]] <- lty %||% 1L
     args[[8L]] <- lwd %||% 1L
     for (i in seq_len(n)) {
-      args[[1L]] <- from[i]
-      args[[2L]] <- to[i]
-      args[[3L]] <- at[i] - hw
-      args[[4L]] <- at[i] + hw
-      args[[5L]] <- fill[i]
-      args[[6L]] <- col[i]
-      do.call(graphics::rect, args)
+      for (j in seq_len(m)) {
+        center <- at[i] + offsets[j]
+        args[[1L]] <- from[i, j]
+        args[[2L]] <- to[i, j]
+        args[[3L]] <- center - hw
+        args[[4L]] <- center + hw
+        args[[5L]] <- fill[i, j]
+        args[[6L]] <- col[i, j]
+        do.call(graphics::rect, args)
+      }
     }
   } else if (type == "d") {
+    offsets <- (seq_len(m) - (m + 1) / 2) * (width %||% .6 / m)
+    lcol <- graphics::par("fg") %||% "black"
     for (i in seq_len(n)) {
-      graphics::lines.default(
-        x = if (horizontal) c(from[i], to[i]) else c(at[i], at[i]),
-        y = if (horizontal) c(at[i], at[i]) else c(from[i], to[i]),
-        col = "black", lty = lty %||% 3L, lwd = lwd %||% 1L
-      )
-      graphics::points.default(
-        x = if (horizontal) to[i] else at[i],
-        y = if (horizontal) at[i] else to[i],
-        col = col[i], pch = pch, cex = cex
-      )
+      for (j in seq_len(m)) {
+        center <- at[i] + offsets[j]
+        graphics::lines.default(
+          x = if (horizontal) c(from[i, j], to[i, j]) else c(center, center),
+          y = if (horizontal) c(center, center) else c(from[i, j], to[i, j]),
+          col = lcol, lty = lty %||% 3L, lwd = lwd %||% graphics::par("lwd")
+        )
+        graphics::points.default(
+          x = if (horizontal) to[i, j] else center,
+          y = if (horizontal) center else to[i, j],
+          col = col[i, j], pch = pch[i, j], cex = cex
+        )
+      }
     }
   }
   invisible(NULL)
@@ -169,10 +194,11 @@ barplot2 <- function(
 override <- function(args, dots,
     params = c("fill", "color", "colour", "col", "size", "cex", "shape", "pch",
                "linetype", "lty", "linewidth", "lwd",
-               "title", "main", "subtitle", "sub", "xlab", "ylab", "limits"),
+               "title", "main", "subtitle", "sub", "xlab", "ylab",
+               "limits", "width", "boxwex", "horizontal"),
     read.as = list(color = "col", colour = "col", size = "cex",
                    shape = "pch", linetype = "lty", linewidth = "lwd",
-                   title = "main", subtitle = "sub")
+                   title = "main", subtitle = "sub", boxwex = "width")
   ) {
   for (param in params) {
     arg <- read.as[[param]] %||% param
@@ -233,4 +259,32 @@ formula.mid <- function(x, ...) {
 #'
 model.frame.mid <- function(object, ...) {
   model.reframe(object, data = model.data(object))
+}
+
+
+geom_dotchart <- function(
+    mapping = NULL, data = NULL, position = "identity", ...
+) {
+  dots <- list(...)
+  tlin <- ggplot2::theme_get()$line
+  line_params  <- c(
+    "alpha", "linetype", "lty", "linewidth", "lwd"
+  )
+  line_args <- c(
+    list(mapping = mapping, data = data, position = position),
+    override(list(col = tlin$colour, lty = 3L, lwd = tlin$linewidth),
+             dots[names(dots) %in% line_params])
+  )
+  point_params <- c(
+    "color", "colour", "alpha", "shape", "pch", "size", "cex", "fill"
+  )
+  mapping$xmin <- mapping$xmax <- mapping$ymin <- mapping$ymax <- NULL
+  point_args <- c(
+    list(mapping = mapping, data = data, position = position),
+    dots[names(dots) %in% point_params]
+  )
+  list(
+    do.call(ggplot2::geom_linerange, line_args),
+    do.call(ggplot2::geom_point, point_args)
+  )
 }

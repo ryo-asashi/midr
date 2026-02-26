@@ -40,8 +40,6 @@
 #' @returns
 #' \code{ggmid.mid.importance()} returns a "ggplot" object.
 #'
-#' \code{ggmid.midlist.importance()} returns a list of "ggplot" objects.
-#'
 #' @seealso \code{\link{mid.importance}}, \code{\link{ggmid}}, \code{\link{plot.mid.importance}}
 #'
 #' @exportS3Method midr::ggmid
@@ -59,6 +57,7 @@ ggmid.mid.importance <- function(
     imp <- imp[match(terms, imp$term, nomatch = 0L), ]
   if (type != "heatmap")
     imp <- imp[1L:min(max.nterms, nrow(imp), na.rm = TRUE), ]
+  imp$term <- factor(imp$term, levels = rev(imp$term))
   # barplot and dotchart
   if (type == "barplot" || type == "dotchart") {
     pl <- ggplot2::ggplot(
@@ -72,11 +71,9 @@ ggmid.mid.importance <- function(
           scale_fill_theme(theme = theme)
       }
     } else if (type == "dotchart") {
-      tli <- ggplot2::theme_get()$line
-      pl <- pl + ggplot2::geom_linerange(color = tli$colour %||% "black",
-        linewidth = tli$linewidth %||% 0.5, linetype = 3L,
-        ggplot2::aes(xmin = 0, xmax = .data[["importance"]])) +
-        ggplot2::geom_point(...)
+      pl <- pl + geom_dotchart(
+        mapping = ggplot2::aes(xmin = 0, xmax = .data[["importance"]]), ...
+      )
       if (use.theme) {
         var <- if (theme$type == "qualitative") "order" else "importance"
         pl <- pl + ggplot2::aes(color = .data[[var]]) +
@@ -91,7 +88,7 @@ ggmid.mid.importance <- function(
     ftag <- sapply(spt, function(x) x[1L])
     stag <- sapply(spt, function(x) x[2L])
     stag <- ifelse(is.na(stag), ftag, stag)
-    levs <- unique(spt)
+    levs <- unique(unlist(spt))
     fr <- data.frame(x = factor(c(stag, ftag), levels = levs),
                      y = factor(c(ftag, stag), levels = levs),
                      importance = rep.int(imp$importance, 2L))
@@ -106,14 +103,17 @@ ggmid.mid.importance <- function(
   } else if (type == "boxplot") {
     terms <- as.character(imp$term)
     preds <- object$predictions
-    preds_vec <- unlist(lapply(terms, function(term) preds[, term]))
+    preds_vec <- as.numeric(preds[, terms, drop = FALSE])
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
     pl <- ggplot2::ggplot(box) + ggplot2::geom_boxplot(
         ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...
       )
     if (use.theme) {
-      pl$data <- merge(box, imp, by = "term", all.x = TRUE)
+      idx <- match(box$term, imp$term)
+      box$importance <- imp$importance[idx]
+      if ("order" %in% names(imp)) box$order <- imp$order[idx]
+      pl$data <- box
       var <- if (theme$type == "qualitative") "order" else "importance"
       pl <- pl + ggplot2::aes(fill = .data[[var]], group = .data[["term"]]) +
         scale_fill_theme(theme = theme)
@@ -129,11 +129,4 @@ ggmid.mid.importance <- function(
 #'
 autoplot.mid.importance <- function(object, ...) {
   ggmid.mid.importance(object = object, ...)
-}
-
-#' @rdname ggmid.mid.importance
-#' @exportS3Method midr::ggmid
-#'
-ggmid.midlist.importance <- function(object, ...) {
-  lapply(X = object, FUN = ggmid.mid.importance, ...)
 }

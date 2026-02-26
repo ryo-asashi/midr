@@ -3,7 +3,6 @@
 \name{ggmid.mid.breakdown}
 \alias{ggmid.mid.breakdown}
 \alias{autoplot.mid.breakdown}
-\alias{ggmid.midlist.breakdown}
 \title{Plot MID Breakdowns with ggplot2}
 \usage{
 \method{ggmid}{mid.breakdown}(
@@ -21,8 +20,6 @@
 )
 
 \method{autoplot}{mid.breakdown}(object, ...)
-
-\method{ggmid}{midlist.breakdown}(object, ...)
 }
 \arguments{
 \item{object}{a "mid.breakdown" object to be visualized.}
@@ -49,8 +46,6 @@
 }
 \value{
 \code{ggmid.mid.breakdown()} returns a "ggplot" object.
-
-\code{ggmid.midlist.breakdown()} returns a list of "ggplot" objects.
 }
 \description{
 For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.

@@ -69,6 +69,17 @@ reference:
   - print.mid
   - summary.mid
   - mid.terms
+- title: Collection of MID models
+  contents:
+  - midlist
+- subtitle: Methods
+  - labels.midlist
+  - extract.midlist
+  - plot.midlist
+  - ggmid.midlist
+  # - predict.midlist
+  # - print.midlist
+  # - summary.midlist
 - title: Importance of effects
   contents:
   - mid.importance
@@ -76,6 +87,8 @@ reference:
   contents:
   - plot.mid.importance
   - ggmid.mid.importance
+  - plot.midlist.importance
+  - ggmid.midlist.importance
 - title: Breakdown of predictions
   contents:
   - mid.breakdown
@@ -83,6 +96,8 @@ reference:
   contents:
   - plot.mid.breakdown
   - ggmid.mid.breakdown
+  - plot.midlist.breakdown
+  - ggmid.midlist.breakdown
 - title: Conditional expectations
   contents:
   - mid.conditional
@@ -90,6 +105,8 @@ reference:
   contents:
   - plot.mid.conditional
   - ggmid.mid.conditional
+  - plot.midlist.conditional
+  - ggmid.midlist.conditional
 - title: Other functions
   contents:
   - get.yhat

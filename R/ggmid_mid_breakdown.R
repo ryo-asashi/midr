@@ -41,8 +41,6 @@
 #' @returns
 #' \code{ggmid.mid.breakdown()} returns a "ggplot" object.
 #'
-#' \code{ggmid.midlist.breakdown()} returns a list of "ggplot" objects.
-#'
 #' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid}}, \code{\link{plot.mid.breakdown}}
 #'
 #' @exportS3Method midr::ggmid
@@ -178,11 +176,4 @@ ggmid.mid.breakdown <- function(
 #'
 autoplot.mid.breakdown <- function(object, ...) {
   ggmid.mid.breakdown(object = object, ...)
-}
-
-#' @rdname ggmid.mid.breakdown
-#' @exportS3Method midr::ggmid
-#'
-ggmid.midlist.breakdown <- function(object, ...) {
-  lapply(X = object, FUN = ggmid.mid.breakdown, ...)
 }

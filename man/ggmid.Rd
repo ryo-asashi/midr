@@ -4,7 +4,6 @@
 \alias{ggmid}
 \alias{ggmid.mid}
 \alias{autoplot.mid}
-\alias{ggmid.midlist}
 \title{Plot MID Component Functions with ggplot2}
 \usage{
 ggmid(object, ...)
@@ -25,8 +24,6 @@ ggmid(object, ...)
 )
 
 \method{autoplot}{mid}(object, ...)
-
-\method{ggmid}{midlist}(object, ...)
 }
 \arguments{
 \item{object}{a "mid" object to be visualized.}

@@ -42,8 +42,6 @@
 #' @returns
 #' \code{plot.mid.conditional()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
 #'
-#' \code{plot.midlist.conditional()} produces multiple plots for each "mid.conditional" object.
-#'
 #' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.mid.conditional}}
 #'
 #' @exportS3Method base::plot
@@ -155,17 +153,4 @@ plot.mid.conditional <- function(
                              pch = 16L, col = dcol)
   }
   invisible(mat)
-}
-
-#' @rdname plot.mid.conditional
-#' @exportS3Method base::plot
-#'
-plot.midlist.conditional <- function(x, ...) {
-  mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(lapply)
-  mcall[["x"]] <- NULL
-  mcall[["X"]] <- x
-  mcall[["FUN"]] <- quote(plot.mid.conditional)
-  eval(mcall, parent.frame())
-  invisible(NULL)
 }

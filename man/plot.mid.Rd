@@ -2,7 +2,6 @@
 % Please edit documentation in R/plot_mid.R
 \name{plot.mid}
 \alias{plot.mid}
-\alias{plot.midlist}
 \title{Plot MID Component Functions}
 \usage{
 \method{plot}{mid}(
@@ -19,8 +18,6 @@
   lumped = TRUE,
   ...
 )
-
-\method{plot}{midlist}(x, ...)
 }
 \arguments{
 \item{x}{a "mid" object to be visualized.}
@@ -49,8 +46,6 @@
 }
 \value{
 \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
-
-\code{plot.midlist()} produces multiple plots for each "mid" object.
 }
 \description{
 For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.

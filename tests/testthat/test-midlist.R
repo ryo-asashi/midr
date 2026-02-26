@@ -1,4 +1,4 @@
-make_mock_midlist <- function() {
+make_mock_midrib <- function() {
   x <- list(
     intercept = c(m1 = 1.0, m2 = 2.0, m3 = 3.0),
     main.effects = list(
@@ -13,7 +13,7 @@ make_mock_midlist <- function() {
     residuals = matrix(0.1, nrow = 2, ncol = 3),
     ratio = c(m1 = 0.5, m2 = 0.6, m3 = 0.7)
   )
-  class(x) <- "midlist"
+  class(x) <- c("midrib", "midlist")
   x
 }
 
@@ -61,31 +61,31 @@ make_mock_conditional <- function() {
   x
 }
 
-test_that("[.midlist subsets correctly with positive indices", {
-  ml <- make_mock_midlist()
+test_that("[.midrib subsets correctly with positive indices", {
+  ml <- make_mock_midrib()
   sub2 <- ml[c(1, 3)]
-  expect_s3_class(sub2, "midlist")
+  expect_s3_class(sub2, "midrib")
   expect_equal(names(sub2$intercept), c("m1", "m3"))
   expect_equal(ncol(sub2$fitted.values), 2)
   expect_equal(length(sub2$ratio), 2)
 })
 
-test_that("[.midlist drops to 'mid' class when length(i) == 1", {
-  ml <- make_mock_midlist()
+test_that("[.midrib drops to 'mid' class when length(i) == 1", {
+  ml <- make_mock_midrib()
   sub1 <- ml[2]
   expect_s3_class(sub1, "mid")
   expect_null(names(sub1$intercept))
   expect_null(names(sub1$ratio))
   expect_equal(sub1$intercept, 2.0, ignore_attr = TRUE)
   sub1_nodrop <- ml[2, drop = FALSE]
-  expect_s3_class(sub1_nodrop, "midlist")
+  expect_s3_class(sub1_nodrop, "midrib")
   expect_equal(names(sub1_nodrop$intercept), "m2")
 })
 
-test_that("[.midlist handles negative indices (Negative Indexing)", {
-  ml <- make_mock_midlist()
+test_that("[.midrib handles negative indices (Negative Indexing)", {
+  ml <- make_mock_midrib()
   sub_neg <- ml[-1]
-  expect_s3_class(sub_neg, "midlist")
+  expect_s3_class(sub_neg, "midrib")
   expect_equal(names(sub_neg$intercept), c("m2", "m3"))
   sub_neg2 <- ml[-c(1, 3)]
   expect_s3_class(sub_neg2, "mid")
@@ -93,30 +93,30 @@ test_that("[.midlist handles negative indices (Negative Indexing)", {
   expect_error(ml[c(1, -2)], "only 0's may be mixed with negative subscripts")
 })
 
-test_that("[.midlist handles character and logical indices", {
-  ml <- make_mock_midlist()
+test_that("[.midrib handles character and logical indices", {
+  ml <- make_mock_midrib()
   expect_equal(names(ml[c("m1", "m3")]$intercept), c("m1", "m3"))
   sub_log <- ml[c(TRUE, FALSE, TRUE)]
   expect_equal(names(sub_log$intercept), c("m1", "m3"))
 })
 
-test_that("[.midlist edge cases and errors", {
-  ml <- make_mock_midlist()
+test_that("[.midrib edge cases and errors", {
+  ml <- make_mock_midrib()
   expect_error(ml[c(1, 4)], "subscript out of bounds")
   expect_error(ml[NA], "undefined item selected")
   expect_equal(names(ml[c(0, 1, 2)]$intercept), c("m1", "m2"))
   expect_null(ml[0])
 })
 
-test_that("[[.midlist extracts a single element", {
-  ml <- make_mock_midlist()
+test_that("[[.midrib extracts a single element", {
+  ml <- make_mock_midrib()
   expect_s3_class(ml[[1]], "mid")
   expect_s3_class(ml[["m2"]], "mid")
   expect_error(ml[[c(1, 2)]], "attempt to select more than one element")
 })
 
-test_that("as.list.midlist converts to a list of 'mid' objects", {
-  ml <- make_mock_midlist()
+test_that("as.list.midrib converts to a list of 'mid' objects", {
+  ml <- make_mock_midrib()
   lst <- as.list(ml)
   expect_type(lst, "list")
   expect_equal(length(lst), 3)
@@ -164,6 +164,6 @@ test_that("summary.midlist.conditional works for wide and long shapes", {
 
 test_that("[.midlist.importance preserves class", {
   ml_imp <- make_mock_importance()
-  sub_imp <- ml_imp[1]
+  sub_imp <- ml_imp[1, drop = FALSE]
   expect_s3_class(sub_imp, "midlist.importance")
 })

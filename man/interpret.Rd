@@ -137,7 +137,7 @@ interpret(object, ...)
 \item{residuals}{a numeric vector of the working residuals.}
 \item{na.action}{information about the special handling of \code{NA}s.}
 
-If a matrix is provided for \code{y}, \code{interpret()} returns an object of class "midlist".
+If a matrix is provided for \code{y}, \code{interpret()} returns a "midrib" object, which inherits from "midlist" and contains a list of "mid" objects.
 }
 \description{
 \code{interpret()} is used to fit a Maximum Interpretation Decomposition (MID) model.

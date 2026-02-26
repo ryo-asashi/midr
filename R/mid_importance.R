@@ -47,7 +47,7 @@ mid.importance <- function(
     max.nsamples = 1e4L, seed = NULL) {
   if (inherits(object, "midlist")) {
     if (missing(max.nsamples))
-      max.nsamples <- max(100L, 1e4L %/% length(object$intercept))
+      max.nsamples <- max(100L, 1e4L %/% length(labels(object)))
     if (missing(seed)) seed <- sample(1e6L, 1L)
     out <- suppressMessages(lapply(
       X = object, FUN = mid.importance, data = data, weights = weights,

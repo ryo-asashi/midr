@@ -3,7 +3,6 @@
 \name{ggmid.mid.conditional}
 \alias{ggmid.mid.conditional}
 \alias{autoplot.mid.conditional}
-\alias{ggmid.midlist.conditional}
 \title{Plot MID Conditional Expectations with ggplot2}
 \usage{
 \method{ggmid}{mid.conditional}(
@@ -22,8 +21,6 @@
 )
 
 \method{autoplot}{mid.conditional}(object, ...)
-
-\method{ggmid}{midlist.conditional}(object, ...)
 }
 \arguments{
 \item{object}{a "mid.conditional" object to be visualized.}
@@ -52,8 +49,6 @@
 }
 \value{
 \code{ggmid.mid.conditional()} returns a "ggplot" object.
-
-\code{ggmid.midlist.conditional()} returns a list of "ggplot" objects.
 }
 \description{
 For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.

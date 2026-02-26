@@ -41,8 +41,6 @@
 #' @returns
 #' \code{plot.mid.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' \code{plot.midlist.breakdown()} produces multiple plots for each "mid.breakdown" object.
-#'
 #' @seealso \code{\link{mid.breakdown}}, \code{\link{ggmid.mid.breakdown}}
 #'
 #' @exportS3Method base::plot
@@ -144,13 +142,5 @@ plot.mid.breakdown <- function(
     if (vline)
       graphics::abline(v = x$intercept, lty = 3L)
   }
-  invisible(NULL)
-}
-
-#' @rdname plot.mid.breakdown
-#' @exportS3Method base::plot
-#'
-plot.midlist.breakdown <- function(x, ...) {
-  lapply(X = x, FUN = plot.mid.breakdown, ...)
   invisible(NULL)
 }

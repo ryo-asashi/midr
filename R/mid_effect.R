@@ -38,8 +38,8 @@
 #' @export mid.effect
 #'
 mid.effect <- function(object, term, x, y = NULL) {
-  if (!inherits(object, "mid") && !inherits(object, "midlist"))
-    stop("'object' must be 'mid' or 'midlist'")
+  if (!inherits(object, "mid") && !inherits(object, "midrib"))
+    stop("'object' must be 'mid' or 'midrib'")
   checked <- term.check(term, mid.terms(object), stop = FALSE)
   tags <- term.split(term)
   ie <- (length(tags) == 2L)

@@ -116,16 +116,18 @@ predict.mid <- function(
   return(structure(preds, na.action = naa))
 }
 
-#' @rdname predict.mid
-#'
+
 #' @exportS3Method stats::predict
 #'
 predict.midlist <- function(
     object, ...
-  ) {
+) {
   type <- list(...)$type
   if (!is.null(type) && type == "terms") {
-    return(lapply(X = object, FUN = predict.mid, ...))
+    lapply(X = object, FUN = predict.mid, ...)
+  } else if (inherits(object, "midrib")) {
+    predict.mid(object, ...)
+  } else {
+    sapply(X = object, FUN = predict.mid, ...)
   }
-  predict.mid(object, ...)
 }
