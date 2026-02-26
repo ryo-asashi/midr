@@ -1,4 +1,4 @@
-#' Compare MID Breakdowns across Multiple Models with ggplot2
+#' Compare MID Breakdowns with ggplot2
 #'
 #' @description
 #' For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.

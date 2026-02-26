@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midlist_conditional.R
 \name{plot.midlist.conditional}
 \alias{plot.midlist.conditional}
-\title{Compare MID Conditional Expectations across Multiple Models}
+\title{Compare MID Conditional Expectations in a Collection}
 \usage{
 \method{plot}{midlist.conditional}(x, ...)
 }

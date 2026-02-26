@@ -1,4 +1,4 @@
-#' Compare MID Breakdowns across Multiple Models
+#' Compare MID Breakdowns in a Collection
 #'
 #' @description
 #' For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.

@@ -5,7 +5,7 @@
 \alias{labels<-}
 \alias{labels<-.midrib}
 \alias{labels<-.midlist}
-\title{Modify Labels of a Collection of MID Models}
+\title{Label MID Models in a Collection}
 \usage{
 \method{labels}{midrib}(object, ...)
 

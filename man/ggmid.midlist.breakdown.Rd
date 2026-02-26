@@ -3,7 +3,7 @@
 \name{ggmid.midlist.breakdown}
 \alias{ggmid.midlist.breakdown}
 \alias{autoplot.midlist.breakdown}
-\title{Compare MID Breakdowns across Multiple Models with ggplot2}
+\title{Compare MID Breakdowns with ggplot2}
 \usage{
 \method{ggmid}{midlist.breakdown}(object, ...)
 

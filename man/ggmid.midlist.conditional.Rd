@@ -3,7 +3,7 @@
 \name{ggmid.midlist.conditional}
 \alias{ggmid.midlist.conditional}
 \alias{autoplot.midlist.conditional}
-\title{Compare MID Conditional Expectations across Multiple Models with ggplot2}
+\title{Compare MID Conditional Expectations with ggplot2}
 \usage{
 \method{ggmid}{midlist.conditional}(object, ...)
 

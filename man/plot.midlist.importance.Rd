@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midlist_importance.R
 \name{plot.midlist.importance}
 \alias{plot.midlist.importance}
-\title{Compare MID Importance across Multiple Models}
+\title{Compare MID Importance in a Collection}
 \usage{
 \method{plot}{midlist.importance}(
   x,

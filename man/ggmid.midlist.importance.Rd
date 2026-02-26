@@ -3,7 +3,7 @@
 \name{ggmid.midlist.importance}
 \alias{ggmid.midlist.importance}
 \alias{autoplot.midlist.importance}
-\title{Compare MID Importance across Multiple Models with ggplot2}
+\title{Compare MID Importance with ggplot2}
 \usage{
 \method{ggmid}{midlist.importance}(
   object,

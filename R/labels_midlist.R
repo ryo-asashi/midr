@@ -1,4 +1,4 @@
-#' Modify Labels of a Collection of MID Models
+#' Label MID Models in a Collection
 #'
 #' @description
 #' S3 methods to get/set the labels (model names) of a "midrib" or "midlist" object.

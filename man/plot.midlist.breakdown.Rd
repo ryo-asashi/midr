@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midlist_breakdown.R
 \name{plot.midlist.breakdown}
 \alias{plot.midlist.breakdown}
-\title{Compare MID Breakdowns across Multiple Models}
+\title{Compare MID Breakdowns in a Collection}
 \usage{
 \method{plot}{midlist.breakdown}(x, ...)
 }

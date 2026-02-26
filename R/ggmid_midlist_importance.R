@@ -1,4 +1,4 @@
-#' Compare MID Importance across Multiple Models with ggplot2
+#' Compare MID Importance with ggplot2
 #'
 #' @description
 #' For "midlist.importance" objects, \code{ggmid()} visualizes and compares the importance of component functions across multiple fitted MID models.

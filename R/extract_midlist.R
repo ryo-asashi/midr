@@ -1,4 +1,4 @@
-#' Extract Parts of a Collection of MID Models
+#' Subset MID Models in a Collection
 #'
 #' @description
 #' S3 methods to extract parts of a "midrib" or "midlist" object.

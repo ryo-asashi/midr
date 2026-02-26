@@ -1,4 +1,4 @@
-#' Compare MID Conditional Expectations across Multiple Models with ggplot2
+#' Compare MID Conditional Expectations with ggplot2
 #'
 #' @description
 #' For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.

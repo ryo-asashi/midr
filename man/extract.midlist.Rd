@@ -5,7 +5,7 @@
 \alias{[.midrib}
 \alias{[[.midrib}
 \alias{[.midlist}
-\title{Extract Parts of a Collection of MID Models}
+\title{Subset MID Models in a Collection}
 \usage{
 \method{[}{midrib}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
 

@@ -1,4 +1,4 @@
-#' Compare MID Component Functions across Multiple Models with ggplot2
+#' Compare MID Component Functions with ggplot2
 #'
 #' @description
 #' \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.

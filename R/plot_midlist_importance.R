@@ -1,4 +1,4 @@
-#' Compare MID Importance across Multiple Models
+#' Compare MID Importance in a Collection
 #'
 #' @description
 #' For "midlist.importance" objects, \code{plot()} visualizes and compares the importance of component functions across multiple fitted MID models.

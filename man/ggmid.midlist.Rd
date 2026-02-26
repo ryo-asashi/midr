@@ -3,7 +3,7 @@
 \name{ggmid.midlist}
 \alias{ggmid.midlist}
 \alias{autoplot.midlist}
-\title{Compare MID Component Functions across Multiple Models with ggplot2}
+\title{Compare MID Component Functions with ggplot2}
 \usage{
 \method{ggmid}{midlist}(object, ...)
 
