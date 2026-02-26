@@ -73,6 +73,7 @@ reference:
   contents:
   - midlist
 - subtitle: Methods
+  contents:
   - labels.midlist
   - extract.midlist
   - plot.midlist
