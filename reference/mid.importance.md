@@ -57,8 +57,8 @@ mid.importance(
 
 ## Value
 
-`mid.importance()` returns an object of class "mid.importance". This is
-a list containing the following components:
+`mid.importance()` returns an object of class "midimp". This is a list
+containing the following components:
 
 - importance:
 
@@ -75,7 +75,7 @@ a list containing the following components:
   a character string describing the type of the importance measure used.
 
 For "midlist", `mid.importance()` returns an object of class
-"midlist.importance", a list of "mid.importance" objects.
+"midimps"-"midlist", a list of "midimp" objects.
 
 ## Details
 
@@ -96,8 +96,8 @@ contribution to the model.
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`plot.mid.importance`](https://ryo-asashi.github.io/midr/reference/plot.mid.importance.md),
-[`ggmid.mid.importance`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
+[`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
+[`ggmid.midimp`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md)
 
 ## Examples
 

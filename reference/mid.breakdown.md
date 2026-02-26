@@ -36,8 +36,8 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 
 ## Value
 
-`mid.breakdown()` returns an object of class "mid.breakdown". This is a
-list with the following components:
+`mid.breakdown()` returns an object of class "midbrk". This is a list
+with the following components:
 
 - breakdown:
 
@@ -57,7 +57,7 @@ list with the following components:
   the predicted value from the MID model.
 
 For "midlist", `mid.breakdown()` returns an object of class
-"midlist.breakdown", a list of "mid.breakdown" objects.
+"midbrks"-"midlist", a list of "midbrk" objects.
 
 ## Details
 
@@ -78,8 +78,8 @@ to specific features or their combinations.
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`plot.mid.breakdown`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md),
-[`ggmid.mid.breakdown`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
+[`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
+[`ggmid.midbrk`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
 
 ## Examples
 
@@ -89,8 +89,8 @@ mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #> 'model' not passed: response variable in 'data' is used
 
 # Calculate the breakdown for the first observation in the data
-mbd <- mid.breakdown(mid, data = airquality, row = 1)
-print(mbd)
+brk <- mid.breakdown(mid, data = airquality, row = 1)
+print(brk)
 #> 
 #> MID Breakdown of a Prediction
 #> 
@@ -117,8 +117,8 @@ print(mbd)
 #> 15  Solar.R:Wind -1.0171e-04     2
 
 # Calculate the breakdown for the third observation in the data
-mbd <- mid.breakdown(mid, data = airquality, row = 3)
-print(mbd)
+brk <- mid.breakdown(mid, data = airquality, row = 3)
+print(brk)
 #> 
 #> MID Breakdown of a Prediction
 #> 

@@ -1,8 +1,9 @@
 # Predict Method for fitted MID Models
 
-`predict.mid()` is an S3 method for "mid" objects that obtains
-predictions from a fitted MID model. It can be used to predict on new
-data or to retrieve the fitted values from the original data.
+[`predict()`](https://rdrr.io/r/stats/predict.html) methods for
+obtaining predictions from a fitted MID model ("mid") or a collection of
+MID models ("mids"). It can be used to predict on new data or to
+retrieve the fitted values from the original data.
 
 ## Usage
 
@@ -16,13 +17,17 @@ predict(
   terms = mid.terms(object),
   ...
 )
+
+# S3 method for class 'mids'
+predict(object, ...)
 ```
 
 ## Arguments
 
 - object:
 
-  a "mid" object to be used to make predictions.
+  a fitted model object of class "mid", or a collection object ("mids")
+  to be used for prediction.
 
 - newdata:
 
@@ -46,15 +51,16 @@ predict(
 
 - ...:
 
-  arguments to be passed to other methods (not used in this method).
+  further arguments passed to or from other methods.
 
 ## Value
 
-`predict.mid()` returns a numeric vector of MID model predictions, or a
-matrix if `type = "terms"`.
+For a single "mid" object, `predict.mid()` returns a numeric vector if
+`type` is "response" or "link", or a numeric matrix if `type = "terms"`.
 
-`predict.midlist()` returns a matrix of predictions, or a list of matrix
-if `type = "terms"`.
+For a collection ("mids"), `predict.mids()` returns a numeric matrix
+where each column corresponds to a model if `type` is "response" or
+"link", or a list of numeric matrices if `type = "terms"`.
 
 ## Details
 

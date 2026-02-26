@@ -77,12 +77,9 @@ efficiency improvements for large-scale data analysis.
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
   and
   [`predict.mid()`](https://ryo-asashi.github.io/midr/reference/predict.mid.md).
-- Flexible formatting:
-  [`plot.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
-  and
-  [`ggmid.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
-  now support `format.args` and enhanced `label.format` for better
-  visualization control.
+- Flexible formatting: `plot.mid.breakdown()` and
+  `ggmid.mid.breakdown()` now support `format.args` and enhanced
+  `label.format` for better visualization control.
 - CRAN compatibility: Updated various internal functions to ensure
   consistent behavior with the ‘stats’ package (especially with
   [`stats::terms()`](https://rdrr.io/r/stats/terms.html)) and improved
@@ -100,26 +97,19 @@ efficiency improvements for large-scale data analysis.
 - The `format` argument in
   [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
   is deprecated.
-- [`plot.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
-  and
-  [`ggmid.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
-  now have a new argument `format.args`, which is passed to
+- `plot.mid.breakdown()` and `ggmid.mid.breakdown()` now have a new
+  argument `format.args`, which is passed to
   [`base::format()`](https://rdrr.io/r/base/format.html) to format the
   predictor values stored in “mid.breakdown” objects.
-- The `format` argument in
-  [`plot.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/plot.mid.breakdown.md)
-  and
-  [`ggmid.mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md)
-  is renamed to `label.format`. The formatting strings now support more
-  flexible formats, such as “%t=%v, %t=%v” for interactions.
+- The `format` argument in `plot.mid.breakdown()` and
+  `ggmid.mid.breakdown()` is renamed to `label.format`. The formatting
+  strings now support more flexible formats, such as “%t=%v, %t=%v” for
+  interactions.
 
 ## midr 0.5.2.905
 
-- Updated
-  [`ggmid.mid.importance()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md)
-  and
-  [`plot.mid.importance()`](https://ryo-asashi.github.io/midr/reference/plot.mid.importance.md)
-  to modify appearance of the plots when color themes are applied.
+- Updated `ggmid.mid.importance()` and `plot.mid.importance()` to modify
+  appearance of the plots when color themes are applied.
 
 ## midr 0.5.2.904
 
@@ -249,9 +239,8 @@ Second release on CRAN.
   [`mid.f()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
   ([`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md))
   to correctly handle vector recycling when an input’s length is 1.
-- Fixed
-  [`autoplot.mid.conditional()`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md)
-  to avoid redundant evaluation of the “mid” object.
+- Fixed `autoplot.mid.conditional()` to avoid redundant evaluation of
+  the “mid” object.
 - Updated the automatic determination method for the number of knots
   (`k`) in
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md).

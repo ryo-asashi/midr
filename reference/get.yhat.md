@@ -20,7 +20,7 @@ get.yhat(object, newdata, ...)
 # S3 method for class 'mid'
 get.yhat(object, newdata, ...)
 
-# S3 method for class 'midlist'
+# S3 method for class 'mids'
 get.yhat(object, newdata, ..., target = NULL)
 
 # S3 method for class 'rpart'

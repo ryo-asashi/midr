@@ -18,7 +18,7 @@ mid.f(object, term, x, y = NULL)
 
 - object:
 
-  a "mid" object.
+  a "mid" object or a collection of models ("mids").
 
 - term:
 
@@ -28,20 +28,21 @@ mid.f(object, term, x, y = NULL)
 - x:
 
   a vector of values for the first variable in the term. If a matrix or
-  data frame is provided, values of the related variables are extracted
-  from it.
+  data frame is provided, values of the related variables are
+  automatically extracted from it.
 
 - y:
 
   a vector of values for the second variable in an interaction term.
+  Ignored if `x` is a data frame containing both variables.
 
 ## Value
 
 `mid.effect()` returns a numeric vector of the calculated term
-contributions, with the same length as `x` and `y`.
+contributions, with the same length as `x`.
 
-For "midlist", `mid.effect()` returns a matrix of the term
-contributions.
+For a collection of models ("mids"), `mid.effect()` returns a numeric
+matrix where each column corresponds to a model.
 
 ## Details
 
@@ -49,9 +50,11 @@ contributions.
 contribution of a single component function. Unlike
 [`predict.mid()`](https://ryo-asashi.github.io/midr/reference/predict.mid.md),
 which is designed to return total model predictions, `mid.effect()` is
-more flexible. It accepts vectors, as well as data frames, as input for
-`x` and `y`, making it particularly useful for visualizing a component's
-effect in combination with other functions, such as
+more flexible. It accepts vectors, as well as matrices or data frames,
+as input for `x` and `y`. If `x` is a data frame, the necessary columns
+are automatically extracted. This makes it particularly useful for
+visualizing a component's effect in combination with standard plotting
+functions, such as
 [`graphics::curve()`](https://rdrr.io/r/graphics/curve.html).
 
 For a main effect, the function evaluates the component function

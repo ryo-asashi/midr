@@ -1,20 +1,23 @@
 # Print MID Models
 
-`print.mid()` is an S3 method for "mid" objects that prints a concise
-summary of a fitted MID model.
+[`print()`](https://rdrr.io/r/base/print.html) methods for a fitted MID
+model ("mid") or a collection of models ("mids").
 
 ## Usage
 
 ``` r
 # S3 method for class 'mid'
 print(x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...)
+
+# S3 method for class 'mids'
+print(x, max.nmodels = 1L, ...)
 ```
 
 ## Arguments
 
 - x:
 
-  a "mid" object to be printed.
+  a "mid" or "mids" object to be printed.
 
 - digits:
 
@@ -23,17 +26,22 @@ print(x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...)
 - main.effects:
 
   logical. If `TRUE`, the MID values of each main effect are also
-  printed.
+  printed (only applicable for single "mid" objects).
 
 - ...:
 
-  arguments to be passed to other methods (not used in this method).
+  arguments to be passed to other methods.
+
+- max.nmodels:
+
+  an integer specifying the maximum number of models to print for a
+  "midlist" collection.
 
 ## Value
 
 `print.mid()` returns the original "mid" object invisibly.
 
-`print.midlist()` returns the original "midlist" object invisibly.
+`print.mids()` returns the original "mids" object invisibly.
 
 ## Details
 
@@ -43,6 +51,11 @@ listing the number of main effect and interaction terms. If
 `main.effects = TRUE` is specified, the method will also print the
 contribution of each main effect at its sample points, providing a more
 detailed look at the model's components.
+
+For a collection of models in the structure-of-array format ("midrib"),
+the method prints a summarized overview. For array-of-structures
+collections ("midlist"), it prints the first few models up to
+`max.nmodels`.
 
 ## See also
 

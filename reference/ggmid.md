@@ -90,9 +90,8 @@ autoplot(object, ...)
 
 ## Value
 
-`ggmid.mid()` returns a "ggplot" object.
-[`ggmid.midlist()`](https://ryo-asashi.github.io/midr/reference/ggmid.midlist.md)
-returns a list of "ggplot" objects.
+`ggmid.mid()` returns a "ggplot" object. `ggmid.midlist()` returns a
+list of "ggplot" objects.
 
 ## Details
 
@@ -112,9 +111,9 @@ data points.
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`ggmid.mid.importance`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.importance.md),
-[`ggmid.mid.conditional`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md),
-[`ggmid.mid.breakdown`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.breakdown.md),
+[`ggmid.midimp`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md),
+[`ggmid.midcon`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md),
+[`ggmid.midbrk`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md),
 [`plot.mid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
 
 ## Examples

@@ -98,7 +98,7 @@ img {
 <div class="section level4">
 <h4 id="other-enhancements-0-5-3">Other Enhancements<a class="anchor" aria-label="anchor" href="#other-enhancements-0-5-3"></a></h4>
 <ul><li>Memory-free prediction engine: Re-implemented the prediction logic to avoid storing massive term effect matrices, significantly reducing the memory usage of <code><a href="../reference/interpret.html">interpret()</a></code> and <code><a href="../reference/predict.mid.html">predict.mid()</a></code>.</li>
-<li>Flexible formatting: <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> and <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> now support <code>format.args</code> and enhanced <code>label.format</code> for better visualization control.</li>
+<li>Flexible formatting: <code>plot.mid.breakdown()</code> and <code>ggmid.mid.breakdown()</code> now support <code>format.args</code> and enhanced <code>label.format</code> for better visualization control.</li>
 <li>CRAN compatibility: Updated various internal functions to ensure consistent behavior with the ‘stats’ package (especially with <code><a href="https://rdrr.io/r/stats/terms.html" class="external-link">stats::terms()</a></code>) and improved documentation clarity.</li>
 </ul></div>
 </div>
@@ -110,12 +110,12 @@ img {
 <h2 class="pkg-version" data-toc-text="0.5.2.906" id="midr-052906">midr 0.5.2.906<a class="anchor" aria-label="anchor" href="#midr-052906"></a></h2>
 <ul><li>The <code>format</code> argument in <code><a href="../reference/mid.breakdown.html">mid.breakdown()</a></code> is deprecated.</li>
 <li>
-<code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> and <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> now have a new argument <code>format.args</code>, which is passed to <code><a href="https://rdrr.io/r/base/format.html" class="external-link">base::format()</a></code> to format the predictor values stored in “mid.breakdown” objects.</li>
-<li>The <code>format</code> argument in <code><a href="../reference/plot.mid.breakdown.html">plot.mid.breakdown()</a></code> and <code><a href="../reference/ggmid.mid.breakdown.html">ggmid.mid.breakdown()</a></code> is renamed to <code>label.format</code>. The formatting strings now support more flexible formats, such as “%t=%v, %t=%v” for interactions.</li>
+<code>plot.mid.breakdown()</code> and <code>ggmid.mid.breakdown()</code> now have a new argument <code>format.args</code>, which is passed to <code><a href="https://rdrr.io/r/base/format.html" class="external-link">base::format()</a></code> to format the predictor values stored in “mid.breakdown” objects.</li>
+<li>The <code>format</code> argument in <code>plot.mid.breakdown()</code> and <code>ggmid.mid.breakdown()</code> is renamed to <code>label.format</code>. The formatting strings now support more flexible formats, such as “%t=%v, %t=%v” for interactions.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2.905" id="midr-052905">midr 0.5.2.905<a class="anchor" aria-label="anchor" href="#midr-052905"></a></h2>
-<ul><li>Updated <code><a href="../reference/ggmid.mid.importance.html">ggmid.mid.importance()</a></code> and <code><a href="../reference/plot.mid.importance.html">plot.mid.importance()</a></code> to modify appearance of the plots when color themes are applied.</li>
+<ul><li>Updated <code>ggmid.mid.importance()</code> and <code>plot.mid.importance()</code> to modify appearance of the plots when color themes are applied.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2.904" id="midr-052904">midr 0.5.2.904<a class="anchor" aria-label="anchor" href="#midr-052904"></a></h2>
@@ -193,7 +193,7 @@ img {
 <h2 class="pkg-version" data-toc-text="0.5.0.903" id="midr-050903">midr 0.5.0.903<a class="anchor" aria-label="anchor" href="#midr-050903"></a></h2>
 <ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals”.</li>
 <li>Fixed an issue in <code><a href="../reference/mid.effect.html">mid.f()</a></code> (<code><a href="../reference/mid.effect.html">mid.effect()</a></code>) to correctly handle vector recycling when an input’s length is 1.</li>
-<li>Fixed <code><a href="../reference/ggmid.mid.conditional.html">autoplot.mid.conditional()</a></code> to avoid redundant evaluation of the “mid” object.</li>
+<li>Fixed <code>autoplot.mid.conditional()</code> to avoid redundant evaluation of the “mid” object.</li>
 <li>Updated the automatic determination method for the number of knots (<code>k</code>) in <code><a href="../reference/interpret.html">interpret()</a></code>.</li>
 <li>Added support for type suffixes in <code><a href="../reference/color.theme.html">color.theme()</a></code> for easier theme specification.</li>
 </ul></div>

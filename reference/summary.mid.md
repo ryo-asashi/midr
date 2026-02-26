@@ -1,8 +1,8 @@
 # Summarize MID Models
 
-For "mid" objects, an S3 method of
-[`summary()`](https://rdrr.io/r/base/summary.html) prints a
-comprehensive summary of a fitted MID model.
+[`summary()`](https://rdrr.io/r/base/summary.html) methods for a fitted
+MID model ("mid") or a collection of models ("mids"). It prints a
+comprehensive summary of the model structure and fit quality.
 
 ## Usage
 
@@ -14,13 +14,16 @@ summary(
   digits = max(3L, getOption("digits") - 2L),
   ...
 )
+
+# S3 method for class 'mids'
+summary(object, max.nmodels = 1L, ...)
 ```
 
 ## Arguments
 
 - object:
 
-  a "mid" object to be summarized.
+  a "mid" or "mids" object to be summarized.
 
 - diagnose:
 
@@ -37,11 +40,16 @@ summary(
   [`graphics::panel.smooth()`](https://rdrr.io/r/graphics/panel.smooth.html)
   for the diagnosis plot.
 
+- max.nmodels:
+
+  an integer specifying the maximum number of models to summarize for a
+  "mids" collection.
+
 ## Value
 
 `summary.mid()` returns the original "mid" object invisibly.
 
-`summary.midlist()` returns the original "midlist" object invisibly.
+`summary.mids()` returns the original "mids" object invisibly.
 
 ## Details
 
@@ -61,7 +69,7 @@ fitted MID model. The output includes:
 - **Encoding**: summary of encoding schemes per variable.
 
 - **Diagnosis**: residuals vs fitted values plot (displayed only when
-  `diagnosis = TRUE`).
+  `diagnose = TRUE`).
 
 ## See also
 

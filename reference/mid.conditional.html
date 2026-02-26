@@ -120,7 +120,7 @@ ICE curves visualize how a single observation's prediction changes as a specifie
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>mid.conditional()</code> returns an object of class "mid.conditional". This is a list with the following components:</p>
+    <p><code>mid.conditional()</code> returns an object of class "midcon". This is a list with the following components:</p>
 <dl><dt>observed</dt>
 <dd><p>a data frame of the original observations used, along with their predictions.</p></dd>
 
@@ -134,7 +134,7 @@ ICE curves visualize how a single observation's prediction changes as a specifie
 <dd><p>a vector of the sample points for the <code>variable</code> used in the ICE calculation.</p></dd>
 
 
-</dl><p>For "midlist", <code>mid.conditional()</code> returns an object of class "midlist.conditional", a list of "mid.conditional" objects.</p>
+</dl><p>For "midlist", <code>mid.conditional()</code> returns an object of class "midcon"-"midlist", a list of "midcon" objects.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -146,7 +146,7 @@ The resulting object can be plotted to visualize how the prediction changes for 
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="interpret.html">interpret</a></code>, <code><a href="plot.mid.conditional.html">plot.mid.conditional</a></code>, <code><a href="ggmid.mid.conditional.html">ggmid.mid.conditional</a></code></p></div>
+    <div class="dont-index"><p><code><a href="interpret.html">interpret</a></code>, <code><a href="plot.midcon.html">plot.midcon</a></code>, <code><a href="ggmid.midcon.html">ggmid.midcon</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -156,8 +156,8 @@ The resulting object can be plotted to visualize how the prediction changes for 
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate the ICE values for a fitted MID model</span></span></span>
-<span class="r-in"><span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu">mid.conditional</span><span class="op">(</span><span class="va">mid</span>, variable <span class="op">=</span> <span class="st">"Wind"</span>, data <span class="op">=</span> <span class="va">airquality</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">mid.conditional</span><span class="op">(</span><span class="va">mid</span>, variable <span class="op">=</span> <span class="st">"Wind"</span>, data <span class="op">=</span> <span class="va">airquality</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Individual Conditional Expectation for 153 Observations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -166,27 +166,27 @@ The resulting object can be plotted to visualize how the prediction changes for 
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Points:  2.3000, 2.4859, 2.6717, ... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Conditional Expectations:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    .id   yhat Wind</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 93.187  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 80.733  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 75.251  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 80.683  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5 77.034  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6 80.108  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    7 84.101  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    8 76.878  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    9 72.084  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  10 86.434  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  11 83.927  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  12 90.309  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  13 83.397  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  14 87.020  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  15 70.543  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16  16 88.585  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17  17 92.022  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  18 72.778  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  19 89.513  2.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  20 70.525  2.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    .id Wind   yhat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1  2.3 93.187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2  2.3 80.733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  2.3 75.251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4  2.3 80.683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5  2.3 77.034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6  2.3 80.108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    7  2.3 84.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    8  2.3 76.878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    9  2.3 72.084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  10  2.3 86.434</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  11  2.3 83.927</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  12  2.3 90.309</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  13  2.3 83.397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  14  2.3 87.020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  15  2.3 70.543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  16  2.3 88.585</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  17  2.3 92.022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  18  2.3 72.778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  19  2.3 89.513</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  20  2.3 70.525</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

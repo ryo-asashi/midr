@@ -63,8 +63,8 @@ mid.conditional(
 
 ## Value
 
-`mid.conditional()` returns an object of class "mid.conditional". This
-is a list with the following components:
+`mid.conditional()` returns an object of class "midcon". This is a list
+with the following components:
 
 - observed:
 
@@ -86,7 +86,7 @@ is a list with the following components:
   calculation.
 
 For "midlist", `mid.conditional()` returns an object of class
-"midlist.conditional", a list of "mid.conditional" objects.
+"midcon"-"midlist", a list of "midcon" objects.
 
 ## Details
 
@@ -107,8 +107,8 @@ departures (heterogeneity).
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`plot.mid.conditional`](https://ryo-asashi.github.io/midr/reference/plot.mid.conditional.md),
-[`ggmid.mid.conditional`](https://ryo-asashi.github.io/midr/reference/ggmid.mid.conditional.md)
+[`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
+[`ggmid.midcon`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
 
 ## Examples
 
@@ -118,8 +118,8 @@ mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #> 'model' not passed: response variable in 'data' is used
 
 # Calculate the ICE values for a fitted MID model
-ice <- mid.conditional(mid, variable = "Wind", data = airquality)
-print(ice)
+con <- mid.conditional(mid, variable = "Wind", data = airquality)
+print(con)
 #> 
 #> Individual Conditional Expectation for 153 Observations
 #> 
@@ -128,25 +128,25 @@ print(ice)
 #> Sample Points:  2.3000, 2.4859, 2.6717, ... 
 #> 
 #> Conditional Expectations:
-#>    .id   yhat Wind
-#> 1    1 93.187  2.3
-#> 2    2 80.733  2.3
-#> 3    3 75.251  2.3
-#> 4    4 80.683  2.3
-#> 5    5 77.034  2.3
-#> 6    6 80.108  2.3
-#> 7    7 84.101  2.3
-#> 8    8 76.878  2.3
-#> 9    9 72.084  2.3
-#> 10  10 86.434  2.3
-#> 11  11 83.927  2.3
-#> 12  12 90.309  2.3
-#> 13  13 83.397  2.3
-#> 14  14 87.020  2.3
-#> 15  15 70.543  2.3
-#> 16  16 88.585  2.3
-#> 17  17 92.022  2.3
-#> 18  18 72.778  2.3
-#> 19  19 89.513  2.3
-#> 20  20 70.525  2.3
+#>    .id Wind   yhat
+#> 1    1  2.3 93.187
+#> 2    2  2.3 80.733
+#> 3    3  2.3 75.251
+#> 4    4  2.3 80.683
+#> 5    5  2.3 77.034
+#> 6    6  2.3 80.108
+#> 7    7  2.3 84.101
+#> 8    8  2.3 76.878
+#> 9    9  2.3 72.084
+#> 10  10  2.3 86.434
+#> 11  11  2.3 83.927
+#> 12  12  2.3 90.309
+#> 13  13  2.3 83.397
+#> 14  14  2.3 87.020
+#> 15  15  2.3 70.543
+#> 16  16  2.3 88.585
+#> 17  17  2.3 92.022
+#> 18  18  2.3 72.778
+#> 19  19  2.3 89.513
+#> 20  20  2.3 70.525
 ```
