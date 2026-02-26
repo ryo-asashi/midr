@@ -1,4 +1,4 @@
-# Compare MID Conditional Expectations across Multiple Models with ggplot2
+# Compare MID Conditional Expectations with ggplot2
 
 For "mid.conditional" objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)

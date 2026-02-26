@@ -1,4 +1,4 @@
-# Compare MID Conditional Expectations across Multiple Models
+# Compare MID Conditional Expectations in a Collection
 
 For "midlist.conditional" objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes

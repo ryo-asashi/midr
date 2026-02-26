@@ -1,4 +1,4 @@
-# Compare MID Importance across Multiple Models with ggplot2
+# Compare MID Importance with ggplot2
 
 For "midlist.importance" objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)

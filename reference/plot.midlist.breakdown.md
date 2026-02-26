@@ -1,4 +1,4 @@
-# Compare MID Breakdowns across Multiple Models
+# Compare MID Breakdowns in a Collection
 
 For "mid.breakdown" objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes the

@@ -1,4 +1,4 @@
-# Compare MID Breakdowns across Multiple Models with ggplot2
+# Compare MID Breakdowns with ggplot2
 
 For "mid.breakdown" objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)

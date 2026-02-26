@@ -1,4 +1,4 @@
-# Compare MID Importance across Multiple Models
+# Compare MID Importance in a Collection
 
 For "midlist.importance" objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and

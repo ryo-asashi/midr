@@ -1,4 +1,4 @@
-# Compare MID Component Functions across Multiple Models with ggplot2
+# Compare MID Component Functions with ggplot2
 
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) is an
 S3 generic function for creating various visualizations from MID-related
