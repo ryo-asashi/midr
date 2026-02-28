@@ -81,7 +81,7 @@ interpret(object, ...)
 
 \item{mode}{an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.}
 
-\item{method}{an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{\link[stats]{.lm.fit}()} is used.}
+\item{method}{an integer or a character string specifying the algorithm to solve the core least squares problem. Built-in options include \code{0} or "qr" (column-pivoted QR), \code{1} or "unpivoted.qr", \code{2} or "llt" (LLT Cholesky), \code{3} or "ldlt" (LDLT Cholesky), \code{4} or "svd" (singular value decomposition), and \code{5} or "eigen" (eigenvalue-eigenvector decomposition). For multi-response targets (matrix \code{y}), the computation automatically utilizes base R equivalents or safely falls back to "qr" with \code{stats::.lm.fit()}. External custom solvers can also be injected by setting \code{options(midr.solver.<method_name> = function(x, y) ...)}.}
 
 \item{lambda}{the penalty factor for pseudo smoothing. The default is \code{0}.}
 

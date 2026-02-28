@@ -1,9 +1,71 @@
 solveOLS <- function(x, y, tol = 1e-7, method = 0L, ...) {
-  if (method >= 0) {
-    RcppEigen::fastLmPure(x, y, method)
+  map <- c(
+    qr = 0L, unpivoted.qr = 1L, llt = 2L, ldlt = 3L, svd = 4L, eigen = 5L
+  )
+  if (is.character(method)) {
+    name <- try(match.arg(tolower(method), names(map)), silent = TRUE)
+    if (inherits(name, "try-error")) name <- method
+    method <- if (any(name == names(map))) map[[name]] else -1L
+  } else if (is.numeric(method)) {
+    method <- as.integer(method)
+    name <- names(map)[match(method, map)]
+    if (is.na(name)) name <- as.character(method)
   } else {
-    stats::.lm.fit(x, y, tol = tol)
+    name <- "qr"
+    method = -1L
   }
+  fmsg <- "falling back to 'qr' with stats::.lm.fit"
+  custom_solver <- getOption(paste0("midr.solver.", name))
+  if (!is.null(custom_solver) && is.function(custom_solver)) {
+    z <- tryCatch(custom_solver(x, y), error = function(e) e)
+    if (inherits(z, "error")) {
+      emsg <- gsub("\n", " ", conditionMessage(z))
+      msg <- sprintf("custom solver '%s' failed (%s): %s", name, emsg, fmsg)
+      z <- stats::.lm.fit(x, y, tol = tol)
+      return(structure(z, method = "qr", message = msg))
+    } else if (is.null(z$coefficients)) {
+      msg <- sprintf("custom solver '%s' did not return 'coefficients': %s",
+                     name, fmsg)
+      z <- stats::.lm.fit(x, y, tol = tol)
+      return(structure(z, method = "qr", message = msg))
+    } else {
+      msg <- sprintf("custom solver '%s' is used", name)
+      return(structure(z, method = name, message = msg))
+    }
+  }
+  if (NCOL(y) == 1L && any(method == 0L:5L)) {
+    return(structure(RcppEigen::fastLmPure(x, y, method), method = name))
+  }
+  z <- tryCatch(switch(
+    name,
+    "qr" = {
+      stats::.lm.fit(x, y, tol = tol)
+    }, "llt" = {
+      XtX <- crossprod(x)
+      XtY <- crossprod(x, y)
+      R <- chol(XtX)
+      coef <- backsolve(R, forwardsolve(t(R), XtY))
+      list(coefficients = coef, residuals = y - x %*% coef)
+    }, "svd" = {
+      s <- svd(x)
+      dinv <- ifelse(s$d > tol * s$d[1L], 1 / s$d, 0)
+      coef <- s$v %*% (dinv * crossprod(s$u, y))
+      list(coefficients = coef, residuals = y - x %*% coef, rank = sum(dinv > 0))
+    },
+    NULL
+  ), error = function(e) e)
+  if (is.null(z)) {
+    msg <- sprintf("method '%s' is not supported for matrix: %s", name, fmsg)
+    z <- stats::.lm.fit(x, y, tol = tol)
+    return(structure(z, method = "qr", message = msg))
+  }
+  if (inherits(z, "error")) {
+    emsg <- gsub("\n", " ", conditionMessage(z))
+    msg <- sprintf("method '%s' failed for matrix (%s): %s", name, emsg, fmsg)
+    z <- stats::.lm.fit(x, y, tol = tol)
+    return(structure(z, method = "qr", message = msg))
+  }
+  return(structure(z, method = name))
 }
 
 attract <- function(x, margin) {

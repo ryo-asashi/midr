@@ -109,7 +109,7 @@ UseMethod("interpret")
 #' @param terms a character vector of term labels or formula, specifying the set of component functions to be modeled. If not passed, \code{terms} includes all main effects, and all second-order interactions if \code{interactions} is \code{TRUE}.
 #' @param singular.ok logical. If \code{FALSE}, a singular fit is an error.
 #' @param mode an integer specifying the method of calculation. If \code{mode} is \code{1}, the centering constraints are treated as penalties for the least squares problem. If \code{mode} is \code{2}, the constraints are used to reduce the number of free parameters.
-#' @param method an integer or a character string specifying the method to be used to solve the least squares problem. An integer from \code{0} to \code{5} is passed to \code{RcppEigen::fastLmPure()}: \code{0} or "qr" for the column-pivoted QR decomposition, \code{1} or "unpivoted.qr" for the unpivoted QR decomposition, \code{2} or "llt" for the LLT Cholesky, \code{3} or "ldlt" for the LDLT Cholesky, \code{4} or "svd" for the Jacobi singular value decomposition (SVD) and \code{5} of "eigen" for a method based on the eigenvalue-eigenvector decomposition. If \code{-1} or "lm", \code{\link[stats]{.lm.fit}()} is used.
+#' @param method an integer or a character string specifying the algorithm to solve the core least squares problem. Built-in options include \code{0} or "qr" (column-pivoted QR), \code{1} or "unpivoted.qr", \code{2} or "llt" (LLT Cholesky), \code{3} or "ldlt" (LDLT Cholesky), \code{4} or "svd" (singular value decomposition), and \code{5} or "eigen" (eigenvalue-eigenvector decomposition). For multi-response targets (matrix \code{y}), the computation automatically utilizes base R equivalents or safely falls back to "qr" with \code{stats::.lm.fit()}. External custom solvers can also be injected by setting \code{options(midr.solver.<method_name> = function(x, y) ...)}.
 #' @param lambda the penalty factor for pseudo smoothing. The default is \code{0}.
 #' @param kappa the penalty factor for centering constraints. Used only when \code{mode} is \code{1}. The default is \code{1e+6}.
 #' @param na.action a function or character string specifying the method of \code{NA} handling. The default is "na.omit".
@@ -281,25 +281,7 @@ interpret.default <- function(
     verbose("invalid 'mode' found: defaulted to 1", verbosity, 3L, FALSE)
     mode <- 1L
   }
-  .methods <- c("lm", "qr", "unpivoted.qr", "llt", "ldlt", "svd", "eigen")
-  if (is.character(method))
-    method <- pmatch(method, .methods) - 2L
-  if (is.null(method))
-    method <- if (ntargets > 1L) -1L else if (!singular.ok) 0L else 5L
-  method <- as.integer(method)
-  if (ntargets > 1L && method != -1L) {
-    verbose("for matrix 'y', method is set to lm(-1)", verbosity, 2L, FALSE)
-    method <- -1L
-  }
-  if (is.na(method) || !any(method == c(-1L, 0L:5L))) {
-    verbose("invalid 'method' found: defaulted to qr(0)", verbosity, 2L, FALSE)
-    method <- 0L
-  }
-  if (!singular.ok && any(method == 1L:2L))
-    verbose(sprintf(
-      "when 'method' is set to %s(%s), singular fits cannot be detected",
-      .methods[method + 2L], method
-    ), verbosity, level = 1L)
+  method <- method %||% (if (!singular.ok) 0L else 5L)
   # get variable encoders and encoded matrices --------
   if (me <- (p > 0L)) {
     menc <- list()
@@ -565,23 +547,29 @@ interpret.default <- function(
     gc(verbose = FALSE, full = FALSE)
   }
   # solve the least squares problem --------
-  verbose(sprintf(
-    "least squares estimation initiated with mode: %s, method: %s(%s)",
-    mode, .methods[method + 2L], method
-  ), verbosity, 2L, FALSE)
+  verbose("least squares estimation initiated", verbosity, 2L, FALSE)
   if (mode == 1L) {
     r <- 0L
     z <- try(solveOLS(X, Y, tol, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
+    if (!is.null(attr(z, "message")))
+      verbose(attr(z, "message"), verbosity = 2L, FALSE)
     beta <- as.matrix(z$coefficients)
     beta[is.na(beta)] <- 0
-    crsd <- as.matrix(z$residuals)[n + nreg + seq_len(ncon), , drop = FALSE]
-    max_error <- (max(abs(crsd)) / (rk * n))
-    if (max_error > nil) {
-      verbose(paste0("not strictly centered: max absolute average effect = ",
-                     format(max_error, digits = 6L)),
-              verbosity, level = 1L)
+    if (is.null(z$residuals)) {
+      verbose(sprintf(
+        "strict centering cannot be verified because the solver '%s' does not return residuals",
+        attr(z, "method")
+      ), verbosity, 1L, FALSE)
+    } else {
+      crsd <- as.matrix(z$residuals)[n + nreg + seq_len(ncon), , drop = FALSE]
+      maxerr <- (max(abs(crsd)) / (rk * n))
+      if (maxerr > nil) {
+        verbose(paste0("not strictly centered: max absolute average effect = ",
+                       format(maxerr, digits = 6L)),
+                verbosity, level = 1L)
+      }
     }
   } else {
     Msvd <- svd(M, nv = npar)
@@ -592,11 +580,20 @@ interpret.default <- function(
     z <- try(solveOLS(X %*% vr, Y, tol, method), silent = verbosity < 3L)
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
+    if (!is.null(attr(z, "message")))
+      verbose(attr(z, "message"), verbosity = 2L, FALSE)
     coef <- as.matrix(z$coefficients)
     coef[is.na(coef)] <- 0
     beta <- as.matrix(vr %*% coef)
   }
-  if (!(any(method == 1L:2L)) && z$rank < npar - r) {
+  if (is.null(z$rank) || anyNA(z$rank)) {
+    if (!singular.ok) {
+      verbose(sprintf(
+        "singular fits cannot be detected because the solver '%s' does not return rank information",
+        attr(z, "method")
+      ), verbosity, 1L, FALSE)
+    }
+  } else if (z$rank < npar - r) {
     if (!singular.ok) {
       title <- "singular fit encountered"
       if (verbosity < 1L)
@@ -702,7 +699,7 @@ interpret.default <- function(
     obj$encoders[["interactions"]] <- ienc
   }
   obj$weights <- weights
-  obj$method <- .methods[method + 2L]
+  obj$method <- attr(z, "method")
   obj$fitted.values <- if (ntargets == 1L) as.numeric(lp) else lp
   residuals <- y - lp
   obj$residuals <- if (ntargets == 1L) as.numeric(residuals) else residuals

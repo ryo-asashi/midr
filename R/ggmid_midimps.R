@@ -52,14 +52,14 @@ ggmid.midimps <- function(
     theme <- getOption("midr.qualitative", "HCL")
   theme <- color.theme(theme)
   imp <- summary(object, shape = "long")
+  labs <- unique(imp$label)
   terms <- terms %||% unique(imp$term)
   terms <- utils::head(terms, max.nterms)
-  labels <- unique(imp$label)
-  grid <- expand.grid(term = terms, label = labels, stringsAsFactors = FALSE)
+  grid <- expand.grid(term = terms, label = labs, stringsAsFactors = FALSE)
   imp <- merge(grid, imp, by = c("term", "label"), all.x = TRUE)
   imp$importance[is.na(imp$importance)] <- 0
   imp$term <- factor(imp$term, levels = rev(terms))
-  imp$label <- factor(imp$label, levels = unique(imp$label))
+  imp$label <- factor(imp$label, levels = labs)
   pl <- ggplot2::ggplot(
     imp, ggplot2::aes(y = .data[["term"]], x = .data[["importance"]])
   )

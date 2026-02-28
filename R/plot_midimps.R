@@ -53,20 +53,20 @@ plot.midimps <- function(
     theme <- getOption("midr.qualitative", "HCL")
   theme <- color.theme(theme)
   imp <- summary(x, shape = "long")
+  labs <- unique(imp$label)
   terms <- terms %||% unique(imp$term)
   terms <- utils::head(terms, max.nterms)
   imp <- imp[order(match(imp$term, terms), na.last = NA), , drop = FALSE]
   imp$term <- factor(imp$term, levels = rev(terms))
-  labels <- unique(imp$label)
   n <- length(terms)
-  m <- length(labels)
+  m <- length(labs)
   mat <- matrix(NA_real_, nrow = n, ncol = m)
   for (i in seq_len(m)) {
-    subimp <- imp[imp$label == labels[i], ]
+    subimp <- imp[imp$label == labs[i], ]
     mat[, i] <- subimp$importance[match(terms, subimp$term)]
   }
   cols <- theme$palette(m)
-  args <- list(to = mat, labels = terms,
+  args <- list(to = mat, labs = terms,
                horizontal = TRUE, xlab = "importance")
   if (type == "dotchart") {
     args$type <- "d"
