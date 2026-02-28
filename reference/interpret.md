@@ -144,17 +144,17 @@ interpret(
 
 - method:
 
-  an integer or a character string specifying the method to be used to
-  solve the least squares problem. An integer from `0` to `5` is passed
-  to
-  [`RcppEigen::fastLmPure()`](https://rdrr.io/pkg/RcppEigen/man/fastLm.html):
-  `0` or "qr" for the column-pivoted QR decomposition, `1` or
-  "unpivoted.qr" for the unpivoted QR decomposition, `2` or "llt" for
-  the LLT Cholesky, `3` or "ldlt" for the LDLT Cholesky, `4` or "svd"
-  for the Jacobi singular value decomposition (SVD) and `5` of "eigen"
-  for a method based on the eigenvalue-eigenvector decomposition. If
-  `-1` or "lm", [`.lm.fit()`](https://rdrr.io/r/stats/lmfit.html) is
-  used.
+  an integer or a character string specifying the algorithm to solve the
+  core least squares problem. Built-in options include `0` or "qr"
+  (column-pivoted QR), `1` or "unpivoted.qr", `2` or "llt" (LLT
+  Cholesky), `3` or "ldlt" (LDLT Cholesky), `4` or "svd" (singular value
+  decomposition), and `5` or "eigen" (eigenvalue-eigenvector
+  decomposition). For multi-response targets (matrix `y`), the
+  computation automatically utilizes base R equivalents or safely falls
+  back to "qr" with
+  [`stats::.lm.fit()`](https://rdrr.io/r/stats/lmfit.html). External
+  custom solvers can also be injected by setting
+  `options(midr.solver.<method_name> = function(x, y) ...)`.
 
 - lambda:
 
