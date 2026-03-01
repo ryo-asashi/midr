@@ -6,14 +6,14 @@ object.
 ## Usage
 
 ``` r
+# S3 method for class 'midlist'
+x[i, drop = if (missing(i)) TRUE else length(i) == 1L]
+
 # S3 method for class 'midrib'
 x[i, drop = if (missing(i)) TRUE else length(i) == 1L]
 
 # S3 method for class 'midrib'
 x[[i, exact = TRUE]]
-
-# S3 method for class 'midlist'
-x[i, drop = if (missing(i)) TRUE else length(i) == 1L]
 ```
 
 ## Arguments

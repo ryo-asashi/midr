@@ -40,9 +40,9 @@
   [`labels(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
   [`` `labels<-`() ``](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
   : Label MID Objects
-- [`` `[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+- [`` `[`( ``*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+  [`` `[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
   [`` `[[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
-  [`` `[`( ``*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
   : Subset MID Objects
 - [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
   : Compare MID Component Functions
@@ -79,11 +79,11 @@
   : Plot MID Breakdowns
 - [`ggmid(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
   [`autoplot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
-  [`autoplot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
   : Plot MID Breakdowns with ggplot2
 - [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
   : Compare MID Breakdown
 - [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
+  [`autoplot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
   : Compare MID Breakdowns with ggplot2
 
 ## Conditional expectations

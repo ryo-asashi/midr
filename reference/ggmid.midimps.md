@@ -11,10 +11,11 @@ multiple fitted MID models.
 # S3 method for class 'midimps'
 ggmid(
   object,
-  type = c("barplot", "dotchart"),
+  type = c("barplot", "dotchart", "series"),
   theme = NULL,
   terms = NULL,
-  max.nterms = 10L,
+  max.nterms = 15L,
+  labels = NULL,
   ...
 )
 
@@ -30,7 +31,7 @@ autoplot(object, ...)
 
 - type:
 
-  the plotting style. One of "barplot" or "dotchart".
+  the plotting style. One of "barplot", "dotchart", or "series".
 
 - theme:
 
@@ -46,7 +47,12 @@ autoplot(object, ...)
 
 - max.nterms:
 
-  the maximum number of terms to display. Defaults to 30.
+  the maximum number of terms to display. Defaults to 15.
+
+- labels:
+
+  an optional numeric or character vector to specify the model labels or
+  x-axis coordinates. Defaults to the labels found in the object.
 
 - ...:
 

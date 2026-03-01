@@ -11,10 +11,11 @@ visualizes and compares a single main effect across multiple models.
 ggmid(
   object,
   term,
-  type = c("effect"),
+  type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
-  resolution = 500L,
+  resolution = NULL,
+  labels = base::labels(object),
   ...
 )
 
@@ -34,8 +35,8 @@ autoplot(object, ...)
 
 - type:
 
-  the plotting style. Currently only "effect" is supported for
-  collections.
+  the plotting style: "effect" plots the effect curve per model, while
+  "series" plots the effect trend over models per feature value.
 
 - theme:
 
@@ -50,6 +51,12 @@ autoplot(object, ...)
 
   an integer specifying the number of evaluation points for continuous
   variables.
+
+- labels:
+
+  an optional numeric or character vector to specify the x-axis
+  coordinates or labels. Defaults to `labels(object)`. The function
+  attempts to parse these labels into numeric values where possible.
 
 - ...:
 

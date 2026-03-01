@@ -24,9 +24,6 @@ ggmid(
 
 # S3 method for class 'midbrk'
 autoplot(object, ...)
-
-# S3 method for class 'midbrks'
-autoplot(object, ...)
 ```
 
 ## Arguments
