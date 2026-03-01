@@ -2,29 +2,55 @@
 % Please edit documentation in R/ggmid_midbrks.R
 \name{ggmid.midbrks}
 \alias{ggmid.midbrks}
+\alias{autoplot.midbrks}
 \title{Compare MID Breakdowns with ggplot2}
 \usage{
-\method{ggmid}{midbrks}(object, ...)
+\method{ggmid}{midbrks}(
+  object,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  label.pattern = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
+
+\method{autoplot}{midbrks}(object, ...)
 }
 \arguments{
-\item{object}{a "mid.breakdown" object to be visualized.}
+\item{object}{a "midbrks" collection object to be visualized.}
 
-\item{...}{optional parameters passed on to the main layer.}
-}
-\value{
-\code{ggmid.midlist.breakdown()} returns a "ggplot" object.
+\item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
+
+\item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
+
+\item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
+
+\item{max.nterms}{the maximum number of terms to display. Defaults to 15.}
+
+\item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
+
+\item{others}{a character string for the catchall label. Defaults to \code{"others"}.}
+
+\item{label.pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+
+\item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
+
+\item{labels}{an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.}
+
+\item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }
 \description{
-For "mid.breakdown" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
+For "midbrks" collection objects, \code{ggmid()} visualizes and compares the breakdown of a prediction by component functions.
 }
 \details{
-This is an S3 method for the \code{ggmid()} generic that creates a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction.
+This is an S3 method for the \code{ggmid()} generic that creates a comparative importance plot from a "midbrks" collection object. It visualizes the contribution of each component function to a single prediction across multiple models, allowing for easy comparison across different models.
 
 The \code{type} argument controls the visualization style.
-The default, \code{type = "waterfall"} (default), creates a waterfall plot that shows how the prediction is built up from the intercept, with each term's contribution sequentially added or subtracted.
-The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
-The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
-}
-\seealso{
-\code{\link{ggmid.midbrk}}, \code{\link{plot.midbrks}}
+The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
+The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
 }

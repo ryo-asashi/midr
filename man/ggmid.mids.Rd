@@ -8,10 +8,11 @@
 \method{ggmid}{mids}(
   object,
   term,
-  type = c("effect"),
+  type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
-  resolution = 500L,
+  resolution = NULL,
+  labels = base::labels(object),
   ...
 )
 
@@ -22,13 +23,15 @@
 
 \item{term}{a character string specifying the main effect to evaluate.}
 
-\item{type}{the plotting style. Currently only "effect" is supported for collections.}
+\item{type}{the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.}
 
 \item{theme}{a character string or object defining the color theme.}
 
 \item{intercept}{logical. If \code{TRUE}, the model intercept is added to the component effect.}
 
 \item{resolution}{an integer specifying the number of evaluation points for continuous variables.}
+
+\item{labels}{an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.}
 
 \item{...}{optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).}
 }

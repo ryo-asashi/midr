@@ -45,6 +45,19 @@
 #' @rdname extract.midlist
 #' @export
 #'
+`[.midlist` <- function(
+    x, i, drop = if (missing(i)) TRUE else length(i) == 1L
+) {
+  out <- NextMethod("[")
+  if (drop && length(out) == 1L) return(out[[1L]])
+  class(out) <- class(x)
+  out
+}
+
+
+#' @rdname extract.midlist
+#' @export
+#'
 `[.midrib` <- function(
     x, i, drop = if (missing(i)) TRUE else length(i) == 1L
 ) {
@@ -92,6 +105,7 @@
   x
 }
 
+
 #' @rdname extract.midlist
 #' @export
 #'
@@ -108,16 +122,4 @@
   x$mid <- if (drop && length(i) == 1L)
     as.numeric(x$mid[, i]) else I(x$mid[, i, drop = FALSE])
   x
-}
-
-#' @rdname extract.midlist
-#' @export
-#'
-`[.midlist` <- function(
-    x, i, drop = if (missing(i)) TRUE else length(i) == 1L
-) {
-  out <- NextMethod("[")
-  if (drop && length(out) == 1L) return(out[[1L]])
-  class(out) <- class(x)
-  out
 }

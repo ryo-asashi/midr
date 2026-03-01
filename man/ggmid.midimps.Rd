@@ -7,10 +7,11 @@
 \usage{
 \method{ggmid}{midimps}(
   object,
-  type = c("barplot", "dotchart"),
+  type = c("barplot", "dotchart", "series"),
   theme = NULL,
   terms = NULL,
-  max.nterms = 10L,
+  max.nterms = 15L,
+  labels = NULL,
   ...
 )
 
@@ -19,13 +20,15 @@
 \arguments{
 \item{object}{a "midimps" collection object to be visualized.}
 
-\item{type}{the plotting style. One of "barplot" or "dotchart".}
+\item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
 
 \item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
 
 \item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
 
-\item{max.nterms}{the maximum number of terms to display. Defaults to 30.}
+\item{max.nterms}{the maximum number of terms to display. Defaults to 15.}
+
+\item{labels}{an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.}
 
 \item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }

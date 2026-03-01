@@ -350,3 +350,28 @@ geom_dotchart <- function(
     do.call(ggplot2::geom_point, point_args)
   )
 }
+
+
+geom_dotline <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  dots <- list(...)
+  line_params  <- c(
+    "alpha", "linetype", "lty", "linewidth", "lwd"
+  )
+  line_args <- c(
+    list(mapping = mapping, data = data),
+    dots[names(dots) %in% line_params]
+  )
+  point_params <- c(
+    "color", "colour", "alpha", "shape", "pch", "size", "cex", "fill"
+  )
+  point_args <- c(
+    list(mapping = mapping, data = data),
+    dots[names(dots) %in% point_params]
+  )
+  list(
+    do.call(ggplot2::geom_line, line_args),
+    do.call(ggplot2::geom_point, point_args)
+  )
+}

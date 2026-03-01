@@ -2,16 +2,16 @@
 % Please edit documentation in R/extract_midlist.R
 \name{extract.midlist}
 \alias{extract.midlist}
+\alias{[.midlist}
 \alias{[.midrib}
 \alias{[[.midrib}
-\alias{[.midlist}
 \title{Subset MID Objects}
 \usage{
+\method{[}{midlist}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
+
 \method{[}{midrib}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
 
 \method{[[}{midrib}(x, i, exact = TRUE)
-
-\method{[}{midlist}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
 }
 \arguments{
 \item{x}{a collection object of class "midlist" or "midrib".}
