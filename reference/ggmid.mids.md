@@ -27,7 +27,7 @@ autoplot(object, ...)
 
 - object:
 
-  a "mids" or "midlist" collection object to be visualized.
+  a "mids" collection object to be visualized.
 
 - term:
 
@@ -63,6 +63,10 @@ autoplot(object, ...)
   optional parameters passed to the main layer (e.g., `linewidth`,
   `alpha`).
 
+## Value
+
+`ggmid.mids()` returns a "ggplot" object.
+
 ## Details
 
 This method evaluates the specified `term` over a grid of values and
@@ -72,3 +76,31 @@ For factors, it uses grouped bar plots.
 
 Note: Comparative plotting for interaction terms (2D surfaces) is not
 supported for collection objects.
+
+## See also
+
+[`ggmid`](https://ryo-asashi.github.io/midr/reference/ggmid.md),
+[`plot.mids`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
+
+## Examples
+
+``` r
+# Use a lightweight dataset for fast execution
+data(mtcars, package = "datasets")
+
+# Fit two models with different complexities
+fit1 <- lm(mpg ~ wt, data = mtcars)
+mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
+fit2 <- lm(mpg ~ wt + hp, data = mtcars)
+mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
+
+# Combine them into a "midlist" collection (which inherits from "mids")
+mids <- midlist("wt" = mid1, "wt + hp" = mid2)
+
+# Compare the main effect of 'wt' across both models
+ggmid(mids, term = "wt")
+
+
+# Compare the effect of 'wt' as a series plot across the models
+ggmid(mids, term = "wt", type = "series")
+```

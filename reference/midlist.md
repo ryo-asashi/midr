@@ -46,23 +46,23 @@ consistency before concatenation.
 
 ``` r
 # Fit models using the built-in anscombe dataset
-fit_1 <- lm(cbind(y1, y2, y3) ~ x1, data = anscombe)
-fit_2 <- lm(y4 ~ x4, data = anscombe)
+fit1 <- lm(cbind(y1, y2, y3) ~ x1, data = anscombe)
+fit2 <- lm(y4 ~ x4, data = anscombe)
 
 # Create interpretation objects
-# mid_1 is a "midrib" collection containing 3 models
-mid_1 <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit_1)
-# mid_2 is a single "mid" object
-mid_2 <- interpret(y4 ~ x4, data = anscombe, model = fit_2)
+# mid1 is a "midrib" collection containing 3 models
+mid1 <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit1)
+# mid2 is a single "mid" object
+mid2 <- interpret(y4 ~ x4, data = anscombe, model = fit2)
 
 # Combine a "midrib" and a "mid" into a single "midlist" collection.
-mid_collection <- midlist(mid_1, y4 = mid_2)
+collection <- midlist(mid1, y4 = mid2)
 
 # Check the labels of the combined collection
-labels(mid_collection)
+labels(collection)
 #> [1] "y1" "y2" "y3" "y4"
 
 # The resulting object is a flat list of models
-class(mid_collection)
+class(collection)
 #> [1] "mids"    "midlist"
 ```

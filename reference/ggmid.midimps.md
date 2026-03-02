@@ -88,7 +88,6 @@ bar plot for visualizing and comparing term importance across models.
 ## Examples
 
 ``` r
-# Use a lightweight dataset for fast execution
 data(mtcars, package = "datasets")
 
 # Fit two different models for comparison

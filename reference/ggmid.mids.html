@@ -88,7 +88,7 @@ img {
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>a "mids" or "midlist" collection object to be visualized.</p></dd>
+<dd><p>a "mids" collection object to be visualized.</p></dd>
 
 
 <dt id="arg-term">term<a class="anchor" aria-label="anchor" href="#arg-term"></a></dt>
@@ -120,12 +120,43 @@ img {
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p><code>ggmid.mids()</code> returns a "ggplot" object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This method evaluates the specified <code>term</code> over a grid of values and compares the results across all models in the collection.
 For continuous variables, it uses line plots (or step plots for constant encodings). For factors, it uses grouped bar plots.</p>
 <p>Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="ggmid.html">ggmid</a></code>, <code><a href="plot.mids.html">plot.mids</a></code></p></div>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Use a lightweight dataset for fast execution</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit two models with different complexities</span></span></span>
+<span class="r-in"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mid1</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span>, model <span class="op">=</span> <span class="va">fit1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mid2</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span>, model <span class="op">=</span> <span class="va">fit2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Combine them into a "midlist" collection (which inherits from "mids")</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu"><a href="midlist.html">midlist</a></span><span class="op">(</span><span class="st">"wt"</span> <span class="op">=</span> <span class="va">mid1</span>, <span class="st">"wt + hp"</span> <span class="op">=</span> <span class="va">mid2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare the main effect of 'wt' across both models</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"wt"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.mids-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare the effect of 'wt' as a series plot across the models</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"wt"</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.mids-2.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

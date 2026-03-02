@@ -1,50 +1,135 @@
-# Compare MID Breakdown
+# Plot MID Breakdowns for Collections
 
-For "mid.breakdown" objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes the
-breakdown of a prediction by component functions.
+For "midbrks" collection objects,
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
+compares the breakdown of a prediction by component functions across
+multiple models using base R graphics.
 
 ## Usage
 
 ``` r
 # S3 method for class 'midbrks'
-plot(x, ...)
+plot(
+  x,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  label.pattern = c("%t=%v", "%t:%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
 ```
 
 ## Arguments
 
 - x:
 
-  a "mid.breakdown" object to be visualized.
+  a "midbrks" collection object to be visualized.
+
+- type:
+
+  the plotting style. One of "barplot", "dotchart", or "series".
+
+- theme:
+
+  a character string or object defining the color theme. Defaults to
+  "HCL". See
+  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
+  for details.
+
+- terms:
+
+  an optional character vector specifying which terms to display. If
+  `NULL`, terms are automatically extracted from the object.
+
+- max.nterms:
+
+  the maximum number of terms to display. Defaults to 15.
+
+- vline:
+
+  logical. If `TRUE`, a vertical line is drawn at the zero or intercept
+  line.
+
+- others:
+
+  a character string for the catchall label. Defaults to `"others"`.
+
+- label.pattern:
+
+  a character vector of length one or two specifying the format of the
+  axis labels. The first element is used for main effects (default
+  `"%t = %v"`), and the second is for interactions (default `"%t:%t"`).
+  Use `"%t"` for the term name and `"%v"` for its value.
+
+- format.args:
+
+  a named list of additional arguments passed to
+  [`format`](https://rdrr.io/r/base/format.html) for formatting the
+  values. Common arguments include `digits`, `nsmall`, and `big.mark`.
+
+- labels:
+
+  an optional numeric or character vector to specify the model labels or
+  x-axis coordinates. Defaults to the labels found in the object.
 
 - ...:
 
-  optional parameters passed on to the graphing function. Possible
-  arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of
-  them.
+  optional parameters passed on to the main layer (e.g.,
+  [`geom_col`](https://ggplot2.tidyverse.org/reference/geom_bar.html)).
 
 ## Value
 
-`plot.midlist.breakdown()` produces a plot as a side effect and returns
-`NULL` invisibly.
+`plot.midbrks()` produces a plot as a side effect and returns `NULL`
+invisibly.
 
 ## Details
 
 This is an S3 method for the
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces a breakdown plot from a "mid.breakdown" object, visualizing the
-contribution of each component function to a single prediction.
+evaluates the component contributions to a single prediction and
+compares the results across all models in the collection.
 
-The `type` argument controls the visualization style. The default,
-`type = "waterfall"`, creates a waterfall plot that shows how the
-prediction builds from the intercept, with each term's contribution
-sequentially added or subtracted. The `type = "barplot"` option creates
-a standard bar plot where the length of each bar represents the
-magnitude of the term's contribution. The `type = "dotchart"` option
-creates a dot plot showing the contribution of each term as a point
-connected to a zero baseline.
+The `type` argument controls the visualization style: The default,
+`type = "barplot"`, creates a grouped bar plot where the bars for each
+term are placed side-by-side across the models. The `type = "dotchart"`
+option creates a grouped dot plot, offering a cleaner comparison across
+models. The `type = "series"` option plots the contribution trend over
+the models for each component term.
 
 ## See also
 
+[`ggmid.midbrks`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md),
 [`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
-[`ggmid.midbrks`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
+[`plot.midimps`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+
+## Examples
+
+``` r
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+
+# Calculate importance for both models and combine them
+brks <- midlist(
+  "Main Effects" = mid.breakdown(mid1),
+  "Interactions" = mid.breakdown(mid2)
+)
+#> 'data' contains multiple observations: the first observation is used
+#> 'data' contains multiple observations: the first observation is used
+
+# Create a comparative grouped bar plot (default)
+plot(brks)
+
+
+# Create a comparative dot chart with a specific theme
+plot(brks, type = "dotchart", theme = "R4")
+```

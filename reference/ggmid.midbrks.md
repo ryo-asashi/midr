@@ -85,6 +85,10 @@ autoplot(object, ...)
   optional parameters passed on to the main layer (e.g.,
   [`geom_col`](https://ggplot2.tidyverse.org/reference/geom_bar.html)).
 
+## Value
+
+`ggmid.midbrks()` returns a "ggplot" object.
+
 ## Details
 
 This is an S3 method for the
@@ -100,3 +104,30 @@ of each bar represents the overall importance of the term, positioned
 side-by-side (`position_dodge`) by model label. The `type = "dotchart"`
 option creates a grouped dot plot, offering a clean alternative to the
 bar plot for visualizing and comparing term importance across models.
+
+## Examples
+
+``` r
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+
+# Calculate importance for both models and combine them
+brks <- midlist(
+  "Main Effects" = mid.breakdown(mid1),
+  "Interactions" = mid.breakdown(mid2)
+)
+#> 'data' contains multiple observations: the first observation is used
+#> 'data' contains multiple observations: the first observation is used
+
+# Create a comparative grouped bar plot (default)
+ggmid(brks)
+
+
+# Create a comparative dot chart with a specific theme
+ggmid(brks, type = "dotchart", theme = "R4")
+```

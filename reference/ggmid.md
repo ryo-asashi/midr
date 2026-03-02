@@ -90,8 +90,7 @@ autoplot(object, ...)
 
 ## Value
 
-`ggmid.mid()` returns a "ggplot" object. `ggmid.midlist()` returns a
-list of "ggplot" objects.
+`ggmid.mid()` returns a "ggplot" object.
 
 ## Details
 

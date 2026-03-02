@@ -11,7 +11,7 @@ MID models.
 # S3 method for class 'midimps'
 plot(
   x,
-  type = c("barplot", "dotchart"),
+  type = c("barplot", "dotchart", "series"),
   theme = NULL,
   terms = NULL,
   max.nterms = 30L,
@@ -27,7 +27,7 @@ plot(
 
 - type:
 
-  the plotting style. One of "barplot" or "dotchart".
+  the plotting style. One of "barplot", "dotchart", or "series".
 
 - theme:
 
@@ -65,12 +65,14 @@ object. It visualizes the average contribution of component functions to
 the fitted MID models, allowing for easy comparison across different
 models.
 
-The `type` argument controls the visualization style. The default,
+The `type` argument controls the visualization style: The default,
 `type = "barplot"`, creates a standard grouped bar plot where the length
 of each bar represents the overall importance of the term, positioned
 side-by-side by model label. The `type = "dotchart"` option creates a
 grouped dot plot, offering a clean alternative to the bar plot for
-visualizing and comparing term importance across models.
+visualizing and comparing term importance across models. The
+`type = "series"` option plots the importance trend over the models for
+each component function.
 
 ## See also
 
@@ -81,7 +83,6 @@ visualizing and comparing term importance across models.
 ## Examples
 
 ``` r
-# Use a lightweight dataset for fast execution
 data(mtcars, package = "datasets")
 
 # Fit two different models for comparison
@@ -102,4 +103,8 @@ plot(imps)
 
 # Create a comparative dot chart with a specific theme
 plot(imps, type = "dotchart", theme = "Okabe-Ito")
+
+
+# Create a series plot to observe trends across models
+plot(imps, type = "series")
 ```

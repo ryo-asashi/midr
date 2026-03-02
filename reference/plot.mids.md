@@ -1,51 +1,110 @@
 # Compare MID Component Functions
 
-For "mid" objects (i.e., fitted MID models),
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes a
-single component function specified by the `term` argument.
+For "mids" collection objects,
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
+compares a single main effect across multiple models using base R
+graphics.
 
 ## Usage
 
 ``` r
 # S3 method for class 'mids'
-plot(x, ...)
+plot(
+  x,
+  term,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  resolution = NULL,
+  labels = base::labels(x),
+  ...
+)
 ```
 
 ## Arguments
 
 - x:
 
-  a "mid" object to be visualized.
+  a "mids" collection object to be visualized.
+
+- term:
+
+  a character string specifying the main effect to evaluate.
+
+- type:
+
+  the plotting style: "effect" plots the effect curve per model, while
+  "series" plots the effect trend over models per feature value.
+
+- theme:
+
+  a character string or object defining the color theme.
+
+- intercept:
+
+  logical. If `TRUE`, the model intercept is added to the component
+  effect.
+
+- resolution:
+
+  an integer specifying the number of evaluation points for continuous
+  variables.
+
+- labels:
+
+  an optional numeric or character vector to specify the x-axis
+  coordinates or labels. Defaults to `labels(object)`. The function
+  attempts to parse these labels into numeric values where possible.
 
 - ...:
 
-  optional parameters to be passed to the graphing function. Possible
-  arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of
-  them.
+  optional parameters passed to the main layer (e.g., `linewidth`,
+  `alpha`).
 
 ## Value
 
-`plot.midlist()` produces a plot as a side-effect and returns `NULL`
+`plot.mids()` produces a plot as a side-effect and returns `NULL`
 invisibly.
 
 ## Details
 
 This is an S3 method for the
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces a plot from a "mid" object, visualizing a component function of
-the fitted MID model.
+evaluates the specified `term` over a grid of values and compares the
+results across all models in the collection.
 
-The `type` argument controls the visualization style. The default,
-`type = "effect"`, plots the component function itself. In this style,
-the plotting method is automatically selected based on the effect's
-type: a line plot for quantitative main effects; a bar plot for
-qualitative main effects; and a filled contour (level) plot for
-interactions. The `type = "data"` option creates a scatter plot of
-`data`, colored by the values of the component function. The
-`type = "compound"` option combines both approaches, plotting the
-component function alongside the data points.
+For continuous variables, it uses a multi-line plot (`matplot`). For
+qualitative factors, it uses a grouped bar plot (`barplot`). The
+`type = "series"` option transposes the view to plot the effect trend
+over the models for each feature value.
+
+Note: Comparative plotting for interaction terms (2D surfaces) is not
+supported for collection objects.
 
 ## See also
 
 [`plot.mid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
 [`ggmid.mids`](https://ryo-asashi.github.io/midr/reference/ggmid.mids.md)
+
+## Examples
+
+``` r
+# Use a lightweight dataset for fast execution
+data(mtcars, package = "datasets")
+
+# Fit two models with different complexities
+fit1 <- lm(mpg ~ wt, data = mtcars)
+mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
+fit2 <- lm(mpg ~ wt + hp, data = mtcars)
+mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
+
+# Combine them into a "midlist" collection (which inherits from "mids")
+mids <- midlist("wt" = mid1, "wt + hp" = mid2)
+
+# Compare the main effect of 'wt' across both models
+plot(mids, term = "wt")
+
+
+# Compare the effect of 'wt' as a series plot across the models
+plot(mids, term = "wt", type = "series")
+```
