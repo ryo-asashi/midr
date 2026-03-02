@@ -17,7 +17,7 @@
 #'   \item "yeo-johnson": Yeo-Johnson transformation with a parameter \code{lambda} (default 0). Handles negative values.
 #' }
 #'
-#' @param link a character string naming the link function: "log1p", "shifted.log", "shifted.identity",  "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.
+#' @param link a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "ashinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.
 #' @param ... named arguments passed to the specific link generation logic. See Details for available parameters and defaults.
 #' @param simplify logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{get.link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).
 #'

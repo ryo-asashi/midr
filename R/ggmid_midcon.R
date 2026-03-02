@@ -53,7 +53,6 @@ ggmid.midcon <- function(
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   variable <- object$variable
-  n <- attr(object, "n")
   obs <- object$observed
   con <- object$conditional
   values <- object$values
@@ -68,19 +67,18 @@ ggmid.midcon <- function(
   }
   if (type == "centered") {
     if (reference < 0) reference <- length(values)
-    ref <- values[min(length(values), max(1L, reference))]
-    stp <- con[con[[variable]] == ref, yvar]
+    refval <- values[min(length(values), max(1L, reference))]
+    ref <- con[con[[variable]] == refval, , drop = FALSE]
     ynew <- paste0("centered ", yvar)
-    obs[, ynew] <- obs[, yvar] - stp
-    con[, ynew] <- con[, yvar] - stp
+    obs[, ynew] <- obs[, yvar] - ref[match(obs$.id, ref$.id), yvar]
+    con[, ynew] <- con[, yvar] - ref[match(con$.id, ref$.id), yvar]
     yvar <- ynew
   }
   if (!is.null(sample)) {
     obs <- obs[obs$.id %in% sample, ]
     con <- con[con$.id %in% sample, ]
-    n <- nrow(obs)
   }
-  if (n == 0L) {
+  if (nrow(obs) == 0L) {
     message("no observations found")
     return(invisible(NULL))
   }
@@ -90,21 +88,21 @@ ggmid.midcon <- function(
   if (!is.null(alp <- substitute(var.alpha))) {
     if (is.character(alp)) alp <- str2lang(alp)
     obs$.alp <- eval(alp, envir = obs)
-    con$.alp <- eval(alp, envir = con)
+    con <- merge(con, obs[, c(".id", ".alp")], by = ".id")
     pl <- pl + ggplot2::aes(alpha = .data[[".alp"]]) +
       ggplot2::labs(alpha = alp)
   }
   if (set.color <- !is.null(col <- substitute(var.color))) {
     if (is.character(col)) col <- str2lang(col)
     obs$.col <- eval(col, envir = obs)
-    con$.col <- eval(col, envir = con)
+    con <- merge(con, obs[, c(".id", ".col")], by = ".id")
     pl <- pl + ggplot2::aes(colour = .data[[".col"]]) +
       ggplot2::labs(colour = col)
   }
   if (!is.null(lty <- substitute(var.linetype))) {
     if (is.character(lty)) lty <- str2lang(lty)
     obs$.lty <- eval(lty, envir = obs)
-    con$.lty <- eval(lty, envir = con)
+    con <- merge(con, obs[, c(".id", ".lty")], by = ".id")
     pl <- pl + ggplot2::aes(linetype = .data[[".lty"]]) +
       ggplot2::labs(linetype = lty)
     if (!is.discrete(obs$.lty))
@@ -113,7 +111,7 @@ ggmid.midcon <- function(
   if (!is.null(lwd <- substitute(var.linewidth))) {
     if (is.character(lwd)) lwd <- str2lang(lwd)
     obs$.lwd <- eval(lwd, envir = obs)
-    con$.lwd <- eval(lwd, envir = con)
+    con <- merge(con, obs[, c(".id", ".lwd")], by = ".id")
     pl <- pl + ggplot2::aes(linewidth = .data[[".lwd"]]) +
       ggplot2::labs(linewidth = lwd)
     if (is.discrete(obs$.lwd)) {
@@ -123,7 +121,9 @@ ggmid.midcon <- function(
     }
   }
   pl <- pl + ggplot2::geom_line(
-    data = con, mapping = ggplot2::aes(group = .data[[".id"]]), ...)
+    mapping = ggplot2::aes(group = .data[[".id"]]),
+    data = con, ...
+  )
   if (dots) {
     pl <- pl + ggplot2::geom_point(data = obs)
   }

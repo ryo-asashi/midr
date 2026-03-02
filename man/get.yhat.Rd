@@ -19,6 +19,7 @@
 \alias{get.yhat.workflow}
 \alias{get.yhat.rpf}
 \alias{get.yhat.fitlist}
+\alias{get.yhat.coxph}
 \title{Wrapper Prediction Function}
 \usage{
 get.yhat(object, newdata, ..., target)
@@ -56,6 +57,8 @@ get.yhat(object, newdata, ..., target)
 \method{get.yhat}{rpf}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{fitlist}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{coxph}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a fitted model object.}

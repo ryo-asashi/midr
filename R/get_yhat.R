@@ -221,7 +221,8 @@ get.yhat.ksvm <- function(
     "probabilities"
   }
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  checkout(do.call("predict", args), newdata, target, exclude)
+  fun <- eval(str2lang("predict"), envir = rlang::ns_env("kernlab"))
+  checkout(do.call(fun, args), newdata, target, exclude)
 }
 
 
@@ -330,3 +331,18 @@ get.yhat.fitlist <- function(
   names(out) <- names(object) %||% vapply(object, function(x) class(x)[1L], "")
   checkout(as.matrix(do.call(cbind, out)), newdata)
 }
+
+
+#' @rdname get.yhat
+#' @exportS3Method midr::get.yhat
+#'
+get.yhat.coxph <- function(
+    object, newdata, ...
+) {
+  fun <- eval(str2lang("survfit"), envir = rlang::ns_env("survival"))
+  sfit <- do.call(fun, list(object, newdata = newdata))
+  yhat <- t(sfit$surv)
+  colnames(yhat) <- sfit$time
+  checkout(yhat, newdata)
+}
+

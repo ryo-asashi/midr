@@ -43,11 +43,11 @@
 #' @export mid.conditional
 #'
 mid.conditional <- function(
-    object, variable, data = NULL, resolution = 100L, max.nsamples = 1e3L,
+    object, variable, data = NULL, resolution = 100L, max.nsamples = 500L,
     seed = NULL, type = c("response", "link"), keep.effects = TRUE) {
   if (inherits(object, "mids")) {
     if (missing(max.nsamples))
-      max.nsamples <- max(10L, 1e3L %/% length(object$intercept))
+      max.nsamples <- max(1L, 100L %/% length(labels(object)))
     if (missing(keep.effects)) keep.effects <- FALSE
     if (missing(seed)) seed <- sample(1e6L, 1L)
     out <- suppressMessages(lapply(
@@ -105,15 +105,14 @@ mid.conditional <- function(
   if (type == "response" && !is.null(object$link))
     yhat <- object$link$linkinv(yhat)
   res <- list()
-  res$observed <- cbind(.id = ids, yhat = yhat, data)
+  res$observed <- data.frame(.id = ids, yhat = yhat, data)
   if (keep.effects)
     res$observed.effects <- pmat
   tags <- unique(term.split(tvar))
   tags <- tags[tags != variable]
   names(tags) <- tags
-  longdata <- lapply(tags, function(tag) rep.int(data[, tag], times = m))
-  longdata[[variable]] <- rep(values, each = n)
-  longdata <- as.data.frame(longdata, check.names = FALSE)
+  longdata <- data[rep.int(seq_len(n), times = m), , drop = FALSE]
+  longdata[, variable] <- rep(values, each = n)
   pfix <- rep.int(pfix, times = m)
   pmat <- matrix(0, nrow = n * m, ncol = nvar, dimnames = list(NULL, tvar))
   for (i in seq_len(nvar))
@@ -122,7 +121,12 @@ mid.conditional <- function(
   longyhat <- pfix + pvar + object$intercept
   if (type == "response" && !is.null(object$link))
     longyhat <- object$link$linkinv(longyhat)
-  res$conditional <- cbind(.id = rep.int(ids, m), yhat = longyhat, longdata)
+  res$conditional <- data.frame(
+    .id = rep.int(ids, m),
+    yhat = longyhat,
+    vcol = longdata[, variable]
+  )
+  names(res$conditional)[3L] <- variable
   if (keep.effects)
     res$conditional.effects <- pmat
   res$ids <- ids

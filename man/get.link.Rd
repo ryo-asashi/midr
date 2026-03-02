@@ -7,7 +7,7 @@
 get.link(link, ..., simplify = TRUE)
 }
 \arguments{
-\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity",  "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.}
+\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "ashinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.}
 
 \item{...}{named arguments passed to the specific link generation logic. See Details for available parameters and defaults.}
 

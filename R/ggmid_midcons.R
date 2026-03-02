@@ -1,43 +1,142 @@
 #' Compare MID Conditional Expectations with ggplot2
 #'
 #' @description
-#' For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
+#' For "midcons" collection objects, \code{ggmid()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models.
 #'
 #' @details
-#' This is an S3 method for the \code{ggmid()} generic that produces ICE curves from a "mid.conditional" object.
-#' ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
-#' This function plots one line for each observation in the data.
+#' This is an S3 method for the \code{ggmid()} generic that produces comparative ICE curves from a "midcons" object.
+#' It plots one line for each observation in the data per model, coloring them automatically by the model label.
 #'
 #' The \code{type} argument controls the visualization style:
 #' The default, \code{type = "iceplot"}, plots the raw ICE curves.
-#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero, making it easier to compare the slopes of the curves.
+#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero.
 #'
-#' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
-#'
-#' @param object a "mid.conditional" object to be visualized.
+#' @param object a "midcons" collection object to be visualized.
+#' @param type the plotting style. One of "iceplot" or "centered".
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
+#' @param var.alpha a variable name or expression to map to the alpha aesthetic.
+#' @param var.linetype a variable name or expression to map to the linetype aesthetic.
+#' @param var.linewidth a variable name or expression to map to the linewidth aesthetic.
+#' @param reference an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.
+#' @param sample an optional vector specifying the names of observations to be plotted.
+#' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer.
 #'
 #' @returns
-#' \code{ggmid.midlist.conditional()} returns a "ggplot" object.
+#' \code{ggmid.midcons()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{ggmid.midcon}}, \code{\link{plot.midcons}}
+#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.midcons}}
 #'
 #' @exportS3Method midr::ggmid
 #'
-ggmid.midcons <- function(object, ...) {
-  mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(lapply)
-  mcall[["object"]] <- NULL
-  mcall[["X"]] <- object
-  mcall[["FUN"]] <- quote(ggmid.mid.conditional)
-  eval(mcall, parent.frame())
+ggmid.midcons <- function(
+    object, type = c("iceplot", "centered", "series"), theme = NULL,
+    var.alpha = NULL, var.linetype = NULL, var.linewidth = NULL,
+    reference = 1L, sample = NULL, labels = NULL, ...) {
+  type <- match.arg(type)
+  variable <- object[[1L]]$variable
+  obs <- object[[1L]]$observed
+  con <- summary(object, shape = "long")
+  values <- object[[1L]]$values
+  olabs <- unique(con$label)
+  labels <- labels %||% olabs
+  if (length(labels) != length(olabs)) {
+    stop("length of 'labels' must match the number of models in the collection")
+  }
+  con$label <- labels[match(con$label, olabs)]
+  parsed <- suppressWarnings(as.numeric(labels))
+  discrete <- anyNA(parsed)
+  if (!discrete) {
+    labels <- parsed
+    con$label <- as.numeric(con$label)
+  } else if (!is.factor(labels)) {
+    labels <- factor(labels, levels = unique(labels))
+    con$label <- factor(con$label, levels = levels(labels))
+  }
+  theme <- theme %||% (
+    if (discrete) getOption("midr.qualitative", "HCL")
+    else getOption("midr.sequential", "bluescale")
+  )
+  theme <- color.theme(theme)
+  yvar <- "yhat"
+  if (type == "centered") {
+    if (reference < 0) reference <- length(values)
+    refval <- values[min(length(values), max(1L, reference))]
+    ref <- con[con[[variable]] == refval, , drop = FALSE]
+    key1 <- sprintf("%s(%s)", con$.id, con$label)
+    key2 <- sprintf("%s(%s)", ref$.id, ref$label)
+    ynew <- paste0("centered ", yvar)
+    con[, ynew] <- con[, yvar] - ref[match(key1, key2), yvar]
+    yvar <- ynew
+  }
+  if (!is.null(sample)) {
+    obs <- obs[obs$.id %in% sample, ]
+    con <- con[con$.id %in% sample, ]
+    n <- nrow(obs)
+  }
+  if (nrow(obs) == 0L) {
+    message("no observations found")
+    return(invisible(NULL))
+  }
+  xvar <- if (type == "series") "label" else variable
+  pl <- ggplot2::ggplot(
+    mapping = ggplot2::aes(x = .data[[xvar]], y = .data[[yvar]])
+  )
+  if (!is.null(alp <- substitute(var.alpha))) {
+    if (is.character(alp)) alp <- str2lang(alp)
+    obs$.alp <- eval(alp, envir = obs)
+    con <- merge(con, obs[, c(".id", ".alp")], by = ".id")
+    pl <- pl + ggplot2::aes(alpha = .data[[".alp"]]) +
+      ggplot2::labs(alpha = alp)
+  }
+  if (!is.null(lty <- substitute(var.linetype))) {
+    if (is.character(lty)) lty <- str2lang(lty)
+    obs$.lty <- eval(lty, envir = obs)
+    con <- merge(con, obs[, c(".id", ".lty")], by = ".id")
+    pl <- pl + ggplot2::aes(linetype = .data[[".lty"]]) +
+      ggplot2::labs(linetype = lty)
+    if (!is.discrete(obs$.lty))
+      pl <- pl + ggplot2::scale_linetype_binned()
+  }
+  if (!is.null(lwd <- substitute(var.linewidth))) {
+    if (is.character(lwd)) lwd <- str2lang(lwd)
+    obs$.lwd <- eval(lwd, envir = obs)
+    con <- merge(con, obs[, c(".id", ".lwd")], by = ".id")
+    pl <- pl + ggplot2::aes(linewidth = .data[[".lwd"]]) +
+      ggplot2::labs(linewidth = lwd)
+    if (is.discrete(obs$.lwd)) {
+      pl <- pl + ggplot2::scale_linewidth_discrete(range = c(0, 1))
+    } else {
+      pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))
+    }
+  }
+  if (type == "series") {
+    pl <- pl +
+      ggplot2::aes(
+        color = .data[[variable]],
+        group = interaction(.data[[".id"]], factor(.data[[variable]]))
+      )
+    pl <- pl + if (discrete) geom_dotline(data = con, ...) else
+      ggplot2::geom_line(data = con, ...)
+    pl <- pl + scale_color_theme(theme, discrete = is.discrete(con[[variable]]))
+  } else {
+    pl <- pl + ggplot2::geom_line(
+      ggplot2::aes(
+        color = .data[["label"]],
+        group = interaction(.data[[".id"]], factor(.data[["label"]]))
+      ), data = con, ...
+    ) + scale_color_theme(theme = theme, discrete = discrete)
+  }
+  pl
 }
 
+
 #' @rdname ggmid.midcons
-#'
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midcons <- function(object, ...) {
-  message("not implemented")
-  return(NULL)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.midcons)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

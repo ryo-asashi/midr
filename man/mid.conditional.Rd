@@ -9,7 +9,7 @@ mid.conditional(
   variable,
   data = NULL,
   resolution = 100L,
-  max.nsamples = 1000L,
+  max.nsamples = 500L,
   seed = NULL,
   type = c("response", "link"),
   keep.effects = TRUE

@@ -5,32 +5,56 @@
 \alias{autoplot.midcons}
 \title{Compare MID Conditional Expectations with ggplot2}
 \usage{
-\method{ggmid}{midcons}(object, ...)
+\method{ggmid}{midcons}(
+  object,
+  type = c("iceplot", "centered", "series"),
+  theme = NULL,
+  var.alpha = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  reference = 1L,
+  sample = NULL,
+  labels = NULL,
+  ...
+)
 
 \method{autoplot}{midcons}(object, ...)
 }
 \arguments{
-\item{object}{a "mid.conditional" object to be visualized.}
+\item{object}{a "midcons" collection object to be visualized.}
+
+\item{type}{the plotting style. One of "iceplot" or "centered".}
+
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
+
+\item{var.alpha}{a variable name or expression to map to the alpha aesthetic.}
+
+\item{var.linetype}{a variable name or expression to map to the linetype aesthetic.}
+
+\item{var.linewidth}{a variable name or expression to map to the linewidth aesthetic.}
+
+\item{reference}{an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.}
+
+\item{sample}{an optional vector specifying the names of observations to be plotted.}
+
+\item{labels}{an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.}
 
 \item{...}{optional parameters passed on to the main layer.}
 }
 \value{
-\code{ggmid.midlist.conditional()} returns a "ggplot" object.
+\code{ggmid.midcons()} returns a "ggplot" object.
 }
 \description{
-For "mid.conditional" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
+For "midcons" collection objects, \code{ggmid()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models.
 }
 \details{
-This is an S3 method for the \code{ggmid()} generic that produces ICE curves from a "mid.conditional" object.
-ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
-This function plots one line for each observation in the data.
+This is an S3 method for the \code{ggmid()} generic that produces comparative ICE curves from a "midcons" object.
+It plots one line for each observation in the data per model, coloring them automatically by the model label.
 
 The \code{type} argument controls the visualization style:
 The default, \code{type = "iceplot"}, plots the raw ICE curves.
-The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero, making it easier to compare the slopes of the curves.
-
-The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
+The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero.
 }
 \seealso{
-\code{\link{ggmid.midcon}}, \code{\link{plot.midcons}}
+\code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.midcons}}
 }
