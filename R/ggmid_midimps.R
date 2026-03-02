@@ -19,7 +19,6 @@
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
 #'
 #' @examples
-#' # Use a lightweight dataset for fast execution
 #' data(mtcars, package = "datasets")
 #'
 #' # Fit two different models for comparison

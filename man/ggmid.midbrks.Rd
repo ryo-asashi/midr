@@ -44,6 +44,9 @@
 
 \item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }
+\value{
+\code{ggmid.midbrks()} returns a "ggplot" object.
+}
 \description{
 For "midbrks" collection objects, \code{ggmid()} visualizes and compares the breakdown of a prediction by component functions.
 }
@@ -53,4 +56,23 @@ This is an S3 method for the \code{ggmid()} generic that creates a comparative i
 The \code{type} argument controls the visualization style.
 The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
 The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+}
+\examples{
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+
+# Calculate importance for both models and combine them
+brks <- midlist(
+  "Main Effects" = mid.breakdown(mid1),
+  "Interactions" = mid.breakdown(mid2)
+)
+
+# Create a comparative grouped bar plot (default)
+ggmid(brks)
+
+# Create a comparative dot chart with a specific theme
+ggmid(brks, type = "dotchart", theme = "R4")
 }

@@ -2,29 +2,78 @@
 % Please edit documentation in R/plot_midbrks.R
 \name{plot.midbrks}
 \alias{plot.midbrks}
-\title{Compare MID Breakdown}
+\title{Plot MID Breakdowns for Collections}
 \usage{
-\method{plot}{midbrks}(x, ...)
+\method{plot}{midbrks}(
+  x,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  label.pattern = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
 }
 \arguments{
-\item{x}{a "mid.breakdown" object to be visualized.}
+\item{x}{a "midbrks" collection object to be visualized.}
 
-\item{...}{optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
+
+\item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
+
+\item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
+
+\item{max.nterms}{the maximum number of terms to display. Defaults to 15.}
+
+\item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
+
+\item{others}{a character string for the catchall label. Defaults to \code{"others"}.}
+
+\item{label.pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+
+\item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
+
+\item{labels}{an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.}
+
+\item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }
 \value{
-\code{plot.midlist.breakdown()} produces a plot as a side effect and returns \code{NULL} invisibly.
+\code{plot.midbrks()} produces a plot as a side effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mid.breakdown" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
+For "midbrks" collection objects, \code{plot()} visualizes and compares the breakdown of a prediction by component functions across multiple models using base R graphics.
 }
 \details{
-This is an S3 method for the \code{plot()} generic that produces a breakdown plot from a "mid.breakdown" object, visualizing the contribution of each component function to a single prediction.
+This is an S3 method for the \code{plot()} generic that evaluates the component contributions to a single prediction and compares the results across all models in the collection.
 
-The \code{type} argument controls the visualization style.
-The default, \code{type = "waterfall"}, creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.
-The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
-The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
+The \code{type} argument controls the visualization style:
+The default, \code{type = "barplot"}, creates a grouped bar plot where the bars for each term are placed side-by-side across the models.
+The \code{type = "dotchart"} option creates a grouped dot plot, offering a cleaner comparison across models.
+The \code{type = "series"} option plots the contribution trend over the models for each component term.
+}
+\examples{
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+
+# Calculate importance for both models and combine them
+brks <- midlist(
+  "Main Effects" = mid.breakdown(mid1),
+  "Interactions" = mid.breakdown(mid2)
+)
+
+# Create a comparative grouped bar plot (default)
+plot(brks)
+
+# Create a comparative dot chart with a specific theme
+plot(brks, type = "dotchart", theme = "R4")
 }
 \seealso{
-\code{\link{plot.midbrk}}, \code{\link{ggmid.midbrks}}
+\code{\link{ggmid.midbrks}}, \code{\link{plot.midbrk}}, \code{\link{plot.midimps}}
 }

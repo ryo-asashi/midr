@@ -63,21 +63,19 @@ reference:
   contents:
   - plot.mid
   - ggmid
+  - plot.mids
+  - ggmid.mids
   - mid.plots
   - predict.mid
   - mid.effect
   - print.mid
   - summary.mid
   - mid.terms
-- title: Combine MID models
+- title: Combine MID objects
   contents:
   - midlist
-- subtitle: Methods
-  contents:
   - labels.midlist
   - extract.midlist
-  - plot.mids
-  - ggmid.mids
 - title: Importance of effects
   contents:
   - mid.importance

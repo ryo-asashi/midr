@@ -6,19 +6,19 @@
 #' @details
 #' This is an S3 method for the \code{plot()} generic that creates a comparative importance plot from a "midimps" collection object. It visualizes the average contribution of component functions to the fitted MID models, allowing for easy comparison across different models.
 #'
-#' The \code{type} argument controls the visualization style.
+#' The \code{type} argument controls the visualization style:
 #' The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side by model label.
 #' The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+#' The \code{type = "series"} option plots the importance trend over the models for each component function.
 #'
 #' @param x a "midimps" collection object to be visualized.
-#' @param type the plotting style. One of "barplot" or "dotchart".
+#' @param type the plotting style. One of "barplot", "dotchart", or "series".
 #' @param theme a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.
 #' @param max.nterms the maximum number of terms to display. Defaults to 30.
 #' @param ... optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
-#' # Use a lightweight dataset for fast execution
 #' data(mtcars, package = "datasets")
 #'
 #' # Fit two different models for comparison
@@ -36,6 +36,9 @@
 #'
 #' # Create a comparative dot chart with a specific theme
 #' plot(imps, type = "dotchart", theme = "Okabe-Ito")
+#'
+#' # Create a series plot to observe trends across models
+#' plot(imps, type = "series")
 #' @returns
 #' \code{plot.midimps()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
@@ -44,38 +47,64 @@
 #' @exportS3Method base::plot
 #'
 plot.midimps <- function(
-    x, type = c("barplot", "dotchart"),
+    x, type = c("barplot", "dotchart", "series"),
     theme = NULL, terms = NULL, max.nterms = 30L, ...
 ) {
   dots <- list(...)
   type <- match.arg(type)
-  if (missing(theme))
-    theme <- getOption("midr.qualitative", "HCL")
-  theme <- color.theme(theme)
   imp <- summary(x, shape = "long")
-  labs <- unique(imp$label)
+  labels <- unique(imp$label)
+  # Parse labels to check if they are discrete or continuous
+  parsed <- suppressWarnings(as.numeric(labels))
+  discrete <- anyNA(parsed)
+  if (!discrete) {
+    labels <- parsed
+  }
+  if (missing(theme)) {
+    theme <- if (type == "series" || discrete) getOption("midr.qualitative", "HCL")
+    else getOption("midr.sequential", "bluescale")
+  }
+  theme <- color.theme(theme)
   terms <- terms %||% unique(imp$term)
   terms <- utils::head(terms, max.nterms)
   imp <- imp[order(match(imp$term, terms), na.last = NA), , drop = FALSE]
   imp$term <- factor(imp$term, levels = rev(terms))
   n <- length(terms)
-  m <- length(labs)
+  m <- length(labels)
   mat <- matrix(NA_real_, nrow = n, ncol = m)
   for (i in seq_len(m)) {
-    subimp <- imp[imp$label == labs[i], ]
+    subimp <- imp[imp$label == labels[i], ]
     mat[, i] <- subimp$importance[match(terms, subimp$term)]
   }
-  cols <- theme$palette(m)
-  args <- list(to = mat, labs = terms,
-               horizontal = TRUE, xlab = "importance")
-  if (type == "dotchart") {
-    args$type <- "d"
-    args$col <- cols
-  } else if (type == "barplot") {
-    args$type <- "b"
-    args$fill <- cols
+  if (type == "barplot" || type == "dotchart") {
+    cols <- to.colors(labels, theme)
+    args <- list(to = mat, labels = terms,
+                 horizontal = TRUE, xlab = "importance")
+    if (type == "dotchart") {
+      args$type <- "d"
+      args$col <- cols
+    } else if (type == "barplot") {
+      args$type <- "b"
+      args$fill <- cols
+    }
+    args <- override(args, dots)
+    do.call(barplot2, args)
+  } else if (type == "series") {
+    # For series plot, colors should match the number of terms (n), not models (m)
+    cols <- theme$palette(n)
+    if (discrete) {
+      x_pos <- seq_along(labels)
+      args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
+                   lty = 1L, xaxt = "n", xlab = "label", ylab = "importance")
+      args <- override(args, dots)
+      do.call(graphics::matplot, args)
+      graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
+    } else {
+      args <- list(x = labels, y = t(mat), type = "l", col = cols,
+                   lty = 1L, xlab = "label", ylab = "importance")
+      args <- override(args, dots)
+      do.call(graphics::matplot, args)
+    }
   }
-  args <- override(args, dots)
-  do.call(barplot2, args)
   invisible(NULL)
 }

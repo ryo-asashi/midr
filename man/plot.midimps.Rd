@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{midimps}(
   x,
-  type = c("barplot", "dotchart"),
+  type = c("barplot", "dotchart", "series"),
   theme = NULL,
   terms = NULL,
   max.nterms = 30L,
@@ -16,7 +16,7 @@
 \arguments{
 \item{x}{a "midimps" collection object to be visualized.}
 
-\item{type}{the plotting style. One of "barplot" or "dotchart".}
+\item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
 
 \item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
 
@@ -35,12 +35,12 @@ For "midimps" collection objects, \code{plot()} visualizes and compares the impo
 \details{
 This is an S3 method for the \code{plot()} generic that creates a comparative importance plot from a "midimps" collection object. It visualizes the average contribution of component functions to the fitted MID models, allowing for easy comparison across different models.
 
-The \code{type} argument controls the visualization style.
+The \code{type} argument controls the visualization style:
 The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side by model label.
 The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+The \code{type = "series"} option plots the importance trend over the models for each component function.
 }
 \examples{
-# Use a lightweight dataset for fast execution
 data(mtcars, package = "datasets")
 
 # Fit two different models for comparison
@@ -58,6 +58,9 @@ plot(imps)
 
 # Create a comparative dot chart with a specific theme
 plot(imps, type = "dotchart", theme = "Okabe-Ito")
+
+# Create a series plot to observe trends across models
+plot(imps, type = "series")
 }
 \seealso{
 \code{\link{plot.midimp}}, \code{\link{ggmid.midimps}}, \code{\link{midlist}}

@@ -19,7 +19,7 @@
 \method{autoplot}{mids}(object, ...)
 }
 \arguments{
-\item{object}{a "mids" or "midlist" collection object to be visualized.}
+\item{object}{a "mids" collection object to be visualized.}
 
 \item{term}{a character string specifying the main effect to evaluate.}
 
@@ -35,6 +35,9 @@
 
 \item{...}{optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).}
 }
+\value{
+\code{ggmid.mids()} returns a "ggplot" object.
+}
 \description{
 For "mids" collection objects, \code{ggmid()} visualizes and compares a single main effect across multiple models.
 }
@@ -43,4 +46,26 @@ This method evaluates the specified \code{term} over a grid of values and compar
 For continuous variables, it uses line plots (or step plots for constant encodings). For factors, it uses grouped bar plots.
 
 Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.
+}
+\examples{
+# Use a lightweight dataset for fast execution
+data(mtcars, package = "datasets")
+
+# Fit two models with different complexities
+fit1 <- lm(mpg ~ wt, data = mtcars)
+mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
+fit2 <- lm(mpg ~ wt + hp, data = mtcars)
+mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
+
+# Combine them into a "midlist" collection (which inherits from "mids")
+mids <- midlist("wt" = mid1, "wt + hp" = mid2)
+
+# Compare the main effect of 'wt' across both models
+ggmid(mids, term = "wt")
+
+# Compare the effect of 'wt' as a series plot across the models
+ggmid(mids, term = "wt", type = "series")
+}
+\seealso{
+\code{\link{ggmid}}, \code{\link{plot.mids}}
 }

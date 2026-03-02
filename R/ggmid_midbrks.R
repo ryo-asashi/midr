@@ -22,6 +22,27 @@
 #' @param labels an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
 #'
+#' @examples
+#' data(mtcars, package = "datasets")
+#'
+#' # Fit two different models for comparison
+#' mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#' mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#'
+#' # Calculate importance for both models and combine them
+#' brks <- midlist(
+#'   "Main Effects" = mid.breakdown(mid1),
+#'   "Interactions" = mid.breakdown(mid2)
+#' )
+#'
+#' # Create a comparative grouped bar plot (default)
+#' ggmid(brks)
+#'
+#' # Create a comparative dot chart with a specific theme
+#' ggmid(brks, type = "dotchart", theme = "R4")
+#' @returns
+#' \code{ggmid.midbrks()} returns a "ggplot" object.
+#'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midbrks <- function(

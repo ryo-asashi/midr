@@ -18,22 +18,22 @@
 #' fit <- lm(cbind(y1, y2, y3) ~ x1 + I(x1^2), data = anscombe)
 #'
 #' # Interpret the linear models
-#' mid_collection <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit)
+#' collection <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit)
 #'
 #' # Check the default labels
-#' labels(mid_collection)
+#' labels(collection)
 #'
 #' # Rename the models in the collection
-#' labels(mid_collection) <- letters[1L:3L]
-#' labels(mid_collection)
+#' labels(collection) <- letters[1L:3L]
+#' labels(collection)
 #'
 #' # Extract a single base "mid" object by its new name using [[
-#' mid <- mid_collection[["a"]]
+#' mid <- collection[["a"]]
 #' class(mid)
 #'
 #' # Subset the collection to keep only the first two models using [
-#' mid_subset <- mid_collection[1:2]
-#' class(mid_subset) # Maintains the collection class (e.g., "mids"-"midrib")
+#' sub <- collection[1:2]
+#' class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
 #' @returns
 #' \code{labels} returns a character vector of labels of the stored base objects.
 #'

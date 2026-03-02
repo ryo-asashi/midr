@@ -9,7 +9,7 @@
 #'
 #' Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.
 #'
-#' @param object a "mids" or "midlist" collection object to be visualized.
+#' @param object a "mids" collection object to be visualized.
 #' @param term a character string specifying the main effect to evaluate.
 #' @param type the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.
 #' @param theme a character string or object defining the color theme.
@@ -17,6 +17,29 @@
 #' @param resolution an integer specifying the number of evaluation points for continuous variables.
 #' @param labels an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.
 #' @param ... optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).
+#'
+#' @examples
+#' # Use a lightweight dataset for fast execution
+#' data(mtcars, package = "datasets")
+#'
+#' # Fit two models with different complexities
+#' fit1 <- lm(mpg ~ wt, data = mtcars)
+#' mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
+#' fit2 <- lm(mpg ~ wt + hp, data = mtcars)
+#' mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
+#'
+#' # Combine them into a "midlist" collection (which inherits from "mids")
+#' mids <- midlist("wt" = mid1, "wt + hp" = mid2)
+#'
+#' # Compare the main effect of 'wt' across both models
+#' ggmid(mids, term = "wt")
+#'
+#' # Compare the effect of 'wt' as a series plot across the models
+#' ggmid(mids, term = "wt", type = "series")
+#' @returns
+#' \code{ggmid.mids()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid}}, \code{\link{plot.mids}}
 #'
 #' @exportS3Method midr::ggmid
 #'
@@ -106,5 +129,8 @@ ggmid.mids <- function(
 #' @rdname ggmid.mids
 #' @exportS3Method ggplot2::autoplot
 autoplot.mids <- function(object, ...) {
-  ggmid.mids(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.mids)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

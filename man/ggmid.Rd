@@ -52,7 +52,6 @@ ggmid(object, ...)
 }
 \value{
 \code{ggmid.mid()} returns a "ggplot" object.
-\code{ggmid.midlist()} returns a list of "ggplot" objects.
 }
 \description{
 \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.

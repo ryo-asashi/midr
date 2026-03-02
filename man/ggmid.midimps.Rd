@@ -46,7 +46,6 @@ The default, \code{type = "barplot"}, creates a standard grouped bar plot where 
 The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
 }
 \examples{
-# Use a lightweight dataset for fast execution
 data(mtcars, package = "datasets")
 
 # Fit two different models for comparison

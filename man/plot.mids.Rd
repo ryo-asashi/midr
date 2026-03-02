@@ -4,28 +4,66 @@
 \alias{plot.mids}
 \title{Compare MID Component Functions}
 \usage{
-\method{plot}{mids}(x, ...)
+\method{plot}{mids}(
+  x,
+  term,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  resolution = NULL,
+  labels = base::labels(x),
+  ...
+)
 }
 \arguments{
-\item{x}{a "mid" object to be visualized.}
+\item{x}{a "mids" collection object to be visualized.}
 
-\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{term}{a character string specifying the main effect to evaluate.}
+
+\item{type}{the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.}
+
+\item{theme}{a character string or object defining the color theme.}
+
+\item{intercept}{logical. If \code{TRUE}, the model intercept is added to the component effect.}
+
+\item{resolution}{an integer specifying the number of evaluation points for continuous variables.}
+
+\item{labels}{an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.}
+
+\item{...}{optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).}
 }
 \value{
-\code{plot.midlist()} produces a plot as a side-effect and returns \code{NULL} invisibly.
+\code{plot.mids()} produces a plot as a side-effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.
+For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models using base R graphics.
 }
 \details{
-This is an S3 method for the \code{plot()} generic that produces a plot from a "mid" object, visualizing a component function of the fitted MID model.
+This is an S3 method for the \code{plot()} generic that evaluates the specified \code{term} over a grid of values and compares the results across all models in the collection.
 
-The \code{type} argument controls the visualization style.
-The default, \code{type = "effect"}, plots the component function itself.
-In this style, the plotting method is automatically selected based on the effect's type:
-a line plot for quantitative main effects; a bar plot for qualitative main effects; and a filled contour (level) plot for interactions.
-The \code{type = "data"} option creates a scatter plot of \code{data}, colored by the values of the component function.
-The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
+For continuous variables, it uses a multi-line plot (\code{matplot}). For qualitative factors, it uses a grouped bar plot (\code{barplot}).
+The \code{type = "series"} option transposes the view to plot the effect trend over the models for each feature value.
+
+Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.
+}
+\examples{
+# Use a lightweight dataset for fast execution
+data(mtcars, package = "datasets")
+
+# Fit two models with different complexities
+fit1 <- lm(mpg ~ wt, data = mtcars)
+mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
+fit2 <- lm(mpg ~ wt + hp, data = mtcars)
+mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
+
+# Combine them into a "midlist" collection (which inherits from "mids")
+mids <- midlist("wt" = mid1, "wt + hp" = mid2)
+
+# Compare the main effect of 'wt' across both models
+plot(mids, term = "wt")
+
+# Compare the effect of 'wt' as a series plot across the models
+plot(mids, term = "wt", type = "series")
 }
 \seealso{
 \code{\link{plot.mid}}, \code{\link{ggmid.mids}}

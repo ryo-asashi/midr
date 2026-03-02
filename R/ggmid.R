@@ -34,7 +34,6 @@
 #' ggmid(mid, "clarity:color", theme = "RdBu")
 #' @returns
 #' \code{ggmid.mid()} returns a "ggplot" object.
-#' \code{ggmid.midlist()} returns a list of "ggplot" objects.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid.midimp}}, \code{\link{ggmid.midcon}}, \code{\link{ggmid.midbrk}}, \code{\link{plot.mid}}
 #'
