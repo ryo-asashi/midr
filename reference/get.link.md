@@ -17,8 +17,9 @@ get.link(link, ..., simplify = TRUE)
 - link:
 
   a character string naming the link function: "log1p", "shifted.log",
-  "shifted.identity", "box-cox", "box-cox2", or "yeo-johnson". Standard
-  links (e.g., "logit", "probit", "log") are passed to
+  "shifted.identity", "robit", "ashinh", "scobit", "box-cox",
+  "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit",
+  "log") are passed to
   [`stats::make.link()`](https://rdrr.io/r/stats/make.link.html).
 
 - ...:

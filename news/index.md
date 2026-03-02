@@ -51,6 +51,8 @@
 
 ## midr 0.5.3
 
+CRAN release: 2026-01-16
+
 Fourth release on CRAN. This version introduces significant memory
 efficiency improvements for large-scale data analysis.
 
@@ -157,6 +159,8 @@ efficiency improvements for large-scale data analysis.
 
 ## midr 0.5.2
 
+CRAN release: 2025-09-07
+
 Third release on CRAN.
 
 ## midr 0.5.1.901
@@ -169,6 +173,8 @@ Third release on CRAN.
   `max.nplots`, `max.nrow`).
 
 ## midr 0.5.1
+
+CRAN release: 2025-08-27
 
 Second release on CRAN.
 
@@ -271,6 +277,8 @@ Second release on CRAN.
   call.
 
 ## midr 0.5.0
+
+CRAN release: 2025-06-23
 
 First release on CRAN.
 
