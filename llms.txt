@@ -204,10 +204,10 @@ and Graphical Statistics*, *24*(1), 44–65.
 ### Methods
 
 - [`plot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  : Plot MID Component Functions
+  : Plot MID Component Function
 - [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
   [`autoplot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
-  : Plot MID Component Functions with ggplot2
+  : Plot MID Component Function with ggplot2
 - [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
   : Compare MID Component Functions
 - [`ggmid(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mids.md)
@@ -256,25 +256,25 @@ and Graphical Statistics*, *24*(1), 44–65.
   [`autoplot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md)
   : Plot MID Importance with ggplot2
 - [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
-  : Compare MID Importance
+  : Compare MID Importances
 - [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
   [`autoplot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
-  : Compare MID Importance with ggplot2
+  : Compare MID Importances with ggplot2
 
 ## Breakdown of predictions
 
 - [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
-  : Calculate MID Breakdowns
+  : Calculate MID Breakdown
 
 ### Methods
 
 - [`plot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  : Plot MID Breakdowns
+  : Plot MID Breakdown
 - [`ggmid(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
   [`autoplot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
-  : Plot MID Breakdowns with ggplot2
+  : Plot MID Breakdown with ggplot2
 - [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
-  : Plot MID Breakdowns for Collections
+  : Compare MID Breakdowns
 - [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
   [`autoplot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
   : Compare MID Breakdowns with ggplot2
@@ -282,17 +282,17 @@ and Graphical Statistics*, *24*(1), 44–65.
 ## Conditional expectations
 
 - [`mid.conditional()`](https://ryo-asashi.github.io/midr/reference/mid.conditional.md)
-  : Calculate MID Conditional Expectations
+  : Calculate MID Conditional Expectation
 
 ### Methods
 
 - [`plot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  : Plot MID Conditional Expectations
+  : Plot MID Conditional Expectation
 - [`ggmid(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
   [`autoplot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
-  : Plot MID Conditional Expectations with ggplot2
+  : Plot MID Conditional Expectation with ggplot2
 - [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
-  : Plot MID Conditional Expectations for Collections
+  : Compare MID Conditional Expectations
 - [`ggmid(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
   [`autoplot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
   : Compare MID Conditional Expectations with ggplot2

@@ -1,4 +1,4 @@
-# Compare MID Importance
+# Compare MID Importances
 
 For "midimps" collection objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and

@@ -1,4 +1,4 @@
-# Compare MID Importance with ggplot2
+# Compare MID Importances with ggplot2
 
 For "midimps" collection objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)

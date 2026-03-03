@@ -1,4 +1,4 @@
-# Calculate MID Conditional Expectations
+# Calculate MID Conditional Expectation
 
 `mid.conditional()` calculates the data required to draw Individual
 Conditional Expectation (ICE) curves from a fitted MID model. ICE curves

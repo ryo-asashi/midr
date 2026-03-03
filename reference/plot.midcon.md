@@ -1,4 +1,4 @@
-# Plot MID Conditional Expectations
+# Plot MID Conditional Expectation
 
 For "midcon" objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes
@@ -19,7 +19,7 @@ plot(
   var.linetype = NULL,
   var.linewidth = NULL,
   reference = 1L,
-  dots = TRUE,
+  points = TRUE,
   sample = NULL,
   ...
 )
@@ -67,7 +67,7 @@ plot(
   an integer specifying the index of the evaluation point to use as the
   reference for centering the c-ICE plot.
 
-- dots:
+- points:
 
   logical. If `TRUE`, points representing the actual predictions for
   each observation are plotted.

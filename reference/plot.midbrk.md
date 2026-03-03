@@ -1,4 +1,4 @@
-# Plot MID Breakdowns
+# Plot MID Breakdown
 
 For "midbrk" objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes the
@@ -17,7 +17,7 @@ plot(
   width = NULL,
   vline = TRUE,
   others = "others",
-  label.pattern = c("%t=%v", "%t:%t"),
+  pattern = c("%t=%v", "%t:%t"),
   format.args = list(),
   ...
 )
@@ -61,7 +61,7 @@ plot(
 
   a character string for the catchall label.
 
-- label.pattern:
+- pattern:
 
   a character vector of length one or two specifying the format of the
   axis labels. The first element is used for main effects (default

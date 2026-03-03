@@ -1,4 +1,4 @@
-# Plot MID Conditional Expectations with ggplot2
+# Plot MID Conditional Expectation with ggplot2
 
 For "midcon" objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
@@ -19,7 +19,7 @@ ggmid(
   var.linetype = NULL,
   var.linewidth = NULL,
   reference = 1L,
-  dots = TRUE,
+  points = TRUE,
   sample = NULL,
   ...
 )
@@ -70,7 +70,7 @@ autoplot(object, ...)
   an integer specifying the index of the evaluation point to use as the
   reference for centering the c-ICE plot.
 
-- dots:
+- points:
 
   logical. If `TRUE`, points representing the actual predictions for
   each observation are plotted.

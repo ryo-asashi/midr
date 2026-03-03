@@ -1,4 +1,4 @@
-# Plot MID Component Functions with ggplot2
+# Plot MID Component Function with ggplot2
 
 `ggmid()` is an S3 generic function for creating various visualizations
 from MID-related objects using **ggplot2**. For "mid" objects (i.e.,

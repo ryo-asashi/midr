@@ -1,4 +1,4 @@
-# Plot MID Conditional Expectations for Collections
+# Compare MID Conditional Expectations
 
 For "midcons" collection objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and

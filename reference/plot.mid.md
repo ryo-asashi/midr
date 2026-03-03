@@ -1,4 +1,4 @@
-# Plot MID Component Functions
+# Plot MID Component Function
 
 For "mid" objects (i.e., fitted MID models),
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes a

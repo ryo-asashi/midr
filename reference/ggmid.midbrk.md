@@ -1,4 +1,4 @@
-# Plot MID Breakdowns with ggplot2
+# Plot MID Breakdown with ggplot2
 
 For "midbrk" objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
@@ -14,10 +14,9 @@ ggmid(
   theme = NULL,
   terms = NULL,
   max.nterms = 15L,
-  width = NULL,
   vline = TRUE,
   others = "others",
-  label.pattern = c("%t=%v", "%t:%t"),
+  pattern = c("%t=%v", "%t:%t"),
   format.args = list(),
   ...
 )
@@ -51,10 +50,6 @@ autoplot(object, ...)
   the maximum number of terms to display in the plot. Less important
   terms will be grouped into a "catchall" category.
 
-- width:
-
-  a numeric value specifying the width of the bars.
-
 - vline:
 
   logical. If `TRUE`, a vertical line is drawn at the zero or intercept
@@ -64,7 +59,7 @@ autoplot(object, ...)
 
   a character string for the catchall label.
 
-- label.pattern:
+- pattern:
 
   a character vector of length one or two specifying the format of the
   axis labels. The first element is used for main effects (default

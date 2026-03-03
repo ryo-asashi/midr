@@ -17,7 +17,7 @@ ggmid(
   max.nterms = 15L,
   vline = TRUE,
   others = "others",
-  label.pattern = c("%t=%v", "%t:%t"),
+  pattern = c("%t=%v", "%t:%t"),
   format.args = list(),
   labels = NULL,
   ...
@@ -62,7 +62,7 @@ autoplot(object, ...)
 
   a character string for the catchall label. Defaults to `"others"`.
 
-- label.pattern:
+- pattern:
 
   a character vector of length one or two specifying the format of the
   axis labels. The first element is used for main effects (default
