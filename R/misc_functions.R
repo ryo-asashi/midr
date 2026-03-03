@@ -386,14 +386,21 @@ filter_params <- function(dots, allowed) {
     mapping = NULL, data = NULL, ...
 ) {
   allowed_params <- c(
-    "colour", "alpha", "shape", "size", "fill", "stroke", "width", "height", "seed",
-    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+    "stat", "na.rm", "show.legend", "inherit.aes",
+    "colour", "alpha", "shape", "size", "fill", "stroke"
   )
   dots <- standardize_param_names(list(...))
+  haspos <- any(c("width", "height", "seed") %in% names(dots))
+  pos <- dots$position
+  if (haspos && is.null(pos)) {
+    pos.args <- filter_params(dots, c("width", "height", "seed"))
+    pos <- do.call(ggplot2::position_jitter, pos.args)
+  }
   args <- c(
     list(mapping = mapping, data = data),
     filter_params(dots, allowed_params)
   )
+  args$position <- pos
   do.call(ggplot2::geom_jitter, args)
 }
 

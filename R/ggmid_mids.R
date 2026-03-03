@@ -14,6 +14,7 @@
 #' @param type the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.
 #' @param theme a character string or object defining the color theme.
 #' @param intercept logical. If \code{TRUE}, the model intercept is added to the component effect.
+#' @param limits a numeric vector of length two specifying the limits of the plotting scale. \code{NA} values are replaced by the minimum and/or maximum MID values.
 #' @param resolution an integer specifying the number of evaluation points for continuous variables.
 #' @param labels an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.
 #' @param ... optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).
@@ -44,8 +45,8 @@
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mids <- function(
-    object, term, type = c("effect", "series"), theme = NULL,
-    intercept = FALSE, resolution = NULL, labels = base::labels(object), ...
+    object, term, type = c("effect", "series"), theme = NULL, intercept = FALSE,
+    limits = c(NA, NA), resolution = NULL, labels = base::labels(object), ...
 ) {
   tags <- term.split(term)
   term <- term.check(term, mid.terms(object), stop = TRUE)
@@ -118,6 +119,9 @@ ggmid.mids <- function(
     )
     pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
     pl <- pl + scale_color_theme(theme, discrete = is.discrete(xvals))
+  }
+  if (!is.null(limits)) {
+    pl <- pl + ggplot2::scale_y_continuous(limits = limits)
   }
   pl
 }

@@ -50,7 +50,7 @@ plot.midbrk <- function(
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
     others = "others", pattern = c("%t=%v", "%t:%t"),
     format.args = list(), ...) {
-  dots <- list(...)
+  dots <- override(list(), list(...))
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))

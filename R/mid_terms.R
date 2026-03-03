@@ -43,8 +43,12 @@
 mid.terms <- function(
     object, main.effects = TRUE, interactions = TRUE,
     require = NULL, remove = NULL, ...) {
-  if (inherits(object, "midlist"))
-    return(mid.terms(object[[1L]]))
+  if (inherits(object, "midlist")) {
+    mcall <- match.call(expand.dots = TRUE)
+    mcall[[1L]] <- quote(mid.terms)
+    mcall[["object"]] <- object[[1L]]
+    return(eval(mcall, parent.frame()))
+  }
   dots <- list(...)
   if (missing(main.effects) && !is.null(dots$me))
     main.effects <- dots$me

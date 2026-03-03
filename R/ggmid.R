@@ -62,7 +62,7 @@ UseMethod("ggmid")
 ggmid.mid <- function(
     object, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
-    jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
+    jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
   tags <- term.split(term)
   term <- term.check(term, mid.terms(object), stop = TRUE)
   type <- match.arg(type)
@@ -116,16 +116,20 @@ ggmid.mid <- function(
     }
     if (type == "data" || type == "compound") {
       data$mid <- as.numeric(preds[, term])
+      dots <- standardize_param_names(list(...))
       if (intercept)
         data$mid <- data$mid + object$intercept
       jit <- 0
       if (enc$type == "factor") {
-        jit <- jitter[1L]
+        jit <- jitter[1L] %||% 0.45
         data[, term] <- enc$transform(data[, term], lumped = lumped)
       }
-      pl <- pl +
-        .geom_jitter(mapping = ggplot2::aes(y = .data[["mid"]]),
-                     data = data, width = jit, height = 0, ...)
+      jitter.args <- list(
+        mapping = ggplot2::aes(y = .data[["mid"]]), data = data,
+        width = jit, height = 0, ...
+      )
+      if (type == "compound") jitter.args$colour <- dots$colour %||% 1L
+      pl <- pl + do.call(.geom_jitter, jitter.args)
     }
     if (use.theme) {
       middle <- if (intercept) object$intercept else 0
@@ -224,7 +228,7 @@ ggmid.mid <- function(
       jit <- c(0, 0)
       for (i in seq_len(2L)) {
         if (encs[[i]]$type == "factor") {
-          jit[i] <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+          jit[i] <- if (length(jitter) > 1L) jitter[i] else (jitter[1L] %||% 0.3)
           data[, tags[i]] <-
             encs[[i]]$transform(data[, tags[i]], lumped = lumped)
         }

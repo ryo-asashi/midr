@@ -47,7 +47,7 @@
 plot.midimp <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
     theme = NULL, terms = NULL, max.nterms = 30L, ...) {
-  dots <- list(...)
+  dots <- override(list(), list(...))
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))

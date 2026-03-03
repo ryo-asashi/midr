@@ -169,7 +169,7 @@ plot.midcons <- function(
     xvals <- if (discrete) seq_along(labels) else labels
     args <- list(
       x = xvals[ord], xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
-      xlab = "model", ylab = yvar, type = "n", xaxt = if (discrete) "n"
+      xlab = "label", ylab = yvar, type = "n", xaxt = if (discrete) "n"
     )
     do.call(graphics::plot.default, override(args, dots))
     if (discrete)

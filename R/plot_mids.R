@@ -16,6 +16,7 @@
 #' @param type the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.
 #' @param theme a character string or object defining the color theme.
 #' @param intercept logical. If \code{TRUE}, the model intercept is added to the component effect.
+#' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param resolution an integer specifying the number of evaluation points for continuous variables.
 #' @param labels an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.
 #' @param ... optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).
@@ -46,10 +47,10 @@
 #' @exportS3Method base::plot
 #'
 plot.mids <- function(
-    x, term, type = c("effect", "series"), theme = NULL,
-    intercept = FALSE, resolution = NULL, labels = base::labels(x), ...
+    x, term, type = c("effect", "series"), theme = NULL, intercept = FALSE,
+    limits = NULL, resolution = NULL, labels = base::labels(x), ...
 ) {
-  dots <- list(...)
+  dots <- override(list(), list(...))
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
   if (length(tags) > 1L) {
@@ -99,7 +100,7 @@ plot.mids <- function(
       # grouped bar plot for qualitative main effect
       args <- list(
         to = fmat, labels = as.character(xvals),
-        fill = cols, xlab = term, ylab = "mid"
+        fill = cols, xlab = term, ylab = "mid", limits = limits
       )
       args <- override(args, dots)
       do.call(barplot2, args)
@@ -107,7 +108,7 @@ plot.mids <- function(
       # multi-line plot for quantitative main effect
       args <- list(
         x = xvals, y = fmat, type = "l", col = cols, lty = 1L,
-        xlab = term, ylab = "mid"
+        xlab = term, ylab = "mid", ylim = limits
       )
       args <- override(args, dots)
       do.call(graphics::matplot, args)
@@ -122,14 +123,18 @@ plot.mids <- function(
     cols <- theme$palette(n)
     if (discrete) {
       x_pos <- seq_along(labels)
-      args <- list(x = x_pos, y = t(fmat), type = "b", col = cols, pch = 16L,
-                   lty = 1L, xaxt = "n", xlab = "model", ylab = "mid")
+      args <- list(
+        x = x_pos, y = t(fmat), type = "b", col = cols, pch = 16L,
+        lty = 1L, xaxt = "n", xlab = "label", ylab = "mid", ylim = limits
+      )
       args <- override(args, dots)
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
-      args <- list(x = labels, y = t(fmat), type = "l", col = cols, lty = 1L,
-                   xlab = "model", ylab = "mid")
+      args <- list(
+        x = labels, y = t(fmat), type = "l", col = cols, lty = 1L,
+        xlab = "label", ylab = "mid", ylim = limits
+      )
       args <- override(args, dots)
       do.call(graphics::matplot, args)
     }

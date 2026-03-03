@@ -53,8 +53,8 @@
 plot.mid <- function(
     x, term, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
-    jitter = .3, resolution = c(100L, 100L), lumped = TRUE, ...) {
-  dots <- list(...)
+    jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
+  dots <- override(list(), list(...))
   if (!is.logical(main.effects)) dots$main <- dots$main %||% main.effects
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
@@ -121,19 +121,21 @@ plot.mid <- function(
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
       vals <- data[, term]
       if (enc$type == "factor") {
-        jit <- jitter[1L]
+        jit <- jitter[1L] %||% (dots$width %||% 0.9 / 2)
         vals <- enc$transform(vals, lumped = lumped)
         vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
-                       ylab = "mid", xlab = term, limits = limits,
-                       x = vals, y = mids, col = cols, pch = 16L, cex = 1L)
-          args <- override(args, dots)
-          do.call(barplot2, args)
-          args <- args[c("x", "y", "col", "pch", "cex")]
-          do.call(graphics::points.default, args)
+                       ylab = "mid", xlab = term, limits = limits)
+          do.call(barplot2, override(args, dots))
+          args <- list(x = vals, y = mids, col = cols, pch = 16L, cex = 1L)
+          do.call(graphics::points.default, override(args, dots))
         } else if (type == "compound") {
-          graphics::points.default(x = vals, y = mids, pch = 16L)
+          point.args <- list(
+            x = vals, y = mids, pch = dots$pch %||% 16L,
+            col = dots$col %||% 1L, cex = dots$cex %||% 1L
+          )
+          do.call(graphics::points.default, point.args)
         }
       } else {
         if (type == "data") {
@@ -142,7 +144,11 @@ plot.mid <- function(
             args <- override(args, dots)
             do.call(graphics::plot.default, args)
         } else if (type == "compound") {
-          graphics::points.default(x = vals, y = mids, pch = 16L, col = cols)
+          point.args <- list(
+            x = vals, y = mids, pch = dots$pch %||% 16L,
+            col = dots$col %||% 1L, cex = dots$cex %||% 1L
+          )
+          do.call(graphics::points.default, point.args)
         }
       }
     }
@@ -197,7 +203,7 @@ plot.mid <- function(
       for (i in seq_len(2L)) {
         vals <- data[, tags[i]]
         if (encs[[i]]$type == "factor") {
-          jit <- if (length(jitter) > 1L) jitter[i] else jitter[1L]
+          jit <- if (length(jitter) > 1L) jitter[i] else (jitter[1L] %||% 0.3)
           vals <- encs[[i]]$transform(vals, lumped = lumped)
           vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         }
@@ -205,13 +211,17 @@ plot.mid <- function(
       }
     }
     if (type == "effect" || type == "compound") {
+      if (type == "compound") {
+        point.args <- list(x = xval, y = yval, pch = dots$pch %||% 16L,
+                           col = dots$col %||% 1L, cex = dots$cex %||% 1L)
+      }
       plot.axes <- substitute(
         if (args$axes) {
           graphics::title(main = "", xlab = "", ylab = "")
           graphics::axis(side = 1L, at = lat[[1L]], labels = lab[[1L]])
           graphics::axis(side = 2L, at = lat[[2L]], labels = lab[[2L]])
           if (type == "compound") {
-            points(x = xval, y = yval, pch = 16L)
+            do.call(graphics::points.default, point.args)
           }
         }
       )

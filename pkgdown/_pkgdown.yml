@@ -49,6 +49,7 @@ articles:
   contents:
   - articles/regression
   - articles/classification
+  - articles/survival
 - title: How to visualize MID models
   contents:
   # - articles/graphics

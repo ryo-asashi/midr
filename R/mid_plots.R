@@ -33,11 +33,11 @@ mid.plots <- function(
     object, terms = mid.terms(object, interactions = FALSE),
     limits = c(NA, NA), intercept = FALSE, main.effects = FALSE,
     max.nplots = NULL, engine = c("ggplot2", "graphics"), ...) {
-  if (!inherits(object, "mid"))
-    stop("'object' must be 'mid'")
+  if (!inherits(object, "mid") && !inherits(object, "mids"))
+    stop("'object' must be 'mid' or 'mids'")
   engine <- match.arg(engine)
   if (length(terms) == 0L)
-    return(NULL)
+    return(invisible(NULL))
   if (!is.null(max.nplots) && length(terms) > max.nplots) {
     message("number of terms exceeds 'max.nplots'")
     terms <- terms[1L:max.nplots]
@@ -52,16 +52,17 @@ mid.plots <- function(
     limits <- NULL
   }
   if (!is.null(limits) && (is.na(limits[1L]) || is.na(limits[2L]))) {
-    dfs <- c(object$main.effects, object$interactions)[true_terms]
+    obj <- if (inherits(object, "midlist")) object[[1L]] else object
+    dfs <- c(obj$main.effects, obj$interactions)[true_terms]
     if (is.na(limits[1L])) {
       limits[1L] <-
         min(sapply(dfs, function(x) min(x$mid, na.rm = TRUE))) +
-        if (intercept) object$intercept else 0
+        if (intercept) obj$intercept else 0
     }
     if (is.na(limits[2L])) {
       limits[2L] <-
         max(sapply(dfs, function(x) max(x$mid, na.rm = TRUE))) +
-        if (intercept) object$intercept else 0
+        if (intercept) obj$intercept else 0
     }
   }
   if (engine == "ggplot2") {
@@ -74,8 +75,11 @@ mid.plots <- function(
     }
     return(plots)
   } else {
-    for (term in terms)
-      plot.mid(object, term, limits = limits, intercept = intercept,
-               main.effects = main.effects, ...)
+    for (term in terms) {
+      base::plot(
+        object, term, limits = limits, intercept = intercept,
+        main.effects = main.effects, ...
+      )
+    }
   }
 }

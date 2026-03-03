@@ -129,6 +129,7 @@ eval_plot <- function(model, mid, data = test, ...) {
                       rmse_vs_test, rmse_vs_mid)
     ) + ggtitle("prediction / representation accuracy")
 }
+ml <- midlist()
 ```
 
 ## Additive Models
@@ -143,6 +144,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, lm = mid)
 ```
 
 ### Regularized GLM
@@ -159,6 +161,7 @@ evp <- eval_plot(model, mid, data = test[, -11],
                        s = model$lambda[9])
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), evp, nrow = 2)
+ml <- midlist(ml, glm = mid)
 ```
 
 ### Generalized Additive Model
@@ -173,6 +176,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, gam = mid)
 ```
 
 ### Multivariate Adaptive Regression Spline
@@ -185,6 +189,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, mars = mid)
 ```
 
 ## Neural Network
@@ -200,6 +205,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, nnet = mid)
 ```
 
 ## Support Vector Machine
@@ -214,6 +220,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, svm = mid)
 ```
 
 ## Tree Based Models
@@ -232,6 +239,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 evp <- eval_plot(model, mid, as.matrix(test[, -11]))
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), evp, nrow = 2)
+ml <- midlist(ml, xgb = mid)
 ```
 
 ### Random Forest
@@ -245,6 +253,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, rf = mid)
 ```
 
 ### Decision Tree
@@ -265,6 +274,7 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, tree = mid)
 ```
 
 ## Other Modes
@@ -278,4 +288,27 @@ print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
+ml <- midlist(ml, mid = mid)
+```
+
+## Compare Multiple Models
+
+```{r comparison_effect}
+options(midr.qualitative = "muted")
+p1 <- ggmid(ml[1:4], "x.1") + theme(legend.position = "none")
+p2 <- ggmid(ml[1:4], "x.3") + theme(legend.position = "none")
+p3 <- ggmid(ml[1:4], "x.4")
+p4 <- ggmid(ml[5:8], "x.1") + theme(legend.position = "none")
+p5 <- ggmid(ml[5:8], "x.3") + theme(legend.position = "none")
+p6 <- ggmid(ml[5:8], "x.4")
+(p1+ p2 + p3) / (p4 + p5 + p6)
+```
+
+```{r}
+impl <- mid.importance(ml)
+p1 <- ggmid(impl[1:4], type = "dotchart") +
+  theme(legend.position = "bottom")
+p2 <- ggmid(impl[5:8], type = "dotchart", terms = mid.terms(impl)) +
+  theme(legend.position = "bottom")
+p1 + p2
 ```

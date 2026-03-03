@@ -53,7 +53,7 @@ plot.midbrks <- function(
     terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
     pattern = c("%t=%v", "%t:%t"), format.args = list(), labels = NULL, ...
 ) {
-  dots <- list(...)
+  dots <- override(list(), list(...))
   type <- match.arg(type)
   # --- 1. Data Preparation (from ggmid.midbrks) ---
   brk <- summary(x, shape = "long")

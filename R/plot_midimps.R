@@ -50,7 +50,7 @@ plot.midimps <- function(
     x, type = c("barplot", "dotchart", "series"),
     theme = NULL, terms = NULL, max.nterms = 30L, ...
 ) {
-  dots <- list(...)
+  dots <- override(list(), list(...))
   type <- match.arg(type)
   imp <- summary(x, shape = "long")
   labels <- unique(imp$label)
