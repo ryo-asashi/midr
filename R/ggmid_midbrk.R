@@ -1,4 +1,4 @@
-#' Plot MID Breakdowns with ggplot2
+#' Plot MID Breakdown with ggplot2
 #'
 #' @description
 #' For "midbrk" objects, \code{ggmid()} visualizes the breakdown of a prediction by component functions.
@@ -16,10 +16,9 @@
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
 #' @param max.nterms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
-#' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param others a character string for the catchall label.
-#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param ... optional parameters passed on to the main layer.
 #'
@@ -47,10 +46,8 @@
 #'
 ggmid.midbrk <- function(
     object, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
-    terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    others = "others", label.pattern = c("%t=%v", "%t:%t"),
-    format.args = list(), ...) {
-  dots <- list(...)
+    terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
+    pattern = c("%t=%v", "%t:%t"), format.args = list(), ...) {
   type <- match.arg(type)
   if (missing(theme))
     theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
@@ -87,11 +84,11 @@ ggmid.midbrk <- function(
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))
     } else {
-      if (length(label.pattern) == 1L)
-        label.pattern <- c(label.pattern, "%t:%t")
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
+      if (length(pattern) == 1L)
+        pattern <- c(pattern, "%t:%t")
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     bd[i, "term"] <- label
@@ -105,8 +102,7 @@ ggmid.midbrk <- function(
       bd, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
     ) + ggplot2::labs(y = NULL)
     if (type == "barplot") {
-      width <- width %||% .8
-      pl <- pl + ggplot2::geom_col(width = width, ...)
+      pl <- pl + .geom_col(...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
           pl + ggplot2::aes(fill = .data[["order"]])
@@ -116,9 +112,8 @@ ggmid.midbrk <- function(
         pl <- pl + scale_fill_theme(theme = theme, na.value = "gray50")
       }
     } else if (type == "dotchart") {
-      pl <- pl + ggplot2::geom_linerange(
-        ggplot2::aes(xmin = 0, xmax = .data[["mid"]]), lty = 3L) +
-        ggplot2::geom_point(...)
+      pl <- pl +
+        .geom_dotchart(ggplot2::aes(xmin = 0, xmax = .data[["mid"]]), ...)
       if (use.theme) {
         pl <- if (theme$type == "qualitative") {
           pl + ggplot2::aes(color = .data[["order"]])
@@ -131,37 +126,43 @@ ggmid.midbrk <- function(
     if (vline) {
       tli <- ggplot2::theme_get()$line
       pl <- pl + ggplot2::geom_vline(
-        xintercept = 0, lwd = (tli$linewidth %||% .5) * .5)
+        xintercept = 0, linewidth = (tli$linewidth %||% .5) * .5)
     }
     return(pl)
   # waterfall
   } else if (type == "waterfall") {
-    width <- width %||% .6
+    dots <- standardize_param_names(list(...))
+    width <- dots$width %||% .6
     hw <- width / 2
     bd$ymin <- as.integer(bd$term) - hw
     bd$ymax <- as.integer(bd$term) + hw
     cs <- cumsum(c(object$intercept, bd$mid))
     bd$xmin <- cs[1L:nrow(bd)]
     bd$xmax <- cs[2L:(nrow(bd) + 1L)]
-    pl <- ggplot2::ggplot(
-      bd, ggplot2::aes(y = .data[["term"]])) +
+    pl <- ggplot2::ggplot(bd, ggplot2::aes(y = .data[["term"]])) +
       ggplot2::labs(y = NULL, x = "yhat")
     tli <- ggplot2::theme_get()$line
-    col <- c(dots$colour, dots$color, dots$col)[1L] %||% tli$colour %||% "black"
-    lty <- c(dots$linetype, dots$lty)[1L] %||% tli$linetype %||% 1L
-    lwd <- c(dots$linewidth, dots$lwd)[1L] %||% tli$linewidth %||% 0.5
     if (vline) {
       pl <- pl + ggplot2::geom_vline(
-        xintercept = object$intercept, lwd = (tli$linewidth %||% .5) * .5)
+        xintercept = object$intercept, linewidth = (tli$linewidth %||% .5) * .5)
     }
+    linedefaults <- list(
+      colour = tli$colour %||% "black",
+      linetype = tli$linetype %||% 1L,
+      linewidth = tli$linewidth %||% 0.5
+    )
+    lineargs <- c(
+      list(mapping = ggplot2::aes(x = .data[["xmax"]], ymax = .data[["ymax"]],
+                                  ymin = pmax(.data[["ymin"]] - 1, 1 - hw))),
+      utils::modifyList(linedefaults, dots)
+    )
     pl <- pl +
-      ggplot2::geom_rect(
-        ggplot2::aes(xmin = .data[["xmin"]], xmax = .data[["xmax"]],
-                     ymin = .data[["ymin"]], ymax = .data[["ymax"]]), ...) +
-      ggplot2::geom_linerange(
-        ggplot2::aes(x = .data[["xmax"]], ymax = .data[["ymax"]],
-                     ymin = pmax(.data[["ymin"]] - 1, 1 - hw)),
-        col = col, lty = lty, lwd = lwd)
+      .geom_rect(
+        mapping = ggplot2::aes(xmin = .data[["xmin"]], xmax = .data[["xmax"]],
+                               ymin = .data[["ymin"]], ymax = .data[["ymax"]]),
+        ...
+    ) +
+      do.call(.geom_linerange, lineargs)
     if (use.theme) {
       pl <- if (theme$type == "qualitative") {
         pl + ggplot2::aes(fill = ifelse(.data[["mid"]] > 0, "> 0", "< 0")) +
@@ -175,9 +176,14 @@ ggmid.midbrk <- function(
   }
 }
 
+
 #' @rdname ggmid.midbrk
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midbrk <- function(object, ...) {
-  ggmid.midbrk(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.midbrk)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }
+

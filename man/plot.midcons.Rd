@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midcons.R
 \name{plot.midcons}
 \alias{plot.midcons}
-\title{Plot MID Conditional Expectations for Collections}
+\title{Compare MID Conditional Expectations}
 \usage{
 \method{plot}{midcons}(
   x,

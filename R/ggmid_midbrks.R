@@ -17,7 +17,7 @@
 #' @param max.nterms the maximum number of terms to display. Defaults to 15.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param others a character string for the catchall label. Defaults to \code{"others"}.
-#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param labels an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
@@ -48,9 +48,8 @@
 ggmid.midbrks <- function(
     object, type = c("barplot", "dotchart", "series"), theme = NULL,
     terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
-    label.pattern = c("%t=%v", "%t:%t"), format.args = list(), labels = NULL,
-    ...
-) {
+    pattern = c("%t=%v", "%t:%t"), format.args = list(), labels = NULL, ...
+  ) {
   type <- match.arg(type)
   brk <- summary(object, shape = "long")
   brk$term <- as.character(brk$term)
@@ -105,12 +104,12 @@ ggmid.midbrks <- function(
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))
     } else {
-      if (length(label.pattern) == 1L) {
-        label.pattern <- c(label.pattern, "%t:%t")
+      if (length(pattern) == 1L) {
+        pattern <- c(pattern, "%t:%t")
       }
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     formatted[i] <- label
@@ -129,26 +128,26 @@ ggmid.midbrks <- function(
       brk, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]],
                         color = .data[["term"]], group = .data[["term"]])
     )
-    pl <- pl + if (discrete) geom_dotline(...) else ggplot2::geom_line(...)
+    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
     pl <- pl + scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {
     brk$term <- factor(brk$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
       brk, ggplot2::aes(y = .data[["term"]], x = .data[["mid"]])
-    ) + ggplot2::geom_col(
+    ) + .geom_col(
       ggplot2::aes(fill = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(), ...
     ) + scale_fill_theme(theme, discrete = discrete)
   } else if (type == "dotchart") {
-    args <- list(...)
-    dodge_width <- args$width %||% 0.6
+    dots <- standardize_param_names(list(...))
+    dodgewidth <- dots$width %||% 0.6
     brk$term <- factor(brk$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
       brk, ggplot2::aes(y = .data[["term"]], x = .data[["mid"]])
-    ) + geom_dotchart(
+    ) + .geom_dotchart(
       ggplot2::aes(xmin = 0, xmax = .data[["mid"]],
                    color = .data[["label"]], group = factor(.data[["label"]])),
-      position = ggplot2::position_dodge(width = dodge_width), ...
+      position = ggplot2::position_dodge(width = dodgewidth), ...
     ) + scale_color_theme(theme, discrete = discrete)
   }
   if (type != "series" && vline) {
@@ -159,10 +158,14 @@ ggmid.midbrks <- function(
   pl
 }
 
+
 #' @rdname ggmid.midbrks
 #'
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midbrks <- function(object, ...) {
-  ggmid.midbrks(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.midbrks)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

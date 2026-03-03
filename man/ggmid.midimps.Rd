@@ -3,7 +3,7 @@
 \name{ggmid.midimps}
 \alias{ggmid.midimps}
 \alias{autoplot.midimps}
-\title{Compare MID Importance with ggplot2}
+\title{Compare MID Importances with ggplot2}
 \usage{
 \method{ggmid}{midimps}(
   object,

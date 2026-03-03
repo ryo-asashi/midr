@@ -3,7 +3,7 @@
 \name{ggmid.midcon}
 \alias{ggmid.midcon}
 \alias{autoplot.midcon}
-\title{Plot MID Conditional Expectations with ggplot2}
+\title{Plot MID Conditional Expectation with ggplot2}
 \usage{
 \method{ggmid}{midcon}(
   object,
@@ -15,7 +15,7 @@
   var.linetype = NULL,
   var.linewidth = NULL,
   reference = 1L,
-  dots = TRUE,
+  points = TRUE,
   sample = NULL,
   ...
 )
@@ -41,7 +41,7 @@
 
 \item{reference}{an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.}
 
-\item{dots}{logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.}
+\item{points}{logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.}
 
 \item{sample}{an optional vector specifying the names of observations to be plotted.}
 

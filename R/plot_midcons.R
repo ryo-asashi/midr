@@ -1,4 +1,4 @@
-#' Plot MID Conditional Expectations for Collections
+#' Compare MID Conditional Expectations
 #'
 #' @description
 #' For "midcons" collection objects, \code{plot()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models using base R graphics.
@@ -32,22 +32,18 @@ plot.midcons <- function(
     var.alpha = NULL, var.linetype = NULL, var.linewidth = NULL,
     reference = 1L, sample = NULL, labels = NULL, ...
 ) {
-  dt <- list(...)
+  dots <- override(list(), list(...))
   type <- match.arg(type)
-
-  # --- 1. Data Preparation (from ggmid.midcons) ---
   variable <- x[[1L]]$variable
   obs <- x[[1L]]$observed
   con <- summary(x, shape = "long")
   values <- x[[1L]]$values
-
   olabs <- unique(con$label)
   labels <- labels %||% olabs
   if (length(labels) != length(olabs)) {
     stop("length of 'labels' must match the number of models in the collection")
   }
   con$label <- labels[match(con$label, olabs)]
-
   parsed <- suppressWarnings(as.numeric(labels))
   discrete <- anyNA(parsed)
   if (!discrete) {
@@ -57,28 +53,20 @@ plot.midcons <- function(
     labels <- factor(labels, levels = unique(labels))
     con$label <- factor(con$label, levels = levels(labels))
   }
-
-  theme <- theme %||% (
-    if (discrete) getOption("midr.qualitative", "HCL")
-    else getOption("midr.sequential", "bluescale")
-  )
-  theme <- color.theme(theme)
-  use.theme <- inherits(theme, "color.theme")
-
-  # --- 2. Centering Logic (from ggmid.midcons) ---
+  nlabs <- length(labels)
+  nvals <- length(values)
+  fv <- is.discrete(values)
   yvar <- "yhat"
   if (type == "centered") {
-    if (reference < 0) reference <- length(values)
-    refval <- values[min(length(values), max(1L, reference))]
+    if (reference < 0) reference <- nvals
+    refval <- values[min(nvals, max(1L, reference))]
     ref <- con[con[[variable]] == refval, , drop = FALSE]
-    key1 <- sprintf("%s(%s)", con$.id, con$label)
-    key2 <- sprintf("%s(%s)", ref$.id, ref$label)
+    key1 <- paste(con$.id, con$label, sep = "_")
+    key2 <- paste(ref$.id, ref$label, sep = "_")
     ynew <- paste0("centered ", yvar)
-    con[, ynew] <- con[, yvar] - ref[match(key1, key2), yvar]
+    con[, ynew] <- con[, yvar] - ref[[yvar]][match(key1, key2)]
     yvar <- ynew
   }
-
-  # --- 3. Sampling ---
   if (!is.null(sample)) {
     obs <- obs[obs$.id %in% sample, ]
     con <- con[con$.id %in% sample, ]
@@ -88,123 +76,110 @@ plot.midcons <- function(
     message("no observations found")
     return(invisible(NULL))
   }
-
-  # --- 4. Aesthetics Mapping (from plot.midcon) ---
   aes <- list(alpha = rep.int(1, n), lty = rep.int(1L, n), lwd = rep.int(1L, n))
-
-  if (!is.null(alp <- substitute(var.alpha))) {
-    if (is.character(alp)) alp <- str2lang(alp)
-    ref <- rescale(eval(alp, envir = obs))
+  if (!is.null(alphaexpr <- substitute(var.alpha))) {
+    if (is.character(alphaexpr)) alphaexpr <- str2lang(alphaexpr)
+    ref <- rescale(eval(alphaexpr, envir = obs))
     aes$alpha <- ref * .75 + .25
   }
-  if (!is.null(lty <- substitute(var.linetype))) {
-    if (is.character(lty)) lty <- str2lang(lty)
-    ref <- rescale(eval(lty, envir = obs))
+  if (!is.null(ltyexpr <- substitute(var.linetype))) {
+    if (is.character(ltyexpr)) ltyexpr <- str2lang(ltyexpr)
+    ref <- rescale(eval(ltyexpr, envir = obs))
     aes$lty <- pmin(ref * 6 + 1, 6L)
   }
-  if (!is.null(lwd <- substitute(var.linewidth))) {
-    if (is.character(lwd)) lwd <- str2lang(lwd)
-    ref <- rescale(eval(lwd, envir = obs))
+  if (!is.null(lwdexpr <- substitute(var.linewidth))) {
+    if (is.character(lwdexpr)) lwdexpr <- str2lang(lwdexpr)
+    ref <- rescale(eval(lwdexpr, envir = obs))
     aes$lwd <- ref * 3
   }
-
-  # Allow direct override via `...` for base line aesthetics
-  for (arg in c("lty", "lwd", "alpha")) {
-    if (!is.null(dt[[arg]])) aes[[arg]] <- rep_len(dt[[arg]], length.out = n)
+  for (p in c("lty", "lwd", "alpha")) {
+    if (!is.null(dots[[p]])) {
+      aes[[p]] <- rep_len(dots[[p]], length.out = n)
+      if (p != "alpha") dots[[p]] <- NULL
+    }
   }
-
-  ylim <- range(con[[yvar]], na.rm = TRUE)
-
-  # --- 5. Plotting ---
+  # iceplot and centered
   if (type %in% c("iceplot", "centered")) {
-    fv <- is.factor(values) || is.character(values)
-    if (fv) {
-      flvs <- levels(factor(values))
-      x_pos <- seq_along(flvs)
-    } else {
-      x_pos <- values
+    theme <- theme %||% (
+      if (discrete) getOption("midr.qualitative", "HCL")
+      else getOption("midr.sequential", "bluescale")
+    )
+    theme <- color.theme(theme)
+    basecol <- dots$col %||% (
+      if (discrete) theme$palette(nlabs) else to.colors(labels, theme)
+    )
+    dots$col <- NULL
+    nlines <- n * nlabs
+    mat <- matrix(NA_real_, nrow = nvals, ncol = nlines)
+    rows <- match(con[[variable]], values)
+    cols <- (match(con$label, labels) - 1L) * n + match(con$.id, obs$.id)
+    ok <- !is.na(rows) & !is.na(cols)
+    mat[cbind(rows[ok], cols[ok])] <- con[[yvar]][ok]
+    aes$col <- rep(basecol, each = n)
+    aes$lty <- rep(aes$lty, times = nlabs)
+    aes$lwd <- rep(aes$lwd, times = nlabs)
+    aes$alpha <- rep(aes$alpha, times = nlabs)
+    if (any(aes$alpha < 1)) {
+      clr <- grDevices::col2rgb(col = aes$col)
+      aes$col <- grDevices::rgb(
+        clr[1L,], clr[2L,], clr[3L,],
+        round(aes$alpha * 255), maxColorValue = 255L
+      )
     }
-
-    args <- list(x = x_pos, ylim = ylim, xlab = variable, ylab = yvar,
-                 type = "n", xaxt = if (fv) "n")
-    args <- override(args, dt)
-    do.call(graphics::plot.default, args)
-    if (fv) graphics::axis(side = 1L, at = x_pos, labels = flvs)
-
-    m_cols <- length(labels)
-    base_cols <- if (use.theme) theme$palette(m_cols) else rep.int(1L, m_cols)
-
-    # Loop over models
-    for (i in seq_along(labels)) {
-      lab <- labels[i]
-      col_i <- base_cols[i]
-      subcon <- con[con$label == lab, ]
-
-      # Loop over observations
-      for (j in seq_len(n)) {
-        id <- obs$.id[j]
-        y_vals <- subcon[subcon$.id == id, yvar]
-
-        # Apply alpha blending
-        col_with_alpha <- col_i
-        alpha_val <- aes$alpha[j]
-        if (alpha_val < 1 && is.null(dt$col)) {
-          clr <- grDevices::col2rgb(col_i)
-          col_with_alpha <- grDevices::rgb(clr[1L,], clr[2L,], clr[3L,],
-                                           round(alpha_val * 255), maxColorValue = 255L)
-        }
-
-        lines_args <- list(x = x_pos, y = y_vals, col = col_with_alpha,
-                           lty = aes$lty[j], lwd = aes$lwd[j])
-        do.call(graphics::lines.default, override(lines_args, dt))
-      }
-    }
-
+    xvals <- if (fv) seq_along(values) else values
+    args <- list(
+      x = xvals, xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+      xlab = variable, ylab = yvar, type = "n", xaxt = if (fv) "n"
+    )
+    do.call(graphics::plot.default, override(args, dots))
+    if (fv)
+      graphics::axis(side = 1L, at = seq_along(values), labels = as.character(values))
+    args <- list(x = xvals, y = mat, type = "l", col = aes$col, lty = aes$lty, lwd = aes$lwd, add = TRUE)
+    do.call(graphics::matplot, override(args, dots))
+    return(invisible(NULL))
+  # series
   } else if (type == "series") {
-    if (discrete) {
-      x_pos <- seq_along(labels)
-    } else {
-      x_pos <- labels
+    theme <- theme %||% (
+      if (fv) getOption("midr.qualitative", "HCL")
+      else getOption("midr.sequential", "bluescale")
+    )
+    theme <- color.theme(theme)
+    basecol <- dots$col %||% (
+      if (fv) theme$palette(nvals) else to.colors(values, theme)
+    )
+    dots$col <- NULL
+    nlines <- n * nvals
+    mat <- matrix(NA_real_, nrow = nlabs, ncol = nlines)
+    rows <- match(con$label, labels)
+    cols <- (match(con[[variable]], values) - 1L) * n + match(con$.id, obs$.id)
+    ok <- !is.na(rows) & !is.na(cols)
+    mat[cbind(rows[ok], cols[ok])] <- con[[yvar]][ok]
+    aes$col <- rep(basecol, each = n)
+    aes$lty <- rep(aes$lty, times = nvals)
+    aes$lwd <- rep(aes$lwd, times = nvals)
+    aes$alpha <- rep(aes$alpha, times = nvals)
+    if (any(aes$alpha < 1)) {
+      clr <- grDevices::col2rgb(col = aes$col)
+      aes$col <- grDevices::rgb(
+        clr[1L,], clr[2L,], clr[3L,],
+        round(aes$alpha * 255), maxColorValue = 255L
+      )
     }
-
-    args <- list(x = x_pos, ylim = ylim, xlab = "model", ylab = yvar,
-                 type = "n", xaxt = if (discrete) "n")
-    args <- override(args, dt)
-    do.call(graphics::plot.default, args)
-    if (discrete) graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
-
-    n_vals <- length(values)
-    base_cols <- if (use.theme) theme$palette(n_vals) else rep.int(1L, n_vals)
-
-    # Loop over feature grid values
-    for (v_idx in seq_along(values)) {
-      v <- values[v_idx]
-      col_v <- base_cols[v_idx]
-      subcon <- con[con[[variable]] == v, ]
-
-      # Loop over observations
-      for (j in seq_len(n)) {
-        id <- obs$.id[j]
-        subcon_id <- subcon[subcon$.id == id, ]
-        subcon_id <- subcon_id[match(labels, subcon_id$label), ] # Sort by model order
-        y_vals <- subcon_id[[yvar]]
-
-        # Apply alpha blending
-        col_with_alpha <- col_v
-        alpha_val <- aes$alpha[j]
-        if (alpha_val < 1 && is.null(dt$col)) {
-          clr <- grDevices::col2rgb(col_v)
-          col_with_alpha <- grDevices::rgb(clr[1L,], clr[2L,], clr[3L,],
-                                           round(alpha_val * 255), maxColorValue = 255L)
-        }
-
-        lines_args <- list(x = x_pos, y = y_vals, col = col_with_alpha,
-                           lty = aes$lty[j], lwd = aes$lwd[j],
-                           type = if(discrete) "b" else "l", pch = 16L)
-        do.call(graphics::lines.default, override(lines_args, dt))
-      }
-    }
+    ord <- if (discrete) seq_along(labels) else order(labels)
+    xvals <- if (discrete) seq_along(labels) else labels
+    args <- list(
+      x = xvals[ord], xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+      xlab = "model", ylab = yvar, type = "n", xaxt = if (discrete) "n"
+    )
+    do.call(graphics::plot.default, override(args, dots))
+    if (discrete)
+      graphics::axis(side = 1L, at = seq_along(labels), labels = as.character(labels))
+    args <- list(
+      x = xvals[ord], y = mat[ord, , drop = FALSE],
+      type = if (discrete) "b" else "l", pch = 16L,
+      col = aes$col, lty = aes$lty, lwd = aes$lwd, add = TRUE
+    )
+    do.call(graphics::matplot, override(args, dots))
+    return(invisible(NULL))
   }
-
-  invisible(NULL)
 }

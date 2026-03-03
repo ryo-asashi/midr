@@ -1,4 +1,4 @@
-#' Calculate MID Breakdowns
+#' Calculate MID Breakdown
 #'
 #' @description
 #' \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.

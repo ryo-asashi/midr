@@ -53,11 +53,6 @@ ggmid.midcons <- function(
     labels <- factor(labels, levels = unique(labels))
     con$label <- factor(con$label, levels = levels(labels))
   }
-  theme <- theme %||% (
-    if (discrete) getOption("midr.qualitative", "HCL")
-    else getOption("midr.sequential", "bluescale")
-  )
-  theme <- color.theme(theme)
   yvar <- "yhat"
   if (type == "centered") {
     if (reference < 0) reference <- length(values)
@@ -72,7 +67,6 @@ ggmid.midcons <- function(
   if (!is.null(sample)) {
     obs <- obs[obs$.id %in% sample, ]
     con <- con[con$.id %in% sample, ]
-    n <- nrow(obs)
   }
   if (nrow(obs) == 0L) {
     message("no observations found")
@@ -111,17 +105,26 @@ ggmid.midcons <- function(
     }
   }
   if (type == "series") {
+    theme <- theme %||% (
+      if (is.discrete(con[[variable]])) getOption("midr.qualitative", "HCL")
+      else getOption("midr.sequential", "bluescale")
+    )
+    theme <- color.theme(theme)
     pl <- pl +
       ggplot2::aes(
         color = .data[[variable]],
         group = interaction(.data[[".id"]], factor(.data[[variable]]))
       )
-    pl <- pl + if (discrete) geom_dotline(data = con, ...) else
-      ggplot2::geom_line(data = con, ...)
+    pl <- pl + if (discrete) .geom_linepoint(data = con, ...) else
+      .geom_line(data = con, ...)
     pl <- pl + scale_color_theme(theme, discrete = is.discrete(con[[variable]]))
-  } else {
-    pl <- pl + ggplot2::geom_line(
-      ggplot2::aes(
+  } else if (type == "iceplot" || type == "centered") {
+    theme <- theme %||% (
+      if (discrete) getOption("midr.qualitative", "HCL")
+      else getOption("midr.sequential", "bluescale")
+    )
+    pl <- pl + .geom_line(
+      mapping = ggplot2::aes(
         color = .data[["label"]],
         group = interaction(.data[[".id"]], factor(.data[["label"]]))
       ), data = con, ...

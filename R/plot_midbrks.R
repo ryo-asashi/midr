@@ -1,4 +1,4 @@
-#' Plot MID Breakdowns for Collections
+#' Compare MID Breakdowns
 #'
 #' @description
 #' For "midbrks" collection objects, \code{plot()} visualizes and compares the breakdown of a prediction by component functions across multiple models using base R graphics.
@@ -18,7 +18,7 @@
 #' @param max.nterms the maximum number of terms to display. Defaults to 15.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param others a character string for the catchall label. Defaults to \code{"others"}.
-#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param labels an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
@@ -50,9 +50,8 @@
 #'
 plot.midbrks <- function(
     x, type = c("barplot", "dotchart", "series"), theme = NULL,
-    terms = NULL, max.nterms = 15L, vline = TRUE,
-    others = "others", label.pattern = c("%t=%v", "%t:%t"),
-    format.args = list(), labels = NULL, ...
+    terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
+    pattern = c("%t=%v", "%t:%t"), format.args = list(), labels = NULL, ...
 ) {
   dots <- list(...)
   type <- match.arg(type)
@@ -110,12 +109,12 @@ plot.midbrks <- function(
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))
     } else {
-      if (length(label.pattern) == 1L) {
-        label.pattern <- c(label.pattern, "%t:%t")
+      if (length(pattern) == 1L) {
+        pattern <- c(pattern, "%t:%t")
       }
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     formatted[i] <- label

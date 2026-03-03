@@ -3,7 +3,7 @@
 \name{ggmid.midbrk}
 \alias{ggmid.midbrk}
 \alias{autoplot.midbrk}
-\title{Plot MID Breakdowns with ggplot2}
+\title{Plot MID Breakdown with ggplot2}
 \usage{
 \method{ggmid}{midbrk}(
   object,
@@ -11,10 +11,9 @@
   theme = NULL,
   terms = NULL,
   max.nterms = 15L,
-  width = NULL,
   vline = TRUE,
   others = "others",
-  label.pattern = c("\%t=\%v", "\%t:\%t"),
+  pattern = c("\%t=\%v", "\%t:\%t"),
   format.args = list(),
   ...
 )
@@ -32,13 +31,11 @@
 
 \item{max.nterms}{the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.}
 
-\item{width}{a numeric value specifying the width of the bars.}
-
 \item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
 
 \item{others}{a character string for the catchall label.}
 
-\item{label.pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+\item{pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
 
 \item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
 

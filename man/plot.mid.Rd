@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mid.R
 \name{plot.mid}
 \alias{plot.mid}
-\title{Plot MID Component Functions}
+\title{Plot MID Component Function}
 \usage{
 \method{plot}{mid}(
   x,

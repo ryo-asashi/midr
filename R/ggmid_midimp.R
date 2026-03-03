@@ -64,14 +64,14 @@ ggmid.midimp <- function(
       imp, ggplot2::aes(x = .data[["importance"]], y = .data[["term"]])
       ) + ggplot2::labs(y = NULL)
     if (type == "barplot") {
-      pl <- pl + ggplot2::geom_col(...)
+      pl <- pl + .geom_col(...)
       if (use.theme) {
         var <- if (theme$type == "qualitative") "order" else "importance"
         pl <- pl + ggplot2::aes(fill = .data[[var]]) +
           scale_fill_theme(theme = theme)
       }
     } else if (type == "dotchart") {
-      pl <- pl + geom_dotchart(
+      pl <- pl + .geom_dotchart(
         mapping = ggplot2::aes(xmin = 0, xmax = .data[["importance"]]), ...
       )
       if (use.theme) {
@@ -93,10 +93,14 @@ ggmid.midimp <- function(
                      y = factor(c(ftag, stag), levels = levs),
                      importance = rep.int(imp$importance, 2L))
     fr <- unique(fr)
-    pl <- ggplot2::ggplot(data = fr,
-      ggplot2::aes(.data[["x"]], .data[["y"]], fill = .data[["importance"]])) +
-      ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::geom_tile(...)
+    pl <- ggplot2::ggplot(
+      data = fr,
+      ggplot2::aes(
+        x = .data[["x"]], y = .data[["y"]], fill = .data[["importance"]]
+      )
+    ) +
+      ggplot2::labs(x = NULL, y = NULL)
+    pl <- pl + .geom_tile(...)
     pl <- pl + scale_fill_theme(theme = if (use.theme) theme else "grayscale")
     return(pl)
   # boxplot
@@ -106,8 +110,9 @@ ggmid.midimp <- function(
     preds_vec <- as.numeric(preds[, terms, drop = FALSE])
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
-    pl <- ggplot2::ggplot(box) + ggplot2::geom_boxplot(
-        ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...
+    pl <- ggplot2::ggplot(box) +
+      .geom_boxplot(
+        mapping = ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...
       )
     if (use.theme) {
       idx <- match(box$term, imp$term)
@@ -123,9 +128,13 @@ ggmid.midimp <- function(
   }
 }
 
+
 #' @rdname ggmid.midimp
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midimp <- function(object, ...) {
-  ggmid.midimp(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.midimp)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

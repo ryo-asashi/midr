@@ -86,11 +86,11 @@ plot.mids <- function(
   } else if (!is.factor(labels)) {
     labels <- factor(labels, levels = unique(labels))
   }
-  discrete_labels <- is.discrete(labels)
+  discrete <- is.discrete(labels)
   if (type == "effect") {
     # effect Plot (X = term, Y = mid, Group = models)
     theme <- theme %||% (
-      if (discrete_labels) getOption("midr.qualitative", "HCL")
+      if (discrete) getOption("midr.qualitative", "HCL")
       else getOption("midr.sequential", "bluescale")
     )
     theme <- color.theme(theme)
@@ -120,7 +120,7 @@ plot.mids <- function(
     )
     theme <- color.theme(theme)
     cols <- theme$palette(n)
-    if (discrete_labels) {
+    if (discrete) {
       x_pos <- seq_along(labels)
       args <- list(x = x_pos, y = t(fmat), type = "b", col = cols, pch = 16L,
                    lty = 1L, xaxt = "n", xlab = "model", ylab = "mid")

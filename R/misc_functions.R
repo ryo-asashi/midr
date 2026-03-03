@@ -324,54 +324,202 @@ model.frame.mid <- function(object, ...) {
 }
 
 
-geom_dotchart <- function(
-    mapping = NULL, data = NULL, position = "identity", ...
-) {
-  dots <- list(...)
-  tlin <- ggplot2::theme_get()$line
-  line_params  <- c(
-    "alpha", "linetype", "lty", "linewidth", "lwd"
-  )
-  line_args <- c(
-    list(mapping = mapping, data = data, position = position),
-    override(list(col = tlin$colour, lty = 3L, lwd = tlin$linewidth),
-             dots[names(dots) %in% line_params])
-  )
-  point_params <- c(
-    "color", "colour", "alpha", "shape", "pch", "size", "cex", "fill"
-  )
-  mapping$xmin <- mapping$xmax <- mapping$ymin <- mapping$ymax <- NULL
-  point_args <- c(
-    list(mapping = mapping, data = data, position = position),
-    dots[names(dots) %in% point_params]
-  )
-  list(
-    do.call(ggplot2::geom_linerange, line_args),
-    do.call(ggplot2::geom_point, point_args)
-  )
+# ggplot wrappers
+
+standardize_param_names <- function(dots) {
+  names(dots) <- ggplot2::standardise_aes_names(names(dots))
+  dots[!duplicated(names(dots), fromLast = TRUE)]
 }
 
+filter_params <- function(dots, allowed) {
+  dots[names(dots) %in% allowed]
+}
 
-geom_dotline <- function(
+# basic dotted geom
+
+.geom_point <- function(
     mapping = NULL, data = NULL, ...
 ) {
-  dots <- list(...)
-  line_params  <- c(
-    "alpha", "linetype", "lty", "linewidth", "lwd"
+  allowed_params <- c(
+    "colour", "alpha", "shape", "size", "fill", "stroke",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
   )
-  line_args <- c(
+  dots <- standardize_param_names(list(...))
+  args <- c(
     list(mapping = mapping, data = data),
-    dots[names(dots) %in% line_params]
+    filter_params(dots, allowed_params)
   )
-  point_params <- c(
-    "color", "colour", "alpha", "shape", "pch", "size", "cex", "fill"
+  do.call(ggplot2::geom_point, args)
+}
+
+.geom_line <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "alpha", "linetype", "linewidth", "lineend", "linejoin", "linemitre", "arrow",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
   )
-  point_args <- c(
+  dots <- standardize_param_names(list(...))
+  args <- c(
     list(mapping = mapping, data = data),
-    dots[names(dots) %in% point_params]
+    filter_params(dots, allowed_params)
   )
+  do.call(ggplot2::geom_line, args)
+}
+
+.geom_linerange <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "alpha", "linetype", "linewidth",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_linerange, args)
+}
+
+.geom_jitter <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "alpha", "shape", "size", "fill", "stroke", "width", "height", "seed",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_jitter, args)
+}
+
+.geom_col <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "fill", "alpha", "linewidth", "linetype", "width", "just",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_col, args)
+}
+
+.geom_path <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "alpha", "linetype", "linewidth", "lineend", "linejoin", "linemitre", "arrow",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_path, args)
+}
+
+.geom_raster <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "fill", "alpha", "interpolate", "hjust", "vjust",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_raster, args)
+}
+
+.geom_rect <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "fill", "alpha", "linewidth", "linetype", "linejoin",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_rect, args)
+}
+
+.geom_boxplot <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "fill", "alpha", "linewidth", "linetype", "shape", "size",
+    "width", "outlier.colour", "outlier.color", "outlier.fill", "outlier.shape",
+    "outlier.size", "outlier.stroke", "outlier.alpha", "notch", "notchwidth",
+    "varwidth", "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_boxplot, args)
+}
+
+.geom_tile <- function(
+    mapping = NULL, data = NULL, ...
+) {
+  allowed_params <- c(
+    "colour", "fill", "alpha", "linewidth", "linetype", "width", "height",
+    "na.rm", "show.legend", "inherit.aes", "key_glyph", "position"
+  )
+  dots <- standardize_param_names(list(...))
+  args <- c(
+    list(mapping = mapping, data = data),
+    filter_params(dots, allowed_params)
+  )
+  do.call(ggplot2::geom_tile, args)
+}
+
+# compound dotted geom
+
+.geom_linepoint <- function(
+    mapping = NULL, data = NULL, ...
+) {
   list(
-    do.call(ggplot2::geom_line, line_args),
-    do.call(ggplot2::geom_point, point_args)
+    .geom_line(mapping = mapping, data = data, ...),
+    .geom_point(mapping = mapping, data = data, ...)
   )
 }
+
+.geom_dotchart <- function(
+    mapping = NULL, data = NULL, ...
+  ) {
+  dots <- standardize_param_names(list(...))
+  linedots <- dots[names(dots) != "colour"]
+  linetheme <- ggplot2::theme_get()$line
+  linedefault <- list(
+    colour = linetheme$colour,
+    linetype = 3L,
+    linewidth = linetheme$linewidth
+  )
+  lineargs <- c(
+    list(mapping = mapping, data = data),
+    utils::modifyList(linedefault, linedots)
+  )
+  mapping$xmin <- mapping$xmax <- mapping$ymin <- mapping$ymax <- NULL
+  pointargs <- c(list(mapping = mapping, data = data), dots)
+  list(
+    do.call(.geom_linerange, lineargs),
+    do.call(.geom_point, pointargs)
+  )
+}
+

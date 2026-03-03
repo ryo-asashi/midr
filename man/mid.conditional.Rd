@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_conditional.R
 \name{mid.conditional}
 \alias{mid.conditional}
-\title{Calculate MID Conditional Expectations}
+\title{Calculate MID Conditional Expectation}
 \usage{
 mid.conditional(
   object,

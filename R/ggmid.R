@@ -1,4 +1,4 @@
-#' Plot MID Component Functions with ggplot2
+#' Plot MID Component Function with ggplot2
 #'
 #' @description
 #' \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.
@@ -104,12 +104,14 @@ ggmid.mid <- function(
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cols]))),
                           y = rep(df$mid, each = 2L))
         colnames(rdf) <- c(term, "mid")
-        pl <- pl + ggplot2::geom_path(
-          ggplot2::aes(x = .data[[term]], y = .data[["mid"]]), data = rdf, ...)
+        pl <- pl + .geom_path(
+          mapping = ggplot2::aes(x = .data[[term]], y = .data[["mid"]]),
+          data = rdf, ...
+        )
       } else if (enc$type == "linear") {
-        pl <- pl + ggplot2::geom_line(...)
+        pl <- pl + .geom_line(...)
       } else if (enc$type == "factor") {
-        pl <- pl + ggplot2::geom_col(...)
+        pl <- pl + .geom_col(...)
       }
     }
     if (type == "data" || type == "compound") {
@@ -121,13 +123,9 @@ ggmid.mid <- function(
         jit <- jitter[1L]
         data[, term] <- enc$transform(data[, term], lumped = lumped)
       }
-      pl <- pl + if (type == "data") {
-        ggplot2::geom_jitter(
-          ggplot2::aes(y = .data[["mid"]]), data, width = jit, height = 0, ...)
-      } else {
-        ggplot2::geom_jitter(
-          ggplot2::aes(y = .data[["mid"]]), data, width = jit, height = 0)
-      }
+      pl <- pl +
+        .geom_jitter(mapping = ggplot2::aes(y = .data[["mid"]]),
+                     data = data, width = jit, height = 0, ...)
     }
     if (use.theme) {
       middle <- if (intercept) object$intercept else 0
@@ -202,14 +200,17 @@ ggmid.mid <- function(
             mid.f(object, tags[1L], rdf) +
             mid.f(object, tags[2L], rdf)
         }
-        mpg <- ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]],
-                            fill = .data[["mid"]])
-        pl <- pl + ggplot2::geom_raster(mapping = mpg, data = rdf, ...)
+        mpg <- ggplot2::aes(
+          x = .data[[tags[1L]]], y = .data[[tags[2L]]], fill = .data[["mid"]]
+        )
+        pl <- pl + .geom_raster(mapping = mpg, data = rdf, ...)
       } else {
-        mpg <- ggplot2::aes(fill = .data[["mid"]],
-                            xmin = .data[[cols[1L]]], xmax = .data[[cols[2L]]],
-                            ymin = .data[[cols[3L]]], ymax = .data[[cols[4L]]])
-        pl <- pl + ggplot2::geom_rect(mapping = mpg, ...)
+        mpg <- ggplot2::aes(
+          fill = .data[["mid"]],
+          xmin = .data[[cols[1L]]], xmax = .data[[cols[2L]]],
+          ymin = .data[[cols[3L]]], ymax = .data[[cols[4L]]]
+        )
+        pl <- pl + .geom_rect(mapping = mpg, ...)
       }
       if (use.theme) {
         middle <- if (intercept) object$intercept else 0
@@ -229,17 +230,19 @@ ggmid.mid <- function(
         }
       }
       if (type == "compound") {
-        pl <- pl + ggplot2::geom_jitter(data = data,
-                                        width = jit[1L], height = jit[2L])
+        pl <- pl + .geom_jitter(
+          data = data, width = jit[1L], height = jit[2L], ...
+        )
       } else if (type == "data") {
         data$mid <- rowSums(
           preds[, c(term, if (main.effects) tags), drop = FALSE]
         )
         if (intercept)
           data$mid <- data$mid + object$intercept
-        pl <- pl + ggplot2::geom_jitter(
-          ggplot2::aes(colour = .data[["mid"]]), data = data,
-          width = jit[1L], height = jit[2L], ...)
+        pl <- pl + .geom_jitter(
+          mapping = ggplot2::aes(colour = .data[["mid"]]),
+          data = data, width = jit[1L], height = jit[2L], ...
+        )
         if (use.theme) {
           middle <- if (intercept) object$intercept else 0
           pl <- pl + scale_color_theme(theme = theme, limits = limits,
@@ -253,10 +256,14 @@ ggmid.mid <- function(
   pl
 }
 
+
 #' @rdname ggmid
 #'
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mid <- function(object, ...) {
-  ggmid.mid(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.mid)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

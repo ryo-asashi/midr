@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midbrk.R
 \name{plot.midbrk}
 \alias{plot.midbrk}
-\title{Plot MID Breakdowns}
+\title{Plot MID Breakdown}
 \usage{
 \method{plot}{midbrk}(
   x,
@@ -13,7 +13,7 @@
   width = NULL,
   vline = TRUE,
   others = "others",
-  label.pattern = c("\%t=\%v", "\%t:\%t"),
+  pattern = c("\%t=\%v", "\%t:\%t"),
   format.args = list(),
   ...
 )
@@ -35,7 +35,7 @@
 
 \item{others}{a character string for the catchall label.}
 
-\item{label.pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+\item{pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
 
 \item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
 

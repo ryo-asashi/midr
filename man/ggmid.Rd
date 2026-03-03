@@ -4,7 +4,7 @@
 \alias{ggmid}
 \alias{ggmid.mid}
 \alias{autoplot.mid}
-\title{Plot MID Component Functions with ggplot2}
+\title{Plot MID Component Function with ggplot2}
 \usage{
 ggmid(object, ...)
 

@@ -1,4 +1,4 @@
-#' Compare MID Importance
+#' Compare MID Importances
 #'
 #' @description
 #' For "midimps" collection objects, \code{plot()} visualizes and compares the importance of component functions across multiple fitted MID models.

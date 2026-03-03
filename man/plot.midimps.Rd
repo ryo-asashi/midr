@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_midimps.R
 \name{plot.midimps}
 \alias{plot.midimps}
-\title{Compare MID Importance}
+\title{Compare MID Importances}
 \usage{
 \method{plot}{midimps}(
   x,

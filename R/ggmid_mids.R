@@ -86,9 +86,10 @@ ggmid.mids <- function(
     label = rep(labels, each = n)
   )
   colnames(df)[1L] <- term
+  discrete <- is.discrete(labels)
   if (type == "effect") {
     theme <- theme %||% (
-      if (is.discrete(labels)) getOption("midr.qualitative", "HCL")
+      if (discrete) getOption("midr.qualitative", "HCL")
       else getOption("midr.sequential", "bluescale")
     )
     theme <- color.theme(theme)
@@ -96,14 +97,14 @@ ggmid.mids <- function(
       df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]])
     )
     if (enc$type == "factor") {
-      pl <- pl + ggplot2::geom_col(
+      pl <- pl + .geom_col(
         ggplot2::aes(fill = .data[["label"]], group = factor(.data[["label"]])),
         position = ggplot2::position_dodge(), ...
-      ) + scale_fill_theme(theme, discrete = is.discrete(labels))
+      ) + scale_fill_theme(theme, discrete = discrete)
     } else {
-      pl <- pl + ggplot2::geom_line(
+      pl <- pl + .geom_line(
         ggplot2::aes(color = .data[["label"]], group = .data[["label"]]), ...
-      ) + scale_color_theme(theme, discrete = is.discrete(labels))
+      ) + scale_color_theme(theme, discrete = discrete)
     }
   } else if (type == "series") {
     theme <- theme %||% (
@@ -115,11 +116,7 @@ ggmid.mids <- function(
       df, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]],
                        color = .data[[term]], group = .data[[term]])
     )
-    if (is.discrete(labels)) {
-      pl <- pl + geom_dotline(...)
-    } else {
-      pl <- pl + ggplot2::geom_line(...)
-    }
+    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
     pl <- pl + scale_color_theme(theme, discrete = is.discrete(xvals))
   }
   pl

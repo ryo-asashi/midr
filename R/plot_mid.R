@@ -1,4 +1,4 @@
-#' Plot MID Component Functions
+#' Plot MID Component Function
 #'
 #' @description
 #' For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mid_breakdown.R
 \name{mid.breakdown}
 \alias{mid.breakdown}
-\title{Calculate MID Breakdowns}
+\title{Calculate MID Breakdown}
 \usage{
 mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 }

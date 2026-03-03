@@ -1,4 +1,4 @@
-#' Plot MID Conditional Expectations with ggplot2
+#' Plot MID Conditional Expectation with ggplot2
 #'
 #' @description
 #' For "midcon" objects, \code{ggmid()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
@@ -23,7 +23,7 @@
 #' @param var.linetype a variable name or expression to map to the linetype aesthetic.
 #' @param var.linewidth a variable name or expression to map to the linewidth aesthetic.
 #' @param reference an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.
-#' @param dots logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.
+#' @param points logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.
 #' @param sample an optional vector specifying the names of observations to be plotted.
 #' @param ... optional parameters passed on to the main layer.
 #'
@@ -48,7 +48,7 @@
 ggmid.midcon <- function(
     object, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
-    reference = 1L, dots = TRUE, sample = NULL, ...) {
+    reference = 1L, points = TRUE, sample = NULL, ...) {
   type <- match.arg(type)
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
@@ -120,12 +120,11 @@ ggmid.midcon <- function(
       pl <- pl + ggplot2::scale_linewidth_continuous(range = c(0, 1))
     }
   }
-  pl <- pl + ggplot2::geom_line(
-    mapping = ggplot2::aes(group = .data[[".id"]]),
-    data = con, ...
+  pl <- pl + .geom_line(
+    mapping = ggplot2::aes(group = .data[[".id"]]), data = con, ...
   )
-  if (dots) {
-    pl <- pl + ggplot2::geom_point(data = obs)
+  if (points) {
+    pl <- pl + .geom_point(data = obs, ...)
   }
   if (set.color) {
     if (!use.theme)

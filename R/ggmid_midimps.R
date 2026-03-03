@@ -1,4 +1,4 @@
-#' Compare MID Importance with ggplot2
+#' Compare MID Importances with ggplot2
 #'
 #' @description
 #' For "midimps" collection objects, \code{ggmid()} visualizes and compares the importance of component functions across multiple fitted MID models.
@@ -80,35 +80,39 @@ ggmid.midimps <- function(
       imp, ggplot2::aes(x = .data[["label"]], y = .data[["importance"]],
                         color = .data[["term"]], group = .data[["term"]])
     )
-    pl <- pl + if (discrete) geom_dotline(...) else ggplot2::geom_line(...)
+    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
     pl <- pl + scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {
     imp$term <- factor(imp$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(y = .data[["term"]], x = .data[["importance"]])
-    ) + ggplot2::geom_col(
+    ) + .geom_col(
       ggplot2::aes(fill = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(), ...
     ) + scale_fill_theme(theme, discrete = discrete)
   } else if (type == "dotchart") {
-    args <- list(...)
-    dodge_width <- args$width %||% 0.6
+    dots <- standardize_param_names(list(...))
+    dodgewidth <- dots$width %||% 0.6
     imp$term <- factor(imp$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
       imp, ggplot2::aes(y = .data[["term"]], x = .data[["importance"]])
-    ) + geom_dotchart(
+    ) + .geom_dotchart(
       ggplot2::aes(xmin = 0, xmax = .data[["importance"]],
                    color = .data[["label"]], group = factor(.data[["label"]])),
-      position = ggplot2::position_dodge(width = dodge_width), ...
+      position = ggplot2::position_dodge(width = dodgewidth), ...
     ) + scale_color_theme(theme, discrete = discrete)
   }
   pl
 }
+
 
 #' @rdname ggmid.midimps
 #'
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midimps <- function(object, ...) {
-  ggmid.midimps(object = object, ...)
+  mcall <- match.call(expand.dots = TRUE)
+  mcall[[1L]] <- quote(ggmid.midimps)
+  mcall[["object"]] <- object
+  eval(mcall, parent.frame())
 }

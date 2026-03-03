@@ -1,4 +1,4 @@
-#' Plot MID Breakdowns
+#' Plot MID Breakdown
 #'
 #' @description
 #' For "midbrk" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
@@ -19,7 +19,7 @@
 #' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param others a character string for the catchall label.
-#' @param label.pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
+#' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
 #' @param ... optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
@@ -48,7 +48,7 @@
 plot.midbrk <- function(
     x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
     terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    others = "others", label.pattern = c("%t=%v", "%t:%t"),
+    others = "others", pattern = c("%t=%v", "%t:%t"),
     format.args = list(), ...) {
   dots <- list(...)
   type <- match.arg(type)
@@ -87,11 +87,11 @@ plot.midbrk <- function(
     tags <- term.split(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[1L]))
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))
     } else {
-      if (length(label.pattern) == 1L)
-        label.pattern <- c(label.pattern, "%t:%t")
-      label <- sub("%v", vals[1L], sub("%t", tags[1L], label.pattern[2L]))
+      if (length(pattern) == 1L)
+        pattern <- c(pattern, "%t:%t")
+      label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[2L]))
       label <- sub("%v", vals[2L], sub("%t", tags[2L], label))
     }
     bd[i, "term"] <- label
