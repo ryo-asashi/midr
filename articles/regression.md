@@ -142,17 +142,17 @@ ml <- midlist(ml, lm = mid)
 library(glmnet)
 model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
-mid <- interpret(y ~ .^2, train[, -11], model,
+mid <- interpret(y ~ .^2, mtrain[, -11], model,
                  pred.args = list(s = model$lambda[9]))
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = train[, -11], model = model,
+#> interpret(formula = y ~ .^2, data = mtrain[, -11], model = model,
 #>  pred.args = list(s = model$lambda[9]))
 #> 
 #> Model Class: elnet, glmnet
 #> 
-#> Intercept: 14.417
+#> Intercept: 14.374
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -175,10 +175,6 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/glmnet_glmnet-2.png)
 
-``` r
-ml <- midlist(ml, glm = mid)
-```
-
 ### Generalized Additive Model
 
 ``` r
@@ -186,15 +182,15 @@ library(gam)
 model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
-mid <- interpret(y ~ .^2, train, model)
+mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = train, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: Gam, glm, lm
 #> 
-#> Intercept: 14.417
+#> Intercept: 14.323
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -202,7 +198,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0
+#> Uninterpreted Variation Ratio: 3.9583e-07
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -224,15 +220,15 @@ ml <- midlist(ml, gam = mid)
 ``` r
 library(earth)
 model <- earth(y ~ ., degree = 2, data = train)
-mid <- interpret(y ~ .^2, train, model)
+mid <- interpret(y ~ .^2, mtrain, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = train, model = model)
+#> interpret(formula = y ~ .^2, data = mtrain, model = model)
 #> 
 #> Model Class: earth
 #> 
-#> Intercept: 14.417
+#> Intercept: 14.182
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -240,7 +236,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0022028
+#> Uninterpreted Variation Ratio: 0.00051402
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -519,14 +515,9 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/mid_interpret-2.png)
 
-``` r
-ml <- midlist(ml, mid = mid)
-```
-
 ## Compare Multiple Models
 
 ``` r
-options(midr.qualitative = "muted")
 p1 <- ggmid(ml[1:4], "x.1") + theme(legend.position = "none")
 p2 <- ggmid(ml[1:4], "x.3") + theme(legend.position = "none")
 p3 <- ggmid(ml[1:4], "x.4")
@@ -540,7 +531,7 @@ p6 <- ggmid(ml[5:8], "x.4")
 
 ``` r
 impl <- mid.importance(ml)
-p1 <- ggmid(impl[1:4], type = "dotchart") +
+p1 <- ggmid(impl[1:4], type = "dotchart", pch = 15) +
   theme(legend.position = "bottom")
 p2 <- ggmid(impl[5:8], type = "dotchart", terms = mid.terms(impl)) +
   theme(legend.position = "bottom")
