@@ -133,7 +133,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/stats_lm-2.png)
 
 ``` r
-ml <- midlist(ml, lm = mid)
+ml$lm <- mid
 ```
 
 ### Regularized GLM
@@ -212,7 +212,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/gam_gam-2.png)
 
 ``` r
-ml <- midlist(ml, gam = mid)
+ml$gam <- mid
 ```
 
 ### Multivariate Adaptive Regression Spline
@@ -250,7 +250,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/earth_earth-2.png)
 
 ``` r
-ml <- midlist(ml, mars = mid)
+ml$mars <- mid
 ```
 
 ## Neural Network
@@ -291,7 +291,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/nnet_nnet-2.png)
 
 ``` r
-ml <- midlist(ml, nnet = mid)
+ml$nnet <- mid
 ```
 
 ## Support Vector Machine
@@ -336,7 +336,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/e1071_svm-2.png)
 
 ``` r
-ml <- midlist(ml, svm = mid)
+ml$svm <- mid
 ```
 
 ## Tree Based Models
@@ -386,7 +386,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/xgboost_xgboost-2.png)
 
 ``` r
-ml <- midlist(ml, xgb = mid)
+ml$xgb <- mid
 ```
 
 ### Random Forest
@@ -425,7 +425,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/ranger_ranger-2.png)
 
 ``` r
-ml <- midlist(ml, rf = mid)
+ml$rf <- mid
 ```
 
 ### Decision Tree
@@ -478,7 +478,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/rpart_rpart-2.png)
 
 ``` r
-ml <- midlist(ml, tree = mid)
+ml$tree <- mid
 ```
 
 ## Other Modes

@@ -9,16 +9,23 @@ comparison, summary, and visualization.
 
 ``` r
 midlist(...)
+
+as.midlist(x)
 ```
 
 ## Arguments
 
 - ...:
 
-  objects to be combined. All inputs must inherit from exactly one of
-  the supported base classes: "mid", "midimp", "midcon", or "midbrk".
-  Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are
-  also accepted and will be flattened appropriately.
+  objects to be combined, possibly named. All inputs must inherit from
+  exactly one of the supported base classes: "mid", "midimp", "midcon",
+  or "midbrk". Collection classes (e.g., "mids"-"midrib",
+  "midimps"-"midlist") are also accepted and will be flattened
+  appropriately.
+
+- x:
+
+  object to be coerced or tested.
 
 ## Value
 
@@ -26,6 +33,9 @@ midlist(...)
 "midlist" and the appropriate collection class (e.g.,
 "midcons"-"midlist"). If a single "midrib" object is provided, the
 original object is returned as-is.
+
+`as.midlist()` returns a "midlist" object with a type-class "mids",
+"midimps", "midbrks", or "midcons".
 
 ## Details
 

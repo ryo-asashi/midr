@@ -37,6 +37,7 @@
 ## Combine MID objects
 
 - [`midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+  [`as.midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
   : Combine MID Objects
 - [`labels(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
   [`labels(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)

@@ -42,7 +42,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3.905</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -233,7 +233,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/stats_lm-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, lm <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">lm</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="regularized-glm">Regularized GLM<a class="anchor" aria-label="anchor" href="#regularized-glm"></a>
@@ -302,7 +302,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/gam_gam-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, gam <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">gam</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="multivariate-adaptive-regression-spline">Multivariate Adaptive Regression Spline<a class="anchor" aria-label="anchor" href="#multivariate-adaptive-regression-spline"></a>
@@ -334,7 +334,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/earth_earth-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, mars <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">mars</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -371,7 +371,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/nnet_nnet-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, nnet <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">nnet</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -412,7 +412,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/e1071_svm-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, svm <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">svm</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -458,7 +458,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="va">evp</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/xgboost_xgboost-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, xgb <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">xgb</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="random-forest">Random Forest<a class="anchor" aria-label="anchor" href="#random-forest"></a>
@@ -491,7 +491,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/ranger_ranger-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, rf <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="decision-tree">Decision Tree<a class="anchor" aria-label="anchor" href="#decision-tree"></a>
@@ -538,7 +538,7 @@ model prediction or the two predictions, respectively.</p>
 <span>             <span class="fu">ice_plot</span><span class="op">(</span><span class="va">mid</span><span class="op">)</span>, <span class="fu">eval_plot</span><span class="op">(</span><span class="va">model</span>, <span class="va">mid</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/rpart_rpart-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span><span class="va">ml</span>, tree <span class="op">=</span> <span class="va">mid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ml</span><span class="op">$</span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="va">mid</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
