@@ -93,7 +93,7 @@ get.yhat.glm <- function(
   args <- list(object = object, newdata = newdata, type = "response",
                na.action = stats::na.pass)
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  checkout(do.call(stats::predict.glm, args), newdata)
+  checkout(do.call(stats::predict, args), newdata)
 }
 
 
@@ -106,7 +106,7 @@ get.yhat.mid <- function(
   args <- list(object = object, newdata = newdata, type = "response",
                na.action = stats::na.pass)
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  checkout(do.call(predict.mid, args), newdata)
+  checkout(do.call(stats::predict, args), newdata)
 }
 
 
@@ -119,7 +119,7 @@ get.yhat.mids <- function(
   args <- list(object = object, newdata = newdata, type = "response",
                na.action = stats::na.pass)
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
-  checkout(do.call(predict.mids, args), newdata, target)
+  checkout(do.call(stats::predict, args), newdata, target)
 }
 
 

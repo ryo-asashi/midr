@@ -79,7 +79,7 @@ mid_rsf <- interpret(
   Surv(time, status) ~ .,
   data = veteran,
   model = fit_rsf,
-  lambda = .5
+  lambda = .1
 )
 
 ggmid(

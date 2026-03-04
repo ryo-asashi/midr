@@ -32,10 +32,12 @@ navbar:
           href: articles/regression.html
         - text: "- Interpretation of Classification Models"
           href: articles/classification.html
-        - text: "- Visualization with graphics package"
-          href: articles/graphics.html
-        - text: "- Visualization with ggplot2 package"
-          href: articles/ggplot2.html
+        - text: "- Interpretation of Survival Models"
+          href: articles/survival.html
+        # - text: "- Visualization with graphics package"
+        #   href: articles/graphics.html
+        # - text: "- Visualization with ggplot2 package"
+        #   href: articles/ggplot2.html
         - text: "- Getting Started with Color Themes"
           href: articles/colortheme.html
         - text: "Publications"
