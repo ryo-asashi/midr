@@ -15,6 +15,7 @@ plot(
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
+  limits = NULL,
   resolution = NULL,
   labels = base::labels(x),
   ...
@@ -44,6 +45,11 @@ plot(
 
   logical. If `TRUE`, the model intercept is added to the component
   effect.
+
+- limits:
+
+  a numeric vector of length two specifying the limits of the plotting
+  scale.
 
 - resolution:
 

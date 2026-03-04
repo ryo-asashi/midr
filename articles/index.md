@@ -14,6 +14,11 @@
   Demonstrates how to use the midr package to interpret classification
   models.
 
+- [Interpretation of Survival
+  Models](https://ryo-asashi.github.io/midr/articles/survival.md):
+
+  Demonstrates how to use the midr package to interpret survival models.
+
 ### How to visualize MID models
 
 - [Getting Started with Color

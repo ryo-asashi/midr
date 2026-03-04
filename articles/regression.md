@@ -89,6 +89,7 @@ eval_plot <- function(model, mid, data = test, ...) {
                       rmse_vs_test, rmse_vs_mid)
     ) + ggtitle("prediction / representation accuracy")
 }
+ml <- midlist()
 ```
 
 ## Additive Models
@@ -131,6 +132,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/stats_lm-2.png)
 
+``` r
+ml <- midlist(ml, lm = mid)
+```
+
 ### Regularized GLM
 
 ``` r
@@ -170,6 +175,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/glmnet_glmnet-2.png)
 
+``` r
+ml <- midlist(ml, glm = mid)
+```
+
 ### Generalized Additive Model
 
 ``` r
@@ -206,6 +215,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/gam_gam-2.png)
 
+``` r
+ml <- midlist(ml, gam = mid)
+```
+
 ### Multivariate Adaptive Regression Spline
 
 ``` r
@@ -239,6 +252,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```
 
 ![](regression_files/figure-html/earth_earth-2.png)
+
+``` r
+ml <- midlist(ml, mars = mid)
+```
 
 ## Neural Network
 
@@ -276,6 +293,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```
 
 ![](regression_files/figure-html/nnet_nnet-2.png)
+
+``` r
+ml <- midlist(ml, nnet = mid)
+```
 
 ## Support Vector Machine
 
@@ -317,6 +338,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```
 
 ![](regression_files/figure-html/e1071_svm-2.png)
+
+``` r
+ml <- midlist(ml, svm = mid)
+```
 
 ## Tree Based Models
 
@@ -364,6 +389,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/xgboost_xgboost-2.png)
 
+``` r
+ml <- midlist(ml, xgb = mid)
+```
+
 ### Random Forest
 
 ``` r
@@ -398,6 +427,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```
 
 ![](regression_files/figure-html/ranger_ranger-2.png)
+
+``` r
+ml <- midlist(ml, rf = mid)
+```
 
 ### Decision Tree
 
@@ -448,6 +481,10 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 
 ![](regression_files/figure-html/rpart_rpart-2.png)
 
+``` r
+ml <- midlist(ml, tree = mid)
+```
+
 ## Other Modes
 
 ### Predictive MID
@@ -481,3 +518,33 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ```
 
 ![](regression_files/figure-html/mid_interpret-2.png)
+
+``` r
+ml <- midlist(ml, mid = mid)
+```
+
+## Compare Multiple Models
+
+``` r
+options(midr.qualitative = "muted")
+p1 <- ggmid(ml[1:4], "x.1") + theme(legend.position = "none")
+p2 <- ggmid(ml[1:4], "x.3") + theme(legend.position = "none")
+p3 <- ggmid(ml[1:4], "x.4")
+p4 <- ggmid(ml[5:8], "x.1") + theme(legend.position = "none")
+p5 <- ggmid(ml[5:8], "x.3") + theme(legend.position = "none")
+p6 <- ggmid(ml[5:8], "x.4")
+(p1+ p2 + p3) / (p4 + p5 + p6)
+```
+
+![](regression_files/figure-html/comparison_effect-1.png)
+
+``` r
+impl <- mid.importance(ml)
+p1 <- ggmid(impl[1:4], type = "dotchart") +
+  theme(legend.position = "bottom")
+p2 <- ggmid(impl[5:8], type = "dotchart", terms = mid.terms(impl)) +
+  theme(legend.position = "bottom")
+p1 + p2
+```
+
+![](regression_files/figure-html/unnamed-chunk-2-1.png)

@@ -14,6 +14,7 @@ ggmid(
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
+  limits = c(NA, NA),
   resolution = NULL,
   labels = base::labels(object),
   ...
@@ -46,6 +47,12 @@ autoplot(object, ...)
 
   logical. If `TRUE`, the model intercept is added to the component
   effect.
+
+- limits:
+
+  a numeric vector of length two specifying the limits of the plotting
+  scale. `NA` values are replaced by the minimum and/or maximum MID
+  values.
 
 - resolution:
 

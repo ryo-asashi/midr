@@ -20,7 +20,7 @@ ggmid(
   main.effects = FALSE,
   data = NULL,
   limits = c(NA, NA),
-  jitter = 0.3,
+  jitter = NULL,
   resolution = c(100L, 100L),
   lumped = TRUE,
   ...
