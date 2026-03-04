@@ -54,7 +54,8 @@ plot.mids <- function(
   tags <- term.split(term)
   term <- term.check(term, mid.terms(x), stop = TRUE)
   if (length(tags) > 1L) {
-    stop("comparative plotting for interaction terms is not supported for collections")
+    message("comparative plotting for interaction terms is not supported")
+    return(invisible(NULL))
   }
   type <- match.arg(type)
   base_mod <- as.list(x)[[1L]]

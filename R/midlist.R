@@ -12,7 +12,7 @@
 #' If a single "midrib" object is provided, it is returned as-is, preserving its optimized struct-of-arrays format.
 #' However, if a "midrib" object is combined with other objects via \code{...}, it is automatically coerced into a pure list (array of structures) to ensure structural consistency before concatenation.
 #'
-#' @param ... objects to be combined. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are also accepted and will be flattened appropriately.
+#' @param ... objects to be combined, possibly named. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are also accepted and will be flattened appropriately.
 #'
 #' @examples
 #' # Fit models using the built-in anscombe dataset
@@ -37,25 +37,32 @@
 #' \code{midlist()} returns a list-based collection object inheriting from "midlist" and the appropriate collection class (e.g., "midcons"-"midlist").
 #' If a single "midrib" object is provided, the original object is returned as-is.
 #'
+#' \code{as.midlist()} returns a "midlist" object with a type-class "mids", "midimps", "midbrks", or "midcons".
+#'
 #' @export
 #'
 midlist <- function(...) {
   x <- list(...)
   if (length(x) == 0L)
-    return(structure(list(), class = "midlist"))
+    return(structure(list(), class = c("mids", "midlist")))
   if (length(x) == 1L && inherits(x[[1]], "midrib"))
     return(x[[1L]])
-  x <- do.call(c, lapply(x, as.midlist))
+  x <- do.call(c, lapply(X = x, FUN = as.midlist))
   for (what in c("mid", "midimp", "midcon", "midbrk")) {
     cls <- c(paste0(what, "s"), "midlist")
     if (all(vapply(x, inherits, logical(1L), what)))
       return(structure(x, class = cls))
   }
-  stop("'x' cannot be coerced to a 'midlist' object")
+  stop("objects cannot be combined into a 'midlist' object")
 }
 
-as.midlist <- function(x, force = TRUE) {
-  if (force && inherits(x, "midrib"))
+
+#' @rdname midlist
+#' @param x object to be coerced or tested.
+#' @export
+#'
+as.midlist <- function(x) {
+  if (inherits(x, "midrib"))
     return(as.list.midrib(x))
   if (inherits(x, "midlist"))
     return(x)

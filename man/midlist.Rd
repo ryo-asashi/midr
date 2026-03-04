@@ -2,16 +2,23 @@
 % Please edit documentation in R/midlist.R
 \name{midlist}
 \alias{midlist}
+\alias{as.midlist}
 \title{Combine MID Objects}
 \usage{
 midlist(...)
+
+as.midlist(x)
 }
 \arguments{
-\item{...}{objects to be combined. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are also accepted and will be flattened appropriately.}
+\item{...}{objects to be combined, possibly named. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are also accepted and will be flattened appropriately.}
+
+\item{x}{object to be coerced or tested.}
 }
 \value{
 \code{midlist()} returns a list-based collection object inheriting from "midlist" and the appropriate collection class (e.g., "midcons"-"midlist").
 If a single "midrib" object is provided, the original object is returned as-is.
+
+\code{as.midlist()} returns a "midlist" object with a type-class "mids", "midimps", "midbrks", or "midcons".
 }
 \description{
 Combines multiple MID models ("mid") or their interpretation results ("midimp", "midcon", "midbrk") into a unified collection object.

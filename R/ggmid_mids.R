@@ -51,7 +51,8 @@ ggmid.mids <- function(
   tags <- term.split(term)
   term <- term.check(term, mid.terms(object), stop = TRUE)
   if (length(tags) > 1L) {
-    stop("comparative plotting for interaction terms is not supported for collections")
+    message("comparative plotting for interaction terms is not supported")
+    return(invisible(NULL))
   }
   type <- match.arg(type)
   base <- as.list(object)[[1L]]
