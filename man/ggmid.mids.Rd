@@ -11,6 +11,7 @@
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
+  limits = c(NA, NA),
   resolution = NULL,
   labels = base::labels(object),
   ...
@@ -28,6 +29,8 @@
 \item{theme}{a character string or object defining the color theme.}
 
 \item{intercept}{logical. If \code{TRUE}, the model intercept is added to the component effect.}
+
+\item{limits}{a numeric vector of length two specifying the limits of the plotting scale. \code{NA} values are replaced by the minimum and/or maximum MID values.}
 
 \item{resolution}{an integer specifying the number of evaluation points for continuous variables.}
 

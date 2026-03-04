@@ -10,6 +10,7 @@
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
+  limits = NULL,
   resolution = NULL,
   labels = base::labels(x),
   ...
@@ -25,6 +26,8 @@
 \item{theme}{a character string or object defining the color theme.}
 
 \item{intercept}{logical. If \code{TRUE}, the model intercept is added to the component effect.}
+
+\item{limits}{a numeric vector of length two specifying the limits of the plotting scale.}
 
 \item{resolution}{an integer specifying the number of evaluation points for continuous variables.}
 

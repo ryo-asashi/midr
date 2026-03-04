@@ -13,7 +13,7 @@
   main.effects = FALSE,
   data = NULL,
   limits = NULL,
-  jitter = 0.3,
+  jitter = NULL,
   resolution = c(100L, 100L),
   lumped = TRUE,
   ...
