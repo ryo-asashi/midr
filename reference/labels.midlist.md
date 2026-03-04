@@ -55,6 +55,11 @@ returns internal component names (e.g., "intercept", "main.effects"). To
 safely access or modify the names of the models, always use
 [`labels()`](https://rdrr.io/r/base/labels.html) and `labels<-`.
 
+## See also
+
+[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md),
+[`extract.midlist`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
+
 ## Examples
 
 ``` r

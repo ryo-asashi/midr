@@ -98,12 +98,17 @@ collection object. It visualizes the contribution of each component
 function to a single prediction across multiple models, allowing for
 easy comparison across different models.
 
-The `type` argument controls the visualization style. The default,
-`type = "barplot"`, creates a standard grouped bar plot where the length
-of each bar represents the overall importance of the term, positioned
-side-by-side (`position_dodge`) by model label. The `type = "dotchart"`
-option creates a grouped dot plot, offering a clean alternative to the
-bar plot for visualizing and comparing term importance across models.
+The `type` argument controls the visualization style: The default,
+`type = "barplot"`, creates a grouped bar plot where the bars for each
+term are placed side-by-side across the models. The `type = "dotchart"`
+option creates a grouped dot plot, offering a cleaner comparison across
+models. The `type = "series"` option plots the contribution trend over
+the models for each component term.
+
+## See also
+
+[`ggmid.midbrk`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md),
+[`plot.midbrks`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
 
 ## Examples
 
@@ -129,5 +134,9 @@ ggmid(brks)
 
 
 # Create a comparative dot chart with a specific theme
-ggmid(brks, type = "dotchart", theme = "R4")
+ggmid(rev(brks), type = "dotchart", theme = "R4")
+
+
+# Create a series plot to observe trends across models
+ggmid(brks, type = "series")
 ```

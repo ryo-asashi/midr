@@ -100,6 +100,10 @@ All objects provided in <code>...</code> must belong to the same base class.</p>
 <p>If a single "midrib" object is provided, it is returned as-is, preserving its optimized struct-of-arrays format.
 However, if a "midrib" object is combined with other objects via <code>...</code>, it is automatically coerced into a pure list (array of structures) to ensure structural consistency before concatenation.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="extract.midlist.html">extract.midlist</a></code>, <code><a href="labels.midlist.html">labels.midlist</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -110,6 +114,8 @@ However, if a "midrib" object is combined with other objects via <code>...</code
 <span class="r-in"><span><span class="co"># Create interpretation objects</span></span></span>
 <span class="r-in"><span><span class="co"># mid1 is a "midrib" collection containing 3 models</span></span></span>
 <span class="r-in"><span><span class="va">mid1</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span>, <span class="va">y3</span><span class="op">)</span> <span class="op">~</span> <span class="va">x1</span>, data <span class="op">=</span> <span class="va">anscombe</span>, model <span class="op">=</span> <span class="va">fit1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">mid1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mids"   "midrib"</span>
 <span class="r-in"><span><span class="co"># mid2 is a single "mid" object</span></span></span>
 <span class="r-in"><span><span class="va">mid2</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">y4</span> <span class="op">~</span> <span class="va">x4</span>, data <span class="op">=</span> <span class="va">anscombe</span>, model <span class="op">=</span> <span class="va">fit2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

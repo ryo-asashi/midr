@@ -2,8 +2,7 @@
 
 For "mids" collection objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
-compares a single main effect across multiple models using base R
-graphics.
+compares a single main effect across multiple models.
 
 ## Usage
 
@@ -58,9 +57,9 @@ plot(
 
 - labels:
 
-  an optional numeric or character vector to specify the x-axis
-  coordinates or labels. Defaults to `labels(object)`. The function
-  attempts to parse these labels into numeric values where possible.
+  an optional numeric or character vector to specify the model labels.
+  Defaults to `labels(object)`. The function attempts to parse these
+  labels into numeric values where possible.
 
 - ...:
 
@@ -79,10 +78,10 @@ This is an S3 method for the
 evaluates the specified `term` over a grid of values and compares the
 results across all models in the collection.
 
-For continuous variables, it uses a multi-line plot (`matplot`). For
-qualitative factors, it uses a grouped bar plot (`barplot`). The
-`type = "series"` option transposes the view to plot the effect trend
-over the models for each feature value.
+The `type` argument controls the visualization style. The default,
+`type = "effect"`, plots the component functions of the specified `term`
+for each model individually. The `type = "series"` option transposes the
+view to plot the effect trend over the models for each feature value.
 
 Note: Comparative plotting for interaction terms (2D surfaces) is not
 supported for collection objects.

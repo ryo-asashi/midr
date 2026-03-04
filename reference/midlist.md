@@ -52,6 +52,11 @@ object is combined with other objects via `...`, it is automatically
 coerced into a pure list (array of structures) to ensure structural
 consistency before concatenation.
 
+## See also
+
+[`extract.midlist`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md),
+[`labels.midlist`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
+
 ## Examples
 
 ``` r
@@ -62,6 +67,8 @@ fit2 <- lm(y4 ~ x4, data = anscombe)
 # Create interpretation objects
 # mid1 is a "midrib" collection containing 3 models
 mid1 <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit1)
+class(mid1)
+#> [1] "mids"   "midrib"
 # mid2 is a single "mid" object
 mid2 <- interpret(y4 ~ x4, data = anscombe, model = fit2)
 

@@ -74,8 +74,8 @@ plot(
 
 - labels:
 
-  an optional numeric or character vector to specify the model labels or
-  x-axis coordinates. Defaults to the labels found in the object.
+  an optional numeric or character vector to specify the model labels.
+  Defaults to the labels found in the object.
 
 - ...:
 
@@ -103,9 +103,8 @@ the models for each component term.
 
 ## See also
 
-[`ggmid.midbrks`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md),
 [`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
-[`plot.midimps`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+[`ggmid.midbrks`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
 
 ## Examples
 
@@ -131,5 +130,9 @@ plot(brks)
 
 
 # Create a comparative dot chart with a specific theme
-plot(brks, type = "dotchart", theme = "R4")
+plot(rev(brks), type = "dotchart", theme = "R4")
+
+
+# Create a series plot to observe trends across models
+plot(brks, type = "series")
 ```

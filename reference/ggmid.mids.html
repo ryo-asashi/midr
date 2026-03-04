@@ -116,7 +116,7 @@ img {
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to <code>labels(object)</code>. The function attempts to parse these labels into numeric values where possible.</p></dd>
+<dd><p>an optional numeric or character vector to specify the model labels. Defaults to <code>labels(object)</code>. The function attempts to parse these labels into numeric values where possible.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -129,8 +129,10 @@ img {
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This method evaluates the specified <code>term</code> over a grid of values and compares the results across all models in the collection.
-For continuous variables, it uses line plots (or step plots for constant encodings). For factors, it uses grouped bar plots.</p>
+    <p>This is an S3 method for the <code><a href="ggmid.html">ggmid()</a></code> generic that evaluates the specified <code>term</code> over a grid of values and compares the results across all models in the collection.</p>
+<p>The <code>type</code> argument controls the visualization style.
+The default, <code>type = "effect"</code>, plots the component functions of the specified <code>term</code> for each model individually.
+The <code>type = "series"</code> option transposes the view to plot the effect trend over the models for each feature value.</p>
 <p>Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.</p>
     </div>
     <div class="section level2">

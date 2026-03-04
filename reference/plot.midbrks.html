@@ -123,7 +123,7 @@ img {
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.</p></dd>
+<dd><p>an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -144,7 +144,7 @@ The <code>type = "series"</code> option plots the contribution trend over the mo
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="ggmid.midbrks.html">ggmid.midbrks</a></code>, <code><a href="plot.midbrk.html">plot.midbrk</a></code>, <code><a href="plot.midimps.html">plot.midimps</a></code></p></div>
+    <div class="dont-index"><p><code><a href="plot.midbrk.html">plot.midbrk</a></code>, <code><a href="ggmid.midbrks.html">ggmid.midbrks</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -170,8 +170,12 @@ The <code>type = "series"</code> option plots the contribution trend over the mo
 <span class="r-plt img"><img src="plot.midbrks-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a comparative dot chart with a specific theme</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">brks</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"R4"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">brks</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"R4"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.midbrks-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a series plot to observe trends across models</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">brks</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.midbrks-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

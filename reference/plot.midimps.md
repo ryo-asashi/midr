@@ -15,6 +15,7 @@ plot(
   theme = NULL,
   terms = NULL,
   max.nterms = 30L,
+  labels = NULL,
   ...
 )
 ```
@@ -44,6 +45,11 @@ plot(
 - max.nterms:
 
   the maximum number of terms to display. Defaults to 30.
+
+- labels:
+
+  an optional numeric or character vector to specify the model labels.
+  Defaults to the labels found in the object.
 
 - ...:
 
@@ -77,8 +83,7 @@ each component function.
 ## See also
 
 [`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
-[`ggmid.midimps`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md),
-[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+[`ggmid.midimps`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
 
 ## Examples
 
@@ -102,7 +107,7 @@ plot(imps)
 
 
 # Create a comparative dot chart with a specific theme
-plot(imps, type = "dotchart", theme = "Okabe-Ito")
+plot(rev(imps), type = "dotchart", theme = "Okabe-Ito")
 
 
 # Create a series plot to observe trends across models

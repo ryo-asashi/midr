@@ -106,7 +106,7 @@ img {
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.</p></dd>
+<dd><p>an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -120,13 +120,14 @@ img {
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This is an S3 method for the <code><a href="ggmid.html">ggmid()</a></code> generic that creates a comparative importance plot from a "midimps" collection object. It visualizes the average contribution of component functions to the fitted MID models, allowing for easy comparison across different models.</p>
-<p>The <code>type</code> argument controls the visualization style.
-The default, <code>type = "barplot"</code>, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (<code>position_dodge</code>) by model label.
-The <code>type = "dotchart"</code> option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.</p>
+<p>The <code>type</code> argument controls the visualization style:
+The default, <code>type = "barplot"</code>, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side by model label.
+The <code>type = "dotchart"</code> option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+The <code>type = "series"</code> option plots the importance trend over the models for each component function.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mid.importance.html">mid.importance</a></code>, <code><a href="ggmid.midimp.html">ggmid.midimp</a></code>, <code><a href="midlist.html">midlist</a></code></p></div>
+    <div class="dont-index"><p><code><a href="ggmid.midimp.html">ggmid.midimp</a></code>, <code><a href="midlist.html">midlist</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -150,8 +151,12 @@ The <code>type = "dotchart"</code> option creates a grouped dot plot, offering a
 <span class="r-plt img"><img src="ggmid.midimps-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a comparative dot chart with a specific theme</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"Okabe-Ito"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">imps</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"Okabe-Ito"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggmid.midimps-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a series plot to observe trends across models</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.midimps-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

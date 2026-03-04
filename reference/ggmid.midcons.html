@@ -135,16 +135,46 @@ img {
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This is an S3 method for the <code><a href="ggmid.html">ggmid()</a></code> generic that produces comparative ICE curves from a "midcons" object.
-It plots one line for each observation in the data per model, coloring them automatically by the model label.</p>
-<p>The <code>type</code> argument controls the visualization style:
-The default, <code>type = "iceplot"</code>, plots the raw ICE curves.
-The <code>type = "centered"</code> option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero.</p>
+It plots one line for each observation in the data per model.</p>
+<p>For <code>type = "iceplot"</code> and <code>"centered"</code>, lines are colored by the model label.
+For <code>type = "series"</code>, lines are colored by the feature value and plotted across models.</p>
+<p>The <code>var.alpha</code>, <code>var.linetype</code>, and <code>var.linewidth</code> arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mid.conditional.html">mid.conditional</a></code>, <code><a href="ggmid.html">ggmid</a></code>, <code><a href="plot.midcons.html">plot.midcons</a></code></p></div>
+    <div class="dont-index"><p><code><a href="ggmid.midcon.html">ggmid.midcon</a></code>, <code><a href="plot.midcons.html">plot.midcons</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit two different models for comparison</span></span></span>
+<span class="r-in"><span><span class="va">mid1</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">cyl</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
+<span class="r-in"><span><span class="va">mid2</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="op">(</span><span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">cyl</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate conditional expectations for both models</span></span></span>
+<span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="midlist.html">midlist</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"Main Effects"</span> <span class="op">=</span> <span class="va">mid1</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Interactions"</span> <span class="op">=</span> <span class="va">mid2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cons</span> <span class="op">&lt;-</span> <span class="fu"><a href="mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">ml</span>, <span class="st">"wt"</span>, max.nsamples <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create an ICE plot (default)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.midcons-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a centered-ICE plot</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"centered"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.midcons-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a series plot to observe trends across models</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"series"</span>, var.linetype <span class="op">=</span> <span class="st">".id"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggmid.midcons-3.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

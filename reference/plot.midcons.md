@@ -3,7 +3,7 @@
 For "midcons" collection objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
 compares Individual Conditional Expectation (ICE) curves derived from
-multiple fitted MID models using base R graphics.
+multiple fitted MID models.
 
 ## Usage
 
@@ -80,10 +80,11 @@ invisibly.
 This is an S3 method for the
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
 produces comparative ICE curves from a "midcons" object. It plots one
-line for each observation in the data per model. For `type = "iceplot"`
-and `"centered"`, lines are colored by the model label. For
-`type = "series"`, lines are colored by the feature value and plotted
-across models.
+line for each observation in the data per model.
+
+For `type = "iceplot"` and `"centered"`, lines are colored by the model
+label. For `type = "series"`, lines are colored by the feature value and
+plotted across models.
 
 The `var.alpha`, `var.linetype`, and `var.linewidth` arguments allow you
 to map aesthetics to other variables in your data using (possibly)
@@ -91,5 +92,35 @@ unquoted expressions.
 
 ## See also
 
-[`ggmid.midcons`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md),
-[`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
+[`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
+[`ggmid.midcons`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
+
+## Examples
+
+``` r
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+
+# Calculate conditional expectations for both models
+ml <- midlist(
+  "Main Effects" = mid1,
+  "Interactions" = mid2
+)
+cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
+
+# Create an ICE plot (default)
+plot(cons)
+
+
+# Create a centered-ICE plot
+plot(cons, type = "centered")
+
+
+# Create a series plot to observe trends across models
+plot(cons, type = "series", var.linetype = ".id")
+```

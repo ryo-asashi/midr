@@ -61,9 +61,9 @@ autoplot(object, ...)
 
 - labels:
 
-  an optional numeric or character vector to specify the x-axis
-  coordinates or labels. Defaults to `labels(object)`. The function
-  attempts to parse these labels into numeric values where possible.
+  an optional numeric or character vector to specify the model labels.
+  Defaults to `labels(object)`. The function attempts to parse these
+  labels into numeric values where possible.
 
 - ...:
 
@@ -76,10 +76,15 @@ autoplot(object, ...)
 
 ## Details
 
-This method evaluates the specified `term` over a grid of values and
-compares the results across all models in the collection. For continuous
-variables, it uses line plots (or step plots for constant encodings).
-For factors, it uses grouped bar plots.
+This is an S3 method for the
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
+generic that evaluates the specified `term` over a grid of values and
+compares the results across all models in the collection.
+
+The `type` argument controls the visualization style. The default,
+`type = "effect"`, plots the component functions of the specified `term`
+for each model individually. The `type = "series"` option transposes the
+view to plot the effect trend over the models for each feature value.
 
 Note: Comparative plotting for interaction terms (2D surfaces) is not
 supported for collection objects.

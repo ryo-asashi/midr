@@ -81,16 +81,47 @@ autoplot(object, ...)
 This is an S3 method for the
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
 generic that produces comparative ICE curves from a "midcons" object. It
-plots one line for each observation in the data per model, coloring them
-automatically by the model label.
+plots one line for each observation in the data per model.
 
-The `type` argument controls the visualization style: The default,
-`type = "iceplot"`, plots the raw ICE curves. The `type = "centered"`
-option creates the centered ICE (c-ICE) plot, where each curve is
-shifted to start at zero.
+For `type = "iceplot"` and `"centered"`, lines are colored by the model
+label. For `type = "series"`, lines are colored by the feature value and
+plotted across models.
+
+The `var.alpha`, `var.linetype`, and `var.linewidth` arguments allow you
+to map aesthetics to other variables in your data using (possibly)
+unquoted expressions.
 
 ## See also
 
-[`mid.conditional`](https://ryo-asashi.github.io/midr/reference/mid.conditional.md),
-[`ggmid`](https://ryo-asashi.github.io/midr/reference/ggmid.md),
+[`ggmid.midcon`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md),
 [`plot.midcons`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
+
+## Examples
+
+``` r
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#> 'model' not passed: response variable in 'data' is used
+
+# Calculate conditional expectations for both models
+ml <- midlist(
+  "Main Effects" = mid1,
+  "Interactions" = mid2
+)
+cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
+
+# Create an ICE plot (default)
+ggmid(cons)
+
+
+# Create a centered-ICE plot
+ggmid(cons, type = "centered")
+
+
+# Create a series plot to observe trends across models
+ggmid(cons, type = "series", var.linetype = ".id")
+```

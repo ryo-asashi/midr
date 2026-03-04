@@ -82,8 +82,8 @@ plot(
 
 ## Value
 
-`plot.midcon()` produces an ICE plot as a side-effect and invisibly
-returns the ICE matrix used for the plot.
+`plot.midcon()` produces an ICE plot as a side-effect and returns `NULL`
+invisibly.
 
 ## Details
 

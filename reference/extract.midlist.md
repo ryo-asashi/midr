@@ -1,6 +1,6 @@
 # Subset MID Objects
 
-S3 methods to extract parts of a "midrib" or "midlist" collection
+S3 methods to extract parts of a "midlist" or "midrib" collection
 object.
 
 ## Usage
@@ -55,6 +55,11 @@ When extracting items using `[`, it returns a subsetted "midlist" or
 (`length(i) == 1L`) and `drop = TRUE`, the object is simplified to a
 single base object (e.g., "mid", "midimp"). `[[` always extracts a
 single base object.
+
+## See also
+
+[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md),
+[`labels.midlist`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
 
 ## Examples
 

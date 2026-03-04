@@ -51,8 +51,8 @@ autoplot(object, ...)
 
 - labels:
 
-  an optional numeric or character vector to specify the model labels or
-  x-axis coordinates. Defaults to the labels found in the object.
+  an optional numeric or character vector to specify the model labels.
+  Defaults to the labels found in the object.
 
 - ...:
 
@@ -72,16 +72,17 @@ collection object. It visualizes the average contribution of component
 functions to the fitted MID models, allowing for easy comparison across
 different models.
 
-The `type` argument controls the visualization style. The default,
+The `type` argument controls the visualization style: The default,
 `type = "barplot"`, creates a standard grouped bar plot where the length
 of each bar represents the overall importance of the term, positioned
-side-by-side (`position_dodge`) by model label. The `type = "dotchart"`
-option creates a grouped dot plot, offering a clean alternative to the
-bar plot for visualizing and comparing term importance across models.
+side-by-side by model label. The `type = "dotchart"` option creates a
+grouped dot plot, offering a clean alternative to the bar plot for
+visualizing and comparing term importance across models. The
+`type = "series"` option plots the importance trend over the models for
+each component function.
 
 ## See also
 
-[`mid.importance`](https://ryo-asashi.github.io/midr/reference/mid.importance.md),
 [`ggmid.midimp`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
 
@@ -107,5 +108,9 @@ ggmid(imps)
 
 
 # Create a comparative dot chart with a specific theme
-ggmid(imps, type = "dotchart", theme = "Okabe-Ito")
+ggmid(rev(imps), type = "dotchart", theme = "Okabe-Ito")
+
+
+# Create a series plot to observe trends across models
+ggmid(imps, type = "series")
 ```
