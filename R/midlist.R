@@ -22,6 +22,7 @@
 #' # Create interpretation objects
 #' # mid1 is a "midrib" collection containing 3 models
 #' mid1 <- interpret(cbind(y1, y2, y3) ~ x1, data = anscombe, model = fit1)
+#' class(mid1)
 #' # mid2 is a single "mid" object
 #' mid2 <- interpret(y4 ~ x4, data = anscombe, model = fit2)
 #'
@@ -38,6 +39,8 @@
 #' If a single "midrib" object is provided, the original object is returned as-is.
 #'
 #' \code{as.midlist()} returns a "midlist" object with a type-class "mids", "midimps", "midbrks", or "midcons".
+#'
+#' @seealso \code{\link{extract.midlist}}, \code{\link{labels.midlist}}
 #'
 #' @export
 #'

@@ -6,9 +6,10 @@
 #' @details
 #' This is an S3 method for the \code{ggmid()} generic that creates a comparative importance plot from a "midbrks" collection object. It visualizes the contribution of each component function to a single prediction across multiple models, allowing for easy comparison across different models.
 #'
-#' The \code{type} argument controls the visualization style.
-#' The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
-#' The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+#' The \code{type} argument controls the visualization style:
+#' The default, \code{type = "barplot"}, creates a grouped bar plot where the bars for each term are placed side-by-side across the models.
+#' The \code{type = "dotchart"} option creates a grouped dot plot, offering a cleaner comparison across models.
+#' The \code{type = "series"} option plots the contribution trend over the models for each component term.
 #'
 #' @param object a "midbrks" collection object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", or "series".
@@ -39,9 +40,14 @@
 #' ggmid(brks)
 #'
 #' # Create a comparative dot chart with a specific theme
-#' ggmid(brks, type = "dotchart", theme = "R4")
+#' ggmid(rev(brks), type = "dotchart", theme = "R4")
+#'
+#' # Create a series plot to observe trends across models
+#' ggmid(brks, type = "series")
 #' @returns
 #' \code{ggmid.midbrks()} returns a "ggplot" object.
+#'
+#' @seealso \code{\link{ggmid.midbrk}}, \code{\link{plot.midbrks}}
 #'
 #' @exportS3Method midr::ggmid
 #'
@@ -129,7 +135,8 @@ ggmid.midbrks <- function(
                         color = .data[["term"]], group = .data[["term"]])
     )
     pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
-    pl <- pl + scale_color_theme(theme, discrete = TRUE)
+    pl <- pl + ggplot2::labs(x = NULL) +
+      scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {
     brk$term <- factor(brk$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
@@ -137,7 +144,8 @@ ggmid.midbrks <- function(
     ) + .geom_col(
       ggplot2::aes(fill = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(), ...
-    ) + scale_fill_theme(theme, discrete = discrete)
+    ) + ggplot2::labs(y = NULL) +
+      scale_fill_theme(theme, discrete = discrete)
   } else if (type == "dotchart") {
     dots <- standardize_param_names(list(...))
     dodgewidth <- dots$width %||% 0.6
@@ -148,7 +156,8 @@ ggmid.midbrks <- function(
       ggplot2::aes(xmin = 0, xmax = .data[["mid"]],
                    color = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(width = dodgewidth), ...
-    ) + scale_color_theme(theme, discrete = discrete)
+    ) + ggplot2::labs(y = NULL) +
+      scale_color_theme(theme, discrete = discrete)
   }
   if (type != "series" && vline) {
     tli <- ggplot2::theme_get()$line

@@ -37,7 +37,7 @@
 
 \item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
 
-\item{labels}{an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.}
+\item{labels}{an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.}
 
 \item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }
@@ -72,8 +72,11 @@ brks <- midlist(
 plot(brks)
 
 # Create a comparative dot chart with a specific theme
-plot(brks, type = "dotchart", theme = "R4")
+plot(rev(brks), type = "dotchart", theme = "R4")
+
+# Create a series plot to observe trends across models
+plot(brks, type = "series")
 }
 \seealso{
-\code{\link{ggmid.midbrks}}, \code{\link{plot.midbrk}}, \code{\link{plot.midimps}}
+\code{\link{plot.midbrk}}, \code{\link{ggmid.midbrks}}
 }

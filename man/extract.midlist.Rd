@@ -28,7 +28,7 @@
 \code{[[} returns a single base object (e.g., "mid").
 }
 \description{
-S3 methods to extract parts of a "midrib" or "midlist" collection object.
+S3 methods to extract parts of a "midlist" or "midrib" collection object.
 }
 \details{
 A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".
@@ -58,4 +58,7 @@ class(mid)
 # Subset the collection to keep only the first two models using [
 sub <- collection[1:2]
 class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
+}
+\seealso{
+\code{\link{midlist}}, \code{\link{labels.midlist}}
 }

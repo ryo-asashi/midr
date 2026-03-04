@@ -45,7 +45,7 @@
 \item{...}{optional parameters passed on to the graphing functions.}
 }
 \value{
-\code{plot.midcon()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
+\code{plot.midcon()} produces an ICE plot as a side-effect and returns \code{NULL} invisibly.
 }
 \description{
 For "midcon" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.

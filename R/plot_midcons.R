@@ -1,11 +1,14 @@
 #' Compare MID Conditional Expectations
 #'
 #' @description
-#' For "midcons" collection objects, \code{plot()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models using base R graphics.
+#' For "midcons" collection objects, \code{plot()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models.
 #'
 #' @details
 #' This is an S3 method for the \code{plot()} generic that produces comparative ICE curves from a "midcons" object.
-#' It plots one line for each observation in the data per model. For \code{type = "iceplot"} and \code{"centered"}, lines are colored by the model label. For \code{type = "series"}, lines are colored by the feature value and plotted across models.
+#' It plots one line for each observation in the data per model.
+#'
+#' For \code{type = "iceplot"} and \code{"centered"}, lines are colored by the model label.
+#' For \code{type = "series"}, lines are colored by the feature value and plotted across models.
 #'
 #' The \code{var.alpha}, \code{var.linetype}, and \code{var.linewidth} arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
@@ -20,10 +23,32 @@
 #' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the graphing functions (e.g., \code{col}, \code{lty}, \code{lwd}).
 #'
+#' @examples
+#' data(mtcars, package = "datasets")
+#'
+#' # Fit two different models for comparison
+#' mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+#' mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+#'
+#' # Calculate conditional expectations for both models
+#' ml <- midlist(
+#'   "Main Effects" = mid1,
+#'   "Interactions" = mid2
+#' )
+#' cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
+#'
+#' # Create an ICE plot (default)
+#' plot(cons)
+#'
+#' # Create a centered-ICE plot
+#' plot(cons, type = "centered")
+#'
+#' # Create a series plot to observe trends across models
+#' plot(cons, type = "series", var.linetype = ".id")
 #' @returns
 #' \code{plot.midcons()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{ggmid.midcons}}, \code{\link{plot.midcon}}
+#' @seealso \code{\link{plot.midcon}}, \code{\link{ggmid.midcons}}
 #'
 #' @exportS3Method base::plot
 #'
@@ -169,7 +194,7 @@ plot.midcons <- function(
     xvals <- if (discrete) seq_along(labels) else labels
     args <- list(
       x = xvals[ord], xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
-      xlab = "label", ylab = yvar, type = "n", xaxt = if (discrete) "n"
+      xlab = "", ylab = yvar, type = "n", xaxt = if (discrete) "n"
     )
     do.call(graphics::plot.default, override(args, dots))
     if (discrete)

@@ -39,6 +39,8 @@
 #'
 #' \code{labels<-} returns the updated collection object with new labels.
 #'
+#' @seealso \code{\link{midlist}}, \code{\link{extract.midlist}}
+#'
 #' @exportS3Method base::labels
 #'
 labels.midlist <- function(object, ...) {

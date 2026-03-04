@@ -28,7 +28,7 @@
 
 \item{max.nterms}{the maximum number of terms to display. Defaults to 15.}
 
-\item{labels}{an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.}
+\item{labels}{an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.}
 
 \item{...}{optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).}
 }
@@ -41,9 +41,10 @@ For "midimps" collection objects, \code{ggmid()} visualizes and compares the imp
 \details{
 This is an S3 method for the \code{ggmid()} generic that creates a comparative importance plot from a "midimps" collection object. It visualizes the average contribution of component functions to the fitted MID models, allowing for easy comparison across different models.
 
-The \code{type} argument controls the visualization style.
-The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
+The \code{type} argument controls the visualization style:
+The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side by model label.
 The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+The \code{type = "series"} option plots the importance trend over the models for each component function.
 }
 \examples{
 data(mtcars, package = "datasets")
@@ -62,8 +63,11 @@ imps <- midlist(
 ggmid(imps)
 
 # Create a comparative dot chart with a specific theme
-ggmid(imps, type = "dotchart", theme = "Okabe-Ito")
+ggmid(rev(imps), type = "dotchart", theme = "Okabe-Ito")
+
+# Create a series plot to observe trends across models
+ggmid(imps, type = "series")
 }
 \seealso{
-\code{\link{mid.importance}}, \code{\link{ggmid.midimp}}, \code{\link{midlist}}
+\code{\link{ggmid.midimp}}, \code{\link{midlist}}
 }

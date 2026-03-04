@@ -53,9 +53,10 @@ For "midbrks" collection objects, \code{ggmid()} visualizes and compares the bre
 \details{
 This is an S3 method for the \code{ggmid()} generic that creates a comparative importance plot from a "midbrks" collection object. It visualizes the contribution of each component function to a single prediction across multiple models, allowing for easy comparison across different models.
 
-The \code{type} argument controls the visualization style.
-The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
-The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+The \code{type} argument controls the visualization style:
+The default, \code{type = "barplot"}, creates a grouped bar plot where the bars for each term are placed side-by-side across the models.
+The \code{type = "dotchart"} option creates a grouped dot plot, offering a cleaner comparison across models.
+The \code{type = "series"} option plots the contribution trend over the models for each component term.
 }
 \examples{
 data(mtcars, package = "datasets")
@@ -74,5 +75,11 @@ brks <- midlist(
 ggmid(brks)
 
 # Create a comparative dot chart with a specific theme
-ggmid(brks, type = "dotchart", theme = "R4")
+ggmid(rev(brks), type = "dotchart", theme = "R4")
+
+# Create a series plot to observe trends across models
+ggmid(brks, type = "series")
+}
+\seealso{
+\code{\link{ggmid.midbrk}}, \code{\link{plot.midbrks}}
 }

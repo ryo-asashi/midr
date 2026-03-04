@@ -40,7 +40,7 @@
 #' plot(ice, type = "centered", theme = "Purple-Yellow",
 #'      var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
-#' \code{plot.midcon()} produces an ICE plot as a side-effect and invisibly returns the ICE matrix used for the plot.
+#' \code{plot.midcon()} produces an ICE plot as a side-effect and returns \code{NULL} invisibly.
 #'
 #' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.midcon}}
 #'

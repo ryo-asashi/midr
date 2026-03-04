@@ -1,12 +1,13 @@
 #' Compare MID Component Functions
 #'
 #' @description
-#' For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models using base R graphics.
+#' For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models.
 #'
 #' @details
 #' This is an S3 method for the \code{plot()} generic that evaluates the specified \code{term} over a grid of values and compares the results across all models in the collection.
 #'
-#' For continuous variables, it uses a multi-line plot (\code{matplot}). For qualitative factors, it uses a grouped bar plot (\code{barplot}).
+#' The \code{type} argument controls the visualization style.
+#' The default, \code{type = "effect"}, plots the component functions of the specified \code{term} for each model individually.
 #' The \code{type = "series"} option transposes the view to plot the effect trend over the models for each feature value.
 #'
 #' Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.
@@ -18,7 +19,7 @@
 #' @param intercept logical. If \code{TRUE}, the model intercept is added to the component effect.
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param resolution an integer specifying the number of evaluation points for continuous variables.
-#' @param labels an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.
+#' @param labels an optional numeric or character vector to specify the model labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.
 #' @param ... optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).
 #'
 #' @examples
@@ -126,7 +127,7 @@ plot.mids <- function(
       x_pos <- seq_along(labels)
       args <- list(
         x = x_pos, y = t(fmat), type = "b", col = cols, pch = 16L,
-        lty = 1L, xaxt = "n", xlab = "label", ylab = "mid", ylim = limits
+        lty = 1L, xaxt = "n", xlab = "", ylab = "mid", ylim = limits
       )
       args <- override(args, dots)
       do.call(graphics::matplot, args)
@@ -134,7 +135,7 @@ plot.mids <- function(
     } else {
       args <- list(
         x = labels, y = t(fmat), type = "l", col = cols, lty = 1L,
-        xlab = "label", ylab = "mid", ylim = limits
+        xlab = "", ylab = "mid", ylim = limits
       )
       args <- override(args, dots)
       do.call(graphics::matplot, args)

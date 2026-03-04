@@ -31,7 +31,7 @@
 
 \item{resolution}{an integer specifying the number of evaluation points for continuous variables.}
 
-\item{labels}{an optional numeric or character vector to specify the x-axis coordinates or labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.}
+\item{labels}{an optional numeric or character vector to specify the model labels. Defaults to \code{labels(object)}. The function attempts to parse these labels into numeric values where possible.}
 
 \item{...}{optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).}
 }
@@ -39,12 +39,13 @@
 \code{plot.mids()} produces a plot as a side-effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models using base R graphics.
+For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models.
 }
 \details{
 This is an S3 method for the \code{plot()} generic that evaluates the specified \code{term} over a grid of values and compares the results across all models in the collection.
 
-For continuous variables, it uses a multi-line plot (\code{matplot}). For qualitative factors, it uses a grouped bar plot (\code{barplot}).
+The \code{type} argument controls the visualization style.
+The default, \code{type = "effect"}, plots the component functions of the specified \code{term} for each model individually.
 The \code{type = "series"} option transposes the view to plot the effect trend over the models for each feature value.
 
 Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.

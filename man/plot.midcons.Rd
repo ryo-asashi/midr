@@ -42,14 +42,40 @@
 \code{plot.midcons()} produces a plot as a side effect and returns \code{NULL} invisibly.
 }
 \description{
-For "midcons" collection objects, \code{plot()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models using base R graphics.
+For "midcons" collection objects, \code{plot()} visualizes and compares Individual Conditional Expectation (ICE) curves derived from multiple fitted MID models.
 }
 \details{
 This is an S3 method for the \code{plot()} generic that produces comparative ICE curves from a "midcons" object.
-It plots one line for each observation in the data per model. For \code{type = "iceplot"} and \code{"centered"}, lines are colored by the model label. For \code{type = "series"}, lines are colored by the feature value and plotted across models.
+It plots one line for each observation in the data per model.
+
+For \code{type = "iceplot"} and \code{"centered"}, lines are colored by the model label.
+For \code{type = "series"}, lines are colored by the feature value and plotted across models.
 
 The \code{var.alpha}, \code{var.linetype}, and \code{var.linewidth} arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 }
+\examples{
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+
+# Calculate conditional expectations for both models
+ml <- midlist(
+  "Main Effects" = mid1,
+  "Interactions" = mid2
+)
+cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
+
+# Create an ICE plot (default)
+plot(cons)
+
+# Create a centered-ICE plot
+plot(cons, type = "centered")
+
+# Create a series plot to observe trends across models
+plot(cons, type = "series", var.linetype = ".id")
+}
 \seealso{
-\code{\link{ggmid.midcons}}, \code{\link{plot.midcon}}
+\code{\link{plot.midcon}}, \code{\link{ggmid.midcons}}
 }

@@ -1,7 +1,7 @@
 #' Subset MID Objects
 #'
 #' @description
-#' S3 methods to extract parts of a "midrib" or "midlist" collection object.
+#' S3 methods to extract parts of a "midlist" or "midrib" collection object.
 #'
 #' @details
 #' A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".
@@ -40,6 +40,8 @@
 #' \code{[} returns a subsetted collection object (e.g., "midrib", "midlist") or a single base object if \code{drop = TRUE}.
 #'
 #' \code{[[} returns a single base object (e.g., "mid").
+#'
+#' @seealso \code{\link{midlist}}, \code{\link{labels.midlist}}
 #'
 #' @name extract.midlist
 #' @rdname extract.midlist

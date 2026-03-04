@@ -49,12 +49,36 @@ For "midcons" collection objects, \code{ggmid()} visualizes and compares Individ
 }
 \details{
 This is an S3 method for the \code{ggmid()} generic that produces comparative ICE curves from a "midcons" object.
-It plots one line for each observation in the data per model, coloring them automatically by the model label.
+It plots one line for each observation in the data per model.
 
-The \code{type} argument controls the visualization style:
-The default, \code{type = "iceplot"}, plots the raw ICE curves.
-The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero.
+For \code{type = "iceplot"} and \code{"centered"}, lines are colored by the model label.
+For \code{type = "series"}, lines are colored by the feature value and plotted across models.
+
+The \code{var.alpha}, \code{var.linetype}, and \code{var.linewidth} arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
+}
+\examples{
+data(mtcars, package = "datasets")
+
+# Fit two different models for comparison
+mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
+mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
+
+# Calculate conditional expectations for both models
+ml <- midlist(
+  "Main Effects" = mid1,
+  "Interactions" = mid2
+)
+cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
+
+# Create an ICE plot (default)
+ggmid(cons)
+
+# Create a centered-ICE plot
+ggmid(cons, type = "centered")
+
+# Create a series plot to observe trends across models
+ggmid(cons, type = "series", var.linetype = ".id")
 }
 \seealso{
-\code{\link{mid.conditional}}, \code{\link{ggmid}}, \code{\link{plot.midcons}}
+\code{\link{ggmid.midcon}}, \code{\link{plot.midcons}}
 }

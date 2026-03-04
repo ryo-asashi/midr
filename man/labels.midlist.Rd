@@ -61,3 +61,6 @@ class(mid)
 sub <- collection[1:2]
 class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
 }
+\seealso{
+\code{\link{midlist}}, \code{\link{extract.midlist}}
+}

@@ -6,16 +6,17 @@
 #' @details
 #' This is an S3 method for the \code{ggmid()} generic that creates a comparative importance plot from a "midimps" collection object. It visualizes the average contribution of component functions to the fitted MID models, allowing for easy comparison across different models.
 #'
-#' The \code{type} argument controls the visualization style.
-#' The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side (\code{position_dodge}) by model label.
+#' The \code{type} argument controls the visualization style:
+#' The default, \code{type = "barplot"}, creates a standard grouped bar plot where the length of each bar represents the overall importance of the term, positioned side-by-side by model label.
 #' The \code{type = "dotchart"} option creates a grouped dot plot, offering a clean alternative to the bar plot for visualizing and comparing term importance across models.
+#' The \code{type = "series"} option plots the importance trend over the models for each component function.
 #'
 #' @param object a "midimps" collection object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", or "series".
 #' @param theme a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.
 #' @param max.nterms the maximum number of terms to display. Defaults to 15.
-#' @param labels an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.
+#' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
 #'
 #' @examples
@@ -35,11 +36,14 @@
 #' ggmid(imps)
 #'
 #' # Create a comparative dot chart with a specific theme
-#' ggmid(imps, type = "dotchart", theme = "Okabe-Ito")
+#' ggmid(rev(imps), type = "dotchart", theme = "Okabe-Ito")
+#'
+#' # Create a series plot to observe trends across models
+#' ggmid(imps, type = "series")
 #' @returns
 #' \code{ggmid.midimps()} returns a "ggplot" object.
 #'
-#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.midimp}}, \code{\link{midlist}}
+#' @seealso \code{\link{ggmid.midimp}}, \code{\link{midlist}}
 #'
 #' @exportS3Method midr::ggmid
 #'
@@ -81,7 +85,8 @@ ggmid.midimps <- function(
                         color = .data[["term"]], group = .data[["term"]])
     )
     pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
-    pl <- pl + scale_color_theme(theme, discrete = TRUE)
+    pl <- pl + ggplot2::labs(x = NULL) +
+      scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {
     imp$term <- factor(imp$term, levels = rev(terms))
     pl <- ggplot2::ggplot(
@@ -89,7 +94,8 @@ ggmid.midimps <- function(
     ) + .geom_col(
       ggplot2::aes(fill = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(), ...
-    ) + scale_fill_theme(theme, discrete = discrete)
+    ) + ggplot2::labs(y = NULL) +
+      scale_fill_theme(theme, discrete = discrete)
   } else if (type == "dotchart") {
     dots <- standardize_param_names(list(...))
     dodgewidth <- dots$width %||% 0.6
@@ -100,7 +106,8 @@ ggmid.midimps <- function(
       ggplot2::aes(xmin = 0, xmax = .data[["importance"]],
                    color = .data[["label"]], group = factor(.data[["label"]])),
       position = ggplot2::position_dodge(width = dodgewidth), ...
-    ) + scale_color_theme(theme, discrete = discrete)
+    ) + ggplot2::labs(y = NULL) +
+      scale_color_theme(theme, discrete = discrete)
   }
   pl
 }

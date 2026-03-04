@@ -10,6 +10,7 @@
   theme = NULL,
   terms = NULL,
   max.nterms = 30L,
+  labels = NULL,
   ...
 )
 }
@@ -23,6 +24,8 @@
 \item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
 
 \item{max.nterms}{the maximum number of terms to display. Defaults to 30.}
+
+\item{labels}{an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.}
 
 \item{...}{optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
@@ -57,11 +60,11 @@ imps <- midlist(
 plot(imps)
 
 # Create a comparative dot chart with a specific theme
-plot(imps, type = "dotchart", theme = "Okabe-Ito")
+plot(rev(imps), type = "dotchart", theme = "Okabe-Ito")
 
 # Create a series plot to observe trends across models
 plot(imps, type = "series")
 }
 \seealso{
-\code{\link{plot.midimp}}, \code{\link{ggmid.midimps}}, \code{\link{midlist}}
+\code{\link{plot.midimp}}, \code{\link{ggmid.midimps}}
 }

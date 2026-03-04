@@ -16,6 +16,7 @@
 #' @param theme a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.
 #' @param max.nterms the maximum number of terms to display. Defaults to 30.
+#' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
 #'
 #' @examples
@@ -35,35 +36,43 @@
 #' plot(imps)
 #'
 #' # Create a comparative dot chart with a specific theme
-#' plot(imps, type = "dotchart", theme = "Okabe-Ito")
+#' plot(rev(imps), type = "dotchart", theme = "Okabe-Ito")
 #'
 #' # Create a series plot to observe trends across models
 #' plot(imps, type = "series")
 #' @returns
 #' \code{plot.midimps()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.midimp}}, \code{\link{ggmid.midimps}}, \code{\link{midlist}}
+#' @seealso \code{\link{plot.midimp}}, \code{\link{ggmid.midimps}}
 #'
 #' @exportS3Method base::plot
 #'
 plot.midimps <- function(
-    x, type = c("barplot", "dotchart", "series"),
-    theme = NULL, terms = NULL, max.nterms = 30L, ...
+    x, type = c("barplot", "dotchart", "series"), theme = NULL,
+    terms = NULL, max.nterms = 30L, labels = NULL, ...
 ) {
   dots <- override(list(), list(...))
   type <- match.arg(type)
   imp <- summary(x, shape = "long")
-  labels <- unique(imp$label)
-  # Parse labels to check if they are discrete or continuous
+  olabs <- unique(imp$label)
+  labels <- labels %||% olabs
+  if (length(labels) != length(olabs)) {
+    stop("length of 'labels' must match the number of models in the collection")
+  }
+  imp$label <- labels[match(imp$label, olabs)]
   parsed <- suppressWarnings(as.numeric(labels))
   discrete <- anyNA(parsed)
   if (!discrete) {
     labels <- parsed
+    imp$label <- as.numeric(imp$label)
+  } else if (!is.factor(labels)) {
+    labels <- factor(labels, levels = unique(labels))
+    imp$label <- factor(imp$label, levels = levels(labels))
   }
-  if (missing(theme)) {
-    theme <- if (type == "series" || discrete) getOption("midr.qualitative", "HCL")
+  theme <- theme %||% (
+    if (type == "series" || discrete) getOption("midr.qualitative", "HCL")
     else getOption("midr.sequential", "bluescale")
-  }
+  )
   theme <- color.theme(theme)
   terms <- terms %||% unique(imp$term)
   terms <- utils::head(terms, max.nterms)
@@ -95,13 +104,13 @@ plot.midimps <- function(
     if (discrete) {
       x_pos <- seq_along(labels)
       args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
-                   lty = 1L, xaxt = "n", xlab = "label", ylab = "importance")
+                   lty = 1L, xaxt = "n", xlab = "", ylab = "importance")
       args <- override(args, dots)
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
       args <- list(x = labels, y = t(mat), type = "l", col = cols,
-                   lty = 1L, xlab = "label", ylab = "importance")
+                   lty = 1L, xlab = "", ylab = "importance")
       args <- override(args, dots)
       do.call(graphics::matplot, args)
     }

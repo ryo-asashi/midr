@@ -20,7 +20,7 @@
 #' @param others a character string for the catchall label. Defaults to \code{"others"}.
 #' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
 #' @param format.args a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.
-#' @param labels an optional numeric or character vector to specify the model labels or x-axis coordinates. Defaults to the labels found in the object.
+#' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.
 #' @param ... optional parameters passed on to the main layer (e.g., \code{\link[ggplot2]{geom_col}}).
 #'
 #' @examples
@@ -40,11 +40,14 @@
 #' plot(brks)
 #'
 #' # Create a comparative dot chart with a specific theme
-#' plot(brks, type = "dotchart", theme = "R4")
+#' plot(rev(brks), type = "dotchart", theme = "R4")
+#'
+#' # Create a series plot to observe trends across models
+#' plot(brks, type = "series")
 #' @returns
 #' \code{plot.midbrks()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{ggmid.midbrks}}, \code{\link{plot.midbrk}}, \code{\link{plot.midimps}}
+#' @seealso \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrks}}
 #'
 #' @exportS3Method base::plot
 #'
@@ -55,7 +58,6 @@ plot.midbrks <- function(
 ) {
   dots <- override(list(), list(...))
   type <- match.arg(type)
-  # --- 1. Data Preparation (from ggmid.midbrks) ---
   brk <- summary(x, shape = "long")
   brk$term <- as.character(brk$term)
   olabs <- unique(brk$label)
@@ -124,7 +126,6 @@ plot.midbrks <- function(
   }
   terms.kept <- formatted
   terms <- if (use.others) c(formatted, others) else terms.kept
-  # --- 2. Matrix Construction (from plot.midimps) ---
   n <- length(terms)
   m <- length(labels)
   mat <- matrix(NA_real_, nrow = n, ncol = m)
@@ -132,7 +133,6 @@ plot.midbrks <- function(
     subbrk <- brk[brk$label == labels[i], ]
     mat[, i] <- subbrk$mid[match(terms, subbrk$term)]
   }
-  # --- 3. Plotting Logic (from plot.midimps) ---
   if (type == "barplot" || type == "dotchart") {
     cols <- to.colors(labels, theme)
     args <- list(to = mat, labels = terms,
@@ -159,13 +159,13 @@ plot.midbrks <- function(
     if (discrete) {
       x_pos <- seq_len(m)
       args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
-                   lty = 1L, xaxt = "n", xlab = "label", ylab = "mid")
+                   lty = 1L, xaxt = "n", xlab = "", ylab = "mid")
       args <- override(args, dots)
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
       args <- list(x = labels, y = t(mat), type = "l", col = cols,
-                   lty = 1L, xlab = "label", ylab = "mid")
+                   lty = 1L, xlab = "", ylab = "mid")
       args <- override(args, dots)
       do.call(graphics::matplot, args)
     }
