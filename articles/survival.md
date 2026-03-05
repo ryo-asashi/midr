@@ -1,6 +1,6 @@
 # Interpretation of Survival Models
 
-This article presents some examples of the interpretation of regression
+This article presents some examples of the interpretation of survival
 models using `midr`.
 
 ``` r

@@ -19,7 +19,12 @@
 
   Demonstrates how to use the midr package to interpret survival models.
 
-### How to visualize MID models
+### Advanced Tools & Customization
+
+- [Getting Started with MID
+  Collections](https://ryo-asashi.github.io/midr/articles/collection.md):
+
+  Overview of the collection objects: midlist and midrib.
 
 - [Getting Started with Color
   Themes](https://ryo-asashi.github.io/midr/articles/colortheme.md):

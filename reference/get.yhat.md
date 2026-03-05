@@ -36,7 +36,7 @@ get.yhat(object, newdata, ..., target = -1L)
 get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'svm'
-get.yhat(object, newdata, target = -1L, ...)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'ksvm'
 get.yhat(object, newdata, ..., target = -1L)
