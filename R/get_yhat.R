@@ -194,7 +194,9 @@ get.yhat.rfsrc <- function(
 #' @rdname get.yhat
 #' @exportS3Method midr::get.yhat
 #'
-get.yhat.svm <- function(object, newdata, target = -1L, ...) {
+get.yhat.svm <- function(
+    object, newdata, ..., target = -1L
+  ) {
   args <- list(object = object, newdata = newdata,
                na.action = stats::na.exclude)
   args$probability <- (object$type < 3L)

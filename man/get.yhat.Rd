@@ -42,7 +42,7 @@ get.yhat(object, newdata, ..., target)
 
 \method{get.yhat}{rfsrc}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{svm}(object, newdata, target = -1L, ...)
+\method{get.yhat}{svm}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{ksvm}(object, newdata, ..., target = -1L)
 

@@ -18,7 +18,7 @@ for (pkg in pkgs) {
 }
 ```
 
-This article presents some examples of the interpretation of regression models using `midr`.
+This article presents some examples of the interpretation of survival models using `midr`.
 
 ```{r setup, message = FALSE}
 # load required packages

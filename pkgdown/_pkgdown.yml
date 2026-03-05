@@ -38,6 +38,8 @@ navbar:
         #   href: articles/graphics.html
         # - text: "- Visualization with ggplot2 package"
         #   href: articles/ggplot2.html
+        - text: "- Getting Started with MID Collections"
+          href: articles/collection.html
         - text: "- Getting Started with Color Themes"
           href: articles/colortheme.html
         - text: "Publications"
@@ -52,10 +54,11 @@ articles:
   - articles/regression
   - articles/classification
   - articles/survival
-- title: How to visualize MID models
+- title: Advanced Tools & Customization
   contents:
   # - articles/graphics
   # - articles/ggplot2
+  - articles/collection
   - articles/colortheme
 
 reference:
