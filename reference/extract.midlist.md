@@ -39,10 +39,10 @@ x[[i, exact = TRUE]]
 
 ## Value
 
-`[` returns a subsetted collection object (e.g., "midrib", "midlist") or
-a single base object if `drop = TRUE`.
+`[` returns a subsetted collection object or a single base object if
+`drop = TRUE`.
 
-`[[` returns a single base object (e.g., "mid").
+`[[` returns a single base object.
 
 ## Details
 

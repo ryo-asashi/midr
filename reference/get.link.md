@@ -36,8 +36,8 @@ get.link(link, ..., simplify = TRUE)
 
 ## Value
 
-`get.link()` returns an object of class "link-glm" (and
-`"parametric.link"`) containing:
+`get.link()` returns an object of class "link-glm" and "parametric.link"
+containing:
 
 - linkfun:
 

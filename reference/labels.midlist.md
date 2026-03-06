@@ -38,8 +38,8 @@ labels(object) <- value
 
 ## Value
 
-`labels` returns a character vector of labels of the stored base
-objects.
+[`labels()`](https://rdrr.io/r/base/labels.html) returns a character
+vector of labels of the stored base objects.
 
 `labels<-` returns the updated collection object with new labels.
 
