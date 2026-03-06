@@ -117,12 +117,6 @@ plot.midcons <- function(
     ref <- rescale(eval(lwdexpr, envir = obs))
     aes$lwd <- ref * 3
   }
-  for (p in c("lty", "lwd", "alpha")) {
-    if (!is.null(dots[[p]])) {
-      aes[[p]] <- rep_len(dots[[p]], length.out = n)
-      if (p != "alpha") dots[[p]] <- NULL
-    }
-  }
   # iceplot and centered
   if (type %in% c("iceplot", "centered")) {
     theme <- theme %||% (
@@ -144,23 +138,24 @@ plot.midcons <- function(
     aes$lty <- rep(aes$lty, times = nlabs)
     aes$lwd <- rep(aes$lwd, times = nlabs)
     aes$alpha <- rep(aes$alpha, times = nlabs)
-    if (any(aes$alpha < 1)) {
-      clr <- grDevices::col2rgb(col = aes$col)
-      aes$col <- grDevices::rgb(
-        clr[1L,], clr[2L,], clr[3L,],
-        round(aes$alpha * 255), maxColorValue = 255L
-      )
-    }
     xvals <- if (fv) seq_along(values) else values
     args <- list(
-      x = xvals, xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+      x = xvals,
+      xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
       xlab = variable, ylab = yvar, type = "n", xaxt = if (fv) "n"
     )
-    do.call(graphics::plot.default, override(args, dots))
+    args <- set.alpha(override(args, dots), on = "col")
+    do.call(graphics::plot.default, args)
     if (fv)
-      graphics::axis(side = 1L, at = seq_along(values), labels = as.character(values))
-    args <- list(x = xvals, y = mat, type = "l", col = aes$col, lty = aes$lty, lwd = aes$lwd, add = TRUE)
-    do.call(graphics::matplot, override(args, dots))
+      graphics::axis(
+        side = 1L, at = seq_along(values), labels = as.character(values)
+      )
+    args <- list(
+      x = xvals, y = mat, type = "l", add = TRUE,
+      col = aes$col, lty = aes$lty, lwd = aes$lwd, alpha = aes$alpha
+    )
+    args <- set.alpha(override(args, dots), on = "col")
+    do.call(graphics::matplot, args)
     return(invisible(NULL))
   # series
   } else if (type == "series") {
@@ -183,28 +178,26 @@ plot.midcons <- function(
     aes$lty <- rep(aes$lty, times = nvals)
     aes$lwd <- rep(aes$lwd, times = nvals)
     aes$alpha <- rep(aes$alpha, times = nvals)
-    if (any(aes$alpha < 1)) {
-      clr <- grDevices::col2rgb(col = aes$col)
-      aes$col <- grDevices::rgb(
-        clr[1L,], clr[2L,], clr[3L,],
-        round(aes$alpha * 255), maxColorValue = 255L
-      )
-    }
     ord <- if (discrete) seq_along(labels) else order(labels)
     xvals <- if (discrete) seq_along(labels) else labels
     args <- list(
-      x = xvals[ord], xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+      x = xvals[ord],
+      xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
       xlab = "", ylab = yvar, type = "n", xaxt = if (discrete) "n"
     )
-    do.call(graphics::plot.default, override(args, dots))
+    args <- set.alpha(override(args, dots), on = "col")
+    do.call(graphics::plot.default, args)
     if (discrete)
-      graphics::axis(side = 1L, at = seq_along(labels), labels = as.character(labels))
+      graphics::axis(
+        side = 1L, at = seq_along(labels), labels = as.character(labels)
+      )
     args <- list(
-      x = xvals[ord], y = mat[ord, , drop = FALSE],
+      x = xvals[ord], y = mat[ord, , drop = FALSE], add = TRUE,
       type = if (discrete) "b" else "l", pch = 16L,
-      col = aes$col, lty = aes$lty, lwd = aes$lwd, add = TRUE
+      col = aes$col, lty = aes$lty, lwd = aes$lwd, alpha = aes$alpha
     )
-    do.call(graphics::matplot, override(args, dots))
+    args <- set.alpha(override(args, dots), on = "col")
+    do.call(graphics::matplot, args)
     return(invisible(NULL))
   }
 }

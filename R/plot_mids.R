@@ -104,15 +104,15 @@ plot.mids <- function(
         to = fmat, labels = as.character(xvals),
         fill = cols, xlab = term, ylab = "mid", limits = limits
       )
-      args <- override(args, dots)
-      do.call(barplot2, args)
+      args <- set.alpha(override(args, dots), on = "fill")
+      do.call(.barplot, args)
     } else {
       # multi-line plot for quantitative main effect
       args <- list(
         x = xvals, y = fmat, type = "l", col = cols, lty = 1L,
         xlab = term, ylab = "mid", ylim = limits
       )
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
     }
   } else if (type == "series") {
@@ -129,7 +129,7 @@ plot.mids <- function(
         x = x_pos, y = t(fmat), type = "b", col = cols, pch = 16L,
         lty = 1L, xaxt = "n", xlab = "", ylab = "mid", ylim = limits
       )
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
@@ -137,7 +137,7 @@ plot.mids <- function(
         x = labels, y = t(fmat), type = "l", col = cols, lty = 1L,
         xlab = "", ylab = "mid", ylim = limits
       )
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
     }
   }

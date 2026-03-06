@@ -10,7 +10,6 @@
   theme = NULL,
   terms = NULL,
   max.nterms = 15L,
-  width = NULL,
   vline = TRUE,
   others = "others",
   pattern = c("\%t=\%v", "\%t:\%t"),
@@ -28,8 +27,6 @@
 \item{terms}{an optional character vector specifying which terms to display.}
 
 \item{max.nterms}{the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.}
-
-\item{width}{a numeric value specifying the width of the bars.}
 
 \item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
 

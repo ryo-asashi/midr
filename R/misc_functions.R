@@ -155,6 +155,62 @@ interaction.frame <- function(xfrm, yfrm) {
   )
 }
 
+verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
+  if (verbosity >= level) {
+    ltag <- if (level >= 3L)
+      "- [debug] " else if (level >= 2L) "[info] " else NULL
+    stamp <- if (timestamp)
+      format(Sys.time(), " (%Y-%m-%d %H:%M:%S)") else NULL
+    text <- paste0(ltag, text, stamp)
+    message(text, appendLF = getOption("message.appendLF", TRUE))
+  }
+}
+
+examples <- function(x, n = 3L, ...) {
+  if (is.data.frame(x)) x <- as.matrix(x)
+  dts <- if (length(x) > n) ", ..." else ""
+  n <- min(length(x), n)
+  paste0(paste(trimws(format(x[seq_len(n)], ...)), collapse = ", "), dts)
+}
+
+mid.frames <- function(object, ...) {
+  mfl <- lapply(object$encoders$main.effects, function(x) x$frame)
+  ifl <- lapply(object$encoders$interactions, function(x) x$frame)
+  tags <- unique(c(names(mfl), names(ifl)))
+  res <- list()
+  for (tag in tags) {
+    if (identical(mfl[[tag]], ifl[[tag]])) {
+      res[[tag]] <- mfl[[tag]]
+    } else {
+      res[[paste0("|", tag)]] <- mfl[[tag]]
+      res[[paste0(":", tag)]] <- ifl[[tag]]
+    }
+  }
+  res
+}
+
+#' @exportS3Method stats::formula
+#'
+formula.mid <- function(x, ...) {
+  fm <- x$call$formula
+  if (!is.null(fm)) {
+    res <- stats::formula(stats::terms(x))
+    environment(res) <- environment(fm)
+    res
+  } else {
+    stats::formula(stats::terms(x))
+  }
+}
+
+#' @exportS3Method stats::model.frame
+#'
+model.frame.mid <- function(object, ...) {
+  model.reframe(object, data = model.data(object))
+}
+
+
+# base graphics
+
 adjusted.mai <- function(labels, margin = 1/16) {
   mai <- graphics::par("mai")
   cex <- graphics::par("cex.lab")
@@ -178,10 +234,11 @@ make_mat <- function(x, nrow, ncol) {
   }
 }
 
-barplot2 <- function(
-    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL, width = NULL,
-    type = c("b", "d", "n"), col = NA, fill = "gray65", lty = NULL, lwd = NULL,
-    main = NULL, sub = NULL, xlab = NULL, ylab = NULL, cex = 1, pch = 16, ...
+.barplot <- function(
+    to, from = 0, labels = NULL, horizontal = FALSE, limits = NULL,
+    width = NULL, type = c("b", "d", "n"), col = NULL, fill = NULL,
+    lty = NULL, lwd = NULL, main = NULL, sub = NULL, xlab = NULL, ylab = NULL,
+    cex = 1, pch = NULL, ...
 ) {
   type <- match.arg(type)
   if (horizontal) {
@@ -192,10 +249,10 @@ barplot2 <- function(
   to <- as.matrix(to)
   n <- nrow(to)
   m <- ncol(to)
-  from <- make_mat(from, n, m)
-  col <- make_mat(col, n, m)
-  fill <- make_mat(fill, n, m)
-  pch <- make_mat(pch, n, m)
+  from <- make_mat(from %||% 0, n, m)
+  col <- make_mat(col %||% NA, n, m)
+  fill <- make_mat(fill %||% "gray65", n, m)
+  pch <- make_mat(pch %||% 16L, n, m)
   rng <- range(c(to, from), na.rm = TRUE)
   mgn <- if (diff(rng) == 0) 0.5 else abs(diff(rng)) / 100
   limits <- limits %||% c(rng[1L] - mgn, rng[2L] + mgn)
@@ -253,74 +310,39 @@ barplot2 <- function(
   invisible(NULL)
 }
 
-override <- function(args, dots,
-    params = c("fill", "color", "colour", "col", "size", "cex", "shape", "pch",
-               "linetype", "lty", "linewidth", "lwd",
-               "title", "main", "subtitle", "sub", "xlab", "ylab",
-               "limits", "width", "boxwex", "horizontal"),
-    read.as = list(color = "col", colour = "col", size = "cex",
-                   shape = "pch", linetype = "lty", linewidth = "lwd",
-                   title = "main", subtitle = "sub", boxwex = "width")
-  ) {
-  for (param in params) {
-    arg <- read.as[[param]] %||% param
-    args[[arg]] <- dots[[param]] %||% args[[arg]]
-  }
-  args
+override <- function(args, dots) {
+  rename = list(
+    colour = "col", color = "col",
+    size = "cex",
+    shape = "pch",
+    linetype = "lty",
+    linewidth = "lwd",
+    title = "main",
+    subtitle = "sub"
+  )
+  dotnames <- names(dots)
+  if (is.null(dotnames)) return(args)
+  newnames <- vapply(
+    X = dotnames, FUN = function(x) {rename[[x]] %||% x},
+    FUN.VALUE = character(1L), USE.NAMES = FALSE
+  )
+  names(dots) <- newnames
+  dots <- dots[!duplicated(names(dots), fromLast = TRUE)]
+  utils::modifyList(args, dots, keep.null = TRUE)
 }
 
-
-verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
-  if (verbosity >= level) {
-    ltag <- if (level >= 3L)
-      "- [debug] " else if (level >= 2L) "[info] " else NULL
-    stamp <- if (timestamp)
-      format(Sys.time(), " (%Y-%m-%d %H:%M:%S)") else NULL
-    text <- paste0(ltag, text, stamp)
-    message(text, appendLF = getOption("message.appendLF", TRUE))
-  }
-}
-
-examples <- function(x, n = 3L, ...) {
-  if (is.data.frame(x)) x <- as.matrix(x)
-  dts <- if (length(x) > n) ", ..." else ""
-  n <- min(length(x), n)
-  paste0(paste(trimws(format(x[seq_len(n)], ...)), collapse = ", "), dts)
-}
-
-mid.frames <- function(object, ...) {
-  mfl <- lapply(object$encoders$main.effects, function(x) x$frame)
-  ifl <- lapply(object$encoders$interactions, function(x) x$frame)
-  tags <- unique(c(names(mfl), names(ifl)))
-  res <- list()
-  for (tag in tags) {
-    if (identical(mfl[[tag]], ifl[[tag]])) {
-      res[[tag]] <- mfl[[tag]]
-    } else {
-      res[[paste0("|", tag)]] <- mfl[[tag]]
-      res[[paste0(":", tag)]] <- ifl[[tag]]
-    }
-  }
-  res
-}
-
-#' @exportS3Method stats::formula
-#'
-formula.mid <- function(x, ...) {
-  fm <- x$call$formula
-  if (!is.null(fm)) {
-    res <- stats::formula(stats::terms(x))
-    environment(res) <- environment(fm)
-    res
-  } else {
-    stats::formula(stats::terms(x))
-  }
-}
-
-#' @exportS3Method stats::model.frame
-#'
-model.frame.mid <- function(object, ...) {
-  model.reframe(object, data = model.data(object))
+set.alpha <- function(args, on = "col") {
+  colors <- args[[on]]
+  alpha <- args$alpha
+  args$alpha <- NULL
+  if (is.null(colors) || is.null(alpha) || !any(alpha < 1))
+    return(args)
+  alpha <- pmax(0, pmin(1, alpha))
+  rgbs <- grDevices::col2rgb(col = colors)
+  args[[on]] <- grDevices::rgb(
+    rgbs[1L,], rgbs[2L,], rgbs[3L,], round(alpha * 255), maxColorValue = 255L
+  )
+  return(args)
 }
 
 

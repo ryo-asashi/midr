@@ -97,21 +97,21 @@ plot.mid <- function(
         cols <- if (use.theme) to.colors(rdf$y, theme, middle = middle) else 1L
         args <- list(x = rdf$x, y = rdf$y, type = "l", col = cols,
                      ylab = "mid", xlab = term, ylim = limits)
-        args <- override(args, dots)
+        args <- set.alpha(override(args, dots), on = "col")
         do.call(graphics::plot.default, args)
       } else if (enc$type == "linear") {
         cols <- if (use.theme) to.colors(df$mid, theme, middle = middle) else 1L
         args <- list(x = df[[term]], y = df$mid, type = "l", col = cols,
                      ylab = "mid", xlab = term, ylim = limits)
-        args <- override(args, dots)
+        args <- set.alpha(override(args, dots), on = "col")
         do.call(graphics::plot.default, args)
       } else if (enc$type == "factor") {
         cols <- if (use.theme)
           to.colors(df$mid, theme, middle = middle) else "gray35"
         args <- list(to = df$mid, labels = df[[term]], limits = limits,
                      ylab = "mid", xlab = term, fill = cols, col = NA)
-        args <- override(args, dots)
-        do.call(barplot2, args)
+        args <- set.alpha(override(args, dots), on = "fill")
+        do.call(.barplot, args)
       }
     }
     if (type == "data" || type == "compound") {
@@ -127,28 +127,31 @@ plot.mid <- function(
         if (type == "data") {
           args <- list(to = df$mid, labels = df[[term]], type = "n",
                        ylab = "mid", xlab = term, limits = limits)
-          do.call(barplot2, override(args, dots))
+          do.call(.barplot, override(args, dots))
           args <- list(x = vals, y = mids, col = cols, pch = 16L, cex = 1L)
-          do.call(graphics::points.default, override(args, dots))
+          args <- set.alpha(override(args, dots), on = "col")
+          do.call(graphics::points.default, args)
         } else if (type == "compound") {
-          point.args <- list(
+          args <- list(
             x = vals, y = mids, pch = dots$pch %||% 16L,
             col = dots$col %||% 1L, cex = dots$cex %||% 1L
           )
-          do.call(graphics::points.default, point.args)
+          args <- set.alpha(override(args, dots), on = "col")
+          do.call(graphics::points.default, args)
         }
       } else {
         if (type == "data") {
             args <- list(x = vals, y = mids, xlab = term, ylab = "mid",
                          ylim = limits, type = "p", col = cols, pch = 16L)
-            args <- override(args, dots)
+            args <- set.alpha(override(args, dots), on = "col")
             do.call(graphics::plot.default, args)
         } else if (type == "compound") {
-          point.args <- list(
+          args <- list(
             x = vals, y = mids, pch = dots$pch %||% 16L,
-            col = dots$col %||% 1L, cex = dots$cex %||% 1L
+            col = dots$col %||% 1L, cex = dots$cex %||% 1L, alpha = dots$alpha
           )
-          do.call(graphics::points.default, point.args)
+          args <- set.alpha(override(args, dots), on = "col")
+          do.call(graphics::points.default, args)
         }
       }
     }
@@ -212,8 +215,10 @@ plot.mid <- function(
     }
     if (type == "effect" || type == "compound") {
       if (type == "compound") {
-        point.args <- list(x = xval, y = yval, pch = dots$pch %||% 16L,
-                           col = dots$col %||% 1L, cex = dots$cex %||% 1L)
+        point.args <- list(x = xval, y = yval,
+                           pch = dots$pch %||% 16L, col = dots$col %||% 1L,
+                           cex = dots$cex %||% 1L, alpha = dots$alpha)
+        point.args <- set.alpha(override(point.args, dots), on = "col")
       }
       plot.axes <- substitute(
         if (args$axes) {
@@ -229,7 +234,7 @@ plot.mid <- function(
                    xlab = tags[1L], ylab = tags[2L], color.palette = pal,
                    plot.axes = plot.axes, las = graphics::par("las"),
                    axes = TRUE, fill = NULL, col = NULL)
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "fill")
       args$col <- args$fill
       args$fill <- NULL
       do.call(graphics::filled.contour, args)
@@ -241,7 +246,7 @@ plot.mid <- function(
       cols <- to.colors(mid, theme, middle = middle)
       args <- list(x = xval, y = yval, type = "n", col = cols, pch = 16L,
                    cex = 1L, xlab = tags[1L], ylab = tags[2L], axes = FALSE)
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::plot.default, args)
       graphics::box()
       graphics::axis(side = 1L, at = lat[[1L]], labels = lab[[1L]])

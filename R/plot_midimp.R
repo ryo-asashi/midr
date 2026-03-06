@@ -72,12 +72,14 @@ plot.midimp <- function(
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
+      alpha.on <- "col"
     } else {
       args$type <- "b"
       args$fill <- cols
+      alpha.on <- "fill"
     }
-    args <- override(args, dots)
-    do.call(barplot2, args)
+    args <- set.alpha(override(args, dots), on = alpha.on)
+    do.call(.barplot, args)
   # heatmap
   } else if (type == "heatmap") {
     rownames(imp) <- terms <- as.character(imp$term)
@@ -105,7 +107,7 @@ plot.midimp <- function(
     graphics::par(mai = adjusted.mai(tags), las = 1L)
     args <- list(x = seq_len(m), y = seq_len(m), z = mat, fill = cols, col = NA,
                  axes = FALSE, xlab = "", ylab = "", lty = 1L, lwd = 1L)
-    args <- override(args, dots)
+    args <- set.alpha(override(args, dots), on = "fill")
     lcol <- args$col[1L]
     args$col <- args$fill
     args$fill <- NULL
@@ -135,11 +137,11 @@ plot.midimp <- function(
     } else NA
     args <- list(x = plist, fill = cols, col = "black", pch = 16L,
                  xlab = "mid", ylab = NULL, horizontal = TRUE)
-    args <- override(args, dots)
+    args <- set.alpha(override(args, dots), on = "fill")
     args$border <- args$col
     args$col <- args$fill
     args$fill <- NULL
-    args$boxwex <- args$width
+    args$boxwex <- args$boxwex %||% args$width
     args$width <- NULL
     do.call(graphics::boxplot.default, args)
   }

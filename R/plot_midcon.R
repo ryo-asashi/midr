@@ -117,26 +117,23 @@ plot.midcon <- function(
     ref <- rescale(eval(lwdexpr, envir = obs))
     aes$lwd <- ref * 3
   }
-  aes$col <- dots$col %||% aes$col
-  aes$alpha <- dots$alpha %||% aes$alpha
-  if (any(aes$alpha < 1)) {
-    clr <- grDevices::col2rgb(col = aes$col)
-    aes$col <- grDevices::rgb(
-      clr[1L,], clr[2L,], clr[3L,],
-      round(aes$alpha * 255), maxColorValue = 255L
-    )
-  }
   fv <- is.discrete(values)
   if (fv) flvs <- levels(factor(values))
   xvals <- if (fv) seq_along(flvs) else values
   args <- list(
-    x = xvals, xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+    x = xvals,
+    xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
     xlab = variable, ylab = yvar, type = "n", xaxt = if (fv) "n"
     )
-  do.call(graphics::plot.default, override(args, dots))
-  if (fv) graphics::axis(side = 1L, at = seq_along(values), labels = flvs)
-  args <- list(x = xvals, y = mat, type = "l", add = TRUE)
-  args <- override(override(args, dots), aes)
+  args <- set.alpha(override(args, dots), on = "col")
+  do.call(graphics::plot.default, args)
+  if (fv)
+    graphics::axis(side = 1L, at = seq_along(values), labels = flvs)
+  args <- list(
+    x = xvals, y = mat, type = "l", add = TRUE,
+    col = aes$col, lty = aes$lty, lwd = aes$lwd, alpha = aes$alpha
+  )
+  args <- set.alpha(override(args, dots), on = "col")
   do.call(graphics::matplot, args)
   if (points) {
     if (fv) {
@@ -145,7 +142,8 @@ plot.midcon <- function(
         obs[is.na(obs[, variable]), variable] <- attr(values, "others")
     }
     args <- list(x = obs[, variable], y = obs[, yvar], pch = 16L, col = aes$col)
-    do.call(graphics::points.default, override(args, dots))
+    args <- set.alpha(override(args, dots), on = "col")
+    do.call(graphics::points.default, args)
   }
   invisible(NULL)
 }

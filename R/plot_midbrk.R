@@ -16,7 +16,6 @@
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display.
 #' @param max.nterms the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.
-#' @param width a numeric value specifying the width of the bars.
 #' @param vline logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.
 #' @param others a character string for the catchall label.
 #' @param pattern a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.
@@ -47,9 +46,8 @@
 #'
 plot.midbrk <- function(
     x, type = c("waterfall", "barplot", "dotchart"), theme = NULL,
-    terms = NULL, max.nterms = 15L, width = NULL, vline = TRUE,
-    others = "others", pattern = c("%t=%v", "%t:%t"),
-    format.args = list(), ...) {
+    terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
+    pattern = c("%t=%v", "%t:%t"), format.args = list(), ...) {
   dots <- override(list(), list(...))
   type <- match.arg(type)
   if (missing(theme))
@@ -110,13 +108,14 @@ plot.midbrk <- function(
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
+      alpha.on <- "col"
     } else {
       args$type <- "b"
       args$fill <- cols
-      args$width <- width %||% .8
+      alpha.on <- "fill"
     }
-    args <- override(args, dots)
-    do.call(barplot2, args)
+    args <- set.alpha(override(args, dots), on = alpha.on)
+    do.call(.barplot, args)
     if (vline)
       graphics::abline(v = 0)
   } else if (type == "waterfall") {
@@ -126,7 +125,7 @@ plot.midbrk <- function(
       else
         to.colors(bd$mid, theme)
     } else "gray35"
-    width <- width %||% .6
+    width <- dots$width %||% .6
     hw <- width / 2
     n <- nrow(bd)
     cs <- cumsum(c(x$intercept, bd$mid))
@@ -134,9 +133,9 @@ plot.midbrk <- function(
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
                  fill = cols, horizontal = TRUE, xlab = "yhat", width = width,
-                 lty = 1L, lwd = 1L, col = NULL)
-    args <- override(args, dots)
-    do.call(barplot2, args)
+                 lty = 1L, lwd = 1L, col = NA)
+    args <- set.alpha(override(args, dots), on = "fill")
+    do.call(.barplot, args)
     for (i in seq_len(n)) {
       graphics::lines.default(x = rep.int(bd[i, "xmax"], 2L),
                               y = c(n + 1 - i + hw, max(n - i - hw, 1 - hw)),

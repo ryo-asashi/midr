@@ -135,17 +135,18 @@ plot.midbrks <- function(
   }
   if (type == "barplot" || type == "dotchart") {
     cols <- to.colors(labels, theme)
-    args <- list(to = mat, labels = terms,
-                 horizontal = TRUE, xlab = "mid")
+    args <- list(to = mat, labels = terms, horizontal = TRUE, xlab = "mid")
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
+      alpha.on <- "col"
     } else if (type == "barplot") {
       args$type <- "b"
       args$fill <- cols
+      alpha.on <- "fill"
     }
-    args <- override(args, dots)
-    do.call(barplot2, args)
+    args <- set.alpha(override(args, dots), on = alpha.on)
+    do.call(.barplot, args)
     if (vline) {
       graphics::abline(
         v = 0,
@@ -160,13 +161,13 @@ plot.midbrks <- function(
       x_pos <- seq_len(m)
       args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
                    lty = 1L, xaxt = "n", xlab = "", ylab = "mid")
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
       args <- list(x = labels, y = t(mat), type = "l", col = cols,
                    lty = 1L, xlab = "", ylab = "mid")
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
     }
   }

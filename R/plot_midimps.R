@@ -92,12 +92,14 @@ plot.midimps <- function(
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
+      alpha.on <- "col"
     } else if (type == "barplot") {
       args$type <- "b"
       args$fill <- cols
+      alpha.on <- "fill"
     }
-    args <- override(args, dots)
-    do.call(barplot2, args)
+    args <- set.alpha(override(args, dots), on = alpha.on)
+    do.call(.barplot, args)
   } else if (type == "series") {
     # For series plot, colors should match the number of terms (n), not models (m)
     cols <- theme$palette(n)
@@ -105,13 +107,13 @@ plot.midimps <- function(
       x_pos <- seq_along(labels)
       args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
                    lty = 1L, xaxt = "n", xlab = "", ylab = "importance")
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
       args <- list(x = labels, y = t(mat), type = "l", col = cols,
                    lty = 1L, xlab = "", ylab = "importance")
-      args <- override(args, dots)
+      args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
     }
   }

@@ -76,6 +76,7 @@ theme_midr <- function(
 #'
 par.midr <- function(...) {
   dots <- list(...)
+  dots <- dots[names(dots) %in% names(graphics::par(no.readonly = TRUE))]
   args <- list(
     bg = "white", bty = "o", mar = c(4.1, 4.1, 2.1, 1.1), family = "serif",
     font = 1L, font.axis = 1L, font.lab = 1L, font.main = 1L, font.sub = 1L,
@@ -83,8 +84,7 @@ par.midr <- function(...) {
     col.sub = "black", cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1.2,
     cex.sub = .9, las = 0L, lty = "solid", lwd = 1, pch = 16L
   )
-  args <- override(args = args, dots = dots,
-                   params = names(graphics::par(no.readonly = TRUE)))
+  args <- utils::modifyList(args, dots)
   do.call(what = graphics::par, args = args)
 }
 
