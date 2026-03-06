@@ -113,7 +113,7 @@ two specialized collection classes: “midlist” and “midrib”.</p>
 importance, and instance-level breakdowns across multiple models using a
 unified interface.</p>
 <div class="section level2">
-<h2 id="the-midlist-class-flexible-combination-of-mid-objects">1. The “midlist” Class: Flexible Combination of MID Objects<a class="anchor" aria-label="anchor" href="#the-midlist-class-flexible-combination-of-mid-objects"></a>
+<h2 id="midlist-flexible-combination-of-mid-objects">midlist: Flexible Combination of MID Objects<a class="anchor" aria-label="anchor" href="#midlist-flexible-combination-of-mid-objects"></a>
 </h2>
 <p>The “midlist” class is a versatile container used to group existing
 MID objects (such as <code>mid</code>, <code>midimp</code>,
@@ -122,47 +122,65 @@ useful when you have trained separate models—perhaps using different
 algorithms or targeting different subsets of data—and want to compare
 their behavior side-by-side.</p>
 <div class="section level3">
-<h3 id="example-comparing-registered-vs--casual-bike-users">Example: Comparing Registered vs. Casual Bike Users<a class="anchor" aria-label="anchor" href="#example-comparing-registered-vs--casual-bike-users"></a>
+<h3 id="example-comparing-gam-vs--random-forest">Example: Comparing GAM vs. Random Forest<a class="anchor" aria-label="anchor" href="#example-comparing-gam-vs--random-forest"></a>
 </h3>
-<p>In the <code>Bikeshare</code> dataset, the factors influencing
-“registered” users may differ from those affecting “casual” users. We
-fit two independent MID models and unify them into a “midlist”
-collection.</p>
+<p>When predicting the total number of users (<code>bikers</code>) in
+the Bikeshare dataset, different machine learning algorithms capture
+non-linear relationships differently. Here, we fit a Generalized
+Additive Model (<strong>gam</strong>) and a Random Forest
+(<strong>ranger</strong>), interpret both of them independently, and
+unify the results into a single “midlist” collection for a direct visual
+comparison.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ryo-asashi/midr" class="external-link">midr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gam</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://imbs-hl.github.io/ranger/" class="external-link">ranger</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Bikeshare</span>, package <span class="op">=</span> <span class="st">"ISLR2"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Interpret two separate models independently</span></span>
-<span><span class="va">mid.registered</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
-<span>  <span class="va">registered</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">weekday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">Bikeshare</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  lambda <span class="op">=</span> <span class="fl">.05</span></span>
+<span><span class="va">fit.gam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></span><span class="op">(</span></span>
+<span>  <span class="va">bikers</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/gam/man/gam.s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">weekday</span><span class="op">)</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/gam/man/gam.s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/gam/man/gam.s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">hum</span><span class="op">)</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">Bikeshare</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">mid.casual</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
-<span>  <span class="va">casual</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">weekday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span>,</span>
+<span></span>
+<span><span class="va">fit.ranger</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span></span>
+<span>  <span class="va">bikers</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">weekday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">Bikeshare</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Interpret two separate models independently</span></span>
+<span><span class="va">mid.gam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
+<span>  <span class="va">bikers</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">weekday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">Bikeshare</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">fit.gam</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">50</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mid.ranger</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
+<span>  <span class="va">bikers</span> <span class="op">~</span> <span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">weekday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">Bikeshare</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">fit.ranger</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine them into a midlist</span></span>
 <span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/midlist.html">midlist</a></span><span class="op">(</span></span>
-<span>  registered <span class="op">=</span> <span class="va">mid.registered</span>,</span>
-<span>  casual <span class="op">=</span> <span class="va">mid.casual</span></span>
+<span>  gam <span class="op">=</span> <span class="va">mid.gam</span>,</span>
+<span>  ranger <span class="op">=</span> <span class="va">mid.ranger</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] "mids"    "midlist"</span></span></code></pre>
 <p>When <code><a href="../reference/ggmid.html">ggmid()</a></code> is called on a “midlist” collection, it
 automatically handles the comparison.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>midr.qualitative <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>midr.qualitative <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"hr"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"weathersit"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"hum"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">/</span> <span class="op">(</span><span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="collection_files/figure-html/midlist-plot-1.png" class="r-plt" alt="" width="672"></p>
@@ -174,7 +192,7 @@ strength), <code>k</code> (number of knots), and <code>type</code>
 </div>
 </div>
 <div class="section level2">
-<h2 id="the-midrib-class-efficient-multi-response-mid-model">2. The “midrib” Class: Efficient Multi-Response MID Model<a class="anchor" aria-label="anchor" href="#the-midrib-class-efficient-multi-response-mid-model"></a>
+<h2 id="midrib-efficient-multi-response-mid-model">midrib: Efficient Multi-Response MID Model<a class="anchor" aria-label="anchor" href="#midrib-efficient-multi-response-mid-model"></a>
 </h2>
 <p>The “midrib” class is designed for <strong>multi-output
 scenarios</strong>, where a single model predicts multiple target
@@ -191,13 +209,20 @@ response (e.g., using <code><a href="https://rdrr.io/r/base/cbind.html" class="e
 <code>pred.fun</code> that returns a matrix or data frame of
 predictions.</li>
 </ol>
+<div class="section level3">
+<h3 id="example-joint-interpretation-of-registered-and-casual-users">Example: Joint Interpretation of Registered and Casual Users<a class="anchor" aria-label="anchor" href="#example-joint-interpretation-of-registered-and-casual-users"></a>
+</h3>
+<p>Instead of comparing different algorithms, we might want to
+understand how features simultaneously affect different segments of our
+target variable. Here, we interpret a single model predicting both
+“registered” and “casual” users.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using a formula with a multi-column response</span></span>
 <span><span class="va">midrib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">registered</span>, <span class="va">casual</span><span class="op">)</span> <span class="op">~</span> <span class="op">(</span><span class="va">mnth</span> <span class="op">+</span> <span class="va">hr</span> <span class="op">+</span> <span class="va">workingday</span> <span class="op">+</span> <span class="va">weathersit</span> <span class="op">+</span> <span class="va">temp</span> <span class="op">+</span> <span class="va">hum</span><span class="op">)</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">Bikeshare</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  lambda <span class="op">=</span> <span class="fl">.05</span></span>
+<span>  k <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; 'model' not passed: response variable in 'data' is used</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -210,8 +235,8 @@ seamless comparative plotting.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>midr.qualitative <span class="op">=</span> <span class="st">"cividis"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">midrib</span>, <span class="st">"hr"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">midrib</span>, <span class="st">"weathersit"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">midrib</span>, <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">midrib</span>, <span class="st">"temp"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">midrib</span>, <span class="st">"hum"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">/</span> <span class="op">(</span><span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="collection_files/figure-html/midrib-plot-1.png" class="r-plt" alt="" width="672"></p>
@@ -219,6 +244,7 @@ seamless comparative plotting.</p>
 across all responses, the “midrib” class significantly reduces memory
 consumption and computation time. This makes it the ideal choice for
 high-dimensional multi-output data.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="summary-of-collection-structures">Summary of Collection Structures<a class="anchor" aria-label="anchor" href="#summary-of-collection-structures"></a>

@@ -10,7 +10,7 @@ These collections allow you to visualize and compare feature effects,
 importance, and instance-level breakdowns across multiple models using a
 unified interface.
 
-## 1. The “midlist” Class: Flexible Combination of MID Objects
+## midlist: Flexible Combination of MID Objects
 
 The “midlist” class is a versatile container used to group existing MID
 objects (such as `mid`, `midimp`, `midbrk`, or `midcon`). This is
@@ -18,36 +18,54 @@ particularly useful when you have trained separate models—perhaps using
 different algorithms or targeting different subsets of data—and want to
 compare their behavior side-by-side.
 
-### Example: Comparing Registered vs. Casual Bike Users
+### Example: Comparing GAM vs. Random Forest
 
-In the `Bikeshare` dataset, the factors influencing “registered” users
-may differ from those affecting “casual” users. We fit two independent
-MID models and unify them into a “midlist” collection.
+When predicting the total number of users (`bikers`) in the Bikeshare
+dataset, different machine learning algorithms capture non-linear
+relationships differently. Here, we fit a Generalized Additive Model
+(**gam**) and a Random Forest (**ranger**), interpret both of them
+independently, and unify the results into a single “midlist” collection
+for a direct visual comparison.
 
 ``` r
 library(ggplot2)
 library(patchwork)
 library(midr)
+library(gam)
+library(ranger)
 
 data(Bikeshare, package = "ISLR2")
 
-# Interpret two separate models independently
-mid.registered <- interpret(
-  registered ~ mnth + hr + weekday + weathersit + temp + hum,
-  data = Bikeshare,
-  k = 100,
-  lambda = .05
+fit.gam <- gam(
+  bikers ~ mnth + hr + s(weekday) + weathersit + s(temp) + s(hum),
+  data = Bikeshare
 )
-mid.casual <- interpret(
-  casual ~ mnth + hr + weekday + weathersit + temp + hum,
+
+fit.ranger <- ranger(
+  bikers ~ mnth + hr + weekday + weathersit + temp + hum,
+  data = Bikeshare
+)
+
+# Interpret two separate models independently
+mid.gam <- interpret(
+  bikers ~ mnth + hr + weekday + weathersit + temp + hum,
   data = Bikeshare,
+  model = fit.gam,
   k = 50
+)
+
+mid.ranger <- interpret(
+  bikers ~ mnth + hr + weekday + weathersit + temp + hum,
+  data = Bikeshare,
+  model = fit.ranger,
+  k = 50,
+  lambda = 1
 )
 
 # Combine them into a midlist
 mids <- midlist(
-  registered = mid.registered,
-  casual = mid.casual
+  gam = mid.gam,
+  ranger = mid.ranger
 )
 class(mids)
 ```
@@ -59,11 +77,11 @@ is called on a “midlist” collection, it automatically handles the
 comparison.
 
 ``` r
-options(midr.qualitative = "mako")
+options(midr.qualitative = "viridis")
 
 p1 <- ggmid(mids, "hr") + theme(legend.position = "bottom")
-p2 <- ggmid(mids, "weathersit") + theme(legend.position = "none")
-p3 <- ggmid(mids, "temp") + theme(legend.position = "none")
+p2 <- ggmid(mids, "temp") + theme(legend.position = "none")
+p3 <- ggmid(mids, "hum") + theme(legend.position = "none")
 
 p1 / (p2 + p3)
 ```
@@ -75,7 +93,7 @@ flexibility. Each model in the collection can maintain its own unique
 fitting parameters such as `lambda` (regularization strength), `k`
 (number of knots), and `type` (shape of component functions).
 
-## 2. The “midrib” Class: Efficient Multi-Response MID Model
+## midrib: Efficient Multi-Response MID Model
 
 The “midrib” class is designed for **multi-output scenarios**, where a
 single model predicts multiple target variables simultaneously. Instead
@@ -89,13 +107,20 @@ You can trigger the creation of a “midrib” object in two ways:
 2.  **via prediction function**: Pass a model and a custom `pred.fun`
     that returns a matrix or data frame of predictions.
 
+### Example: Joint Interpretation of Registered and Casual Users
+
+Instead of comparing different algorithms, we might want to understand
+how features simultaneously affect different segments of our target
+variable. Here, we interpret a single model predicting both “registered”
+and “casual” users.
+
 ``` r
 # Using a formula with a multi-column response
 midrib <- interpret(
   cbind(registered, casual) ~ (mnth + hr + workingday + weathersit + temp + hum),
   data = Bikeshare,
-  k = 100,
-  lambda = .05
+  k = 50,
+  lambda = 1
 )
 ```
 
@@ -115,8 +140,8 @@ seamless comparative plotting.
 options(midr.qualitative = "cividis")
 
 p1 <- ggmid(midrib, "hr") + theme(legend.position = "bottom")
-p2 <- ggmid(midrib, "weathersit") + theme(legend.position = "none")
-p3 <- ggmid(midrib, "temp") + theme(legend.position = "none")
+p2 <- ggmid(midrib, "temp") + theme(legend.position = "none")
+p3 <- ggmid(midrib, "hum") + theme(legend.position = "none")
 
 p1 / (p2 + p3)
 ```
