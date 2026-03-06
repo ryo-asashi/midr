@@ -2,6 +2,7 @@
 #'
 #' @description
 #' \code{shapviz.mid()} is an S3 method for the \code{shapviz::shapviz()} generic, which calculates MID-derived Shapley values from a fitted MID model.
+#' This method is dynamically registered when the shapviz package is loaded.
 #'
 #' @details
 #' The function calculates MID-derived Shapley values by attributing the contribution of each component function to its respective variables as follows:
@@ -14,7 +15,8 @@
 #' @returns
 #' \code{shapviz.mid()} returns an object of class "shapviz".
 #'
-#' @exportS3Method shapviz::shapviz
+#' @method shapviz mid
+#' @name shapviz.mid
 #'
 shapviz.mid <- function(object, data = NULL) {
   if (missing(data))
@@ -41,5 +43,19 @@ shapviz.mid <- function(object, data = NULL) {
   } else {
     data <- model.reframe(object, data)
   }
-  shapviz::shapviz(object = shaps, X = data, baseline = object$intercept)
+  .shapviz <- get("shapviz", envir = asNamespace("shapviz"))
+  .shapviz(object = shaps, X = data, baseline = object$intercept)
+}
+
+
+S3register_shapviz.mid <- function() {
+  setHook(
+    packageEvent("shapviz", "onLoad"),
+    function(...) {
+      registerS3method("shapviz", "mid", shapviz.mid, asNamespace("shapviz"))
+    }
+  )
+  if (isNamespaceLoaded("shapviz")) {
+    registerS3method("shapviz", "mid", shapviz.mid, asNamespace("shapviz"))
+  }
 }

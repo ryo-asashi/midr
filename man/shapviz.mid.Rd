@@ -16,6 +16,7 @@
 }
 \description{
 \code{shapviz.mid()} is an S3 method for the \code{shapviz::shapviz()} generic, which calculates MID-derived Shapley values from a fitted MID model.
+This method is dynamically registered when the shapviz package is loaded.
 }
 \details{
 The function calculates MID-derived Shapley values by attributing the contribution of each component function to its respective variables as follows:

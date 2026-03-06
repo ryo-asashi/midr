@@ -146,5 +146,7 @@ kernel.env <- rlang::env(rlang::ns_env("midr"))
       )
     }
   }
+  # shapviz --------
+  S3register_shapviz.mid()
   invisible(NULL)
 }
