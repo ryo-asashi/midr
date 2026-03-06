@@ -23,7 +23,7 @@
 
 \item{type}{the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.}
 
-\item{theme}{a character string or object defining the color theme.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{intercept}{logical. If \code{TRUE}, the model intercept is added to the component effect.}
 

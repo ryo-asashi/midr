@@ -133,7 +133,7 @@ plot.midbrk <- function(
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",
                  fill = cols, horizontal = TRUE, xlab = "yhat", width = width,
-                 lty = 1L, lwd = 1L, col = NA)
+                 lty = 1L, lwd = 1L)
     args <- set.alpha(override(args, dots), on = "fill")
     do.call(.barplot, args)
     for (i in seq_len(n)) {

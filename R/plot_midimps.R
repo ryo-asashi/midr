@@ -13,7 +13,7 @@
 #'
 #' @param x a "midimps" collection object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", or "series".
-#' @param theme a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.
 #' @param max.nterms the maximum number of terms to display. Defaults to 30.
 #' @param labels an optional numeric or character vector to specify the model labels. Defaults to the labels found in the object.

@@ -19,7 +19,7 @@
 
 \item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
 
-\item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
 

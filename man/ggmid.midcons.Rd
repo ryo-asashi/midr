@@ -23,7 +23,7 @@
 \arguments{
 \item{object}{a "midcons" collection object to be visualized.}
 
-\item{type}{the plotting style. One of "iceplot" or "centered".}
+\item{type}{the plotting style. One of "iceplot", "centered", or "series".}
 
 \item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 

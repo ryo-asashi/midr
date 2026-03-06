@@ -23,7 +23,7 @@
 
 \item{type}{the plotting style. One of "barplot", "dotchart", or "series".}
 
-\item{theme}{a character string or object defining the color theme. Defaults to "HCL". See \code{\link{color.theme}} for details.}
+\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
 
 \item{terms}{an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.}
 
@@ -64,8 +64,8 @@ mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
 
 # Calculate importance for both models and combine them
 brks <- midlist(
-  "Main Effects" = mid.breakdown(mid1),
-  "Interactions" = mid.breakdown(mid2)
+  "Main Effects" = mid.breakdown(mid1, data = mtcars[1, ]),
+  "Interactions" = mid.breakdown(mid2, data = mtcars[1, ])
 )
 
 # Create a comparative grouped bar plot (default)

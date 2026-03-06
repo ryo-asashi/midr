@@ -15,7 +15,7 @@
 #' @param x a "mids" collection object to be visualized.
 #' @param term a character string specifying the main effect to evaluate.
 #' @param type the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.
-#' @param theme a character string or object defining the color theme.
+#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param intercept logical. If \code{TRUE}, the model intercept is added to the component effect.
 #' @param limits a numeric vector of length two specifying the limits of the plotting scale.
 #' @param resolution an integer specifying the number of evaluation points for continuous variables.

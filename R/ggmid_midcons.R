@@ -13,7 +13,7 @@
 #' The \code{var.alpha}, \code{var.linetype}, and \code{var.linewidth} arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
 #'
 #' @param object a "midcons" collection object to be visualized.
-#' @param type the plotting style. One of "iceplot" or "centered".
+#' @param type the plotting style. One of "iceplot", "centered", or "series".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param var.alpha a variable name or expression to map to the alpha aesthetic.
 #' @param var.linetype a variable name or expression to map to the linetype aesthetic.
