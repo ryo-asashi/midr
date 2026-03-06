@@ -3,7 +3,8 @@
 `shapviz.mid()` is an S3 method for the
 [`shapviz::shapviz()`](https://modeloriented.github.io/shapviz/reference/shapviz.html)
 generic, which calculates MID-derived Shapley values from a fitted MID
-model.
+model. This method is dynamically registered when the shapviz package is
+loaded.
 
 ## Usage
 
