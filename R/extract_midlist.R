@@ -88,10 +88,24 @@
   drop <- drop && (length(i) == 1L)
   x$intercept <- x$intercept[i]
   if (drop) names(x$intercept) <- NULL
-  if (!is.null(x$main.effects))
-    x$main.effects <- lapply(x$main.effects, .extract, i, drop)
-  if (!is.null(x$interactions))
-    x$interactions <- lapply(x$interactions, .extract, i, drop)
+  if (!is.null(x$main.effects)) {
+    for (j in seq_along(x$main.effects)) {
+      x$main.effects[[j]]$mid <- if (drop) {
+        as.numeric(x$main.effects[[j]]$mid[, i])
+      } else {
+        I(x$main.effects[[j]]$mid[, i, drop = FALSE])
+      }
+    }
+  }
+  if (!is.null(x$interactions)) {
+    for (j in seq_along(x$interactions)) {
+      x$interactions[[j]]$mid <- if (drop) {
+        as.numeric(x$interactions[[j]]$mid[, i])
+      } else {
+        I(x$interactions[[j]]$mid[, i, drop = FALSE])
+      }
+    }
+  }
   x$fitted.values <- x$fitted.values[, i, drop = drop]
   x$residuals <- x$residuals[, i, drop = drop]
   if (!is.null(x$linear.predictors))
@@ -118,10 +132,4 @@
     i <- pmatch(i, names(x$intercept))
   }
   x[i, drop = TRUE]
-}
-
-.extract <- function(x, i, drop = FALSE) {
-  x$mid <- if (drop && length(i) == 1L)
-    as.numeric(x$mid[, i]) else I(x$mid[, i, drop = FALSE])
-  x
 }

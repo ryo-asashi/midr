@@ -137,7 +137,7 @@ summary.mids <- function(object, max.nmodels = 1L, ...) {
 
 
 
-.summarize.collection <- function(
+summarize_midlist <- function(
     object, shape, dfname, keycol, valcol, keys, targets
 ) {
   shape <- match.arg(shape, c("wide", "long"))
@@ -174,7 +174,7 @@ summary.midimps <- function(
 ) {
   shape <- match.arg(shape)
   terms <- terms %||% mid.terms(object[[1L]])
-  .summarize.collection(
+  summarize_midlist(
     object = object, shape = shape,
     dfname = "importance", keycol = "term", valcol = "importance",
     keys = "term", targets = terms
@@ -188,7 +188,7 @@ summary.midbrks <- function(
 ) {
   shape <- match.arg(shape)
   terms <- terms %||% mid.terms(object[[1L]])
-  .summarize.collection(
+  summarize_midlist(
     object = object, shape = shape,
     dfname = "breakdown", keycol = "term", valcol = "mid",
     keys = "term", targets = terms
@@ -203,7 +203,7 @@ summary.midcons <- function(
   shape <- match.arg(shape)
   ids <- ids %||% object[[1L]]$ids
   variable <- object[[1L]]$variable
-  .summarize.collection(
+  summarize_midlist(
     object = object, shape = shape,
     dfname = "conditional", keycol = ".id", valcol = "yhat",
     keys = c(".id", variable), targets = ids

@@ -211,7 +211,7 @@ model.frame.mid <- function(object, ...) {
 
 # base graphics
 
-adjusted.mai <- function(labels, margin = 1/16) {
+adjusted_margin <- function(labels, margin = 1/16) {
   mai <- graphics::par("mai")
   cex <- graphics::par("cex.lab")
   req <- max(graphics::strwidth(labels, "inch", cex = cex), na.rm = TRUE)
@@ -244,7 +244,7 @@ make_mat <- function(x, nrow, ncol) {
   if (horizontal) {
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
-    graphics::par(mai = adjusted.mai(labels = labels), las = 1L)
+    graphics::par(mai = adjusted_margin(labels = labels), las = 1L)
   }
   to <- as.matrix(to)
   n <- nrow(to)

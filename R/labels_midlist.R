@@ -48,7 +48,7 @@ labels.midlist <- function(object, ...) {
 }
 
 #' @rdname labels.midlist
-#' @export
+#' @exportS3Method base::labels
 #'
 labels.midrib <- function(object, ...) {
   names(object$intercept) %||% as.character(seq_along(object$intercept))
@@ -71,10 +71,14 @@ labels.midrib <- function(object, ...) {
   }
   value <- as.character(value)
   names(object$intercept) <- value
-  if (!is.null(object$main.effects))
-    object$main.effects <- lapply(object$main.effects, .relabel, value)
-  if (!is.null(object$interactions))
-    object$interactions <- lapply(object$interactions, .relabel, value)
+  if (!is.null(object$main.effects)) {
+    for (j in seq_along(object$main.effects))
+      colnames(object$main.effects[[j]]$mid) <- value
+  }
+  if (!is.null(object$interactions)) {
+    for (j in seq_along(object$interactions))
+      colnames(object$interactions[[j]]$mid) <- value
+  }
   colnames(object$fitted.values) <- value
   colnames(object$residuals) <- value
   if (!is.null(object$linear.predictors))
@@ -89,10 +93,6 @@ labels.midrib <- function(object, ...) {
   object
 }
 
-.relabel <- function(object, value) {
-  colnames(object$mid) <- value
-  object
-}
 
 #' @rdname labels.midlist
 #' @export

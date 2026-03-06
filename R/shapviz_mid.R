@@ -48,7 +48,7 @@ shapviz.mid <- function(object, data = NULL) {
 }
 
 
-S3register_shapviz.mid <- function() {
+s3register_shapviz.mid <- function() {
   setHook(
     packageEvent("shapviz", "onLoad"),
     function(...) {

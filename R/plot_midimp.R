@@ -104,7 +104,7 @@ plot.midimp <- function(
     cols <- to.colors(0:11, theme)
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
-    graphics::par(mai = adjusted.mai(tags), las = 1L)
+    graphics::par(mai = adjusted_margin(tags), las = 1L)
     args <- list(x = seq_len(m), y = seq_len(m), z = mat, fill = cols, col = NA,
                  axes = FALSE, xlab = "", ylab = "", lty = 1L, lwd = 1L)
     args <- set.alpha(override(args, dots), on = "fill")
@@ -126,7 +126,7 @@ plot.midimp <- function(
     terms <- as.character(imp$term)
     opar <- graphics::par("mai", "mar", "las")
     on.exit(graphics::par(opar))
-    graphics::par(mai = adjusted.mai(terms), las = 1L)
+    graphics::par(mai = adjusted_margin(terms), las = 1L)
     plist <- lapply(rev(terms), function(term) x$predictions[, term])
     names(plist) <- rev(terms)
     cols <- if (use.theme) {
