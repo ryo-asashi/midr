@@ -35,7 +35,7 @@
 #' sub <- collection[1:2]
 #' class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
 #' @returns
-#' \code{labels} returns a character vector of labels of the stored base objects.
+#' \code{labels()} returns a character vector of labels of the stored base objects.
 #'
 #' \code{labels<-} returns the updated collection object with new labels.
 #'

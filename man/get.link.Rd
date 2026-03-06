@@ -14,7 +14,7 @@ get.link(link, ..., simplify = TRUE)
 \item{simplify}{logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{get.link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).}
 }
 \value{
-\code{get.link()} returns an object of class "link-glm" (and \code{"parametric.link"}) containing:
+\code{get.link()} returns an object of class "link-glm" and "parametric.link" containing:
 \item{linkfun}{link function \eqn{g(\mu)}.}
 \item{linkinv}{inverse link function \eqn{g^{-1}(\eta)}.}
 \item{mu.eta}{derivative \eqn{d\mu/d\eta}.}

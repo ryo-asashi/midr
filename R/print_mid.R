@@ -94,3 +94,112 @@ print.mids <- function(x, max.nmodels = 1L, ...) {
     cat(sprintf("\n... and %d more models\n", nmodels - n))
   invisible(x)
 }
+
+
+
+#' @exportS3Method base::print
+#'
+print.midimp <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+) {
+  n <- attr(x, "n", exact = TRUE)
+  cat(paste0("\nMID Importance based on ",
+             n, " Observation", if (n > 1L) "s", "\n"))
+  cat(paste0("\nMeasure: ", x$measure, "\n"))
+  cat("\nImportance:\n")
+  print.data.frame(x$importance, digits = digits, ...)
+  invisible(x)
+}
+
+#' @exportS3Method base::print
+#'
+print.midimps <- function(
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
+) {
+  nobs <- attr(x[[1L]], "n", exact = TRUE)
+  cat(paste0("\nMID Importance based on ",
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
+  cat("\nImportance:\n")
+  smry <- summary(x, shape = "wide")
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
+  invisible(smry)
+}
+
+
+
+#' @exportS3Method base::print
+#'
+print.midbrk <- function(
+    x, digits = max(3L, getOption("digits") - 2L), ...
+) {
+  cat("\nMID Breakdown of a Prediction\n")
+  cat(paste0("\nIntercept: ", format(x$intercept, digits = digits), "\n"))
+  if (!is.null(x$linear.predictor)) {
+    cat(paste0("\nLinear Predictor: ",
+               format(x$linear.predictor, digits = digits), "\n"))
+  } else {
+    cat(paste0("\nPrediction: ", format(x$prediction, digits = digits), "\n"))
+  }
+  cat("\nBreakdown of Effects:\n")
+  print.data.frame(x$breakdown, digits = digits, ...)
+  invisible(x)
+}
+
+#' @exportS3Method base::print
+#'
+print.midbrks <- function(
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
+) {
+  cat("\nMID Breakdown of a Prediction\n")
+  intercept <- vapply(X = x, FUN = function(y) y$intercept, 0.0)
+  cat(paste0("\nIntercept: ", examples(intercept, digits = digits), "\n"))
+  lp <- x[[1L]]$linear.predictor
+  if (!is.null(lp)) {
+    lp <- vapply(X = x, FUN = function(y) y$linear.predictor, 0.0)
+    cat(paste0("\nLinear Predictor: ", examples(lp, digits = digits), "\n"))
+  } else {
+    prediction <- vapply(X = x, FUN = function(y) y$prediction, 0.0)
+    cat(paste0("\nPrediction: ", examples(prediction, digits = digits), "\n"))
+  }
+  cat("\nBreakdown of Effects:\n")
+  smry <- summary(x, shape = "wide")
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
+  invisible(smry)
+}
+
+
+
+#' @exportS3Method base::print
+#'
+print.midcon <- function(
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
+) {
+  nobs <- attr(x, "n", exact = TRUE)
+  cat(paste0("\nIndividual Conditional Expectation for ",
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  variable <- x$variable
+  cat(paste0("\nVariable: ", variable, "\n"))
+  cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
+  cat("\nConditional Expectations:\n")
+  print.data.frame(utils::head(x$conditional[, c(".id", variable, "yhat")], n),
+                   digits = digits, ...)
+  invisible(x)
+}
+
+#' @exportS3Method base::print
+#'
+print.midcons <- function(
+    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
+) {
+  nobs <- attr(x[[1L]], "n", exact = TRUE)
+  cat(paste0("\nIndividual Conditional Expectation for ",
+             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  variable <- x$variable %||% x[[1L]]$variable
+  cat(paste0("\nVariable: ", variable, "\n"))
+  cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
+  cat("\nConditional Expectations:\n")
+  smry <- summary(x, shape = "long")
+  print.data.frame(utils::head(smry, n), digits = digits, ...)
+  invisible(smry)
+}

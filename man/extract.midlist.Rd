@@ -23,9 +23,9 @@
 \item{exact}{logical. If \code{TRUE}, exact matching is used for character strings.}
 }
 \value{
-\code{[} returns a subsetted collection object (e.g., "midrib", "midlist") or a single base object if \code{drop = TRUE}.
+\code{[} returns a subsetted collection object or a single base object if \code{drop = TRUE}.
 
-\code{[[} returns a single base object (e.g., "mid").
+\code{[[} returns a single base object.
 }
 \description{
 S3 methods to extract parts of a "midlist" or "midrib" collection object.

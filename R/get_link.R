@@ -57,7 +57,7 @@
 #' # Box-Cox with lambda=1 simplifies to shifted identity
 #' get.link("box-cox", lambda = 1)
 #' @returns
-#' \code{get.link()} returns an object of class "link-glm" (and \code{"parametric.link"}) containing:
+#' \code{get.link()} returns an object of class "link-glm" and "parametric.link" containing:
 #' \item{linkfun}{link function \eqn{g(\mu)}.}
 #' \item{linkinv}{inverse link function \eqn{g^{-1}(\eta)}.}
 #' \item{mu.eta}{derivative \eqn{d\mu/d\eta}.}

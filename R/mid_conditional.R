@@ -123,10 +123,10 @@ mid.conditional <- function(
     longyhat <- object$link$linkinv(longyhat)
   res$conditional <- data.frame(
     .id = rep.int(ids, m),
-    yhat = longyhat,
-    vcol = longdata[, variable]
+    vcol = longdata[, variable],
+    yhat = longyhat
   )
-  names(res$conditional)[3L] <- variable
+  names(res$conditional)[2L] <- variable
   if (keep.effects)
     res$conditional.effects <- pmat
   res$ids <- ids
@@ -136,39 +136,4 @@ mid.conditional <- function(
   attr(res, "term.labels") <- tvar
   attr(res, "n") <- n
   res
-}
-
-
-#' @exportS3Method base::print
-#'
-print.midcon <- function(
-    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
-  ) {
-  nobs <- attr(x, "n", exact = TRUE)
-  cat(paste0("\nIndividual Conditional Expectation for ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  variable <- x$variable
-  cat(paste0("\nVariable: ", variable, "\n"))
-  cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
-  cat("\nConditional Expectations:\n")
-  print.data.frame(utils::head(x$conditional[, c(".id", variable, "yhat")], n),
-                   digits = digits, ...)
-  invisible(x)
-}
-
-#' @exportS3Method base::print
-#'
-print.midcons <- function(
-    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
-) {
-  nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat(paste0("\nIndividual Conditional Expectation for ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  variable <- x$variable %||% x[[1L]]$variable
-  cat(paste0("\nVariable: ", variable, "\n"))
-  cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
-  cat("\nConditional Expectations:\n")
-  smry <- summary(x, shape = "long")
-  print.data.frame(utils::head(smry, n), digits = digits, ...)
-  invisible(smry)
 }

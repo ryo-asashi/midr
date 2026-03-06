@@ -26,7 +26,7 @@ labels(object) <- value
 \item{value}{a character vector of the same length as the number of base objects in the collection object.}
 }
 \value{
-\code{labels} returns a character vector of labels of the stored base objects.
+\code{labels()} returns a character vector of labels of the stored base objects.
 
 \code{labels<-} returns the updated collection object with new labels.
 }

@@ -98,34 +98,3 @@ mid.importance <- function(
   class(out) <- c("midimp")
   out
 }
-
-
-#' @exportS3Method base::print
-#'
-print.midimp <- function(
-    x, digits = max(3L, getOption("digits") - 2L), ...
-  ) {
-  n <- attr(x, "n", exact = TRUE)
-  cat(paste0("\nMID Importance based on ",
-             n, " Observation", if (n > 1L) "s", "\n"))
-  cat(paste0("\nMeasure: ", x$measure, "\n"))
-  cat("\nImportance:\n")
-  print.data.frame(x$importance, digits = digits, ...)
-  invisible(x)
-}
-
-
-#' @exportS3Method base::print
-#'
-print.midimps <- function(
-    x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
-) {
-  nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat(paste0("\nMID Importance based on ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
-  cat("\nImportance:\n")
-  smry <- summary(x, shape = "wide")
-  print.data.frame(utils::head(smry, n), digits = digits, ...)
-  invisible(smry)
-}

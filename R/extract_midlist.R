@@ -37,9 +37,9 @@
 #' sub <- collection[1:2]
 #' class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
 #' @returns
-#' \code{[} returns a subsetted collection object (e.g., "midrib", "midlist") or a single base object if \code{drop = TRUE}.
+#' \code{[} returns a subsetted collection object or a single base object if \code{drop = TRUE}.
 #'
-#' \code{[[} returns a single base object (e.g., "mid").
+#' \code{[[} returns a single base object.
 #'
 #' @seealso \code{\link{midlist}}, \code{\link{labels.midlist}}
 #'
