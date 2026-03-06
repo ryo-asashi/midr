@@ -14,7 +14,6 @@ plot(
   theme = NULL,
   terms = NULL,
   max.nterms = 15L,
-  width = NULL,
   vline = TRUE,
   others = "others",
   pattern = c("%t=%v", "%t:%t"),
@@ -47,10 +46,6 @@ plot(
 
   the maximum number of terms to display in the plot. Less important
   terms will be grouped into a "catchall" category.
-
-- width:
-
-  a numeric value specifying the width of the bars.
 
 - vline:
 
