@@ -34,7 +34,7 @@ autoplot(object, ...)
 
 - type:
 
-  the plotting style. One of "iceplot" or "centered".
+  the plotting style. One of "iceplot", "centered", or "series".
 
 - theme:
 

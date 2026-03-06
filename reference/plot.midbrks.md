@@ -36,8 +36,7 @@ plot(
 
 - theme:
 
-  a character string or object defining the color theme. Defaults to
-  "HCL". See
+  a character string or object defining the color theme. See
   [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
   for details.
 
@@ -119,11 +118,9 @@ mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
 
 # Calculate importance for both models and combine them
 brks <- midlist(
-  "Main Effects" = mid.breakdown(mid1),
-  "Interactions" = mid.breakdown(mid2)
+  "Main Effects" = mid.breakdown(mid1, data = mtcars[1, ]),
+  "Interactions" = mid.breakdown(mid2, data = mtcars[1, ])
 )
-#> 'data' contains multiple observations: the first observation is used
-#> 'data' contains multiple observations: the first observation is used
 
 # Create a comparative grouped bar plot (default)
 plot(brks)

@@ -41,7 +41,9 @@ autoplot(object, ...)
 
 - theme:
 
-  a character string or object defining the color theme.
+  a character string or object defining the color theme. See
+  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
+  for details.
 
 - intercept:
 

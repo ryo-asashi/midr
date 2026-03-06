@@ -32,8 +32,7 @@ plot(
 
 - theme:
 
-  a character string or object defining the color theme. Defaults to
-  "HCL". See
+  a character string or object defining the color theme. See
   [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
   for details.
 
