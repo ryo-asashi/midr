@@ -36,7 +36,7 @@
 #' \item{intercept}{the intercept of the MID model.}
 #' \item{prediction}{the predicted value from the MID model.}
 #'
-#' For "midlist", \code{mid.breakdown()} returns an object of class "midbrks"-"midlist", a list of "midbrk" objects.
+#' For a "mids" collection object, \code{mid.breakdown()} returns a collection object of class "midbrks"-"midlist".
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrk}}
 #'
@@ -53,7 +53,7 @@ mid.breakdown <- function(
     return(out)
   }
   if (!inherits(object, "mid"))
-    stop("'object' must be 'mid' or 'midlist'")
+    stop("'object' must be 'mid' or 'mids'")
   if (is.null(data))
     data <- model.data(object, env = parent.frame())
   if (!is.data.frame(data))

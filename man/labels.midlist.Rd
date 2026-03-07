@@ -4,8 +4,8 @@
 \alias{labels.midlist}
 \alias{labels.midrib}
 \alias{labels<-}
-\alias{labels<-.midrib}
 \alias{labels<-.midlist}
+\alias{labels<-.midrib}
 \title{Label MID Objects}
 \usage{
 \method{labels}{midlist}(object, ...)
@@ -14,9 +14,9 @@
 
 labels(object) <- value
 
-\method{labels}{midrib}(object) <- value
-
 \method{labels}{midlist}(object) <- value
+
+\method{labels}{midrib}(object) <- value
 }
 \arguments{
 \item{object}{a collection object of class "midlist" or "midrib".}

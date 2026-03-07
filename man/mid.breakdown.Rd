@@ -22,7 +22,7 @@ mid.breakdown(object, data = NULL, row = NULL, sort = TRUE)
 \item{intercept}{the intercept of the MID model.}
 \item{prediction}{the predicted value from the MID model.}
 
-For "midlist", \code{mid.breakdown()} returns an object of class "midbrks"-"midlist", a list of "midbrk" objects.
+For a "mids" collection object, \code{mid.breakdown()} returns a collection object of class "midbrks"-"midlist".
 }
 \description{
 \code{mid.breakdown()} calculates the contribution of each component function of a fitted MID model to a single prediction.

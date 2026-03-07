@@ -35,7 +35,7 @@ mid.importance(
 \item{predictions}{the matrix of the fitted or predicted MID values. If the number of observations exceeds \code{max.nsamples}, this matrix contains a sampled subset.}
 \item{measure}{a character string describing the type of the importance measure used.}
 
-For "midlist", \code{mid.importance()} returns an object of class "midimps"-"midlist", a list of "midimp" objects.
+For a "mids" collection object, \code{mid.importance()} returns a collection object of class "midimps"-"midlist".
 }
 \description{
 \code{mid.importance()} calculates the MID importance of a fitted MID model.

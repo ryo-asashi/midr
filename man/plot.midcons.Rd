@@ -61,11 +61,10 @@ mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
 mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
 
 # Calculate conditional expectations for both models
-ml <- midlist(
-  "Main Effects" = mid1,
-  "Interactions" = mid2
+cons <- midlist(
+  "Main Effects" = mid.conditional(mid1, "wt", data = mtcars[3:5, ]),
+  "Interactions" = mid.conditional(mid2, "wt", data = mtcars[3:5, ])
 )
-cons <- mid.conditional(ml, "wt", max.nsamples = 2L)
 
 # Create an ICE plot (default)
 plot(cons)

@@ -39,7 +39,7 @@ mid.conditional(
 \item{variable}{name of the target variable.}
 \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 
-For "midlist", \code{mid.conditional()} returns an object of class "midcon"-"midlist", a list of "midcon" objects.
+For a "mids" collection object, \code{mid.conditional()} returns a collection object of class "midcons"-"midlist".
 }
 \description{
 \code{mid.conditional()} calculates the data required to draw Individual Conditional Expectation (ICE) curves from a fitted MID model.

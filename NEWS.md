@@ -1,3 +1,8 @@
+# midr 0.5.3.905 [0.6.0]
+
+-   Implemented collection objects such as "midlist" and "midrib", along with manipulation functions like `midlist()`, and corresponding visualization functions. This enables the comparison of multiple interpretation models, as well as the interpretation of survival models and multi-class classification models.
+-   Renamed long class names to shorter abbreviations ("mid.importance" to "midimp", "mid.breakdown" to "midbrk", and "mid.conditional" to "midcon").
+
 # midr 0.5.3.904
 
 -   Fixed memory issues in `get.link()` and added support for parametric link functions (including Box-Cox, Yeo-Johnson, Robit, and Scobit).

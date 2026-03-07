@@ -54,11 +54,22 @@ labels.midrib <- function(object, ...) {
   names(object$intercept) %||% as.character(seq_along(object$intercept))
 }
 
+
 #' @rdname labels.midlist
 #' @export
 #'
 `labels<-` <- function(object, value) {
   UseMethod("labels<-")
+}
+
+#' @rdname labels.midlist
+#' @export
+#'
+`labels<-.midlist` <- function(object, value) {
+  if (length(value) != length(object))
+    stop("length of 'value' must match the number of models")
+  names(object) <- as.character(value)
+  object
 }
 
 #' @rdname labels.midlist
@@ -90,16 +101,5 @@ labels.midrib <- function(object, ...) {
   } else {
     names(object$ratio) <- value
   }
-  object
-}
-
-
-#' @rdname labels.midlist
-#' @export
-#'
-`labels<-.midlist` <- function(object, value) {
-  if (length(value) != length(object))
-    stop("length of 'value' must match the number of models")
-  names(object) <- as.character(value)
   object
 }

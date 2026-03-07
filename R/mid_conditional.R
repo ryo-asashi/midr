@@ -36,7 +36,7 @@
 #' \item{variable}{name of the target variable.}
 #' \item{values}{a vector of the sample points for the \code{variable} used in the ICE calculation.}
 #'
-#' For "midlist", \code{mid.conditional()} returns an object of class "midcon"-"midlist", a list of "midcon" objects.
+#' For a "mids" collection object, \code{mid.conditional()} returns a collection object of class "midcons"-"midlist".
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.midcon}}, \code{\link{ggmid.midcon}}
 #'
@@ -59,7 +59,7 @@ mid.conditional <- function(
     return(out)
   }
   if (!inherits(object, "mid"))
-    stop("'object' must be 'mid' or 'midlist'")
+    stop("'object' must be 'mid' or 'mids'")
   type <- match.arg(type)
   tvar <- mid.terms(object, require = variable)
   nvar <- length(tvar)
