@@ -74,8 +74,8 @@ containing the following components:
 
   a character string describing the type of the importance measure used.
 
-For "midlist", `mid.importance()` returns an object of class
-"midimps"-"midlist", a list of "midimp" objects.
+For a "mids" collection object, `mid.importance()` returns a collection
+object of class "midimps"-"midlist".
 
 ## Details
 

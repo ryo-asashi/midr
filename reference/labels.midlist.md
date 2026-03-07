@@ -14,10 +14,10 @@ labels(object, ...)
 
 labels(object) <- value
 
-# S3 method for class 'midrib'
+# S3 method for class 'midlist'
 labels(object) <- value
 
-# S3 method for class 'midlist'
+# S3 method for class 'midrib'
 labels(object) <- value
 ```
 

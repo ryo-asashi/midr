@@ -56,8 +56,8 @@ with the following components:
 
   the predicted value from the MID model.
 
-For "midlist", `mid.breakdown()` returns an object of class
-"midbrks"-"midlist", a list of "midbrk" objects.
+For a "mids" collection object, `mid.breakdown()` returns a collection
+object of class "midbrks"-"midlist".
 
 ## Details
 

@@ -85,8 +85,8 @@ with the following components:
   a vector of the sample points for the `variable` used in the ICE
   calculation.
 
-For "midlist", `mid.conditional()` returns an object of class
-"midcon"-"midlist", a list of "midcon" objects.
+For a "mids" collection object, `mid.conditional()` returns a collection
+object of class "midcons"-"midlist".
 
 ## Details
 
