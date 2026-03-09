@@ -1,6 +1,8 @@
 # Changelog
 
-## midr 0.5.3.905 \[0.6.0\]
+## midr 0.6.0
+
+CRAN release: 2026-03-08
 
 - Implemented collection objects such as “midlist” and “midrib”, along
   with manipulation functions like
