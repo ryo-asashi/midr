@@ -1,3 +1,5 @@
+# midr 0.6.0.900 (development version)
+
 # midr 0.6.0
 
 -   Implemented collection objects such as "midlist" and "midrib", along with manipulation functions like `midlist()`, and corresponding visualization functions. This enables the comparison of multiple interpretation models, as well as the interpretation of survival models and multi-class classification models.
