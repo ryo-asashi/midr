@@ -20,7 +20,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Ryoichi Asashiba \email{ryoichi.asashiba@gmail.com}
+\strong{Maintainer}: Ryoichi Asashiba \email{ryoichi.asashiba@gmail.com} (\href{https://orcid.org/0009-0001-9532-7000}{ORCID})
 
 Authors:
 \itemize{

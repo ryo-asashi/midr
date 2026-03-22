@@ -770,19 +770,28 @@ interpret.formula <- function(
     names(mf), nomatch = 0L
   )
   mf <- mf[c(1L, m)]
-  if (is.matrix(data)) mf$data <- as.data.frame(data)
-  if (use.yhat) mf$.yhat <- y
+  mfenv <- list()
+  if ("data" %in% names(mf)) {
+    if (is.matrix(data)) data <- as.data.frame(data)
+    mf$data <- quote(data)
+    mfenv$data <- data
+  }
+  if (use.yhat) {
+    mf$.yhat <- quote(.yhat)
+    mfenv$.yhat <- y
+  }
   if (is.null(mf$weights) && !is.null(attr(data, "weights"))) {
-    mf$weights <- attr(data, "weights")
+    mf$weights <- quote(.weights)
+    mfenv$.weights <- attr(data, "weights")
   }
   mf[[1L]] <- quote(stats::model.frame)
-  data <- try(eval(mf, envir = parent.frame()), silent = TRUE)
+  data <- try(eval(mf, envir = mfenv, enclos = parent.frame()), silent = TRUE)
   if (inherits(data, "try-error")) {
     f <- stats::as.formula(mf$formula)
     if (length(f) == 3L) {
       f[[2L]] <- NULL
       mf$formula <- f
-      data <- eval(mf, envir = parent.frame())
+      data <- eval(mf, envir = mfenv, enclos = parent.frame())
     } else {
       stop(attr(data, "condition")$message, call. = FALSE)
     }
