@@ -1,6 +1,10 @@
 # Changelog
 
-## midr 0.6.0.900 (development version)
+## midr 0.6.0.901 (development version)
+
+- Fixed
+  [`interpret.formula()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to prevent double evaluation of arguments under NSE.
 
 ## midr 0.6.0
 
