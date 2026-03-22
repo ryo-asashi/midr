@@ -11,6 +11,12 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5
 )
+pkgs <- c("patchwork", "gam", "ranger")
+for (pkg in pkgs) {
+  if (!(pkg %in% installed.packages())) {
+    install.packages(pkg)
+  }
+}
 ```
 
 The **midr** package is designed not only to interpret individual models but also to facilitate **comparative analysis**. When you are dealing with multiple outcomes or comparing different modeling approaches, **midr** provides two specialized collection classes: "midlist" and "midrib".
