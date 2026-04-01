@@ -58,7 +58,7 @@ ggmid(
 ``` r
 library(randomForestSRC)
 #> 
-#>  randomForestSRC 3.5.1 
+#>  randomForestSRC 3.6.0 
 #>  
 #>  Type rfsrc.news() to see new features, changes, and bug fixes. 
 #> 

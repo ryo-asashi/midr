@@ -1,6 +1,19 @@
 # Changelog
 
-## midr 0.6.0.901 (development version)
+## midr 0.6.0.902
+
+- Fixed
+  [`interpret.default()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to support formulas with dot (`.`) notation in the `terms` argument.
+- Updated
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to directly use the default solver
+  ([`RcppEigen::fastLmPure`](https://rdrr.io/pkg/RcppEigen/man/fastLm.html))
+  when an integer is provided for the `method` argument.
+- String inputs for `method` are no longer converted to lowercase and do
+  not undergo partial matching with default method names.
+
+## midr 0.6.0.901
 
 - Fixed
   [`interpret.formula()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
