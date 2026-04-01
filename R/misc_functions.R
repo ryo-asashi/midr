@@ -2,20 +2,21 @@ solveOLS <- function(x, y, tol = 1e-7, method = 0L, ...) {
   map <- c(
     qr = 0L, unpivoted.qr = 1L, llt = 2L, ldlt = 3L, svd = 4L, eigen = 5L
   )
+  custom_solver <- NULL
+  method <- method[1L]
   if (is.character(method)) {
-    name <- try(match.arg(tolower(method), names(map)), silent = TRUE)
-    if (inherits(name, "try-error")) name <- method
+    name <- method
     method <- if (any(name == names(map))) map[[name]] else -1L
+    custom_solver <- getOption(paste0("midr.solver.", name))
   } else if (is.numeric(method)) {
     method <- as.integer(method)
     name <- names(map)[match(method, map)]
     if (is.na(name)) name <- as.character(method)
   } else {
     name <- "qr"
-    method = -1L
+    method <- -1L
   }
   fmsg <- "falling back to 'qr' with stats::.lm.fit"
-  custom_solver <- getOption(paste0("midr.solver.", name))
   if (!is.null(custom_solver) && is.function(custom_solver)) {
     z <- tryCatch(custom_solver(x, y), error = function(e) e)
     if (inherits(z, "error")) {
@@ -55,13 +56,14 @@ solveOLS <- function(x, y, tol = 1e-7, method = 0L, ...) {
     NULL
   ), error = function(e) e)
   if (is.null(z)) {
-    msg <- sprintf("method '%s' is not supported for matrix: %s", name, fmsg)
+    mmsg <- if (NCOL(y) > 1L) " for matrix" else ""
+    msg <- sprintf("method '%s' is not supported%s: %s", name, mmsg, fmsg)
     z <- stats::.lm.fit(x, y, tol = tol)
     return(structure(z, method = "qr", message = msg))
   }
   if (inherits(z, "error")) {
     emsg <- gsub("\n", " ", conditionMessage(z))
-    msg <- sprintf("method '%s' failed for matrix (%s): %s", name, emsg, fmsg)
+    msg <- sprintf("method '%s' failed (%s): %s", name, emsg, fmsg)
     z <- stats::.lm.fit(x, y, tol = tol)
     return(structure(z, method = "qr", message = msg))
   }
@@ -82,6 +84,8 @@ term.split <- function(x) {
 }
 
 term.check <- function(x, terms, stop = TRUE) {
+  if (length(x) > 1L)
+    stop("'x' must be a single term name")
   if (is.na(x)) {
     if (stop) stop("term can't be NA")
     return(NA_character_)

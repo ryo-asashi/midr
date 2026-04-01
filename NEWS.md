@@ -1,4 +1,10 @@
-# midr 0.6.0.901 (development version)
+# midr 0.6.0.902
+
+-   Fixed `interpret.default()` to support formulas with dot (`.`) notation in the `terms` argument.
+-   Updated `interpret()` to directly use the default solver (`RcppEigen::fastLmPure`) when an integer is provided for the `method` argument.
+-   String inputs for `method` are no longer converted to lowercase and do not undergo partial matching with default method names.
+
+# midr 0.6.0.901
 
 -   Fixed `interpret.formula()` to prevent double evaluation of arguments under NSE.
 

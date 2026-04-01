@@ -248,7 +248,7 @@ interpret.default <- function(
       its <- utils::combn(mts, 2L, function(x) paste0(x, collapse = ":"))
   } else {
     if (inherits(terms, "formula"))
-      terms <- attr(stats::terms(terms), "term.labels")
+      terms <- attr(stats::terms(terms, data = x), "term.labels")
     spl <- strsplit(terms, ":")
     if (!all(unique(unlist(spl)) %in% tags)) {
       stop("'terms' contains term labels that are not found in 'x'")
