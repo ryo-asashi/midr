@@ -5,12 +5,14 @@
 \alias{get.yhat.default}
 \alias{get.yhat.lm}
 \alias{get.yhat.glm}
+\alias{get.yhat.gam}
 \alias{get.yhat.mid}
 \alias{get.yhat.mids}
 \alias{get.yhat.rpart}
 \alias{get.yhat.randomForest}
 \alias{get.yhat.ranger}
 \alias{get.yhat.rfsrc}
+\alias{get.yhat.ObliqueForest}
 \alias{get.yhat.svm}
 \alias{get.yhat.ksvm}
 \alias{get.yhat.AccurateGLM}
@@ -18,8 +20,10 @@
 \alias{get.yhat.model_fit}
 \alias{get.yhat.workflow}
 \alias{get.yhat.rpf}
-\alias{get.yhat.fitlist}
 \alias{get.yhat.coxph}
+\alias{get.yhat.flexsurvreg}
+\alias{get.yhat.mboost}
+\alias{get.yhat.fitlist}
 \title{Wrapper Prediction Function}
 \usage{
 get.yhat(object, newdata, ..., target)
@@ -30,9 +34,11 @@ get.yhat(object, newdata, ..., target)
 
 \method{get.yhat}{glm}(object, newdata, ...)
 
+\method{get.yhat}{gam}(object, newdata, ...)
+
 \method{get.yhat}{mid}(object, newdata, ...)
 
-\method{get.yhat}{mids}(object, newdata, ..., target = NULL)
+\method{get.yhat}{mids}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{rpart}(object, newdata, ..., target = -1L)
 
@@ -41,6 +47,8 @@ get.yhat(object, newdata, ..., target)
 \method{get.yhat}{ranger}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{rfsrc}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{ObliqueForest}(object, newdata, ..., target = -1L)
 
 \method{get.yhat}{svm}(object, newdata, ..., target = -1L)
 
@@ -56,9 +64,13 @@ get.yhat(object, newdata, ..., target)
 
 \method{get.yhat}{rpf}(object, newdata, ..., target = -1L)
 
-\method{get.yhat}{fitlist}(object, newdata, ..., target = -1L)
-
 \method{get.yhat}{coxph}(object, newdata, ...)
+
+\method{get.yhat}{flexsurvreg}(object, newdata, ...)
+
+\method{get.yhat}{mboost}(object, newdata, ..., target = -1L)
+
+\method{get.yhat}{fitlist}(object, newdata, ..., target = -1L)
 }
 \arguments{
 \item{object}{a fitted model object.}

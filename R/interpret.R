@@ -423,7 +423,7 @@ interpret.default <- function(
   nfin <- n + nreg + (if (mode == 1L) ncon + nnil else 0L)
   nelements <- nfin * npar
   if (!is.null(max.nelements) && nelements > max.nelements) {
-    title <- sprintf("estimated design matrix size: %.2f GB (%d elements)",
+    title <- sprintf("estimated design matrix size: %.2f GB (%.0f elements)",
                      nelements * 8 / (1024 ^ 3), nelements)
     if (verbosity < 1L)
       stop(title)

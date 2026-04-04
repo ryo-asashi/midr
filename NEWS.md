@@ -1,3 +1,7 @@
+# midr 0.6.0.903
+
+-   Added methods of `get.yhat` for models created with packages including **aorsf**, **flexsurv** and **mboost**.
+
 # midr 0.6.0.902
 
 -   Fixed `interpret.default()` to support formulas with dot (`.`) notation in the `terms` argument.
