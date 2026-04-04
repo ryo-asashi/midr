@@ -17,11 +17,14 @@ get.yhat(object, newdata, ...)
 # S3 method for class 'glm'
 get.yhat(object, newdata, ...)
 
+# S3 method for class 'gam'
+get.yhat(object, newdata, ...)
+
 # S3 method for class 'mid'
 get.yhat(object, newdata, ...)
 
 # S3 method for class 'mids'
-get.yhat(object, newdata, ..., target = NULL)
+get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'rpart'
 get.yhat(object, newdata, ..., target = -1L)
@@ -33,6 +36,9 @@ get.yhat(object, newdata, ..., target = -1L)
 get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'rfsrc'
+get.yhat(object, newdata, ..., target = -1L)
+
+# S3 method for class 'ObliqueForest'
 get.yhat(object, newdata, ..., target = -1L)
 
 # S3 method for class 'svm'
@@ -56,11 +62,17 @@ get.yhat(object, newdata, ..., target = -1L)
 # S3 method for class 'rpf'
 get.yhat(object, newdata, ..., target = -1L)
 
-# S3 method for class 'fitlist'
-get.yhat(object, newdata, ..., target = -1L)
-
 # S3 method for class 'coxph'
 get.yhat(object, newdata, ...)
+
+# S3 method for class 'flexsurvreg'
+get.yhat(object, newdata, ...)
+
+# S3 method for class 'mboost'
+get.yhat(object, newdata, ..., target = -1L)
+
+# S3 method for class 'fitlist'
+get.yhat(object, newdata, ..., target = -1L)
 ```
 
 ## Arguments
