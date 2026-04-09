@@ -1,10 +1,10 @@
 # Interpretation of Survival Models
 
 This article presents examples of interpreting survival models using the
-`midr` package.
+**midr** package.
 
-As a fundamental approach to interpreting survival models, `midr` first
-utilizes a prediction function to output a matrix of survival
+As a fundamental approach to interpreting survival models, **midr**
+first utilizes a prediction function to output a matrix of survival
 probabilities, $Y_{it} = S_{t}\left( \mathbf{x}_{i} \right)$, for each
 observation $i$ at each time point $t$, based on the `model` and the
 `data` with the `pred.fun` (which defaults to
