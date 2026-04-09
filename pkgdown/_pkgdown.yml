@@ -47,6 +47,8 @@ navbar:
           href: https://arxiv.org/abs/2506.08338
         - text: "- JARIP Bulletin (Japanese, PDF)"
           href: midr_jarip.pdf
+        - text: "- Convention A Asia (R & Python Demo)"
+          href: https://ryo-asashi.github.io/Convention_A_Asia/
 
 articles:
 - title: Interpret black-box models with midr
