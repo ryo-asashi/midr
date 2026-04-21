@@ -303,14 +303,14 @@ get.yhat.model_fit <- function(
                       "censored regression" = "survival")
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
   pred <- do.call(stats::predict, args)
-  yhat <- if (args$type == "numeric") {
-    pred$.pred
+  if (args$type == "numeric") {
+    yhat <- pred$.pred
   } else if (args$type == "survival") {
-    mat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
-    colnames(mat) <- pred$.pred[[1L]]$.eval_time
-    mat
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
   } else if (any(args$type == c("prob", "hazard", "quantile"))) {
-    as.matrix(pred)
+    yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
 }
@@ -330,14 +330,14 @@ get.yhat.workflow <- function(
                       "censored regression" = "survival")
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
   pred <- do.call(stats::predict, args)
-  yhat <- if (args$type == "numeric") {
-    pred$.pred
+  if (args$type == "numeric") {
+    yhat <- pred$.pred
   } else if (args$type == "survival") {
-    mat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
-    colnames(mat) <- pred$.pred[[1L]]$.eval_time
-    mat
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
   } else if (any(args$type == c("prob", "hazard", "quantile"))) {
-    as.matrix(pred)
+    yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
 }
@@ -357,14 +357,14 @@ get.yhat.rpf <- function(
                       "censored regression" = "survival")
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
   pred <- do.call(stats::predict, args)
-  yhat <- if (args$type == "numeric") {
-    pred$.pred
+  if (args$type == "numeric") {
+    yhat <- pred$.pred
   } else if (args$type == "survival") {
-    mat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
-    colnames(mat) <- pred$.pred[[1L]]$.eval_time
-    mat
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
   } else if (any(args$type == c("prob", "hazard", "quantile"))) {
-    as.matrix(pred)
+    yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
 }

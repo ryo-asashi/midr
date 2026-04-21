@@ -1,3 +1,7 @@
+# midr 0.6.0.904
+
+-   Fixed methods of `get.yhat` for models created with packages including **model_fit**, **workflow** and **rpf**.
+
 # midr 0.6.0.903
 
 -   Added methods of `get.yhat` for models created with packages including **aorsf**, **flexsurv** and **mboost**.
