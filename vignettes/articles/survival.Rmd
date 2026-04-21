@@ -20,9 +20,9 @@ for (pkg in pkgs) {
 }
 ```
 
-This article presents examples of interpreting survival models using the `midr` package.
+This article presents examples of interpreting survival models using the **midr** package.
 
-As a fundamental approach to interpreting survival models, `midr` first utilizes a prediction function to output a matrix of survival probabilities, $Y_{it}=S_t(\mathbf{x}_i)$, for each observation $i$ at each time point $t$, based on the `model` and the `data` with the `pred.fun` (which defaults to `get.yhat()`).
+As a fundamental approach to interpreting survival models, **midr** first utilizes a prediction function to output a matrix of survival probabilities, $Y_{it}=S_t(\mathbf{x}_i)$, for each observation $i$ at each time point $t$, based on the `model` and the `data` with the `pred.fun` (which defaults to `get.yhat()`).
 It then constructs a series of MID models targeting each column of this predicted matrix (i.e., the survival probability for each survival time $S_t$).
 
 The resulting collection of models across multiple time points is aggregated into an object of class "midrib".
