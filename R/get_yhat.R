@@ -301,7 +301,14 @@ get.yhat.model_fit <- function(
                       "regression" = "numeric",
                       "classification" = "prob",
                       "censored regression" = "survival")
-  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  dots <- list(...)
+  if (args$type == "survival" || args$type == "hazard") {
+    if (is.null(dots$eval_time)) {
+      message("'eval_time' is not provided: defaults to seq(0, 365, by = 5)")
+      dots$eval_time <- seq(0L, 365L, by = 5L)
+    }
+  }
+  args <- utils::modifyList(args, dots, keep.null = TRUE)
   pred <- do.call(stats::predict, args)
   if (args$type == "numeric") {
     yhat <- pred$.pred
@@ -309,7 +316,11 @@ get.yhat.model_fit <- function(
     target <- NULL
     yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
     colnames(yhat) <- pred$.pred[[1L]]$.eval_time
-  } else if (any(args$type == c("prob", "hazard", "quantile"))) {
+  } else if (args$type == "hazard") {
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_hazard))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
+  } else if (any(args$type == c("prob", "quantile"))) {
     yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
@@ -328,7 +339,14 @@ get.yhat.workflow <- function(
                       "regression" = "numeric",
                       "classification" = "prob",
                       "censored regression" = "survival")
-  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  dots <- list(...)
+  if (args$type == "survival" || args$type == "hazard") {
+    if (is.null(dots$eval_time)) {
+      message("'eval_time' is not provided: defaults to seq(0, 365, by = 5)")
+      dots$eval_time <- seq(0L, 365L, by = 5L)
+    }
+  }
+  args <- utils::modifyList(args, dots, keep.null = TRUE)
   pred <- do.call(stats::predict, args)
   if (args$type == "numeric") {
     yhat <- pred$.pred
@@ -336,7 +354,11 @@ get.yhat.workflow <- function(
     target <- NULL
     yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
     colnames(yhat) <- pred$.pred[[1L]]$.eval_time
-  } else if (any(args$type == c("prob", "hazard", "quantile"))) {
+  } else if (args$type == "hazard") {
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_hazard))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
+  } else if (any(args$type == c("prob", "quantile"))) {
     yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
@@ -355,7 +377,14 @@ get.yhat.rpf <- function(
                       "regression" = "numeric",
                       "classification" = "prob",
                       "censored regression" = "survival")
-  args <- utils::modifyList(args, list(...), keep.null = TRUE)
+  dots <- list(...)
+  if (args$type == "survival" || args$type == "hazard") {
+    if (is.null(dots$eval_time)) {
+      message("'eval_time' is not provided: defaults to seq(0, 365, by = 5)")
+      dots$eval_time <- seq(0L, 365L, by = 5L)
+    }
+  }
+  args <- utils::modifyList(args, dots, keep.null = TRUE)
   pred <- do.call(stats::predict, args)
   if (args$type == "numeric") {
     yhat <- pred$.pred
@@ -363,7 +392,11 @@ get.yhat.rpf <- function(
     target <- NULL
     yhat <- t(sapply(pred$.pred, function(x) x$.pred_survival))
     colnames(yhat) <- pred$.pred[[1L]]$.eval_time
-  } else if (any(args$type == c("prob", "hazard", "quantile"))) {
+  } else if (args$type == "hazard") {
+    target <- NULL
+    yhat <- t(sapply(pred$.pred, function(x) x$.pred_hazard))
+    colnames(yhat) <- pred$.pred[[1L]]$.eval_time
+  } else if (any(args$type == c("prob", "quantile"))) {
     yhat <- as.matrix(pred)
   }
   checkout(yhat, newdata, target)
