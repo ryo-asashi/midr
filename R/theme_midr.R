@@ -8,6 +8,7 @@
 #' @param base_family base font family.
 #' @param base_line_size base size for line elements.
 #' @param base_rect_size base size for rect elements.
+#' @param ... for \code{theme_midr()}, other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}. For \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.
 #'
 #' @examples
 #' # Use theme_midr() with ggplot2
@@ -36,7 +37,9 @@ theme_midr <- function(
     base_size = 11,
     base_family = "serif",
     base_line_size = base_size / 22,
-    base_rect_size = base_size / 22) {
+    base_rect_size = base_size / 22,
+    ...
+  ) {
   grid_type = match.arg(grid_type)
   grid_x <- any(grid_type == c("x", "xy"))
   grid_y <- any(grid_type == c("y", "xy"))
@@ -44,21 +47,20 @@ theme_midr <- function(
     base_size = base_size,
     base_family = base_family,
     base_line_size = base_line_size,
-    base_rect_size = base_rect_size
+    base_rect_size = base_rect_size,
+    ...
   )
   e2 <- ggplot2::theme(
     axis.line = ggplot2::element_blank(),
     panel.border = ggplot2::element_rect(fill = NA,
                                          colour = "gray5",
                                          linewidth = ggplot2::rel(0.5)),
-    panel.grid.major.x = if (!grid_x) ggplot2::element_blank(),
-    panel.grid.minor.x = if (!grid_x) ggplot2::element_blank(),
-    panel.grid.major.y = if (!grid_y) ggplot2::element_blank(),
-    panel.grid.minor.y = if (!grid_y) ggplot2::element_blank(),
-    complete = TRUE
+    panel.grid.major.x = if (!grid_x) ggplot2::element_blank() else NULL,
+    panel.grid.minor.x = if (!grid_x) ggplot2::element_blank() else NULL,
+    panel.grid.major.y = if (!grid_y) ggplot2::element_blank() else NULL,
+    panel.grid.minor.y = if (!grid_y) ggplot2::element_blank() else NULL
   )
-  e1[names(e2)] <- e2
-  e1
+  e1 + e2
 }
 
 
@@ -66,8 +68,6 @@ theme_midr <- function(
 #'
 #' @description
 #' \code{par.midr()} can be used to set graphical parameters for base R graphics.
-#'
-#' @param ... for \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.
 #'
 #' @returns
 #' \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.

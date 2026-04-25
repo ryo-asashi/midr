@@ -1,6 +1,7 @@
 # midr 0.6.0.904
 
--   Fixed methods of `get.yhat` for models created with packages including **model_fit**, **workflow** and **rpf**.
+-   Fixed methods of `get.yhat` for models created with packages including "model_fit", "workflow" and "rpf".
+-   `theme_midr()` now accepts optional arguments `...` for new parameters introduced from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
 
 # midr 0.6.0.903
 

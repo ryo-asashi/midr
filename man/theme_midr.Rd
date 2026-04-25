@@ -10,7 +10,8 @@ theme_midr(
   base_size = 11,
   base_family = "serif",
   base_line_size = base_size/22,
-  base_rect_size = base_size/22
+  base_rect_size = base_size/22,
+  ...
 )
 
 par.midr(...)
@@ -26,7 +27,7 @@ par.midr(...)
 
 \item{base_rect_size}{base size for rect elements.}
 
-\item{...}{for \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.}
+\item{...}{for \code{theme_midr()}, other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}. For \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.}
 }
 \value{
 \code{theme_midr()} provides a \strong{ggplot2} theme customized for the \strong{midr} package.
