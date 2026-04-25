@@ -81,10 +81,10 @@ ggmid.midimps <- function(
   if (type == "series") {
     imp$term <- factor(imp$term, levels = terms)
     pl <- ggplot2::ggplot(
-      imp, ggplot2::aes(x = .data[["label"]], y = .data[["importance"]],
-                        color = .data[["term"]], group = .data[["term"]])
+      imp, ggplot2::aes(x = .data[["label"]], y = .data[["importance"]])
     )
-    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
+    mpg <- ggplot2::aes(color = .data[["term"]], group = .data[["term"]])
+    pl <- pl + if (discrete) .geom_linepoint(mpg, ...) else .geom_line(mpg, ...)
     pl <- pl + ggplot2::labs(x = NULL) +
       scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {

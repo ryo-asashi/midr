@@ -94,14 +94,10 @@ ggmid.midimp <- function(
                      importance = rep.int(imp$importance, 2L))
     fr <- unique(fr)
     pl <- ggplot2::ggplot(
-      data = fr,
-      ggplot2::aes(
-        x = .data[["x"]], y = .data[["y"]], fill = .data[["importance"]]
-      )
-    ) +
-      ggplot2::labs(x = NULL, y = NULL)
-    pl <- pl + .geom_tile(...)
-    pl <- pl + scale_fill_theme(theme = if (use.theme) theme else "grayscale")
+      fr, ggplot2::aes(x = .data[["x"]], y = .data[["y"]])
+    ) + .geom_tile(ggplot2::aes(fill = .data[["importance"]]), ...) +
+      ggplot2::labs(x = NULL, y = NULL) +
+      scale_fill_theme(theme = if (use.theme) theme else "grayscale")
     return(pl)
   # boxplot
   } else if (type == "boxplot") {
@@ -110,10 +106,9 @@ ggmid.midimp <- function(
     preds_vec <- as.numeric(preds[, terms, drop = FALSE])
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
-    pl <- ggplot2::ggplot(box) +
-      .geom_boxplot(
-        mapping = ggplot2::aes(x = .data[["mid"]], y = .data[["term"]]), ...
-      )
+    pl <- ggplot2::ggplot(
+      box, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
+    ) + .geom_boxplot(...) + ggplot2::labs(y = NULL)
     if (use.theme) {
       idx <- match(box$term, imp$term)
       box$importance <- imp$importance[idx]
@@ -123,7 +118,6 @@ ggmid.midimp <- function(
       pl <- pl + ggplot2::aes(fill = .data[[var]], group = .data[["term"]]) +
         scale_fill_theme(theme = theme)
     }
-    pl <- pl + ggplot2::labs(y = NULL)
     return(pl)
   }
 }

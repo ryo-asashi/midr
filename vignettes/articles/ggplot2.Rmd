@@ -1,0 +1,159 @@
+---
+title: "Visualization with ggplot2 package"
+description: |
+  Tutorial for visualizations with the ggmid() function.
+output: rmarkdown::html_vignette
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  fig.width = 9,
+  fig.height = 3.5
+)
+pkgs <- c("ggplot2", "patchwork")
+for (pkg in pkgs) {
+  if (!(pkg %in% installed.packages())) {
+    install.packages(pkg)
+  }
+}
+```
+
+
+```{r}
+library(midr)
+library(ggplot2)
+library(patchwork)
+theme_set(theme(legend.position = "bottom"))
+```
+
+```{r}
+mid <- interpret(
+  log(price) ~ (carat + cut + color + clarity) ^ 2,
+  data = diamonds
+)
+```
+
+## For "mid" Objects
+
+### First-Order - Numeric
+
+```{r}
+p1 <- ggmid(mid, term = "carat")
+summary(p1)
+```
+
+
+```{r}
+p2 <- ggmid(mid, term = "carat") +
+  geom_point(aes(fill = density), size = 3, shape = 21L) +
+  scale_fill_theme("grayscale")
+p3 <- ggmid(mid, term = "carat", color = "#00000000") +
+  geom_area(fill = "steelblue", alpha = .6)
+p1 + p2 + p3
+```
+
+### First-Order - Factor
+
+```{r}
+p1 <- ggmid(mid, term = "clarity")
+summary(p1)
+```
+
+```{r, fig.width = 9}
+p2 <- ggmid(mid, term = "clarity", fill = "steelblue") +
+  aes(alpha = density)
+p3 <- ggmid(mid, term = "clarity", fill = "#00000000") +
+  geom_point(aes(size = density))
+p1 + p2 + p3
+```
+
+### Second-Order
+
+```{r}
+p1 <- ggmid(mid, term = "carat:clarity")
+summary(p1)
+```
+
+
+```{r}
+p2 <- ggmid(mid, term = "carat:clarity", fill = "#00000000") +
+  geom_line(aes(group = clarity), color = "gray60") +
+  geom_point(aes(fill = mid), shape = 21L, size = 4)
+p1 + p2
+```
+
+```{r}
+imp <- mid.importance(mid)
+p1 <- ggmid(imp, type = "heatmap")
+summary(p1)
+```
+
+```{r}
+p2 <- ggmid(imp, type = "heatmap", fill = "#00000000") +
+  geom_point(aes(size = importance), shape = 21L, fill = "steelblue")
+p1 + p2
+```
+
+```{r}
+p1 <- ggmid(imp, type = "boxplot")
+summary(p1)
+```
+
+```{r}
+p2 <- ggmid(imp, type = "boxplot", color = "#00000000", fill = "#00000000") +
+  geom_violin(scale = "width", fill = "steelblue")
+p1 + p2
+```
+
+
+```{r}
+brk <- mid.breakdown(mid)
+p1 <- ggmid(brk)
+summary(p1)
+```
+
+```{r}
+p2 <- ggmid(brk, fill = "#00000000", color = "#00000000") +
+  geom_linerange(aes(xmax = xmax, xmin = xmin)) +
+  geom_point(aes(color = mid), size = 2) +
+  scale_color_theme("bicolor")
+p1 + p2
+```
+
+## For "mids" Objects
+
+```{r}
+library(survival)
+sreg <- coxph(
+  Surv(time, status) ~ .,
+  data = veteran
+)
+mids <- interpret(
+  Surv(time, status) ~ .,
+  data = veteran,
+  model = sreg,
+  lambda = 1
+)
+```
+
+
+## ggmid.mids()
+
+```{r}
+p1 <- ggmid(mids, "celltype", type = "series", intercept = TRUE)
+summary(p1)
+```
+
+```{r}
+p2 <- ggmid(
+  mids, "celltype", type = "series", intercept = TRUE, color = "#00000000"
+  ) +
+  geom_line(
+    aes(x = as.numeric(label), y = intercept),
+    data.frame(label = labels(mids), intercept = mids$intercept),
+    linewidth = 2, alpha = .1
+  ) +
+  geom_line(aes(linetype = celltype))
+p1 + p2
+```

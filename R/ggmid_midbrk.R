@@ -126,7 +126,10 @@ ggmid.midbrk <- function(
     if (vline) {
       tli <- ggplot2::theme_get()$line
       pl <- pl + ggplot2::geom_vline(
-        xintercept = 0, linewidth = (tli$linewidth %||% .5) * .5)
+        xintercept = 0,
+        linewidth = (tli$linewidth %||% 0.5) * 0.5,
+        colour = tli$colour %||% "black"
+      )
     }
     return(pl)
   # waterfall
@@ -139,12 +142,16 @@ ggmid.midbrk <- function(
     cs <- cumsum(c(object$intercept, bd$mid))
     bd$xmin <- cs[1L:nrow(bd)]
     bd$xmax <- cs[2L:(nrow(bd) + 1L)]
-    pl <- ggplot2::ggplot(bd, ggplot2::aes(y = .data[["term"]])) +
-      ggplot2::labs(y = NULL, x = "yhat")
+    pl <- ggplot2::ggplot(
+      bd, ggplot2::aes(x = .data[["xmax"]], y = .data[["term"]])
+    ) + ggplot2::labs(x = "yhat", y = NULL) + ggplot2::geom_blank()
     tli <- ggplot2::theme_get()$line
     if (vline) {
       pl <- pl + ggplot2::geom_vline(
-        xintercept = object$intercept, linewidth = (tli$linewidth %||% .5) * .5)
+        xintercept = object$intercept,
+        linewidth = (tli$linewidth %||% 0.5) * 0.5,
+        colour = tli$colour %||% "black"
+      )
     }
     linedefaults <- list(
       colour = tli$colour %||% "black",
@@ -152,15 +159,17 @@ ggmid.midbrk <- function(
       linewidth = tli$linewidth %||% 0.5
     )
     lineargs <- c(
-      list(mapping = ggplot2::aes(x = .data[["xmax"]], ymax = .data[["ymax"]],
-                                  ymin = pmax(.data[["ymin"]] - 1, 1 - hw))),
-      utils::modifyList(linedefaults, dots)
+      list(mapping = ggplot2::aes(
+        x = .data[["xmax"]], y = NULL,
+        ymax = .data[["ymax"]], ymin = pmax(.data[["ymin"]] - 1, 1 - hw)
+      )), utils::modifyList(linedefaults, dots)
     )
-    pl <- pl +
-      .geom_rect(
-        mapping = ggplot2::aes(xmin = .data[["xmin"]], xmax = .data[["xmax"]],
-                               ymin = .data[["ymin"]], ymax = .data[["ymax"]]),
-        ...
+    pl <- pl + .geom_rect(
+        mapping = ggplot2::aes(
+          x = NULL, y = NULL,
+          xmin = .data[["xmin"]], xmax = .data[["xmax"]],
+          ymin = .data[["ymin"]], ymax = .data[["ymax"]]
+        ), ...
     ) +
       do.call(.geom_linerange, lineargs)
     if (use.theme) {

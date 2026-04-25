@@ -157,13 +157,6 @@ ggmid.mid <- function(
       }
     }
     df <- interaction.frame(frms[[1L]], frms[[2L]])
-    df$mid <- mid.f(object, term, df)
-    if (intercept)
-      df$mid <- df$mid + object$intercept
-    if (main.effects) {
-      df$mid <- df$mid +
-        mid.f(object, tags[1L], df) + mid.f(object, tags[2L], df)
-    }
     for (tag in tags) {
       tagl <- paste0(tag, "_level")
       if (any(tagl == colnames(df))) {
@@ -172,6 +165,13 @@ ggmid.mid <- function(
       }
     }
     cols <- paste0(rep(tags, each = 2L), c("_min", "_max"))
+    df$mid <- mid.f(object, term, df)
+    if (intercept)
+      df$mid <- df$mid + object$intercept
+    if (main.effects) {
+      df$mid <- df$mid +
+        mid.f(object, tags[1L], df) + mid.f(object, tags[2L], df)
+    }
     pl <- ggplot2::ggplot(
       data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]])
     )

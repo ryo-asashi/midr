@@ -87,8 +87,8 @@ ggmid.mids <- function(
   }
   df <- data.frame(
     x = rep(xvals, times = m),
-    mid = as.vector(fmat),
-    label = rep(labels, each = n)
+    label = rep(labels, each = n),
+    mid = as.vector(fmat)
   )
   colnames(df)[1L] <- term
   discrete <- is.discrete(labels)
@@ -118,10 +118,10 @@ ggmid.mids <- function(
     )
     theme <- color.theme(theme)
     pl <- ggplot2::ggplot(
-      df, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]],
-                       color = .data[[term]], group = .data[[term]])
+      df, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]])
     )
-    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
+    mpg <- ggplot2::aes(color = .data[[term]], group = .data[[term]])
+    pl <- pl + if (discrete) .geom_linepoint(mpg, ...) else .geom_line(mpg, ...)
     pl <- pl + ggplot2::labs(x = NULL) +
       scale_color_theme(theme, discrete = is.discrete(xvals))
   }

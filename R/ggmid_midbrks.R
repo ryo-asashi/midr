@@ -131,10 +131,10 @@ ggmid.midbrks <- function(
   if (type == "series") {
     brk$term <- factor(brk$term, levels = terms)
     pl <- ggplot2::ggplot(
-      brk, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]],
-                        color = .data[["term"]], group = .data[["term"]])
+      brk, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]])
     )
-    pl <- pl + if (discrete) .geom_linepoint(...) else .geom_line(...)
+    mpg <- ggplot2::aes(color = .data[["term"]], group = .data[["term"]])
+    pl <- pl + if (discrete) .geom_linepoint(mpg, ...) else .geom_line(mpg, ...)
     pl <- pl + ggplot2::labs(x = NULL) +
       scale_color_theme(theme, discrete = TRUE)
   } else if (type == "barplot") {
