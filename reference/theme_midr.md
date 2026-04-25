@@ -14,7 +14,8 @@ theme_midr(
   base_size = 11,
   base_family = "serif",
   base_line_size = base_size/22,
-  base_rect_size = base_size/22
+  base_rect_size = base_size/22,
+  ...
 )
 
 par.midr(...)
@@ -44,8 +45,11 @@ par.midr(...)
 
 - ...:
 
-  for `par.midr()`, optional arguments in `tag = value` form to be
-  passed to [`graphics::par()`](https://rdrr.io/r/graphics/par.html).
+  for `theme_midr()`, other parameters passed on to
+  [`ggplot2::theme_light()`](https://ggplot2.tidyverse.org/reference/ggtheme.html).
+  ggplot2 \>= 4.0.0 accepts `ink`, `paper`, and `accent`. For
+  `par.midr()`, optional arguments in `tag = value` form to be passed to
+  [`graphics::par()`](https://rdrr.io/r/graphics/par.html).
 
 ## Value
 
