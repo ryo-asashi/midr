@@ -59,7 +59,7 @@ articles:
 - title: Advanced Tools & Customization
   contents:
   # - articles/graphics
-  # - articles/ggplot2
+  - articles/ggplot2
   - articles/collection
   - articles/colortheme
 
