@@ -5,9 +5,10 @@ articles:
   articles/classification: classification.html
   articles/collection: collection.html
   articles/colortheme: colortheme.html
+  articles/ggplot2: ggplot2.html
   articles/regression: regression.html
   articles/survival: survival.html
-last_built: 2026-04-25T05:43Z
+last_built: 2026-04-26T01:40Z
 urls:
   reference: https://ryo-asashi.github.io/midr/reference
   article: https://ryo-asashi.github.io/midr/articles

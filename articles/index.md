@@ -21,6 +21,11 @@
 
 ### Advanced Tools & Customization
 
+- [Visualization with ggplot2
+  package](https://ryo-asashi.github.io/midr/articles/ggplot2.md):
+
+  Tutorial for visualizations with the ggmid() function.
+
 - [Getting Started with MID
   Collections](https://ryo-asashi.github.io/midr/articles/collection.md):
 
