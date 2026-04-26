@@ -540,9 +540,9 @@ filter_params <- function(dots, allowed) {
   linedots <- dots[names(dots) != "colour"]
   linetheme <- ggplot2::theme_get()$line
   linedefault <- list(
-    colour = linetheme$colour,
+    colour = linetheme$colour %||% "black",
     linetype = 3L,
-    linewidth = linetheme$linewidth
+    linewidth = linetheme$linewidth %||% 0.5
   )
   lineargs <- c(
     list(mapping = mapping, data = data),

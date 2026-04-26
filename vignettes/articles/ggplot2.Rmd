@@ -19,162 +19,100 @@ for (pkg in pkgs) {
 }
 ```
 
+This article showcases visualizations of MID models using the `ggmid()` function with **ggplot2** functions.
 
 ```{r packages, message=FALSE, warning=FALSE}
 library(midr)
 library(ggplot2)
 library(patchwork)
 theme_set(theme(legend.position = "bottom"))
+.transparent <- "#ffffff00"
 ```
+
+## Single MID Model
 
 ```{r diamonds}
-diamonds_sample <- diamonds
+# fit a MID model
 mid <- interpret(
   log(price) ~ (carat + cut + color + clarity) ^ 2,
-  data = diamonds_sample
+  k = 5L,
+  lamp = "auto",
+  data = diamonds,
+  verbosity = 0L
 )
 diamonds_sample <- diamonds[sample(nrow(diamonds), 1000L), ]
-```
-
-## For Single MID Model
-
-### First-Order Effect
-
-```{r}
-p1 <- ggmid(mid, term = "carat")
-summary(p1)
+mid$call$data <- quote(diamonds_sample)
 ```
 
 
-```{r}
-p2 <- ggmid(mid, term = "carat") +
-  geom_point(aes(fill = density), size = 3, shape = 21L) +
-  scale_fill_theme("grayscale")
-p3 <- ggmid(mid, term = "carat", color = "#00000000") +
-  geom_area(fill = "steelblue", alpha = .6)
-p1 + p2 + p3
-```
+### First-Order Effect (Numeric Variable)
 
 ```{r}
-p1 <- ggmid(mid, term = "carat", type = "data")
-summary(p1)
-```
-
-
-```{r}
-p2 <- ggmid(mid, term = "carat", type = "compound")
-summary(p1)
-```
-
-```{r}
-p3 <- ggmid(mid, term = "carat", type = "data", shape = ".") +
+p1 <- ggmid(mid, term = "carat", linewidth = 2, color = "dodgerblue4")
+p2 <- ggmid(mid, term = "carat", type = "data", shape = ".") +
   geom_point(aes(size = density), shape = 1L)
+p3 <- ggmid(mid, term = "carat", type = "data", theme = "shap") +
+  geom_line(linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
 
-### First-Order - Factor
+### First-Order Effect (Factor Variable)
 
 ```{r}
-p1 <- ggmid(mid, term = "clarity")
-summary(p1)
-```
-
-```{r, fig.width = 9}
-p2 <- ggmid(mid, term = "clarity", fill = "steelblue") +
-  aes(alpha = density)
-p3 <- ggmid(mid, term = "clarity", fill = "#00000000") +
-  geom_point(aes(size = density))
+p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4")
+p2 <- ggmid(mid, term = "clarity", type = "data", shape = ".") +
+  geom_point(aes(size = density), shape = 1L)
+p3 <- ggmid(mid, term = "clarity", type = "data", theme = "shap", shape = "|") +
+  geom_line(aes(group = NA), linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
 
-```{r}
-p1 <- ggmid(mid, term = "clarity", type = "data", shape = "|")
-summary(p1)
-```
-
+### Second-Order Effect
 
 ```{r}
-p2 <- ggmid(mid, term = "clarity", type = "compound", shape = "|")
-summary(p2)
-```
-
-```{r}
-p3 <- ggmid(mid, term = "clarity", type = "data", shape = ".") +
-  geom_point(aes(size = density))
+p1 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
+p2 <- ggmid(mid, term = "carat:clarity", type = "data",
+            theme = "mako", main.effects = TRUE) +
+  geom_blank()
+p3 <- ggmid(mid, term = "carat:clarity", type = "data",
+            theme = "shap", main.effects = TRUE) +
+  geom_line(aes(group = clarity, color = mid), linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
 
-### Second-Order
-
-```{r}
-p1 <- ggmid(mid, term = "carat:clarity")
-summary(p1)
-```
-
-
-```{r}
-p2 <- ggmid(mid, term = "carat:clarity", fill = "#00000000") +
-  geom_line(aes(group = clarity), color = "gray60") +
-  geom_point(aes(fill = mid), shape = 21L, size = 4)
-p1 + p2
-```
-
-```{r}
-p1 <- ggmid(mid, term = "carat:clarity", type = "data")
-summary(p1)
-```
-
-```{r}
-p2 <- ggmid(mid, term = "carat:clarity", type = "compound", shape = 1L)
-summary(p2)
-```
-
-
-```{r}
-p1 + p2
-```
+### Feature Importance
 
 ```{r}
 imp <- mid.importance(mid)
-p1 <- ggmid(imp, type = "heatmap")
-summary(p1)
-```
-
-```{r}
+p1 <- ggmid(imp, type = "heatmap", color = "gray20")
 p2 <- ggmid(imp, type = "heatmap", theme = "mako") +
   geom_text(aes(label = round(importance, 2)), color = "white")
-p3 <- ggmid(imp, type = "heatmap", fill = "#00000000") +
+p3 <- ggmid(imp, type = "heatmap", fill = .transparent) +
   geom_point(aes(size = importance), color = "steelblue")
 p1 + p2 + p3
 ```
 
 ```{r}
-p1 <- ggmid(imp, type = "boxplot")
-summary(p1)
+p1 <- ggmid(imp, type = "barplot")
+p2 <- ggmid(imp, type = "dotchart")
+p3 <- ggmid(imp, type = "boxplot")
+p1 + p2 + p3
 ```
 
-```{r}
-p2 <- ggmid(imp, type = "boxplot", color = "#00000000", fill = "#00000000") +
-  geom_violin(scale = "width", fill = "steelblue")
-p1 + p2
-```
-
+### Prediction Breakdown
 
 ```{r}
-brk <- mid.breakdown(mid)
+brk <- mid.breakdown(mid, row = 1L)
 p1 <- ggmid(brk)
-summary(p1)
-```
-
-```{r}
-p2 <- ggmid(brk, fill = "#00000000", color = "#00000000") +
-  geom_linerange(aes(xmax = xmax, xmin = xmin)) +
-  geom_point(aes(color = mid), size = 2) +
+p2 <- ggmid(brk, fill = .transparent, color = .transparent) +
+  geom_linerange(aes(xmax = xmax, xmin = xmin, color = mid), linewidth = 4) +
+  geom_tile(aes(color = mid)) +
   scale_color_theme("bicolor")
-p1 + p2
+p3 <- ggmid(brk, type = "dotchart")
+p1 + p2 + p3
 ```
 
-## For "mids" Objects
+## Collection of MID Models
 
 ```{r}
 library(survival)
