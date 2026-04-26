@@ -36,8 +36,8 @@ navbar:
           href: articles/survival.html
         # - text: "- Visualization with graphics package"
         #   href: articles/graphics.html
-        # - text: "- Visualization with ggplot2 package"
-        #   href: articles/ggplot2.html
+        - text: "- Visualization with ggplot2 package"
+          href: articles/ggplot2.html
         - text: "- Getting Started with MID Collections"
           href: articles/collection.html
         - text: "- Getting Started with Color Themes"

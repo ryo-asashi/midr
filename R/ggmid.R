@@ -96,18 +96,17 @@ ggmid.mid <- function(
     if (intercept)
       df$mid <- df$mid + object$intercept
     pl <- ggplot2::ggplot(
-      data = df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]]))
+      data = df,
+      mapping = ggplot2::aes(x = .data[[term]], y = .data[["mid"]])
+    )
     # main layer
     if (type == "effect" || type == "compound") {
       if (enc$type == "constant") {
         cols <- paste0(term, c("_min", "_max"))
-        rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cols]))),
-                          y = rep(df$mid, each = 2L))
+        rdf <- data.frame(as.numeric(t(as.matrix(df[, cols]))),
+                          rep(df$mid, each = 2L))
         colnames(rdf) <- c(term, "mid")
-        pl <- pl + .geom_path(
-          mapping = ggplot2::aes(x = .data[[term]], y = .data[["mid"]]),
-          data = rdf, ...
-        )
+        pl <- pl + .geom_path(data = rdf, ...)
       } else if (enc$type == "linear") {
         pl <- pl + .geom_line(...)
       } else if (enc$type == "factor") {
@@ -124,12 +123,7 @@ ggmid.mid <- function(
         jit <- jitter[1L] %||% 0.45
         data[, term] <- enc$transform(data[, term], lumped = lumped)
       }
-      jitter.args <- list(
-        mapping = ggplot2::aes(y = .data[["mid"]]), data = data,
-        width = jit, height = 0, ...
-      )
-      if (type == "compound") jitter.args$colour <- dots$colour %||% 1L
-      pl <- pl + do.call(.geom_jitter, jitter.args)
+      pl <- pl + .geom_jitter(data = data, width = jit, height = 0, ...)
     }
     if (use.theme) {
       middle <- if (intercept) object$intercept else 0
@@ -173,7 +167,8 @@ ggmid.mid <- function(
         mid.f(object, tags[1L], df) + mid.f(object, tags[2L], df)
     }
     pl <- ggplot2::ggplot(
-      data = df, ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]])
+      data = df,
+      mapping = ggplot2::aes(x = .data[[tags[1L]]], y = .data[[tags[2L]]])
     )
     # main.layer
     if (type == "effect" || type == "compound") {
@@ -204,10 +199,9 @@ ggmid.mid <- function(
             mid.f(object, tags[1L], rdf) +
             mid.f(object, tags[2L], rdf)
         }
-        mpg <- ggplot2::aes(
-          x = .data[[tags[1L]]], y = .data[[tags[2L]]], fill = .data[["mid"]]
+        pl <- pl + .geom_raster(
+          mapping = ggplot2::aes(fill = .data[["mid"]]), data = rdf, ...
         )
-        pl <- pl + .geom_raster(mapping = mpg, data = rdf, ...)
       } else {
         mpg <- ggplot2::aes(
           fill = .data[["mid"]],

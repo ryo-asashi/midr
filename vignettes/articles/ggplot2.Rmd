@@ -20,23 +20,25 @@ for (pkg in pkgs) {
 ```
 
 
-```{r}
+```{r packages, message=FALSE, warning=FALSE}
 library(midr)
 library(ggplot2)
 library(patchwork)
 theme_set(theme(legend.position = "bottom"))
 ```
 
-```{r}
+```{r diamonds}
+diamonds_sample <- diamonds
 mid <- interpret(
   log(price) ~ (carat + cut + color + clarity) ^ 2,
-  data = diamonds
+  data = diamonds_sample
 )
+diamonds_sample <- diamonds[sample(nrow(diamonds), 1000L), ]
 ```
 
-## For "mid" Objects
+## For Single MID Model
 
-### First-Order - Numeric
+### First-Order Effect
 
 ```{r}
 p1 <- ggmid(mid, term = "carat")
@@ -53,6 +55,23 @@ p3 <- ggmid(mid, term = "carat", color = "#00000000") +
 p1 + p2 + p3
 ```
 
+```{r}
+p1 <- ggmid(mid, term = "carat", type = "data")
+summary(p1)
+```
+
+
+```{r}
+p2 <- ggmid(mid, term = "carat", type = "compound")
+summary(p1)
+```
+
+```{r}
+p3 <- ggmid(mid, term = "carat", type = "data", shape = ".") +
+  geom_point(aes(size = density), shape = 1L)
+p1 + p2 + p3
+```
+
 ### First-Order - Factor
 
 ```{r}
@@ -64,6 +83,23 @@ summary(p1)
 p2 <- ggmid(mid, term = "clarity", fill = "steelblue") +
   aes(alpha = density)
 p3 <- ggmid(mid, term = "clarity", fill = "#00000000") +
+  geom_point(aes(size = density))
+p1 + p2 + p3
+```
+
+```{r}
+p1 <- ggmid(mid, term = "clarity", type = "data", shape = "|")
+summary(p1)
+```
+
+
+```{r}
+p2 <- ggmid(mid, term = "clarity", type = "compound", shape = "|")
+summary(p2)
+```
+
+```{r}
+p3 <- ggmid(mid, term = "clarity", type = "data", shape = ".") +
   geom_point(aes(size = density))
 p1 + p2 + p3
 ```
@@ -84,15 +120,32 @@ p1 + p2
 ```
 
 ```{r}
+p1 <- ggmid(mid, term = "carat:clarity", type = "data")
+summary(p1)
+```
+
+```{r}
+p2 <- ggmid(mid, term = "carat:clarity", type = "compound", shape = 1L)
+summary(p2)
+```
+
+
+```{r}
+p1 + p2
+```
+
+```{r}
 imp <- mid.importance(mid)
 p1 <- ggmid(imp, type = "heatmap")
 summary(p1)
 ```
 
 ```{r}
-p2 <- ggmid(imp, type = "heatmap", fill = "#00000000") +
-  geom_point(aes(size = importance), shape = 21L, fill = "steelblue")
-p1 + p2
+p2 <- ggmid(imp, type = "heatmap", theme = "mako") +
+  geom_text(aes(label = round(importance, 2)), color = "white")
+p3 <- ggmid(imp, type = "heatmap", fill = "#00000000") +
+  geom_point(aes(size = importance), color = "steelblue")
+p1 + p2 + p3
 ```
 
 ```{r}
