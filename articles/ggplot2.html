@@ -106,24 +106,37 @@ img {
 
     
     
-<p>This article showcases visualizations of MID models using the
-<code><a href="../reference/ggmid.html">ggmid()</a></code> function with <strong>ggplot2</strong>
-functions.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>This tutorial explains how to flexibly visualize MID models built
+with the <strong>midr</strong> package using the
+<strong>ggplot2</strong> ecosystem.</p>
+<p>Since the <code><a href="../reference/ggmid.html">ggmid()</a></code> function returns a ggplot object, you
+can easily combine plots using <strong>patchwork</strong> or add
+advanced customizations via <code>geom_*()</code> functions. Through
+this article, we will explore step-by-step how to create rich figures
+suitable for papers and reports, starting from the default plots.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ryo-asashi/midr" class="external-link">midr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">.transparent</span> <span class="op">&lt;-</span> <span class="st">"#ffffff00"</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="single-mid-model">Single MID Model<a class="anchor" aria-label="anchor" href="#single-mid-model"></a>
 </h2>
+<p>First, let’s look at basic visualizations using a single MID model.
+Here, we use the built-in <code>diamonds</code> dataset to build a model
+that predicts the diamond’s price.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit a MID model</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">~</span> <span class="op">(</span><span class="va">carat</span> <span class="op">+</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">color</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  lamp <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">5L</span>, <span class="co"># number of basis functions</span></span>
+<span>  lump <span class="op">=</span> <span class="st">"auto"</span>, <span class="co"># lump factor levels</span></span>
 <span>  data <span class="op">=</span> <span class="va">diamonds</span>,</span>
 <span>  verbosity <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
@@ -132,80 +145,298 @@ functions.</p>
 <div class="section level3">
 <h3 id="first-order-effect-numeric-variable">First-Order Effect (Numeric Variable)<a class="anchor" aria-label="anchor" href="#first-order-effect-numeric-variable"></a>
 </h3>
+<p>To examine the effect of a continuous variable, specify the variable
+name in the <code>term</code> argument.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" alt="" width="336"></p>
+<p>In addition to the default plot, you can also see the underlying data
+and aesthetic mappings (<code>aes</code>) that <code><a href="../reference/ggmid.html">ggmid()</a></code>
+generates internally.</p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   carat carat_min carat_max    density         mid</span></span>
+<span><span class="co">#&gt; 1   0.2      0.20      0.30 0.09865591 -1.87881109</span></span>
+<span><span class="co">#&gt; 2   0.4      0.30      0.55 0.29628476 -1.01371077</span></span>
+<span><span class="co">#&gt; 3   0.7      0.55      0.87 0.21428417  0.06705239</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["carat"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<p>By combining standard ggplot2 functions, you have a high degree of
+freedom to customize the plot—such as changing line widths and colors,
+or overlaying actual data points with <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point()</a></code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat"</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"dodgerblue4"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat"</span>, type <span class="op">=</span> <span class="st">"data"</span>, shape <span class="op">=</span> <span class="st">"."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">density</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat"</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">diamonds_sample</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"firebrick1"</span><span class="op">)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat"</span>, type <span class="op">=</span> <span class="st">"data"</span>, theme <span class="op">=</span> <span class="st">"shap"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
-<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" alt="" width="864"></p>
-</div>
-<div class="section level3">
-<h3 id="first-order-effect-factor-variable">First-Order Effect (Factor Variable)<a class="anchor" aria-label="anchor" href="#first-order-effect-factor-variable"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, fill <span class="op">=</span> <span class="st">"dodgerblue4"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>, shape <span class="op">=</span> <span class="st">"."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">density</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>, theme <span class="op">=</span> <span class="st">"shap"</span>, shape <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
-<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="864"></p>
-</div>
-<div class="section level3">
-<h3 id="second-order-effect">Second-Order Effect<a class="anchor" aria-label="anchor" href="#second-order-effect"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>,</span>
-<span>            theme <span class="op">=</span> <span class="st">"mako"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_blank.html" class="external-link">geom_blank</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>,</span>
-<span>            theme <span class="op">=</span> <span class="st">"shap"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">clarity</span>, color <span class="op">=</span> <span class="va">mid</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
 <p><img src="ggplot2_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
+<h3 id="first-order-effect-factor-variable">First-Order Effect (Factor Variable)<a class="anchor" aria-label="anchor" href="#first-order-effect-factor-variable"></a>
+</h3>
+<p>Categorical variables can be visualized in a similar manner. If the
+<code>lump</code> argument was specified during model fitting, factor
+levels are automatically grouped together. However, by setting
+<code>lumped = FALSE</code> when plotting, you can expand and display
+all levels.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, lumped <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   clarity clarity_level   density         mid</span></span>
+<span><span class="co">#&gt; 1  I1&gt;SI2             1 0.1841861 -0.30105990</span></span>
+<span><span class="co">#&gt; 2     SI1             2 0.2422136 -0.10227555</span></span>
+<span><span class="co">#&gt; 3     VS2             3 0.2272525  0.04047436</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["clarity"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<p>You can also overlay bar charts or use <code><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter()</a></code> to
+simultaneously represent the data distribution for each category.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, fill <span class="op">=</span> <span class="st">"dodgerblue4"</span>, lumped <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, fill <span class="op">=</span> <span class="va">.transparent</span>, lumped <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, height <span class="op">=</span> <span class="fl">0</span>, data <span class="op">=</span> <span class="va">diamonds_sample</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"firebrick1"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>, theme <span class="op">=</span> <span class="st">"shap"</span>, shape <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="second-order-effect">Second-Order Effect<a class="anchor" aria-label="anchor" href="#second-order-effect"></a>
+</h3>
+<p>This visualizes the interaction between two variables
+(<code>term = "var1:var2"</code>). By specifying
+<code>main.effects = TRUE</code>, you can view the overall effect,
+including the main effects.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   carat carat_min carat_max clarity clarity_level clarity_min clarity_max</span></span>
+<span><span class="co">#&gt; 1   0.2      0.20      0.30  I1&gt;SI2             1         0.5         1.5</span></span>
+<span><span class="co">#&gt; 2   0.4      0.30      0.55  I1&gt;SI2             1         0.5         1.5</span></span>
+<span><span class="co">#&gt; 3   0.7      0.55      0.87  I1&gt;SI2             1         0.5         1.5</span></span>
+<span><span class="co">#&gt;          mid</span></span>
+<span><span class="co">#&gt; 1 0.06350548</span></span>
+<span><span class="co">#&gt; 2 0.03083300</span></span>
+<span><span class="co">#&gt; 3 0.08065825</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["carat"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["clarity"]]`</span></span></code></pre>
+<p>Additionally, by utilizing heatmap-oriented themes (e.g.,
+<code>theme = "Heat"</code>, <code>"mako"</code>), complex second-order
+effects can be represented intuitively.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, type <span class="op">=</span> <span class="st">"compound"</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"Heat"</span>, size <span class="op">=</span> <span class="fl">1</span>, shape <span class="op">=</span> <span class="fl">1</span>, lumped <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"mako"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mid</span>, term <span class="op">=</span> <span class="st">"carat:clarity"</span>, type <span class="op">=</span> <span class="st">"data"</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"shap"</span>, main.effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">clarity</span>, color <span class="op">=</span> <span class="va">mid</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
 <h3 id="feature-importance">Feature Importance<a class="anchor" aria-label="anchor" href="#feature-importance"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Here, we visualize the importance of each variable calculated by the
+<code><a href="../reference/mid.importance.html">mid.importance()</a></code> function. <code><a href="../reference/ggmid.html">ggmid()</a></code> supports
+various plot formats depending on your needs through the type
+argument.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, color <span class="op">=</span> <span class="st">"gray20"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, theme <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;      term importance order</span></span>
+<span><span class="co">#&gt; 1   carat  0.9291310     1</span></span>
+<span><span class="co">#&gt; 2 clarity  0.1638387     1</span></span>
+<span><span class="co">#&gt; 3   color  0.1016388     1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["importance"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, theme <span class="op">=</span> <span class="st">"light"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"shap"</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">importance</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">importance</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">lims</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.05</span>, <span class="fl">1.05</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="864"></p>
+<p>The heatmap style provides a high-level overview of importance values
+in a heatmap format.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;         x       y importance</span></span>
+<span><span class="co">#&gt; 1   carat   carat  0.9291310</span></span>
+<span><span class="co">#&gt; 2 clarity clarity  0.1638387</span></span>
+<span><span class="co">#&gt; 3   color   color  0.1016388</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["x"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["y"]]`</span></span></code></pre>
+<p>Adding text (<code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code>) to explicitly show the values
+makes it even more reader-friendly.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">importance</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, theme <span class="op">=</span> <span class="st">"mako_r"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">importance</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"heatmap"</span>, fill <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">importance</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="864"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"barplot"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"dotchart"</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></span>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="864"></p>
+<p>The boxplot style represents the distribution of importance in
+detail.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;          mid  term importance order</span></span>
+<span><span class="co">#&gt; 1  0.8101023 carat   0.929131     1</span></span>
+<span><span class="co">#&gt; 2 -1.4030059 carat   0.929131     1</span></span>
+<span><span class="co">#&gt; 3  0.8844073 carat   0.929131     1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["mid"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span>, theme <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span>, fill <span class="op">=</span> <span class="va">.transparent</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">.5</span>, width <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"firebrick1"</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imp</span>, type <span class="op">=</span> <span class="st">"boxplot"</span>, fill <span class="op">=</span> <span class="va">.transparent</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">importance</span><span class="op">)</span>, scale <span class="op">=</span> <span class="st">"width"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="864"></p>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="prediction-breakdown">Prediction Breakdown<a class="anchor" aria-label="anchor" href="#prediction-breakdown"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Using <code><a href="../reference/mid.breakdown.html">mid.breakdown()</a></code>, we decompose and display the
+contribution of each feature to the prediction for a specific
+observation.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">brk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.breakdown.html">mid.breakdown</a></span><span class="op">(</span><span class="va">mid</span>, row <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, fill <span class="op">=</span> <span class="va">.transparent</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_linerange</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xmax <span class="op">=</span> <span class="va">xmax</span>, xmin <span class="op">=</span> <span class="va">xmin</span>, color <span class="op">=</span> <span class="va">mid</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">mid</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"bicolor"</span><span class="op">)</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"dotchart"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;          term        mid order ymin ymax     xmin     xmax</span></span>
+<span><span class="co">#&gt; 1     carat=1  0.8101023     1  9.7 10.3 7.786768 8.596871</span></span>
+<span><span class="co">#&gt; 2 clarity=SI2 -0.3010599     1  8.7  9.3 8.596871 8.295811</span></span>
+<span><span class="co">#&gt; 3     color=E  0.1052924     1  7.7  8.3 8.295811 8.401103</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["xmax"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, theme <span class="op">=</span> <span class="st">"shap@qual"</span>, color <span class="op">=</span> <span class="va">.transparent</span>, width <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">mid</span>, <span class="fl">2</span><span class="op">)</span>, x <span class="op">=</span> <span class="op">(</span><span class="va">xmin</span> <span class="op">+</span> <span class="va">xmax</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, pattern <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"%t"</span>, <span class="st">"%t, %t"</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, pattern <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"%t\n%v"</span>, <span class="st">"%t:%t\n%v:%v"</span><span class="op">)</span>, max.nterms <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="864"></p>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" width="864"></p>
+<p>You can flexibly adjust the layout using the pattern and type
+arguments, ranging from waterfall-like charts to bar plots and dot
+charts.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"barplot"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"dotchart"</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;          term        mid order</span></span>
+<span><span class="co">#&gt; 1     carat=1  0.8101023     1</span></span>
+<span><span class="co">#&gt; 2 clarity=SI2 -0.3010599     1</span></span>
+<span><span class="co">#&gt; 3     color=E  0.1052924     1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["mid"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"barplot"</span>, theme <span class="op">=</span> <span class="st">"light"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"barplot"</span>, theme <span class="op">=</span> <span class="st">"bicolor_r"</span>, vline <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">mid</span>, <span class="fl">2</span><span class="op">)</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.03</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brk</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, theme <span class="op">=</span> <span class="st">"shap"</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-24-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="conditional-expectation">Conditional Expectation<a class="anchor" aria-label="anchor" href="#conditional-expectation"></a>
+</h3>
+<p>Using <code><a href="../reference/mid.conditional.html">mid.conditional()</a></code>, we can observe how the
+predicted values transition as a specific variable changes (similar to
+ICE plots or PDPs). By specifying <code>type = "centered"</code>, you
+can align the baselines by showing the amount of change from a specific
+reference point (reference), making it easier to compare the model’s
+behavior across different groups.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mid</span>, variable <span class="op">=</span> <span class="st">"carat"</span>, data <span class="op">=</span> <span class="va">diamonds_sample</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">con</span>, type <span class="op">=</span> <span class="st">"centered"</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-25-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   .id     yhat log.price. carat     cut color clarity centered yhat</span></span>
+<span><span class="co">#&gt; 1   1 8.402259   8.468003  1.00   Ideal     E     SI2     2.6519350</span></span>
+<span><span class="co">#&gt; 2   2 6.624097   6.598509  0.31   Ideal     D     VS2     0.4666793</span></span>
+<span><span class="co">#&gt; 3   3 9.007005   8.964056  1.03 Premium     E     VS1     2.6788562</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["carat"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["centered yhat"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">con</span>, points <span class="op">=</span> <span class="cn">FALSE</span>, color <span class="op">=</span> <span class="st">"dodgerblue4"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">con</span>, type <span class="op">=</span> <span class="st">"centered"</span>, var.color <span class="op">=</span> <span class="va">cut</span>,</span>
+<span>            shape <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">3</span>, var.linetype <span class="op">=</span> <span class="va">cut</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">con</span>, type <span class="op">=</span> <span class="st">"centered"</span>, theme <span class="op">=</span> <span class="st">"light"</span>,</span>
+<span>            var.color <span class="op">=</span> <span class="st">"cut"</span>, reference <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-27-1.png" class="r-plt" alt="" width="864"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="collection-of-mid-models">Collection of MID Models<a class="anchor" aria-label="anchor" href="#collection-of-mid-models"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
+<p>Next, we will explore visualizations for a collection (set) of
+multiple MID models. As an example, we build a Cox proportional hazards
+model using the <code>veteran</code> dataset from the
+<strong>survival</strong> package, and evaluate the transition of
+effects over time as a collection of models.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># fit a survival mid model</span></span>
 <span><span class="va">sreg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">veteran</span></span>
@@ -216,34 +447,259 @@ functions.</p>
 <span>  model <span class="op">=</span> <span class="va">sreg</span>,</span>
 <span>  lambda <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="ggmid-mids">ggmid.mids()<a class="anchor" aria-label="anchor" href="#ggmid-mids"></a>
-</h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"celltype"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; data: celltype, label, mid [404x3]</span></span>
-<span><span class="co">#&gt; mapping:  x = ~.data[["label"]], y = ~.data[["mid"]]</span></span>
-<span><span class="co">#&gt; scales:   colour, y, ymin, ymax, yend, yintercept, ymin_final, ymax_final, lower, middle, upper, y0 </span></span>
-<span><span class="co">#&gt; faceting:  &lt;empty&gt; </span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; mapping: colour = ~.data[["celltype"]], group = ~.data[["celltype"]] </span></span>
-<span><span class="co">#&gt; geom_line: na.rm = FALSE, orientation = NA, arrow = NULL, arrow.fill = NULL, lineend = butt, linejoin = round, linemitre = 10</span></span>
-<span><span class="co">#&gt; stat_identity: na.rm = FALSE</span></span>
-<span><span class="co">#&gt; position_identity</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span></span>
-<span>  <span class="va">mids</span>, <span class="st">"celltype"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, color <span class="op">=</span> <span class="st">"#00000000"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
+<div class="section level3">
+<h3 id="first-order-effect-numeric-variable-1">First-Order Effect (Numeric Variable)<a class="anchor" aria-label="anchor" href="#first-order-effect-numeric-variable-1"></a>
+</h3>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"karno"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-29-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;      karno label         mid</span></span>
+<span><span class="co">#&gt; 1 10.00000     1 -0.03451831</span></span>
+<span><span class="co">#&gt; 2 10.90816     1 -0.03361561</span></span>
+<span><span class="co">#&gt; 3 11.81633     1 -0.03271292</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["karno"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<p>When you have multiple models with numeric labels, specifying
+<code>type = "series"</code> allows you to easily create a
+time-series-like transition graph with the model index (here, survival
+time) on the x-axis.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"karno"</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-31-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;      karno label         mid</span></span>
+<span><span class="co">#&gt; 1 10.00000     1 -0.03451831</span></span>
+<span><span class="co">#&gt; 2 13.70833     1 -0.03083229</span></span>
+<span><span class="co">#&gt; 3 17.41667     1 -0.02714627</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["label"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<p>You can also plot the baseline intercept transition by setting
+<code>intercept = TRUE</code>, or adjust the format for publication
+using theme functions, such as monochrome
+(<code>theme = "grayscale"</code>).</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"karno"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"karno"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"karno"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"grayscale"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">label</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">intercept</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/labels.html" class="external-link">labels</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span>, intercept <span class="op">=</span> <span class="va">mids</span><span class="op">$</span><span class="va">intercept</span><span class="op">)</span>,</span>
-<span>    linewidth <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">.1</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span></span>
+<span>    data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>      mid <span class="op">=</span> <span class="va">mids</span><span class="op">$</span><span class="va">intercept</span>,</span>
+<span>      label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/labels.html" class="external-link">labels</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"firebrick1"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-33-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="first-order-effect-factor-variable-1">First-Order Effect (Factor Variable)<a class="anchor" aria-label="anchor" href="#first-order-effect-factor-variable-1"></a>
+</h3>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"celltype"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-34-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;    celltype label          mid</span></span>
+<span><span class="co">#&gt; 1  squamous     1  0.007073419</span></span>
+<span><span class="co">#&gt; 2 smallcell     1 -0.001229267</span></span>
+<span><span class="co">#&gt; 3     adeno     1 -0.009254885</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["celltype"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"celltype"</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-36-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;    celltype label          mid</span></span>
+<span><span class="co">#&gt; 1  squamous     1  0.007073419</span></span>
+<span><span class="co">#&gt; 2 smallcell     1 -0.001229267</span></span>
+<span><span class="co">#&gt; 3     adeno     1 -0.009254885</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["label"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"celltype"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"celltype"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>            theme <span class="op">=</span> <span class="st">"mako"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, term <span class="op">=</span> <span class="st">"celltype"</span>, type <span class="op">=</span> <span class="st">"series"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>      mid <span class="op">=</span> <span class="va">mids</span><span class="op">$</span><span class="va">intercept</span>,</span>
+<span>      label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/labels.html" class="external-link">labels</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    linetype <span class="op">=</span> <span class="st">"dotted"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-38-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="feature-importance-1">Feature Importance<a class="anchor" aria-label="anchor" href="#feature-importance-1"></a>
+</h3>
+<p>The feature importance for the model collection can also be
+visualized along the progression of time (or model differences).</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">imps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-39-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   term label  importance</span></span>
+<span><span class="co">#&gt; 1  age     1 0.001147048</span></span>
+<span><span class="co">#&gt; 2  age    10 0.007087329</span></span>
+<span><span class="co">#&gt; 3  age   100 0.023270137</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["importance"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-41-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   term label  importance</span></span>
+<span><span class="co">#&gt; 1  age     1 0.001147048</span></span>
+<span><span class="co">#&gt; 2  age    10 0.007087329</span></span>
+<span><span class="co">#&gt; 3  age   100 0.023270137</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["label"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["importance"]]`</span></span></code></pre>
+<p>By using stacked area charts with <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area()</a></code> or
+representing distributions with <code><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot()</a></code> or
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter()</a></code>, you can visually capture the dynamics of
+which features become important at what specific timing.</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, fill <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, fill <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"mako"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">imps</span>, type <span class="op">=</span> <span class="st">"series"</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">term</span><span class="op">)</span>, position <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_color_theme.html">scale_fill_theme</a></span><span class="op">(</span><span class="st">"light"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-43-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="prediction-breakdown-1">Prediction Breakdown<a class="anchor" aria-label="anchor" href="#prediction-breakdown-1"></a>
+</h3>
+<p>Similar to a single breakdown, this visualizes how the contribution
+of features for a specific observation changes across the entire
+collection. It is highly effective for tracking how the local impact of
+each variable fluctuates over time.</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">brks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.breakdown.html">mid.breakdown</a></span><span class="op">(</span><span class="va">mids</span>, row <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brks</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-44-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;     term label          mid</span></span>
+<span><span class="co">#&gt; 1 age=72     1 -0.002957693</span></span>
+<span><span class="co">#&gt; 2 age=72    10 -0.012751333</span></span>
+<span><span class="co">#&gt; 3 age=72   100  0.048345388</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["mid"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["term"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brks</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-46-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;     term label          mid</span></span>
+<span><span class="co">#&gt; 1 age=72     1 -0.002957693</span></span>
+<span><span class="co">#&gt; 2 age=72    10 -0.012751333</span></span>
+<span><span class="co">#&gt; 3 age=72   100  0.048345388</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["label"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["mid"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brks</span>, fill <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brks</span>, fill <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_color_theme.html">scale_color_theme</a></span><span class="op">(</span><span class="st">"mako"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">brks</span>, type <span class="op">=</span> <span class="st">"series"</span>, color <span class="op">=</span> <span class="va">.transparent</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">term</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_color_theme.html">scale_fill_theme</a></span><span class="op">(</span><span class="st">"light"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-48-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level3">
+<h3 id="conditional-expectation-1">Conditional Expectation<a class="anchor" aria-label="anchor" href="#conditional-expectation-1"></a>
+</h3>
+<p>Finally, let’s look at the transition of conditional expectations
+across multiple models or time axes. By utilizing
+<code>facet_grid(~ .id)</code>, you can split the panels by time (the
+model’s index) and compare side-by-side how the shape of the expectation
+evolves.</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.conditional.html">mid.conditional</a></span><span class="op">(</span><span class="va">mids</span>, variable <span class="op">=</span> <span class="st">"karno"</span>,</span>
+<span>                        max.nsamples <span class="op">=</span> <span class="fl">3L</span>, data <span class="op">=</span> <span class="va">veteran</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"centered"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
-<p><img src="ggplot2_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="864"></p>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-49-1.png" class="r-plt" alt="" width="672"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   .id      yhat Surv.time..status. trt celltype karno diagtime age prior label</span></span>
+<span><span class="co">#&gt; 1   1 0.9973367                 72   1 squamous    60        7  69     0     1</span></span>
+<span><span class="co">#&gt; 2   2 1.0018733                411   1 squamous    70        5  64    10     1</span></span>
+<span><span class="co">#&gt; 3   3 0.9957201                228   1 squamous    60        3  38     0     1</span></span>
+<span><span class="co">#&gt;   centered yhat</span></span>
+<span><span class="co">#&gt; 1    0.03776301</span></span>
+<span><span class="co">#&gt; 2    0.04090414</span></span>
+<span><span class="co">#&gt; 3    0.03776301</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["karno"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["centered yhat"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, theme <span class="op">=</span> <span class="st">"mako"</span>, type <span class="op">=</span> <span class="st">"centered"</span>, reference <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span> <span class="va">.id</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-51-1.png" class="r-plt" alt="" width="864"></p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-52-1.png" class="r-plt" alt="" width="336"></p>
+<pre><code><span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;   .id      yhat Surv.time..status. trt celltype karno diagtime age prior label</span></span>
+<span><span class="co">#&gt; 1   1 0.9973367                 72   1 squamous    60        7  69     0     1</span></span>
+<span><span class="co">#&gt; 2   2 1.0018733                411   1 squamous    70        5  64    10     1</span></span>
+<span><span class="co">#&gt; 3   3 0.9957201                228   1 squamous    60        3  38     0     1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mapping</span></span>
+<span><span class="co">#&gt; Aesthetic mapping: </span></span>
+<span><span class="co">#&gt; * `x` -&gt; `.data[["label"]]`</span></span>
+<span><span class="co">#&gt; * `y` -&gt; `.data[["yhat"]]`</span></span></code></pre>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, theme <span class="op">=</span> <span class="st">"mako"</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span> <span class="va">.id</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ggplot2_files/figure-html/unnamed-chunk-54-1.png" class="r-plt" alt="" width="864"></p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
