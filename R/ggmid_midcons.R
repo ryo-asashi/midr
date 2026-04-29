@@ -75,15 +75,18 @@ ggmid.midcons <- function(
     labels <- factor(labels, levels = unique(labels))
     con$label <- factor(con$label, levels = levels(labels))
   }
+  obs$label <- labels[[1L]]
   yvar <- "yhat"
   if (type == "centered") {
     if (reference < 0) reference <- length(values)
     refval <- values[min(length(values), max(1L, reference))]
     ref <- con[con[[variable]] == refval, , drop = FALSE]
-    key1 <- sprintf("%s(%s)", con$.id, con$label)
-    key2 <- sprintf("%s(%s)", ref$.id, ref$label)
+    okey <- sprintf("%s(%s)", obs$.id, obs$label)
+    ckey <- sprintf("%s(%s)", con$.id, con$label)
+    rkey <- sprintf("%s(%s)", ref$.id, ref$label)
     ynew <- paste0("centered ", yvar)
-    con[, ynew] <- con[, yvar] - ref[match(key1, key2), yvar]
+    obs[, ynew] <- obs[, yvar] - ref[match(okey, rkey), yvar]
+    con[, ynew] <- con[, yvar] - ref[match(ckey, rkey), yvar]
     yvar <- ynew
   }
   if (!is.null(sample)) {
@@ -96,6 +99,7 @@ ggmid.midcons <- function(
   }
   xvar <- if (type == "series") "label" else variable
   pl <- ggplot2::ggplot(
+    data = obs,
     mapping = ggplot2::aes(x = .data[[xvar]], y = .data[[yvar]])
   )
   if (!is.null(alp <- substitute(var.alpha))) {
@@ -131,14 +135,15 @@ ggmid.midcons <- function(
       if (is.discrete(con[[variable]])) getOption("midr.qualitative", "HCL")
       else getOption("midr.sequential", "bluescale")
     )
-    theme <- color.theme(theme)
-    pl <- pl +
-      ggplot2::aes(
+    mpg <- ggplot2::aes(
         color = .data[[variable]],
         group = interaction(.data[[".id"]], factor(.data[[variable]]))
       )
-    pl <- pl + if (discrete) .geom_linepoint(data = con, ...) else
-      .geom_line(data = con, ...)
+    pl <- pl + if (discrete) {
+      .geom_linepoint(mapping = mpg, data = con, ...)
+    } else {
+      .geom_line(mapping = mpg, data = con, ...)
+    }
     pl <- pl + ggplot2::labs(x = NULL) +
       scale_color_theme(theme, discrete = is.discrete(con[[variable]]))
   } else if (type == "iceplot" || type == "centered") {
@@ -146,12 +151,12 @@ ggmid.midcons <- function(
       if (discrete) getOption("midr.qualitative", "HCL")
       else getOption("midr.sequential", "bluescale")
     )
-    pl <- pl + .geom_line(
-      mapping = ggplot2::aes(
-        color = .data[["label"]],
-        group = interaction(.data[[".id"]], factor(.data[["label"]]))
-      ), data = con, ...
-    ) + scale_color_theme(theme = theme, discrete = discrete)
+    mpg <- ggplot2::aes(
+      color = .data[["label"]],
+      group = interaction(.data[[".id"]], factor(.data[["label"]]))
+    )
+    pl <- pl + .geom_line(mapping = mpg, data = con, ...) +
+      scale_color_theme(theme = theme, discrete = discrete)
   }
   pl
 }

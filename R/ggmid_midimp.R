@@ -106,14 +106,14 @@ ggmid.midimp <- function(
     preds_vec <- as.numeric(preds[, terms, drop = FALSE])
     terms <- factor(terms, levels = rev(terms))
     box <- data.frame(mid = preds_vec, term = rep(terms, each = nrow(preds)))
+    idx <- match(box$term, imp$term)
+    box$importance <- imp$importance[idx]
+    if ("order" %in% names(imp)) box$order <- imp$order[idx]
     pl <- ggplot2::ggplot(
-      box, ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
+      data = box,
+      mapping = ggplot2::aes(x = .data[["mid"]], y = .data[["term"]])
     ) + .geom_boxplot(...) + ggplot2::labs(y = NULL)
     if (use.theme) {
-      idx <- match(box$term, imp$term)
-      box$importance <- imp$importance[idx]
-      if ("order" %in% names(imp)) box$order <- imp$order[idx]
-      pl$data <- box
       var <- if (theme$type == "qualitative") "order" else "importance"
       pl <- pl + ggplot2::aes(fill = .data[[var]], group = .data[["term"]]) +
         scale_fill_theme(theme = theme)

@@ -19,24 +19,33 @@ for (pkg in pkgs) {
 }
 ```
 
-This article showcases visualizations of MID models using the `ggmid()` function with **ggplot2** functions.
+## Introduction
+
+This tutorial explains how to flexibly visualize MID models built with the **midr** package using the **ggplot2** ecosystem.
+
+Since the `ggmid()` function returns a ggplot object, you can easily combine plots using **patchwork** or add advanced customizations via `geom_*()` functions.
+Through this article, we will explore step-by-step how to create rich figures suitable for papers and reports, starting from the default plots.
 
 ```{r packages, message=FALSE, warning=FALSE}
 library(midr)
 library(ggplot2)
 library(patchwork)
+library(survival)
 theme_set(theme(legend.position = "bottom"))
 .transparent <- "#ffffff00"
 ```
 
 ## Single MID Model
 
+First, let's look at basic visualizations using a single MID model.
+Here, we use the built-in `diamonds` dataset to build a model that predicts the diamond's price.
+
 ```{r diamonds}
 # fit a MID model
 mid <- interpret(
   log(price) ~ (carat + cut + color + clarity) ^ 2,
-  k = 5L,
-  lamp = "auto",
+  k = 5L, # number of basis functions
+  lump = "auto", # lump factor levels
   data = diamonds,
   verbosity = 0L
 )
@@ -44,13 +53,31 @@ diamonds_sample <- diamonds[sample(nrow(diamonds), 1000L), ]
 mid$call$data <- quote(diamonds_sample)
 ```
 
-
 ### First-Order Effect (Numeric Variable)
+
+To examine the effect of a continuous variable, specify the variable name in the `term` argument.
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(mid, term = "carat")
+p1
+```
+
+In addition to the default plot, you can also see the underlying data and aesthetic mappings (`aes`) that `ggmid()` generates internally.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+By combining standard ggplot2 functions, you have a high degree of freedom to customize the plot—such as changing line widths and colors, or overlaying actual data points with `geom_point()`.
 
 ```{r}
 p1 <- ggmid(mid, term = "carat", linewidth = 2, color = "dodgerblue4")
-p2 <- ggmid(mid, term = "carat", type = "data", shape = ".") +
-  geom_point(aes(size = density), shape = 1L)
+p2 <- ggmid(mid, term = "carat", color = .transparent) +
+  geom_point(aes(y = log(price) - mean(log(price))), data = diamonds_sample) +
+  geom_line(color = "firebrick1")
 p3 <- ggmid(mid, term = "carat", type = "data", theme = "shap") +
   geom_line(linewidth = 4, alpha = .2)
 p1 + p2 + p3
@@ -58,10 +85,30 @@ p1 + p2 + p3
 
 ### First-Order Effect (Factor Variable)
 
+Categorical variables can be visualized in a similar manner.
+If the `lump` argument was specified during model fitting, factor levels are automatically grouped together.
+However, by setting `lumped = FALSE` when plotting, you can expand and display all levels.
+
+```{r, fig.width = 7}
+p1 <- ggmid(mid, term = "clarity")
+p2 <- ggmid(mid, term = "clarity", lumped = FALSE)
+p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+You can also overlay bar charts or use `geom_jitter()` to simultaneously represent the data distribution for each category.
+
 ```{r}
-p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4")
-p2 <- ggmid(mid, term = "clarity", type = "data", shape = ".") +
-  geom_point(aes(size = density), shape = 1L)
+p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4", lumped = FALSE)
+p2 <- ggmid(mid, term = "clarity", fill = .transparent, lumped = FALSE) +
+  geom_jitter(aes(y = log(price) - mean(log(price))), height = 0, data = diamonds_sample) +
+  geom_col(fill = NA, color = "firebrick1")
 p3 <- ggmid(mid, term = "clarity", type = "data", theme = "shap", shape = "|") +
   geom_line(aes(group = NA), linewidth = 4, alpha = .2)
 p1 + p2 + p3
@@ -69,11 +116,29 @@ p1 + p2 + p3
 
 ### Second-Order Effect
 
+This visualizes the interaction between two variables (`term = "var1:var2"`).
+By specifying `main.effects = TRUE`, you can view the overall effect, including the main effects.
+
+```{r, fig.width = 7}
+p1 <- ggmid(mid, term = "carat:clarity")
+p2 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
+p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+Additionally, by utilizing heatmap-oriented themes (e.g., `theme = "Heat"`, `"mako"`), complex second-order effects can be represented intuitively.
+
 ```{r}
-p1 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
+p1 <- ggmid(mid, term = "carat:clarity", type = "compound",
+            theme = "Heat", size = 1, shape = 1, lumped = FALSE)
 p2 <- ggmid(mid, term = "carat:clarity", type = "data",
-            theme = "mako", main.effects = TRUE) +
-  geom_blank()
+            theme = "mako", main.effects = TRUE)
 p3 <- ggmid(mid, term = "carat:clarity", type = "data",
             theme = "shap", main.effects = TRUE) +
   geom_line(aes(group = clarity, color = mid), linewidth = 4, alpha = .2)
@@ -82,40 +147,167 @@ p1 + p2 + p3
 
 ### Feature Importance
 
-```{r}
+Here, we visualize the importance of each variable calculated by the `mid.importance()` function.
+`ggmid()` supports various plot formats depending on your needs through the type argument.
+
+```{r, fig.width = 7}
 imp <- mid.importance(mid)
-p1 <- ggmid(imp, type = "heatmap", color = "gray20")
-p2 <- ggmid(imp, type = "heatmap", theme = "mako") +
+p1 <- ggmid(imp)
+p2 <- ggmid(imp, type = "dotchart")
+p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r}
+p1 <- ggmid(imp, theme = "light")
+p2 <- ggmid(imp, type = "dotchart", theme = "shap", size = 3)
+p3 <- ggmid(imp, type = "dotchart", color = .transparent) +
+  geom_label(aes(x = importance, label = round(importance, 2)), size = 3) +
+  lims(x = c(-0.05, 1.05))
+p1 + p2 + p3
+```
+
+The heatmap style provides a high-level overview of importance values in a heatmap format.
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(imp, type = "heatmap")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+Adding text (`geom_text()`) to explicitly show the values makes it even more reader-friendly.
+
+```{r}
+p1 <- ggmid(imp, type = "heatmap", fill = "white", color = "black") + 
+  geom_text(aes(label = round(importance, 2)))
+p2 <- ggmid(imp, type = "heatmap", theme = "mako_r") +
   geom_text(aes(label = round(importance, 2)), color = "white")
 p3 <- ggmid(imp, type = "heatmap", fill = .transparent) +
   geom_point(aes(size = importance), color = "steelblue")
 p1 + p2 + p3
 ```
 
+The boxplot style represents the distribution of importance in detail.
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(imp, type = "boxplot")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
 ```{r}
-p1 <- ggmid(imp, type = "barplot")
-p2 <- ggmid(imp, type = "dotchart")
-p3 <- ggmid(imp, type = "boxplot")
+p1 <- ggmid(imp, type = "boxplot", theme = "mako")
+p2 <- ggmid(imp, type = "boxplot", fill = .transparent, color = .transparent) +
+  geom_jitter(size = .5, width = 0) +
+  geom_boxplot(color = "firebrick1", fill = NA)
+p3 <- ggmid(imp, type = "boxplot", fill = .transparent, color = .transparent) +
+  geom_violin(aes(fill = importance), scale = "width")
 p1 + p2 + p3
 ```
 
 ### Prediction Breakdown
 
-```{r}
+Using `mid.breakdown()`, we decompose and display the contribution of each feature to the prediction for a specific observation.
+
+```{r, fig.width = 3.5}
 brk <- mid.breakdown(mid, row = 1L)
 p1 <- ggmid(brk)
-p2 <- ggmid(brk, fill = .transparent, color = .transparent) +
-  geom_linerange(aes(xmax = xmax, xmin = xmin, color = mid), linewidth = 4) +
-  geom_tile(aes(color = mid)) +
-  scale_color_theme("bicolor")
-p3 <- ggmid(brk, type = "dotchart")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r}
+p1 <- ggmid(brk, theme = "shap@qual", color = .transparent, width = .95) +
+  geom_text(aes(label = round(mid, 2), x = (xmin + xmax) / 2), size = 3)
+p2 <- ggmid(brk, pattern = c("%t", "%t, %t"), width = .05)
+p3 <- ggmid(brk, pattern = c("%t\n%v", "%t:%t\n%v:%v"), max.nterms = 7)
+p1 + p2 + p3
+```
+
+You can flexibly adjust the layout using the pattern and type arguments, ranging from waterfall-like charts to bar plots and dot charts.
+
+```{r, fig.width = 7}
+p1 <- ggmid(brk, type = "barplot")
+p2 <- ggmid(brk, type = "dotchart")
+p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r}
+p1 <- ggmid(brk, type = "barplot", theme = "light")
+p2 <- ggmid(brk, type = "barplot", theme = "bicolor_r", vline = FALSE) +
+  aes(x = abs(mid)) +
+  geom_text(aes(label = round(mid, 2), x = abs(mid) + 0.03), size = 3)
+p3 <- ggmid(brk, type = "dotchart", theme = "shap", size = 3)
+p1 + p2 + p3
+```
+
+### Conditional Expectation
+
+Using `mid.conditional()`, we can observe how the predicted values transition as a specific variable changes (similar to ICE plots or PDPs).
+By specifying `type = "centered"`, you can align the baselines by showing the amount of change from a specific reference point (reference), making it easier to compare the model's behavior across different groups.
+
+```{r, fig.width = 7}
+con <- mid.conditional(mid, variable = "carat", data = diamonds_sample[1:100, ])
+p1 <- ggmid(con)
+p2 <- ggmid(con, type = "centered")
+p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p2[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r}
+p1 <- ggmid(con, points = FALSE, color = "dodgerblue4") +
+  geom_point()
+p2 <- ggmid(con, type = "centered", var.color = cut,
+            shape = 1, size = 3, var.linetype = cut)
+p3 <- ggmid(con, type = "centered", theme = "light",
+            var.color = "cut", reference = 50)
 p1 + p2 + p3
 ```
 
 ## Collection of MID Models
 
+Next, we will explore visualizations for a collection (set) of multiple MID models.
+As an example, we build a Cox proportional hazards model using the `veteran` dataset from the **survival** package, and evaluate the transition of effects over time as a collection of models.
+
 ```{r}
-library(survival)
+# fit a survival mid model
 sreg <- coxph(
   Surv(time, status) ~ .,
   data = veteran
@@ -128,23 +320,220 @@ mids <- interpret(
 )
 ```
 
+### First-Order Effect (Numeric Variable)
 
-## ggmid.mids()
+```{r, fig.width = 3.5}
+p1 <- ggmid(mids, term = "karno")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+When you have multiple models with numeric labels, specifying `type = "series"` allows you to easily create a time-series-like transition graph with the model index (here, survival time) on the x-axis.
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(mids, term = "karno", type = "series")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+You can also plot the baseline intercept transition by setting `intercept = TRUE`, or adjust the format for publication using theme functions, such as monochrome (`theme = "grayscale"`).
 
 ```{r}
-p1 <- ggmid(mids, "celltype", type = "series", intercept = TRUE)
-summary(p1)
+p1 <- ggmid(mids, term = "karno", intercept = TRUE)
+p2 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+            theme = "mako")
+p3 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+            theme = "grayscale") +
+  geom_line(
+    data = data.frame(
+      mid = mids$intercept,
+      label = as.numeric(labels(mids))
+    ),
+    color = "firebrick1"
+  )
+p1 + p2 + p3
+```
+
+### First-Order Effect (Factor Variable)
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(mids, "celltype")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(mids, "celltype", type = "series")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
 ```
 
 ```{r}
-p2 <- ggmid(
-  mids, "celltype", type = "series", intercept = TRUE, color = "#00000000"
-  ) +
+p1 <- ggmid(mids, term = "celltype", intercept = TRUE)
+p2 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE,
+            theme = "mako")
+p3 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE) +
   geom_line(
-    aes(x = as.numeric(label), y = intercept),
-    data.frame(label = labels(mids), intercept = mids$intercept),
-    linewidth = 2, alpha = .1
-  ) +
-  geom_line(aes(linetype = celltype))
+    data = data.frame(
+      mid = mids$intercept,
+      label = as.numeric(labels(mids))
+    ),
+    linetype = "dotted"
+  )
+p1 + p2 + p3
+```
+
+### Feature Importance
+
+The feature importance for the model collection can also be visualized along the progression of time (or model differences).
+
+```{r, fig.width = 3.5}
+imps <- mid.importance(mids)
+p1 <- ggmid(imps)
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(imps, type = "series")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+By using stacked area charts with `geom_area()` or representing distributions with `geom_boxplot()` or `geom_jitter()`, you can visually capture the dynamics of which features become important at what specific timing.
+
+```{r}
+p1 <- ggmid(imps, fill = .transparent) +
+  geom_boxplot()
+p2 <- ggmid(imps, fill = .transparent) +
+  geom_jitter(aes(color = label), width = 0) +
+  scale_color_theme("mako")
+p3 <- ggmid(imps, type = "series", color = .transparent) +
+  geom_area(aes(fill = term), position = "fill") +
+  scale_fill_theme("light")
+
+p1 + p2 + p3
+```
+
+### Prediction Breakdown
+
+Similar to a single breakdown, this visualizes how the contribution of features for a specific observation changes across the entire collection.
+It is highly effective for tracking how the local impact of each variable fluctuates over time.
+
+```{r, fig.width = 3.5}
+brks <- mid.breakdown(mids, row = 42)
+p1 <- ggmid(brks)
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(brks, type = "series")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+
+```{r}
+p1 <- ggmid(brks, fill = .transparent) +
+  geom_boxplot()
+p2 <- ggmid(brks, fill = .transparent) +
+  geom_jitter(aes(color = label), width = 0) +
+  scale_color_theme("mako")
+p3 <- ggmid(brks, type = "series", color = .transparent) +
+  geom_area(aes(fill = term)) +
+  scale_fill_theme("light")
+
+p1 + p2 + p3
+```
+
+### Conditional Expectation
+
+Finally, let's look at the transition of conditional expectations across multiple models or time axes.
+By utilizing `facet_grid(~ .id)`, you can split the panels by time (the model's index) and compare side-by-side how the shape of the expectation evolves.
+
+```{r, fig.width = 7}
+cons <- mid.conditional(mids, variable = "karno",
+                        max.nsamples = 3L, data = veteran[1:3, ])
+p1 <- ggmid(cons)
+p2 <- ggmid(cons, type = "centered")
 p1 + p2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p2[[x]], 3)); cat("\n")}
+) -> .
+```
+
+```{r}
+ggmid(cons, theme = "mako", type = "centered", reference = 50) +
+  facet_grid(~ .id)
+```
+
+```{r, fig.width = 3.5}
+p1 <- ggmid(cons, type = "series")
+p1
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+lapply(
+  c("data", "mapping"),
+  function(x) {cat("$", x, "\n", sep = ""); print(head(p1[[x]], 3)); cat("\n")}
+) -> .
+```
+
+
+```{r}
+ggmid(cons, theme = "mako", type = "series") +
+  facet_grid(~ .id)
 ```
