@@ -167,7 +167,7 @@ curves by main and interaction effects.
 
 ``` r
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", max.nsamples = 200)
+ice <- mid.conditional(mid, "lstat", max.nsamples = 100)
 grid.arrange(
   ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",

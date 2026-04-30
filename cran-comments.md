@@ -1,6 +1,6 @@
 ## Submission Type
 
-This is a patch release of **midr 0.6.0**.
+This is a patch release of **midr 0.6.1**.
 
 ## Test Environments
 

@@ -44,7 +44,7 @@ devtools::install_github("ryo-asashi/midr")
 
 In the following example, we fit a random forest model to the `Boston` dataset included in ISLR2, and then attempt to interpret it using the functions of midr.
 
-```{r data_and_model}
+```{r data_and_model, warning=FALSE}
 # load required packages
 library(midr)
 library(ggplot2)
@@ -131,7 +131,7 @@ grid.arrange(nrow = 1L,
 
 ```{r mid_conditional}
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", max.nsamples = 200)
+ice <- mid.conditional(mid, "lstat", max.nsamples = 100)
 grid.arrange(
   ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",
