@@ -5,13 +5,13 @@
 The “color.theme” object provides two color-generating functions:
 [`palette()`](https://rdrr.io/r/grDevices/palette.html) and `ramp()`.
 The [`palette()`](https://rdrr.io/r/grDevices/palette.html) function
-accepts an integer $n$ and returns a vector of $n$ discrete colors. It
-is primarily intended for **qualitative** themes, where distinct colors
-are used to represent categorical data. The `ramp()` function accepts a
-numeric vector $x$ with values in the $\lbrack 0,1\rbrack$ interval and
-returns a vector of corresponding colors. It maps numeric values onto a
-continuous color gradient, making it suitable for **sequential** and
-**diverging** themes.
+accepts an integer $`n`$ and returns a vector of $`n`$ discrete colors.
+It is primarily intended for **qualitative** themes, where distinct
+colors are used to represent categorical data. The `ramp()` function
+accepts a numeric vector $`x`$ with values in the $`[0, 1]`$ interval
+and returns a vector of corresponding colors. It maps numeric values
+onto a continuous color gradient, making it suitable for **sequential**
+and **diverging** themes.
 
 ### Pre-defined themes
 
@@ -21,6 +21,7 @@ to the
 function.
 
 ``` r
+
 library(midr)
 library(ggplot2)
 library(gridExtra)
@@ -33,6 +34,7 @@ print(nightfall)
 ![](colortheme_files/figure-html/unnamed-chunk-2-1.png)
 
 ``` r
+
 nightfall$palette(5)
 #> [1] "#125A56" "#60BCE9" "#ECEADA" "#FD9A44" "#A01813"
 #> attr(,"missing")
@@ -40,11 +42,13 @@ nightfall$palette(5)
 ```
 
 ``` r
+
 nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 #> [1] "#125955" "#5FBBE9" "#EBEAD9" "#FD9944" "#9F1813"
 ```
 
 ``` r
+
 # sequential color theme "viridis" (package:viridisLite)
 viridis <- color.theme("viridis")
 print(viridis)
@@ -54,11 +58,13 @@ print(viridis)
 ![](colortheme_files/figure-html/unnamed-chunk-4-1.png)
 
 ``` r
+
 nightfall$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 #> [1] "#125955" "#5FBBE9" "#EBEAD9" "#FD9944" "#9F1813"
 ```
 
 ``` r
+
 viridis$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 #> [1] "#404486" "#2E6C8D" "#21908C" "#2EB37B" "#79D151"
 ```
@@ -75,6 +81,7 @@ be applied in two ways:
     diverging, `@s` for sequential).
 
 ``` r
+
 plot(color.theme("nightfall", reverse = TRUE),
      text = "khroma/nightfall_r")
 ```
@@ -82,6 +89,7 @@ plot(color.theme("nightfall", reverse = TRUE),
 ![](colortheme_files/figure-html/unnamed-chunk-6-1.png)
 
 ``` r
+
 plot(color.theme("nightfall", type = "qualitative"),
      text = "khroma/nightfall@qual")
 ```
@@ -89,6 +97,7 @@ plot(color.theme("nightfall", type = "qualitative"),
 ![](colortheme_files/figure-html/unnamed-chunk-6-2.png)
 
 ``` r
+
 plot(color.theme("viridis_r",),
      text = "viridisLite/viridis_r")
 ```
@@ -96,6 +105,7 @@ plot(color.theme("viridis_r",),
 ![](colortheme_files/figure-html/unnamed-chunk-6-3.png)
 
 ``` r
+
 plot(color.theme("viridis@qual"),
      text = "viridisLite/viridis@qual")
 ```
@@ -112,6 +122,7 @@ ways:
     package name and a forward slash (e.g., `"RColorBrewer/Paired"`).
 
 ``` r
+
 # qualitative color theme "Paired" (package:grDevices)
 paired <- color.theme("Paired", source = "grDevices")
 plot(paired, text = "grDevices/Paired")
@@ -120,6 +131,7 @@ plot(paired, text = "grDevices/Paired")
 ![](colortheme_files/figure-html/unnamed-chunk-7-1.png)
 
 ``` r
+
 # qualitative color theme "Paired" (package:RColorBrewer)
 paired2 <- color.theme("RColorBrewer/Paired")
 plot(paired2, text = "RColorBrewer/Paired")
@@ -134,6 +146,7 @@ custom color vector or function to the first argument of
 [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md).
 
 ``` r
+
 # create new color theme using a color vector
 mytheme <- color.theme(
   c("#003f5c", "#7a5195", "#ef5675", "#ffa600"),
@@ -146,16 +159,19 @@ print(mytheme)
 ![](colortheme_files/figure-html/unnamed-chunk-8-1.png)
 
 ``` r
+
 mytheme$palette(5)
 #> [1] "#003F5B" "#614D86" "#B85485" "#F46C63" "#FFA500"
 ```
 
 ``` r
+
 mytheme$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 #> [1] "#003F5B" "#614D86" "#B85485" "#F46C63" "#FFA500"
 ```
 
 ``` r
+
 # create new color theme using a color function
 rainbow <- color.theme(grDevices::rainbow,
                        name = "rainbow", source = "grDevices")
@@ -166,11 +182,13 @@ print(rainbow)
 ![](colortheme_files/figure-html/unnamed-chunk-10-1.png)
 
 ``` r
+
 rainbow$palette(5)
 #> [1] "#FF0000" "#CCFF00" "#00FF66" "#0066FF" "#CC00FF"
 ```
 
 ``` r
+
 rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 #> [1] "#FF0000" "#81FF00" "#00FFFB" "#7B00FF" "#FF0006"
 ```
@@ -181,6 +199,7 @@ R session. To do so, use the
 function.
 
 ``` r
+
 set.color.theme(mytheme, name = "mytheme", source = "custom")
 color.theme("mytheme_r@div")
 #> Diverging Color Theme : "mytheme"
@@ -189,6 +208,7 @@ color.theme("mytheme_r@div")
 ![](colortheme_files/figure-html/unnamed-chunk-12-1.png)
 
 ``` r
+
 color.theme("custom/mytheme@q")
 #> Qualitative Color Theme : "mytheme"
 ```
@@ -204,6 +224,7 @@ color theme name (see below) to
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
 
 ``` r
+
 set.seed(42)
 dataset <- diamonds[sample(nrow(diamonds), 5000L), ]
 mid <- interpret(price ~ (carat + color + clarity + cut) ^ 2, dataset)
@@ -219,6 +240,7 @@ grid.arrange(
 ![](colortheme_files/figure-html/unnamed-chunk-13-1.png)
 
 ``` r
+
 imp <- mid.importance(mid)
 grid.arrange(
   ggmid(imp, "heatmap"),
@@ -240,6 +262,7 @@ functions. These scales integrate your themes directly into the plot’s
 `color` and `fill` aesthetics.
 
 ``` r
+
 p <- ggplot(dataset) + geom_point(aes(carat, price, col = color))
 grid.arrange(
   p + scale_color_theme("discreterainbow"),
@@ -252,6 +275,7 @@ grid.arrange(
 ![](colortheme_files/figure-html/unnamed-chunk-14-1.png)
 
 ``` r
+
 p <- ggplot(dataset) +
   geom_histogram(aes(x = carat, fill = cut), bins = 20)
 grid.arrange(

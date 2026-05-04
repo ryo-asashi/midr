@@ -17,12 +17,14 @@ You can install the released version of midr from
 [CRAN](https://cran.r-project.org/) with:
 
 ``` r
+
 install.packages("midr")
 ```
 
 and the development version from [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("ryo-asashi/midr")
 ```
@@ -34,6 +36,7 @@ dataset included in ISLR2, and then attempt to interpret it using the
 functions of midr.
 
 ``` r
+
 # load required packages
 library(midr)
 library(ggplot2)
@@ -59,6 +62,7 @@ target model using
 [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md).
 
 ``` r
+
 # fit a two-dimensional MID model
 mid <- interpret(medv ~ .^2, train, rf, lambda = .1)
 mid
@@ -90,6 +94,7 @@ To visualize the main and interaction effects of the variables, apply
 MID model.
 
 ``` r
+
 # visualize the main and interaction effects of the MID model
 grid.arrange(
   ggmid(mid, "lstat") +
@@ -107,6 +112,7 @@ grid.arrange(
 ![](reference/figures/README-ggmid-1.png)
 
 ``` r
+
 # visualize all main effects
 grid.arrange(grobs = mid.plots(mid), nrow = 3)
 ```
@@ -118,6 +124,7 @@ helps to compute and compare the importance of main and interaction
 effects.
 
 ``` r
+
 # visualize the MID importance of the component functions
 imp <- mid.importance(mid)
 grid.arrange(nrow = 1L,
@@ -139,6 +146,7 @@ differences between the intercept and the predicted value into variable
 effects.
 
 ``` r
+
 # visualize the MID breakdown of the model predictions
 bd1 <- mid.breakdown(mid, data = train, row = 1L)
 bd9 <- mid.breakdown(mid, data = train, row = 9L)
@@ -161,8 +169,9 @@ fitted MID model, as well as the breakdown of the ICE curves by main and
 interaction effects.
 
 ``` r
+
 # visualize the ICE curves of the MID model
-ice <- mid.conditional(mid, "lstat", max.nsamples = 200)
+ice <- mid.conditional(mid, "lstat", max.nsamples = 100)
 grid.arrange(
   ggmid(ice, color = "steelblue") +
     labs(title = "Individual Conditional Expectation",

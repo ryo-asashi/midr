@@ -4,6 +4,7 @@ This article presents some examples of the interpretation of regression
 models using `midr`.
 
 ``` r
+
 # load required packages
 library(midr)
 library(ggplot2)
@@ -17,20 +18,23 @@ theme_set(theme_midr())
 
 We use a benchmark regression task, originally described in Friedman
 (1991) and Breiman (1996), and implemented in the `mlbench` package. The
-dataset has 10 independent predictor variables $x_{1},x_{2},...,x_{10}$
-each uniformly distributed on the interval $\lbrack 0,1\rbrack$, and the
-response variable $y$ , generated according to the following formula
-with disturbance term $\epsilon\  \sim \ \mathcal{N}(0,1)$.
-$$y = 10\sin{\left( \pi x_{1}x_{2} \right) + 20\left( x_{3} - 0.5 \right)^{2} + 10x_{4} + 5x_{5} + \epsilon}$$
+dataset has 10 independent predictor variables $`x_1,x_2,...,x_{10}`$
+each uniformly distributed on the interval $`[0,1]`$, and the response
+variable $`y`$ , generated according to the following formula with
+disturbance term $`\epsilon\ {\sim}\ \mathcal{N}{(0, 1)}`$.
+``` math
+y=10\sin{(\pi{x_1}{x_2})+20{(x_3-0.5)}^2+10x_4+5x_5+\epsilon}
+```
 
 The following plots show the effect of each predictor variable on the
-response. For $x_{1}$ and $x_{2}$ , the interaction effect is shown by
-the colored lines: the effect of $x_{1}$ depends on the value of $x_{2}$
+response. For $`x_1`$ and $`x_2`$ , the interaction effect is shown by
+the colored lines: the effect of $`x_1`$ depends on the value of $`x_2`$
 (pale purple for 0 and dark red for 1) and *vice versa*.
 
 ![](regression_files/figure-html/dataviz-1.png)
 
 ``` r
+
 # benchmark regression task
 library(mlbench)
 set.seed(42)
@@ -48,6 +52,7 @@ between the `test` and model prediction or the two predictions,
 respectively.
 
 ``` r
+
 # define utility functions for the following chunks
 effect_plots <- function(object) {
   mid.plots(object, terms = paste("x", 1:6, sep = "."))
@@ -97,6 +102,7 @@ ml <- midlist()
 ### Linear Model
 
 ``` r
+
 model <- lm(y ~ ., train)
 coef(model)
 #> (Intercept)         x.1         x.2         x.3         x.4         x.5 
@@ -126,6 +132,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/stats_lm-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -133,12 +140,14 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/stats_lm-2.png)
 
 ``` r
+
 ml$lm <- mid
 ```
 
 ### Regularized GLM
 
 ``` r
+
 library(glmnet)
 model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
@@ -167,6 +176,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/glmnet_glmnet-1.png)
 
 ``` r
+
 evp <- eval_plot(model, mid, data = test[, -11],
                        s = model$lambda[9])
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -178,6 +188,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ### Generalized Additive Model
 
 ``` r
+
 library(gam)
 model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
@@ -205,6 +216,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/gam_gam-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -212,12 +224,14 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/gam_gam-2.png)
 
 ``` r
+
 ml$gam <- mid
 ```
 
 ### Multivariate Adaptive Regression Spline
 
 ``` r
+
 library(earth)
 model <- earth(y ~ ., degree = 2, data = train)
 mid <- interpret(y ~ .^2, mtrain, model)
@@ -243,6 +257,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/earth_earth-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -250,6 +265,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/earth_earth-2.png)
 
 ``` r
+
 ml$mars <- mid
 ```
 
@@ -258,6 +274,7 @@ ml$mars <- mid
 ### Single Hidden Layer Network
 
 ``` r
+
 library(nnet)
 set.seed(42)
 model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
@@ -284,6 +301,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/nnet_nnet-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -291,6 +309,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/nnet_nnet-2.png)
 
 ``` r
+
 ml$nnet <- mid
 ```
 
@@ -299,6 +318,7 @@ ml$nnet <- mid
 ### RBF Kernel SVM
 
 ``` r
+
 library(e1071)
 #> 
 #> Attaching package: 'e1071'
@@ -329,6 +349,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/e1071_svm-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -336,6 +357,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/e1071_svm-2.png)
 
 ``` r
+
 ml$svm <- mid
 ```
 
@@ -344,6 +366,7 @@ ml$svm <- mid
 ### Gradient Boosting Trees
 
 ``` r
+
 library(xgboost)
 params <- list(eta = .1, subsample = .7, max_depth = 5)
 set.seed(42)
@@ -378,6 +401,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/xgboost_xgboost-1.png)
 
 ``` r
+
 evp <- eval_plot(model, mid, as.matrix(test[, -11]))
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), evp, nrow = 2)
@@ -386,12 +410,14 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/xgboost_xgboost-2.png)
 
 ``` r
+
 ml$xgb <- mid
 ```
 
 ### Random Forest
 
 ``` r
+
 library(ranger)
 set.seed(42)
 model <- ranger(y ~ ., train, mtry = 5)
@@ -418,6 +444,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/ranger_ranger-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -425,12 +452,14 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/ranger_ranger-2.png)
 
 ``` r
+
 ml$rf <- mid
 ```
 
 ### Decision Tree
 
 ``` r
+
 library(rpart)
 model <- rpart(y ~ ., train)
 # create encoding frames for CART
@@ -471,6 +500,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/rpart_rpart-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -478,6 +508,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ![](regression_files/figure-html/rpart_rpart-2.png)
 
 ``` r
+
 ml$tree <- mid
 ```
 
@@ -486,6 +517,7 @@ ml$tree <- mid
 ### Predictive MID
 
 ``` r
+
 model <- mid <- interpret(y ~ .^2, train, lambda = .2)
 #> 'model' not passed: response variable in 'data' is used
 pred <- pred_mid <- predict(mid, test)
@@ -509,6 +541,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](regression_files/figure-html/mid_interpret-1.png)
 
 ``` r
+
 grid.arrange(interaction_plot(mid), importance_plot(mid),
              ice_plot(mid), eval_plot(model, mid), nrow = 2)
 ```
@@ -518,6 +551,7 @@ grid.arrange(interaction_plot(mid), importance_plot(mid),
 ## Compare Multiple Models
 
 ``` r
+
 p1 <- ggmid(ml[1:4], "x.1") + theme(legend.position = "none")
 p2 <- ggmid(ml[1:4], "x.3") + theme(legend.position = "none")
 p3 <- ggmid(ml[1:4], "x.4")
@@ -530,6 +564,7 @@ p6 <- ggmid(ml[5:8], "x.4")
 ![](regression_files/figure-html/comparison_effect-1.png)
 
 ``` r
+
 impl <- mid.importance(ml)
 p1 <- ggmid(impl[1:4], type = "dotchart", pch = 15) +
   theme(legend.position = "bottom")

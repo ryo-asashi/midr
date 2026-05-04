@@ -42,7 +42,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.904</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,12 +122,12 @@ regression models using <code>midr</code>.</p>
 package. The dataset has 10 independent predictor variables
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><msub><mi>x</mi><mn>10</mn></msub></mrow><annotation encoding="application/x-tex">x_1,x_2,...,x_{10}</annotation></semantics></math>
 each uniformly distributed on the interval
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>,
 and the response variable
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 , generated according to the following formula with disturbance term
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mspace width="0.222em"></mspace><mo>∼</mo><mspace width="0.222em"></mspace><mi>𝒩</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\epsilon\ {\sim}\ \mathcal{N}{(0, 1)}</annotation></semantics></math>.
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mn>10</mn><mo>sin</mo><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><msub><mi>x</mi><mn>1</mn></msub><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>20</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>3</mn></msub><mo>−</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>10</mn><msub><mi>x</mi><mn>4</mn></msub><mo>+</mo><mn>5</mn><msub><mi>x</mi><mn>5</mn></msub><mo>+</mo><mi>ϵ</mi></mrow></mrow><annotation encoding="application/x-tex">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mspace width="0.222em"></mspace><mo>∼</mo><mspace width="0.222em"></mspace><mi>𝒩</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\epsilon\ {\sim}\ \mathcal{N}{(0, 1)}</annotation></semantics></math>.
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mn>10</mn><mrow><mi mathvariant="normal">sin</mi><mo>⁡</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>π</mi><msub><mi>x</mi><mn>1</mn></msub><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mn>20</mn><msup><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>3</mn></msub><mo>−</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>10</mn><msub><mi>x</mi><mn>4</mn></msub><mo>+</mo><mn>5</mn><msub><mi>x</mi><mn>5</mn></msub><mo>+</mo><mi>ϵ</mi></mrow></mrow><annotation encoding="application/x-tex">
 y=10\sin{(\pi{x_1}{x_2})+20{(x_3-0.5)}^2+10x_4+5x_5+\epsilon}
 </annotation></semantics></math></p>
 <p>The following plots show the effect of each predictor variable on the

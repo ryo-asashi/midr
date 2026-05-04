@@ -28,6 +28,7 @@ independently, and unify the results into a single “midlist” collection
 for a direct visual comparison.
 
 ``` r
+
 library(ggplot2)
 library(patchwork)
 library(midr)
@@ -77,6 +78,7 @@ is called on a “midlist” collection, it automatically handles the
 comparison.
 
 ``` r
+
 options(midr.qualitative = "viridis")
 
 p1 <- ggmid(mids, "hr") + theme(legend.position = "bottom")
@@ -115,6 +117,7 @@ variable. Here, we interpret a single model predicting both “registered”
 and “casual” users.
 
 ``` r
+
 # Using a formula with a multi-column response
 midrib <- interpret(
   cbind(registered, casual) ~ (mnth + hr + workingday + weathersit + temp + hum),
@@ -127,6 +130,7 @@ midrib <- interpret(
     #> 'model' not passed: response variable in 'data' is used
 
 ``` r
+
 class(midrib)
 ```
 
@@ -137,6 +141,7 @@ coefficients) for all outcomes in a unified structure, allowing for
 seamless comparative plotting.
 
 ``` r
+
 options(midr.qualitative = "cividis")
 
 p1 <- ggmid(midrib, "hr") + theme(legend.position = "bottom")
@@ -155,7 +160,7 @@ high-dimensional multi-output data.
 
 ## Summary of Collection Structures
 
-| Class         | Data Structure                                    | Optimization Logic                                             | Key Advantage                                                 |
-|:--------------|:--------------------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
-| **“midlist”** | A list of “mid”, “midimp”, “midbrk”, or “midcon”. | **Independent**: Each model has its own fitting parameters.    | **Flexibility**: Compare heterogeneous models.                |
-| **“midrib”**  | A single multivariate response model.             | **Joint**: Shares a single design matrix across all responses. | **Efficiency**: Significant speedup for multivariate targets. |
+| Class | Data Structure | Optimization Logic | Key Advantage |
+|:---|:---|:---|:---|
+| **“midlist”** | A list of “mid”, “midimp”, “midbrk”, or “midcon”. | **Independent**: Each model has its own fitting parameters. | **Flexibility**: Compare heterogeneous models. |
+| **“midrib”** | A single multivariate response model. | **Joint**: Shares a single design matrix across all responses. | **Efficiency**: Significant speedup for multivariate targets. |

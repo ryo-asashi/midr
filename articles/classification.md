@@ -4,6 +4,7 @@ This article presents some examples of the interpretation of
 classification models using `midr`.
 
 ``` r
+
 # load required packages
 library(midr)
 library(ggplot2)
@@ -22,6 +23,7 @@ that predict who survived the tragedy and who did not, and then we
 interpret the fitted models.
 
 ``` r
+
 # benchmark classification task
 library(DALEX)
 #> Welcome to DALEX (version: 2.5.3).
@@ -63,13 +65,14 @@ two predicted probabilities.
 
 In the following examples, we use two scaled link functions for
 classification tasks. These two link functions are transformed so that
-$g(0.5) = 0.5$ and $g\prime(0.5) = 1$. With these link functions, the
+$`g(0.5) = 0.5`$ and $`g'(0.5) = 1`$. With these link functions, the
 effects on the linear predictor can be approximately interpreted as the
 upper bound of the effects on the predicted probabilities.
 
 ![](classification_files/figure-html/unnamed-chunk-2-1.png)
 
 ``` r
+
 # define utility functions for the following chunks
 effect_plots <- function(object) {
   plots <- mid.plots(mid, terms = mid.terms(mid)[1:6])
@@ -130,6 +133,7 @@ evaluation_plot <- function(model, mid, ...) {
 ### Logistic Regression
 
 ``` r
+
 model <- glm(survived == "yes" ~ ., family = "binomial", data = train)
 mid <- interpret(survived ~ .^2, train, model, link = scaled_logit_link)
 print(mid)
@@ -155,6 +159,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/stats_glm-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),
@@ -169,6 +174,7 @@ grid.arrange(nrow = 2L,
 ### Single Hidden Layer Network
 
 ``` r
+
 library(nnet)
 set.seed(42)
 model <- nnet(survived ~ ., train, size = 5, maxit = 1e3, trace = FALSE)
@@ -197,6 +203,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/nnet_nnet-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),
@@ -211,6 +218,7 @@ grid.arrange(nrow = 2L,
 ### RBF Kernel SVM
 
 ``` r
+
 library(e1071)
 #> 
 #> Attaching package: 'e1071'
@@ -243,6 +251,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/e1071_svm-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),
@@ -257,6 +266,7 @@ grid.arrange(nrow = 2L,
 ### Random Forest
 
 ``` r
+
 library(ranger)
 set.seed(42)
 model <- ranger(survived ~ ., na.omit(train), probability = TRUE)
@@ -285,6 +295,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/ranger_ranger-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),
@@ -297,6 +308,7 @@ grid.arrange(nrow = 2L,
 ### Decision Tree
 
 ``` r
+
 library(rpart)
 model <- rpart(survived ~ ., train)
 # create encoding frames for CART
@@ -340,6 +352,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/rpart_rpart-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),
@@ -354,6 +367,7 @@ grid.arrange(nrow = 2L,
 ### Predictive MID (without link)
 
 ``` r
+
 mid <- interpret(survived ~ .^2, train, lambda = .5)
 #> 'model' not passed: response variable in 'data' is used
 print(mid)
@@ -376,6 +390,7 @@ grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ![](classification_files/figure-html/midr_interpret-1.png)
 
 ``` r
+
 grid.arrange(nrow = 2L,
              importance_plot(mid),
              interaction_plot(mid),

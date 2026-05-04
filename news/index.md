@@ -1,17 +1,29 @@
 # Changelog
 
+## midr 0.6.1
+
+CRAN release: 2026-05-01
+
+- Fixed methods of
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) for
+  better compatibility with **ggplot2** ecosystem.
+
 ## midr 0.6.0.904
 
-- Fixed methods of `get.yhat` for models created with packages including
-  “model_fit”, “workflow” and “rpf”.
+- Fixed methods of
+  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
+  for models created with packages including “model_fit”, “workflow” and
+  “rpf”.
 - [`theme_midr()`](https://ryo-asashi.github.io/midr/reference/theme_midr.md)
   now accepts optional arguments `...` for new parameters introduced
   from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
 
 ## midr 0.6.0.903
 
-- Added methods of `get.yhat` for models created with packages including
-  **aorsf**, **flexsurv** and **mboost**.
+- Added methods of
+  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
+  for models created with packages including **aorsf**, **flexsurv** and
+  **mboost**.
 
 ## midr 0.6.0.902
 

@@ -5,13 +5,13 @@ This article presents examples of interpreting survival models using the
 
 As a fundamental approach to interpreting survival models, **midr**
 first utilizes a prediction function to output a matrix of survival
-probabilities, $Y_{it} = S_{t}\left( \mathbf{x}_{i} \right)$, for each
-observation $i$ at each time point $t$, based on the `model` and the
-`data` with the `pred.fun` (which defaults to
+probabilities, $`Y_{it}=S_t(\mathbf{x}_i)`$, for each observation $`i`$
+at each time point $`t`$, based on the `model` and the `data` with the
+`pred.fun` (which defaults to
 [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)).
 It then constructs a series of MID models targeting each column of this
 predicted matrix (i.e., the survival probability for each survival time
-$S_{t}$).
+$`S_t`$).
 
 The resulting collection of models across multiple time points is
 aggregated into an object of class “midrib”. This object is structured
@@ -20,6 +20,7 @@ for the calculation of effects. This architecture enables the efficient
 and smooth extraction of feature effects as they evolve over time.
 
 ``` r
+
 # load required packages
 library(midr)
 library(ggplot2)
@@ -29,6 +30,7 @@ library(patchwork)
 ### Cox Proportional Hazard Model
 
 ``` r
+
 library(survival)
 fit_cox <- coxph(
   Surv(time, status) ~ .,
@@ -64,6 +66,7 @@ p1 / (p2 + p3)
 ### Parametric Survival Model
 
 ``` r
+
 library(flexsurv)
 fit_flex <- flexsurvreg(
   Surv(time, status) ~ .,
@@ -100,6 +103,7 @@ p1 / (p2 + p3)
 ### Model Based Boosting
 
 ``` r
+
 library(mboost)
 fit_mboost <- glmboost(
   Surv(time, status) ~ .,
@@ -136,6 +140,7 @@ p1 / (p2 + p3)
 ### Random Survival Forest
 
 ``` r
+
 library(randomForestSRC)
 fit_rsf <- rfsrc(
   Surv(time, status) ~ .,
@@ -171,6 +176,7 @@ p1 / (p2 + p3)
 ### Oblique Random Survival Forest
 
 ``` r
+
 library(aorsf)
 fit_orsf <- orsf(
   Surv(time, status) ~ .,

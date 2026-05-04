@@ -14,6 +14,7 @@ figures suitable for papers and reports, starting from the default
 plots.
 
 ``` r
+
 library(midr)
 library(ggplot2)
 library(patchwork)
@@ -29,6 +30,7 @@ Here, we use the built-in `diamonds` dataset to build a model that
 predicts the diamond’s price.
 
 ``` r
+
 # fit a MID model
 mid <- interpret(
   log(price) ~ (carat + cut + color + clarity) ^ 2,
@@ -47,6 +49,7 @@ To examine the effect of a continuous variable, specify the variable
 name in the `term` argument.
 
 ``` r
+
 p1 <- ggmid(mid, term = "carat")
 p1
 ```
@@ -75,6 +78,7 @@ or overlaying actual data points with
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html).
 
 ``` r
+
 p1 <- ggmid(mid, term = "carat", linewidth = 2, color = "dodgerblue4")
 p2 <- ggmid(mid, term = "carat", color = .transparent) +
   geom_point(aes(y = log(price) - mean(log(price))), data = diamonds_sample) +
@@ -94,6 +98,7 @@ automatically grouped together. However, by setting `lumped = FALSE`
 when plotting, you can expand and display all levels.
 
 ``` r
+
 p1 <- ggmid(mid, term = "clarity")
 p2 <- ggmid(mid, term = "clarity", lumped = FALSE)
 p1 + p2
@@ -117,6 +122,7 @@ You can also overlay bar charts or use
 to simultaneously represent the data distribution for each category.
 
 ``` r
+
 p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4", lumped = FALSE)
 p2 <- ggmid(mid, term = "clarity", fill = .transparent, lumped = FALSE) +
   geom_jitter(aes(y = log(price) - mean(log(price))), height = 0, data = diamonds_sample) +
@@ -135,6 +141,7 @@ This visualizes the interaction between two variables
 view the overall effect, including the main effects.
 
 ``` r
+
 p1 <- ggmid(mid, term = "carat:clarity")
 p2 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
 p1 + p2
@@ -162,6 +169,7 @@ Additionally, by utilizing heatmap-oriented themes (e.g.,
 represented intuitively.
 
 ``` r
+
 p1 <- ggmid(mid, term = "carat:clarity", type = "compound",
             theme = "Heat", size = 1, shape = 1, lumped = FALSE)
 p2 <- ggmid(mid, term = "carat:clarity", type = "data",
@@ -184,6 +192,7 @@ supports various plot formats depending on your needs through the type
 argument.
 
 ``` r
+
 imp <- mid.importance(mid)
 p1 <- ggmid(imp)
 p2 <- ggmid(imp, type = "dotchart")
@@ -204,6 +213,7 @@ p1 + p2
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(imp, theme = "light")
 p2 <- ggmid(imp, type = "dotchart", theme = "shap", size = 3)
 p3 <- ggmid(imp, type = "dotchart", color = .transparent) +
@@ -218,6 +228,7 @@ The heatmap style provides a high-level overview of importance values in
 a heatmap format.
 
 ``` r
+
 p1 <- ggmid(imp, type = "heatmap")
 p1
 ```
@@ -240,6 +251,7 @@ Adding text
 to explicitly show the values makes it even more reader-friendly.
 
 ``` r
+
 p1 <- ggmid(imp, type = "heatmap", fill = "white", color = "black") + 
   geom_text(aes(label = round(importance, 2)))
 p2 <- ggmid(imp, type = "heatmap", theme = "mako_r") +
@@ -254,6 +266,7 @@ p1 + p2 + p3
 The boxplot style represents the distribution of importance in detail.
 
 ``` r
+
 p1 <- ggmid(imp, type = "boxplot")
 p1
 ```
@@ -272,6 +285,7 @@ p1
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(imp, type = "boxplot", theme = "mako")
 p2 <- ggmid(imp, type = "boxplot", fill = .transparent, color = .transparent) +
   geom_jitter(size = .5, width = 0) +
@@ -291,6 +305,7 @@ we decompose and display the contribution of each feature to the
 prediction for a specific observation.
 
 ``` r
+
 brk <- mid.breakdown(mid, row = 1L)
 p1 <- ggmid(brk)
 p1
@@ -310,6 +325,7 @@ p1
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(brk, theme = "shap@qual", color = .transparent, width = .95) +
   geom_text(aes(label = round(mid, 2), x = (xmin + xmax) / 2), size = 3)
 p2 <- ggmid(brk, pattern = c("%t", "%t, %t"), width = .05)
@@ -323,6 +339,7 @@ You can flexibly adjust the layout using the pattern and type arguments,
 ranging from waterfall-like charts to bar plots and dot charts.
 
 ``` r
+
 p1 <- ggmid(brk, type = "barplot")
 p2 <- ggmid(brk, type = "dotchart")
 p1 + p2
@@ -342,6 +359,7 @@ p1 + p2
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(brk, type = "barplot", theme = "light")
 p2 <- ggmid(brk, type = "barplot", theme = "bicolor_r", vline = FALSE) +
   aes(x = abs(mid)) +
@@ -363,6 +381,7 @@ of change from a specific reference point (reference), making it easier
 to compare the model’s behavior across different groups.
 
 ``` r
+
 con <- mid.conditional(mid, variable = "carat", data = diamonds_sample[1:100, ])
 p1 <- ggmid(con)
 p2 <- ggmid(con, type = "centered")
@@ -372,10 +391,10 @@ p1 + p2
 ![](ggplot2_files/figure-html/unnamed-chunk-25-1.png)
 
     #> $data
-    #>   .id     yhat log.price. carat     cut color clarity centered yhat
-    #> 1   1 8.402259   8.468003  1.00   Ideal     E     SI2     2.6519350
-    #> 2   2 6.624097   6.598509  0.31   Ideal     D     VS2     0.4666793
-    #> 3   3 9.007005   8.964056  1.03 Premium     E     VS1     2.6788562
+    #>     .id     yhat log.price. carat     cut color clarity centered yhat
+    #> 1 10303 8.402259   8.468003  1.00   Ideal     E     SI2     2.6519350
+    #> 2 30566 6.624097   6.598509  0.31   Ideal     D     VS2     0.4666793
+    #> 3 18991 9.007005   8.964056  1.03 Premium     E     VS1     2.6788562
     #> 
     #> $mapping
     #> Aesthetic mapping: 
@@ -383,6 +402,7 @@ p1 + p2
     #> * `y` -> `.data[["centered yhat"]]`
 
 ``` r
+
 p1 <- ggmid(con, points = FALSE, color = "dodgerblue4") +
   geom_point()
 p2 <- ggmid(con, type = "centered", var.color = cut,
@@ -402,6 +422,7 @@ using the `veteran` dataset from the **survival** package, and evaluate
 the transition of effects over time as a collection of models.
 
 ``` r
+
 # fit a survival mid model
 sreg <- coxph(
   Surv(time, status) ~ .,
@@ -418,6 +439,7 @@ mids <- interpret(
 ### First-Order Effect (Numeric Variable)
 
 ``` r
+
 p1 <- ggmid(mids, term = "karno")
 p1
 ```
@@ -441,6 +463,7 @@ transition graph with the model index (here, survival time) on the
 x-axis.
 
 ``` r
+
 p1 <- ggmid(mids, term = "karno", type = "series")
 p1
 ```
@@ -463,6 +486,7 @@ You can also plot the baseline intercept transition by setting
 functions, such as monochrome (`theme = "grayscale"`).
 
 ``` r
+
 p1 <- ggmid(mids, term = "karno", intercept = TRUE)
 p2 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
             theme = "mako")
@@ -483,6 +507,7 @@ p1 + p2 + p3
 ### First-Order Effect (Factor Variable)
 
 ``` r
+
 p1 <- ggmid(mids, "celltype")
 p1
 ```
@@ -501,6 +526,7 @@ p1
     #> * `y` -> `.data[["mid"]]`
 
 ``` r
+
 p1 <- ggmid(mids, "celltype", type = "series")
 p1
 ```
@@ -519,6 +545,7 @@ p1
     #> * `y` -> `.data[["mid"]]`
 
 ``` r
+
 p1 <- ggmid(mids, term = "celltype", intercept = TRUE)
 p2 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE,
             theme = "mako")
@@ -541,6 +568,7 @@ The feature importance for the model collection can also be visualized
 along the progression of time (or model differences).
 
 ``` r
+
 imps <- mid.importance(mids)
 p1 <- ggmid(imps)
 p1
@@ -560,6 +588,7 @@ p1
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(imps, type = "series")
 p1
 ```
@@ -587,6 +616,7 @@ you can visually capture the dynamics of which features become important
 at what specific timing.
 
 ``` r
+
 p1 <- ggmid(imps, fill = .transparent) +
   geom_boxplot()
 p2 <- ggmid(imps, fill = .transparent) +
@@ -609,6 +639,7 @@ collection. It is highly effective for tracking how the local impact of
 each variable fluctuates over time.
 
 ``` r
+
 brks <- mid.breakdown(mids, row = 42)
 p1 <- ggmid(brks)
 p1
@@ -628,6 +659,7 @@ p1
     #> * `y` -> `.data[["term"]]`
 
 ``` r
+
 p1 <- ggmid(brks, type = "series")
 p1
 ```
@@ -646,6 +678,7 @@ p1
     #> * `y` -> `.data[["mid"]]`
 
 ``` r
+
 p1 <- ggmid(brks, fill = .transparent) +
   geom_boxplot()
 p2 <- ggmid(brks, fill = .transparent) +
@@ -668,6 +701,7 @@ split the panels by time (the model’s index) and compare side-by-side
 how the shape of the expectation evolves.
 
 ``` r
+
 cons <- mid.conditional(mids, variable = "karno",
                         max.nsamples = 3L, data = veteran[1:3, ])
 p1 <- ggmid(cons)
@@ -693,6 +727,7 @@ p1 + p2
     #> * `y` -> `.data[["centered yhat"]]`
 
 ``` r
+
 ggmid(cons, theme = "mako", type = "centered", reference = 50) +
   facet_grid(~ .id)
 ```
@@ -700,6 +735,7 @@ ggmid(cons, theme = "mako", type = "centered", reference = 50) +
 ![](ggplot2_files/figure-html/unnamed-chunk-51-1.png)
 
 ``` r
+
 p1 <- ggmid(cons, type = "series")
 p1
 ```
@@ -718,6 +754,7 @@ p1
     #> * `y` -> `.data[["yhat"]]`
 
 ``` r
+
 ggmid(cons, theme = "mako", type = "series") +
   facet_grid(~ .id)
 ```
