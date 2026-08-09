@@ -26,7 +26,7 @@ interpret the fitted models.
 
 # benchmark classification task
 library(DALEX)
-#> Welcome to DALEX (version: 2.5.3).
+#> Welcome to DALEX (version: 2.5.4).
 #> Find examples and detailed introduction at: http://ema.drwhy.ai/
 #> Additional features will be available after installation of: ggpubr.
 #> Use 'install_dependencies()' to get all suggested dependencies

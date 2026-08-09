@@ -1,5 +1,11 @@
 # Changelog
 
+## midr 0.6.1.901
+
+- Updated
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to fix [\#20](https://github.com/ryo-asashi/midr/issues/20).
+
 ## midr 0.6.1
 
 CRAN release: 2026-05-01
