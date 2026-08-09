@@ -1,3 +1,7 @@
+# midr 0.6.1.901
+
+-   Updated `interpret()` to fix #20.
+
 # midr 0.6.1
 
 -   Fixed methods of `ggmid()` for better compatibility with **ggplot2** ecosystem.
