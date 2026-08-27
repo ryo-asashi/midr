@@ -142,7 +142,7 @@ ggmid.midcon <- function(
 #'
 autoplot.midcon <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(ggmid.midcon)
+  mcall[[1L]] <- quote(ggmid)
   mcall[["object"]] <- object
   eval(mcall, parent.frame())
 }

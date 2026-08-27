@@ -1,3 +1,7 @@
+# midr 0.6.2.902
+
+-   Fix all methods for the `ggplot2::autoplot()` generic.
+
 # midr 0.6.1.901
 
 -   Updated `interpret()` to fix #20.

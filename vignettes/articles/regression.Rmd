@@ -2,6 +2,10 @@
 title: "Interpretation of Regression Models"
 description: |
   Demonstrates how to use the midr package to interpret regression models.
+format:
+  html:
+    code-fold: show
+    code-tools: true
 ---
 
 ```{r, include = FALSE}
@@ -80,12 +84,12 @@ grid.arrange(nrow = 2,
 # benchmark regression task
 library(mlbench)
 set.seed(42)
-train  <- as.data.frame(mlbench.friedman1(n = 500L))
+train  <- as.data.frame(mlbench.friedman1(n = 2000L))
 test   <- as.data.frame(mlbench.friedman1(n = 500L))
-mtrain <- as.data.frame(mlbench.friedman1(n = 2500L))[, -11L]
 ```
 
-For each model type, we fit a regression model using the `train` data of 500 observations and an interpretative MID surrogate of the target model using the `mtrain` data of 2500 observations without the response variable. We then evaluate the predictive accuracy of the target model and the interpretative accuracy of the MID surrogate based on the RMSE between the `test` and model prediction or the two predictions, respectively.
+For each model type, we fit a target regression model and its surrogate MID model using the `train` data of 2000 observations.
+We then evaluate the predictive accuracy of the target model and the *fidelity* of the surrogate model using RMSE.
 
 ```{r utils}
 # define utility functions for the following chunks
@@ -139,7 +143,7 @@ ml <- midlist()
 ```{r stats_lm}
 model <- lm(y ~ ., train)
 coef(model)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -153,7 +157,7 @@ ml$lm <- mid
 library(glmnet)
 model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
-mid <- interpret(y ~ .^2, mtrain[, -11], model,
+mid <- interpret(y ~ .^2, train[, -11], model,
                  pred.args = list(s = model$lambda[9]))
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
@@ -170,7 +174,7 @@ library(gam)
 model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -183,7 +187,7 @@ ml$gam <- mid
 ```{r earth_earth, message=FALSE}
 library(earth)
 model <- earth(y ~ ., degree = 2, data = train)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -199,7 +203,7 @@ ml$mars <- mid
 library(nnet)
 set.seed(42)
 model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -214,7 +218,7 @@ ml$nnet <- mid
 ```{r e1071_svm}
 library(e1071)
 model <- svm(y ~ ., train, kernel = "radial")
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -232,7 +236,7 @@ params <- list(eta = .1, subsample = .7, max_depth = 5)
 set.seed(42)
 model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
                  params = params, verbose = 0)
-mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
+mid <- interpret(y ~ .^2, as.matrix(train), model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 evp <- eval_plot(model, mid, as.matrix(test[, -11]))
@@ -247,7 +251,7 @@ ml$xgb <- mid
 library(ranger)
 set.seed(42)
 model <- ranger(y ~ ., train, mtry = 5)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),
@@ -263,12 +267,12 @@ model <- rpart(y ~ ., train)
 # create encoding frames for CART
 frm <- cbind(model$frame, labels(model, collapse = FALSE))
 print(t(frm[frm$var != "<leaf>", c("var", "ltemp")]))
-frames <- lapply(mtrain, range)
+frames <- lapply(train, range)
 frames$x.1 <- c(frames$x.1, .2100, .3184)
 frames$x.2 <- c(frames$x.2, .3110, .2653, .4782)
 frames$x.4 <- c(frames$x.4, .5579, .2953, .8843, .8413)
 frames$x.5 <- c(frames$x.5, .5849, .2486)
-mid <- interpret(y ~ .^2, mtrain, model, type = 0, frames = frames)
+mid <- interpret(y ~ .^2, train, model, type = 0, frames = frames)
 print(mid)
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 grid.arrange(interaction_plot(mid), importance_plot(mid),

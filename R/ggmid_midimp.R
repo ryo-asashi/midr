@@ -128,7 +128,7 @@ ggmid.midimp <- function(
 #'
 autoplot.midimp <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(ggmid.midimp)
+  mcall[[1L]] <- quote(ggmid)
   mcall[["object"]] <- object
   eval(mcall, parent.frame())
 }

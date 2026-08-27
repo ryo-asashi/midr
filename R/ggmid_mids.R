@@ -136,7 +136,7 @@ ggmid.mids <- function(
 #' @exportS3Method ggplot2::autoplot
 autoplot.mids <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
-  mcall[[1L]] <- quote(ggmid.mids)
+  mcall[[1L]] <- quote(ggmid)
   mcall[["object"]] <- object
   eval(mcall, parent.frame())
 }
