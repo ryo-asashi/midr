@@ -1,5 +1,11 @@
 # Changelog
 
+## midr 0.6.2.902
+
+- Fix all methods for the
+  [`ggplot2::autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  generic.
+
 ## midr 0.6.1.901
 
 - Updated

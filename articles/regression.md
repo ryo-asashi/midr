@@ -38,18 +38,14 @@ the colored lines: the effect of $`x_1`$ depends on the value of $`x_2`$
 # benchmark regression task
 library(mlbench)
 set.seed(42)
-train  <- as.data.frame(mlbench.friedman1(n = 500L))
+train  <- as.data.frame(mlbench.friedman1(n = 2000L))
 test   <- as.data.frame(mlbench.friedman1(n = 500L))
-mtrain <- as.data.frame(mlbench.friedman1(n = 2500L))[, -11L]
 ```
 
-For each model type, we fit a regression model using the `train` data of
-500 observations and an interpretative MID surrogate of the target model
-using the `mtrain` data of 2500 observations without the response
-variable. We then evaluate the predictive accuracy of the target model
-and the interpretative accuracy of the MID surrogate based on the RMSE
-between the `test` and model prediction or the two predictions,
-respectively.
+For each model type, we fit a target regression model and its surrogate
+MID model using the `train` data of 2000 observations. We then evaluate
+the predictive accuracy of the target model and the *fidelity* of the
+surrogate model using RMSE.
 
 ``` r
 
@@ -105,19 +101,19 @@ ml <- midlist()
 
 model <- lm(y ~ ., train)
 coef(model)
-#> (Intercept)         x.1         x.2         x.3         x.4         x.5 
-#>   0.1302510   6.8458545   6.8892805  -0.4403955  10.3264576   4.6735425 
-#>         x.6         x.7         x.8         x.9        x.10 
-#>   0.5837944   0.2030152  -0.6272202  -0.1722106   0.3453933
-mid <- interpret(y ~ .^2, mtrain, model)
+#>  (Intercept)          x.1          x.2          x.3          x.4          x.5 
+#>  0.392251367  6.495260451  6.257185996  0.058163774 10.007214003  4.865004853 
+#>          x.6          x.7          x.8          x.9         x.10 
+#> -0.039246743  0.282356846 -0.017141107  0.008614789 -0.036610853
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: lm
 #> 
-#> Intercept: 14.319
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -151,17 +147,17 @@ ml$lm <- mid
 library(glmnet)
 model <- glmnet(x = as.matrix(train[, -11]), y = train[, 11])
 # prediction with arbitrarily chosen lambda
-mid <- interpret(y ~ .^2, mtrain[, -11], model,
+mid <- interpret(y ~ .^2, train[, -11], model,
                  pred.args = list(s = model$lambda[9]))
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain[, -11], model = model,
+#> interpret(formula = y ~ .^2, data = train[, -11], model = model,
 #>  pred.args = list(s = model$lambda[9]))
 #> 
 #> Model Class: elnet, glmnet
 #> 
-#> Intercept: 14.374
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -193,15 +189,15 @@ library(gam)
 model <- gam(y ~ s(x.1) + s(x.2) + s(x.3) + s(x.4) + s(x.5) +
              s(x.6) + s(x.7) + s(x.8) + s(x.9) + s(x.10),
              family = gaussian, data = train)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: Gam, glm, lm
 #> 
-#> Intercept: 14.323
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -209,7 +205,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 3.9583e-07
+#> Uninterpreted Variation Ratio: 3.2445e-07
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -234,15 +230,15 @@ ml$gam <- mid
 
 library(earth)
 model <- earth(y ~ ., degree = 2, data = train)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: earth
 #> 
-#> Intercept: 14.182
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -250,7 +246,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.00051402
+#> Uninterpreted Variation Ratio: 0.00019502
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -278,15 +274,15 @@ ml$mars <- mid
 library(nnet)
 set.seed(42)
 model <- nnet(y ~ ., train, size = 5, linout = TRUE, maxit = 1e3, trace = FALSE)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: nnet.formula, nnet
 #> 
-#> Intercept: 14.195
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -294,7 +290,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.00281
+#> Uninterpreted Variation Ratio: 0.00022779
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -326,15 +322,15 @@ library(e1071)
 #> 
 #>     element
 model <- svm(y ~ ., train, kernel = "radial")
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: svm.formula, svm
 #> 
-#> Intercept: 14.32
+#> Intercept: 14.244
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -342,7 +338,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0075534
+#> Uninterpreted Variation Ratio: 0.004601
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -378,15 +374,15 @@ model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
 #> Warning in throw_err_or_depr_msg("Passed unrecognized parameters: ",
 #> paste(head(names_unrecognized), : Passed unrecognized parameters: verbose. This
 #> warning will become an error in a future version.
-mid <- interpret(y ~ .^2, as.matrix(mtrain), model)
+mid <- interpret(y ~ .^2, as.matrix(train), model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = as.matrix(mtrain), model = model)
+#> interpret(formula = y ~ .^2, data = as.matrix(train), model = model)
 #> 
 #> Model Class: xgboost, xgb.Booster
 #> 
-#> Intercept: 14.307
+#> Intercept: 14.234
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -394,7 +390,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.030268
+#> Uninterpreted Variation Ratio: 0.0178
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -421,15 +417,15 @@ ml$xgb <- mid
 library(ranger)
 set.seed(42)
 model <- ranger(y ~ ., train, mtry = 5)
-mid <- interpret(y ~ .^2, mtrain, model)
+mid <- interpret(y ~ .^2, train, model)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model)
+#> interpret(formula = y ~ .^2, data = train, model = model)
 #> 
 #> Model Class: ranger
 #> 
-#> Intercept: 14.27
+#> Intercept: 14.231
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -437,7 +433,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.0075659
+#> Uninterpreted Variation Ratio: 0.0088524
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -465,27 +461,27 @@ model <- rpart(y ~ ., train)
 # create encoding frames for CART
 frm <- cbind(model$frame, labels(model, collapse = FALSE))
 print(t(frm[frm$var != "<leaf>", c("var", "ltemp")]))
-#>       1          2        5         11         22         3          7         
-#> var   "x.4"      "x.1"    "x.2"     "x.4"      "x.5"      "x.2"      "x.1"     
-#> ltemp "< 0.5579" "< 0.21" "< 0.311" "< 0.2953" "< 0.5849" "< 0.2653" "< 0.3184"
-#>       14         15         31         62        
-#> var   "x.4"      "x.5"      "x.4"      "x.2"     
-#> ltemp "< 0.8843" "< 0.2486" "< 0.8413" "< 0.4782"
-frames <- lapply(mtrain, range)
+#>       1          2          4          5         11         3         
+#> var   "x.4"      "x.2"      "x.5"      "x.1"     "x.5"      "x.1"     
+#> ltemp "< 0.3677" "< 0.3244" "< 0.5956" "< 0.185" "< 0.4577" "< 0.2279"
+#>       6          7          14         15         31        
+#> var   "x.4"      "x.2"      "x.4"      "x.4"      "x.5"     
+#> ltemp "< 0.6318" "< 0.2676" "< 0.6574" "< 0.6384" "< 0.5893"
+frames <- lapply(train, range)
 frames$x.1 <- c(frames$x.1, .2100, .3184)
 frames$x.2 <- c(frames$x.2, .3110, .2653, .4782)
 frames$x.4 <- c(frames$x.4, .5579, .2953, .8843, .8413)
 frames$x.5 <- c(frames$x.5, .5849, .2486)
-mid <- interpret(y ~ .^2, mtrain, model, type = 0, frames = frames)
+mid <- interpret(y ~ .^2, train, model, type = 0, frames = frames)
 print(mid)
 #> 
 #> Call:
-#> interpret(formula = y ~ .^2, data = mtrain, model = model, type = 0,
+#> interpret(formula = y ~ .^2, data = train, model = model, type = 0,
 #>  frames = frames)
 #> 
 #> Model Class: rpart
 #> 
-#> Intercept: 14.264
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -493,7 +489,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.031256
+#> Uninterpreted Variation Ratio: 0.11698
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
@@ -526,7 +522,7 @@ print(mid)
 #> Call:
 #> interpret(formula = y ~ .^2, data = train, lambda = 0.2)
 #> 
-#> Intercept: 14.417
+#> Intercept: 14.235
 #> 
 #> Main Effects:
 #> 10 main effect terms
@@ -534,7 +530,7 @@ print(mid)
 #> Interactions:
 #> 45 interaction terms
 #> 
-#> Uninterpreted Variation Ratio: 0.03179
+#> Uninterpreted Variation Ratio: 0.046291
 grid.arrange(grobs = effect_plots(mid), nrow = 2L)
 ```
 
