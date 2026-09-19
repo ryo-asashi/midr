@@ -1,6 +1,13 @@
 # Changelog
 
-## midr 0.6.2.902
+## midr 0.6.1.903
+
+- Updated
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  to resolve issues related to
+  [\#20](https://github.com/ryo-asashi/midr/issues/20).
+
+## midr 0.6.1.902
 
 - Fix all methods for the
   [`ggplot2::autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
