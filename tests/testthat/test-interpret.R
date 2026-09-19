@@ -73,7 +73,7 @@ test_that("interpret() returns valid result with weighted data", {
   expect_equal(mid1$intercept, mid2$intercept)
 })
 
-test_that("weights works", {
+test_that("interpret() runs successfully with weights", {
   # test 1
   x1 <- c(1, 1, 1, 1, 2, 2, 2)
   x2 <- c(1, 1, 1, 2, 1, 2, 2)
@@ -93,4 +93,71 @@ test_that("weights works", {
   X2[, "wcol"] <- weights
   r4 <- interpret(x1 * x2 * x3 ~ (x1 + x2 + x3), X2, weights = wcol)$ratio
   expect_equal(r1, r4)
+})
+
+
+test_that("interpret() runs successfully with terms", {
+  x1 <- 1L:5L
+  x2 <- x1 ^ 2
+  y <- x1 + x2
+  d <- data.frame(cbind(x1, x2, y))
+  # test 0: default method without terms input
+  fit <- interpret(x = cbind(x1, x2), y = y)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(x = cbind(x1, x2), y = y, interactions = TRUE)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  # test 1: default method with label-based inputs
+  fit <- interpret(x = d, y = y, terms = c("x2", "x1", "x1 : x2"))
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(x = d, y = y, terms = c("x2 * x1"))
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(x = d, y = y, terms = c("x2 : x1", "x1", "x2"))
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(x = cbind(x1, x2), y = y, terms = c(".^2"))
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  # test 2: default method with formula-based inputs
+  fit <- interpret(x = d, y = y, terms = y ~ .^2)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  # test 3: formula method
+  fit <- interpret(y ~ .^2, data = d, verbosity = 0L)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(y ~ x2 * x1, data = d, verbosity = 0L)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(y ~ x2:x1 + x1 + x2, data = d, verbosity = 0L)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
+  fit <- interpret(y ~ x1 + x2 + I(x1 * x2), data = d, verbosity = 0L)
+  expect_setequal(
+    mid.terms(fit),
+    c(names(fit$main.effects), names(fit$interactions))
+  )
 })

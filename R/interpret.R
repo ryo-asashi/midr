@@ -241,24 +241,19 @@ interpret.default <- function(
   weights <- weights / sumw * n
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
-  if (is.null(terms)) {
-    mts <- tags
-    its <- NULL
-    if (interactions)
-      its <- utils::combn(mts, 2L, function(x) paste0(x, collapse = ":"))
-  } else {
-    if (!inherits(terms, "formula"))
-      terms <- make.formula(terms, "..y", env = globalenv())
-    terms <- attr(stats::terms(terms, data = x), "term.labels")
-    spl <- strsplit(terms, ":")
-    if (!all(unique(unlist(spl)) %in% tags)) {
-      stop("'terms' contains term labels that are not found in 'x'")
-    }
-    spl <- sapply(spl, length)
-    mts <- unique(terms[spl == 1L])
-    its <- unique(terms[spl == 2L])
+  if (is.null(terms))
+    terms <- if (interactions) ".^2" else "."
+  if (!inherits(terms, "formula"))
+    terms <- make.formula(terms, "..y", env = globalenv())
+  terms <- stats::terms(terms, data = x)
+  tls <- attr(terms, "term.labels")
+  spl <- strsplit(tls, ":")
+  if (!all(unique(unlist(spl)) %in% tags)) {
+    stop("'terms' contains term labels that are not found in 'x'")
   }
-  terms <- c(mts, its)
+  spl <- sapply(spl, length)
+  mts <- unique(tls[spl == 1L])
+  its <- unique(tls[spl == 2L])
   p <- length(mts)
   q <- length(its)
   verbose(text = paste0(collapse = "",
@@ -358,7 +353,7 @@ interpret.default <- function(
     mtag <- mts[i]
     cols <- fiti + mcumlen[i] + seq_len(mlen[i])
     vsum <- colSums(
-      mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]]) * weights
+      (mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]])) * weights
     )
     vnil[cols] <- vsum <= nil
     delt[cols] <- ifelse(vnil[cols], 0, vsum)
@@ -534,7 +529,7 @@ interpret.default <- function(
     }
   }
   ## inestimable parameters
-  if (mode == 1L && nnil > 0L) {
+  if (nnil > 0L) {
     for (i in seq_len(nnil))
       if (mode == 1L) {
         X[n + nreg + ncon + i, lnil[[i]][1L]] <- 1 * rk
@@ -555,7 +550,7 @@ interpret.default <- function(
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     if (!is.null(attr(z, "message")))
-      verbose(attr(z, "message"), verbosity = 2L, FALSE)
+      verbose(attr(z, "message"), verbosity, 2L, FALSE)
     beta <- as.matrix(z$coefficients)
     beta[is.na(beta)] <- 0
     if (is.null(z$residuals)) {
@@ -582,7 +577,7 @@ interpret.default <- function(
     if (inherits(z, "try-error"))
       stop("failed to solve the least squares problem")
     if (!is.null(attr(z, "message")))
-      verbose(attr(z, "message"), verbosity = 2L, FALSE)
+      verbose(attr(z, "message"), verbosity, 2L, FALSE)
     coef <- as.matrix(z$coefficients)
     coef[is.na(coef)] <- 0
     beta <- as.matrix(vr %*% coef)
@@ -687,7 +682,7 @@ interpret.default <- function(
   class(obj) <- if (ntargets == 1L) "mid" else c("mids", "midrib")
   obj$model.class <- attr(object, "class")
   obj$call <- cl
-  obj$terms <- stats::terms(make.formula(terms, "..y", env = globalenv()))
+  obj$terms <- terms
   obj$link <- link
   obj$intercept <- if (ntargets == 1L) as.numeric(intercept) else intercept
   obj$encoders <- list()
@@ -821,9 +816,8 @@ interpret.formula <- function(
   weights <- stats::model.weights(data)
   data[["(weights)"]] <- NULL
   mt <- attr(data, "terms")
-  tl <- attr(mt, "term.labels")
   ret <- interpret.default(object = model, x = data, y = y, weights = weights,
-                           terms = tl, mode = mode, na.action = na.action,
+                           terms = mt, mode = mode, na.action = na.action,
                            verbosity = verbosity, internal.call = TRUE, ...)
   cl$formula <- formula
   ret$call <- cl
