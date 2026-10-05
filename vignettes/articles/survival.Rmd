@@ -29,7 +29,7 @@ The resulting collection of models across multiple time points is aggregated int
 This object is structured to internally share computational resources, such as the design matrix for the calculation of effects.
 This architecture enables the efficient and smooth extraction of feature effects as they evolve over time.
 
-```{r setup, message=FALSE, warning=FALSE}}
+```{r setup, message=FALSE, warning=FALSE}
 # load required packages
 library(midr)
 library(ggplot2)
@@ -38,7 +38,7 @@ library(patchwork)
 
 ### Cox Proportional Hazard Model
 
-```{r cox, message=FALSE, warning=FALSE}}
+```{r cox, message=FALSE, warning=FALSE}
 library(survival)
 fit_cox <- coxph(
   Surv(time, status) ~ .,
@@ -71,7 +71,7 @@ p1 / (p2 + p3)
 
 ### Parametric Survival Model
 
-```{r rsf, message=FALSE, warning=FALSE}}
+```{r rsf, message=FALSE, warning=FALSE}
 library(flexsurv)
 fit_flex <- flexsurvreg(
   Surv(time, status) ~ .,
@@ -139,7 +139,7 @@ p1 / (p2 + p3)
 
 ### Random Survival Forest
 
-```{r rfsrc, message=FALSE, warning=FALSE}}
+```{r rfsrc, message=FALSE, warning=FALSE}
 library(randomForestSRC)
 fit_rsf <- rfsrc(
   Surv(time, status) ~ .,
@@ -172,7 +172,7 @@ p1 / (p2 + p3)
 
 ### Oblique Random Survival Forest
 
-```{r aorsf, message=FALSE, warning=FALSE}}
+```{r aorsf, message=FALSE, warning=FALSE}
 library(aorsf)
 fit_orsf <- orsf(
   Surv(time, status) ~ .,
