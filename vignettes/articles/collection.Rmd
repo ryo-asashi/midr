@@ -78,7 +78,7 @@ class(mids)
 When `ggmid()` is called on a "midlist" collection, it automatically handles the comparison.
 
 ```{r midlist-plot}
-options(midr.qualitative = "viridis")
+midr.options(color.theme.qualitative = "viridis")
 
 p1 <- ggmid(mids, "hr") + theme(legend.position = "bottom")
 p2 <- ggmid(mids, "temp") + theme(legend.position = "none")
@@ -119,7 +119,7 @@ class(midrib)
 The resulting "midrib" object stores the fitted functions (i.e., all coefficients) for all outcomes in a unified structure, allowing for seamless comparative plotting.
 
 ```{r midrib-plot}
-options(midr.qualitative = "cividis")
+midr.options(color.theme.qualitative = "cividis")
 
 p1 <- ggmid(midrib, "hr") + theme(legend.position = "bottom")
 p2 <- ggmid(midrib, "temp") + theme(legend.position = "none")

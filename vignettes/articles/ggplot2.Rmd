@@ -58,7 +58,7 @@ mid$call$data <- quote(diamonds_sample)
 To examine the effect of a continuous variable, specify the variable name in the `term` argument.
 
 ```{r, fig.width = 3.5}
-p1 <- ggmid(mid, term = "carat")
+p1 <- ggmid(mid, "carat")
 p1
 ```
 
@@ -74,11 +74,11 @@ lapply(
 By combining standard ggplot2 functions, you have a high degree of freedom to customize the plot—such as changing line widths and colors, or overlaying actual data points with `geom_point()`.
 
 ```{r}
-p1 <- ggmid(mid, term = "carat", linewidth = 2, color = "dodgerblue4")
-p2 <- ggmid(mid, term = "carat", color = .transparent) +
+p1 <- ggmid(mid, "carat", linewidth = 2, color = "dodgerblue4")
+p2 <- ggmid(mid, "carat", color = .transparent) +
   geom_point(aes(y = log(price) - mean(log(price))), data = diamonds_sample) +
   geom_line(color = "firebrick1")
-p3 <- ggmid(mid, term = "carat", type = "data", theme = "shap") +
+p3 <- ggmid(mid, "carat", type = "data", theme = "shap") +
   geom_line(linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
@@ -90,8 +90,8 @@ If the `lump` argument was specified during model fitting, factor levels are aut
 However, by setting `lumped = FALSE` when plotting, you can expand and display all levels.
 
 ```{r, fig.width = 7}
-p1 <- ggmid(mid, term = "clarity")
-p2 <- ggmid(mid, term = "clarity", lumped = FALSE)
+p1 <- ggmid(mid, "clarity")
+p2 <- ggmid(mid, "clarity", lumped = FALSE)
 p1 + p2
 ```
 
@@ -105,23 +105,23 @@ lapply(
 You can also overlay bar charts or use `geom_jitter()` to simultaneously represent the data distribution for each category.
 
 ```{r}
-p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4", lumped = FALSE)
-p2 <- ggmid(mid, term = "clarity", fill = .transparent, lumped = FALSE) +
+p1 <- ggmid(mid, "clarity", fill = "dodgerblue4", lumped = FALSE)
+p2 <- ggmid(mid, "clarity", fill = .transparent, lumped = FALSE) +
   geom_jitter(aes(y = log(price) - mean(log(price))), height = 0, data = diamonds_sample) +
   geom_col(fill = NA, color = "firebrick1")
-p3 <- ggmid(mid, term = "clarity", type = "data", theme = "shap", shape = "|") +
+p3 <- ggmid(mid, "clarity", type = "data", theme = "shap", shape = "|") +
   geom_line(aes(group = NA), linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
 
 ### Second-Order Effect
 
-This visualizes the interaction between two variables (`term = "var1:var2"`).
+This visualizes the interaction between two variables (`"var1:var2"`).
 By specifying `main.effects = TRUE`, you can view the overall effect, including the main effects.
 
 ```{r, fig.width = 7}
-p1 <- ggmid(mid, term = "carat:clarity")
-p2 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
+p1 <- ggmid(mid, "carat:clarity")
+p2 <- ggmid(mid, "carat:clarity", main.effects = TRUE)
 p1 + p2
 ```
 
@@ -135,11 +135,11 @@ lapply(
 Additionally, by utilizing heatmap-oriented themes (e.g., `theme = "Heat"`, `"mako"`), complex second-order effects can be represented intuitively.
 
 ```{r}
-p1 <- ggmid(mid, term = "carat:clarity", type = "compound",
+p1 <- ggmid(mid, "carat:clarity", type = "compound",
             theme = "Heat", size = 1, shape = 1, lumped = FALSE)
-p2 <- ggmid(mid, term = "carat:clarity", type = "data",
+p2 <- ggmid(mid, "carat:clarity", type = "data",
             theme = "mako", main.effects = TRUE)
-p3 <- ggmid(mid, term = "carat:clarity", type = "data",
+p3 <- ggmid(mid, "carat:clarity", type = "data",
             theme = "shap", main.effects = TRUE) +
   geom_line(aes(group = clarity, color = mid), linewidth = 4, alpha = .2)
 p1 + p2 + p3
@@ -323,7 +323,7 @@ mids <- interpret(
 ### First-Order Effect (Numeric Variable)
 
 ```{r, fig.width = 3.5}
-p1 <- ggmid(mids, term = "karno")
+p1 <- ggmid(mids, "karno")
 p1
 ```
 
@@ -337,7 +337,7 @@ lapply(
 When you have multiple models with numeric labels, specifying `type = "series"` allows you to easily create a time-series-like transition graph with the model index (here, survival time) on the x-axis.
 
 ```{r, fig.width = 3.5}
-p1 <- ggmid(mids, term = "karno", type = "series")
+p1 <- ggmid(mids, "karno", type = "series")
 p1
 ```
 
@@ -351,10 +351,10 @@ lapply(
 You can also plot the baseline intercept transition by setting `intercept = TRUE`, or adjust the format for publication using theme functions, such as monochrome (`theme = "grayscale"`).
 
 ```{r}
-p1 <- ggmid(mids, term = "karno", intercept = TRUE)
-p2 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+p1 <- ggmid(mids, "karno", intercept = TRUE)
+p2 <- ggmid(mids, "karno", type = "series", intercept = TRUE,
             theme = "mako")
-p3 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+p3 <- ggmid(mids, "karno", type = "series", intercept = TRUE,
             theme = "grayscale") +
   geom_line(
     data = data.frame(
@@ -393,10 +393,10 @@ lapply(
 ```
 
 ```{r}
-p1 <- ggmid(mids, term = "celltype", intercept = TRUE)
-p2 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE,
+p1 <- ggmid(mids, "celltype", intercept = TRUE)
+p2 <- ggmid(mids, "celltype", type = "series", intercept = TRUE,
             theme = "mako")
-p3 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE) +
+p3 <- ggmid(mids, "celltype", type = "series", intercept = TRUE) +
   geom_line(
     data = data.frame(
       mid = mids$intercept,

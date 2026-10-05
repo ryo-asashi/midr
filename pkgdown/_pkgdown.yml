@@ -49,19 +49,21 @@ navbar:
           href: midr_jarip.pdf
         - text: "- Convention A Asia (R & Python Demo)"
           href: https://ryo-asashi.github.io/Convention_A_Asia/
+        - text: "- ICA2026 Tokyo (R Demo)"
+          href: https://ryo-asashi.github.io/ICA2026/
 
 articles:
 - title: Interpret black-box models with midr
   contents:
-  # - articles/regression
-  # - articles/classification
-  # - articles/survival
+  - articles/regression
+  - articles/classification
+  - articles/survival
 - title: Advanced Tools & Customization
   contents:
   # - articles/graphics
-  # - articles/ggplot2
-  # - articles/collection
-  # - articles/colortheme
+  - articles/ggplot2
+  - articles/collection
+  - articles/colortheme
 
 reference:
 - title: Fit MID models

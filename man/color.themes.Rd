@@ -7,22 +7,18 @@
 color.themes(env = NULL)
 }
 \arguments{
-\item{env}{an environment where the color themes are registered.}
+\item{env}{an environment where the color themes are registered. Defaults to the default color theme registry that can be accessed via \code{midr.options("color.theme.registry")}.}
 }
 \value{
-\code{color.themes()} returns a data frame with columns "name", "source", and "type".
+A data frame with columns \code{"name"}, \code{"source"}, and \code{"type"} containing the metadata of the registered color themes.
+If no color themes are found or the environment is empty, it returns an empty data frame with these exact columns.
 }
 \description{
 \code{color.themes()} returns a data frame listing all available color themes.
 }
 \details{
-These functions provide tools for inspecting the color themes available in the current R session.
-
-\code{color.themes()} is the primary user-facing function for discovering themes by name, source, and type.
-
-\code{color.theme.registry()} is an advanced function that returns the environment currently used as the theme registry.
-It first checks for a user-specified environment via \code{getOption("midr.color.theme.registry")}.
-If this option is \code{NULL} (the default), the function returns the package's internal environment where the default themes are stored.
+This function provides a convenient way to inspect the color themes currently available in the R session.
+It extracts metadata from a specified registry environment and structures it into a clean data frame, allowing users to discover themes by their type, name, and source.
 }
 \examples{
 # Get a data frame of all available themes

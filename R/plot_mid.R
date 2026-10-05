@@ -97,7 +97,7 @@ plot.mid <- function(
   type <- match.arg(type)
   ie <- (length(tags) > 1L)
   if (is.null(theme) && ie)
-    theme <- color.theme.defaults(if (type == "data") "div" else "seq")
+    theme <- color.theme.defaults(if (type == "data") "seq" else "div")
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "data" || type == "compound") {
