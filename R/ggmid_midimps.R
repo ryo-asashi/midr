@@ -68,10 +68,8 @@ ggmid.midimps <- function(
     labels <- factor(labels, levels = unique(labels))
     imp$label <- factor(imp$label, levels = levels(labels))
   }
-  theme <- theme %||% (
-    if (type == "series" || discrete) getOption("midr.qualitative", "HCL")
-    else getOption("midr.sequential", "bluescale")
-  )
+  theme <- theme %||%
+    color.theme.defaults(if (type == "series" || discrete) "qual" else "seq")
   theme <- color.theme(theme)
   terms <- terms %||% unique(imp$term)
   terms <- utils::head(terms, max.nterms)

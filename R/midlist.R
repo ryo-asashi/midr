@@ -87,15 +87,3 @@ as.list.midrib <- function(x, ...) {
   cls <- unique(c(setdiff(class(x), "midrib"), "midlist"))
   structure(out, class = cls)
 }
-
-#' @exportS3Method stats::formula
-#'
-formula.midrib <- function(x, ...) {
-  formula.mid(x, ...)
-}
-
-#' @exportS3Method stats::model.frame
-#'
-model.frame.midrib <- function(object, ...) {
-  model.frame.mid(object, ...)
-}

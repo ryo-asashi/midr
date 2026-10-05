@@ -37,18 +37,18 @@
 #'
 #' For a collection ("mids"), \code{predict.mids()} returns a numeric matrix where each column corresponds to a model if \code{type} is "response" or "link", or a list of numeric matrices if \code{type = "terms"}.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{mid.effect}}, \code{\link{get.yhat}}
+#' @seealso \code{\link{interpret}}, \code{\link{get.yhat}}
 #'
 #' @exportS3Method stats::predict
 #'
 predict.mid <- function(
     object, newdata = NULL, na.action = "na.pass",
-    type = c("response", "link", "terms"), terms = mid.terms(object), ...) {
+    type = c("response", "link", "terms"), terms = term.labels(object), ...) {
   type <- match.arg(type)
-  if (!missing(terms)) {
-    for (i in seq_len(length(terms)))
-      terms[i] <- term.check(terms[i], mid.terms(object), stop = FALSE)
-    terms <- unique(terms[!is.na(terms)])
+  labs <- match.labels(term.labels(terms), term.labels(object))
+  labs <- unique(labs[!is.na(labs)])
+  if (length(labs) == 0L) {
+    stop("none of the specified 'terms' are in 'object'")
   }
   if (is.null(newdata)) {
     newdata <- model.data(object, env = parent.frame())
@@ -61,28 +61,29 @@ predict.mid <- function(
   newdata <- do.call(na.action, list(newdata))
   naa <- stats::na.action(newdata)
   n <- nrow(newdata)
-  m <- length(terms)
+  m <- length(labs)
+  ints <- get.intercept(object)
   if (type == "terms") {
-    preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, terms))
+    preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, labs))
   } else {
-    k <- length(object$intercept)
-    preds <- matrix(object$intercept, nrow = n, ncol = k, byrow = TRUE)
+    k <- length(ints)
+    preds <- matrix(ints, nrow = n, ncol = k, byrow = TRUE)
   }
-  ltag <- strsplit(terms %||% character(), ":")
-  tlen <- sapply(ltag, length)
+  vlis <- lapply(labs, get.variables)
+  vlen <- lengths(vlis)
   imat <- list()
-  for (tag in unique(unlist(ltag[tlen == 2L]))) {
+  for (tag in unique(unlist(vlis[vlen == 2L]))) {
     imat[[tag]] <- object$encoders$interactions[[tag]]$encode(newdata[, tag])
   }
   for (i in seq_len(m)) {
-    tags <- ltag[[i]]
+    tags <- vlis[[i]]
     if (length(tags) == 1L) {
       bmat <- object$main.effects[[tags]]$mid
       mmat <- object$encoders$main.effects[[tags]]$encode(newdata[, tags])
       term_preds <- mmat %*% bmat
       mmat <- NULL
     } else if (length(tags) == 2L) {
-      bmat <- object$interactions[[terms[i]]]$mid
+      bmat <- object$interactions[[labs[i]]]$mid
       mat1 <- imat[[tags[1L]]]
       mat2 <- imat[[tags[2L]]]
       m1 <- ncol(mat1)
@@ -106,7 +107,7 @@ predict.mid <- function(
   if (type == "response" && !is.null(object$link)) {
     preds <- object$link$linkinv(preds)
   } else if (type == "terms") {
-    attr(preds, "constant") <- object$intercept
+    attr(preds, "constant") <- ints
   }
   if (inherits(naa, "exclude")) {
     preds <- stats::napredict(naa, preds)

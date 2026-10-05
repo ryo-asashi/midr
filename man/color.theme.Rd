@@ -2,6 +2,7 @@
 % Please edit documentation in R/color_theme.R
 \name{color.theme}
 \alias{color.theme}
+\alias{is.color.theme}
 \title{Color Themes for Graphics}
 \usage{
 color.theme(
@@ -12,9 +13,11 @@ color.theme(
   source = NULL,
   type = NULL,
   reverse = FALSE,
-  env = color.theme.env(),
+  env = NULL,
   ...
 )
+
+is.color.theme(object)
 }
 \arguments{
 \item{object}{a character string to retrieve a pre-defined theme, a color kernel (i.e., a vector of colors or a color generating function) to create a new theme, or a "color.theme" object to be modified. See the "Details" section.}
@@ -97,5 +100,5 @@ ct$palette(5L)
 ct$ramp(seq.int(0, 1, length.out = 5))
 }
 \seealso{
-\code{\link{scale_color_theme}}, \code{\link{set.color.theme}}, \code{\link{color.theme.info}}
+\code{\link{scale_color_theme}}, \code{\link{to.colors}}, \code{\link{color.theme.register}}, \code{\link{color.themes}}
 }

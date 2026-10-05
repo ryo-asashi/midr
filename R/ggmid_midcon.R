@@ -60,7 +60,8 @@ ggmid.midcon <- function(
   if (!is.null(term)) {
     if (is.null(object$conditional.effects))
       stop("the term effects are not stored in the object")
-    term <- term.check(term, mid.terms(object), stop = TRUE)
+    term <- match.labels(term, term.labels(object))
+    if (is.na(term)) stop("the specified 'term' was not found in the object")
     yvar <- paste0("mid(", term, ")")
     obs[, yvar] <- object$observed.effects[, term]
     con[, yvar] <- object$conditional.effects[, term]
@@ -128,9 +129,7 @@ ggmid.midcon <- function(
   }
   if (set.color) {
     if (!use.theme)
-      theme <- if (is.discrete(obs$.col))
-        getOption("midr.qualitative", "HCL") else
-        getOption("midr.sequential", "bluescale")
+      theme <- color.theme.defaults(if (is.discrete(obs$.col)) "qual" else "seq")
     pl <- pl + scale_color_theme(theme = theme,
                                  discrete = is.discrete(obs$.col))
   }

@@ -61,9 +61,9 @@ mid.conditional <- function(
   if (!inherits(object, "mid"))
     stop("'object' must be 'mid' or 'mids'")
   type <- match.arg(type)
-  tvar <- mid.terms(object, require = variable)
+  tvar <- term.labels(object, require = variable)
   nvar <- length(tvar)
-  tfix <- mid.terms(object, remove = variable)
+  tfix <- term.labels(object, remove = variable)
   nfix <- length(tfix)
   if (length(variable) != 1L || nvar == 0L)
     stop("'variable' must be a character string denoting a valid predictor variable")
@@ -88,37 +88,35 @@ mid.conditional <- function(
     message("number of observations exceeds 'max.nsamples': a sample of ",
     max.nsamples," observations from 'data' is used")
     if (!is.null(seed)) set.seed(seed)
-    data <- data[sample(n, max.nsamples, replace = FALSE), ]
+    data <- data[sample(n, max.nsamples, replace = FALSE), , drop = FALSE]
     n <- nrow(data)
   }
   ids <- rownames(data)
   rownames(data) <- NULL
+  ints <- get.intercept(object)
   pmat <- matrix(0, nrow = n, ncol = nfix)
   for (i in seq_len(nfix))
-    pmat[, i] <- mid.f(object, tfix[i], x = data)
+    pmat[, i] <- term.effect(object, tfix[i], x = data)
   pfix <- rowSums(pmat)
   pmat <- matrix(0, nrow = n, ncol = nvar, dimnames = list(NULL, tvar))
   for (i in seq_len(nvar))
-    pmat[, i] <- mid.f(object, tvar[i], x = data)
+    pmat[, i] <- term.effect(object, tvar[i], x = data)
   pvar <- rowSums(pmat)
-  yhat <- pfix + pvar + object$intercept
+  yhat <- pfix + pvar + ints
   if (type == "response" && !is.null(object$link))
     yhat <- object$link$linkinv(yhat)
   res <- list()
   res$observed <- data.frame(.id = ids, yhat = yhat, data)
   if (keep.effects)
     res$observed.effects <- pmat
-  tags <- unique(term.split(tvar))
-  tags <- tags[tags != variable]
-  names(tags) <- tags
   longdata <- data[rep.int(seq_len(n), times = m), , drop = FALSE]
   longdata[, variable] <- rep(values, each = n)
   pfix <- rep.int(pfix, times = m)
   pmat <- matrix(0, nrow = n * m, ncol = nvar, dimnames = list(NULL, tvar))
   for (i in seq_len(nvar))
-    pmat[, i] <- mid.f(object, tvar[i], x = longdata)
+    pmat[, i] <- term.effect(object, tvar[i], x = longdata)
   pvar <- rowSums(pmat)
-  longyhat <- pfix + pvar + object$intercept
+  longyhat <- pfix + pvar + ints
   if (type == "response" && !is.null(object$link))
     longyhat <- object$link$linkinv(longyhat)
   res$conditional <- data.frame(

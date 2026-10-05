@@ -6,13 +6,13 @@
 \usage{
 \method{plot}{mid}(
   x,
-  term,
+  terms = term.labels(x, order = 1L),
   type = c("effect", "data", "compound"),
   theme = NULL,
   intercept = FALSE,
   main.effects = FALSE,
   data = NULL,
-  limits = NULL,
+  limits = c(NA, NA),
   jitter = NULL,
   resolution = c(100L, 100L),
   lumped = TRUE,
@@ -22,7 +22,7 @@
 \arguments{
 \item{x}{a "mid" object to be visualized.}
 
-\item{term}{a character string specifying the component function to be plotted.}
+\item{terms}{a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y + x:y}), it is automatically parsed to extract the relevant terms.}
 
 \item{type}{the plotting style. One of "effect", "data" or "compound".}
 
@@ -45,10 +45,10 @@
 \item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
 }
 \value{
-\code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
+\code{plot.mid()} produces one or more plots as a side-effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.
+For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes one or more component functions specified by the \code{term} argument.
 }
 \details{
 This is an S3 method for the \code{plot()} generic that produces a plot from a "mid" object, visualizing a component function of the fitted MID model.

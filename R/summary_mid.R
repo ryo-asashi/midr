@@ -173,7 +173,7 @@ summary.midimps <- function(
     object, shape = c("wide", "long"), terms = NULL, ...
 ) {
   shape <- match.arg(shape)
-  terms <- terms %||% mid.terms(object[[1L]])
+  terms <- terms %||% term.labels(object[[1L]])
   summarize_midlist(
     object = object, shape = shape,
     dfname = "importance", keycol = "term", valcol = "importance",
@@ -187,7 +187,7 @@ summary.midbrks <- function(
     object, shape = c("wide", "long"), terms = NULL, ...
 ) {
   shape <- match.arg(shape)
-  terms <- terms %||% mid.terms(object[[1L]])
+  terms <- terms %||% term.labels(object[[1L]])
   summarize_midlist(
     object = object, shape = shape,
     dfname = "breakdown", keycol = "term", valcol = "mid",

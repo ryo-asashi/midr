@@ -49,8 +49,6 @@ plot.midimp <- function(
     theme = NULL, terms = NULL, max.nterms = 30L, ...) {
   dots <- override(list(), list(...))
   type <- match.arg(type)
-  if (missing(theme))
-    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   imp <- x$importance
@@ -83,7 +81,7 @@ plot.midimp <- function(
   # heatmap
   } else if (type == "heatmap") {
     rownames(imp) <- terms <- as.character(imp$term)
-    tags <- unique(term.split(terms))
+    tags <- unique(get.variables(terms))
     m <- length(tags)
     mat <- matrix(NA, m, m)
     for (i in seq_len(m)) {

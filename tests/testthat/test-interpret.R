@@ -104,60 +104,61 @@ test_that("interpret() runs successfully with terms", {
   # test 0: default method without terms input
   fit <- interpret(x = cbind(x1, x2), y = y)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = cbind(x1, x2), y = y, interactions = TRUE)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 1: default method with label-based inputs
   fit <- interpret(x = d, y = y, terms = c("x2", "x1", "x1 : x2"))
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = d, y = y, terms = c("x2 * x1"))
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = d, y = y, terms = c("x2 : x1", "x1", "x2"))
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = cbind(x1, x2), y = y, terms = c(".^2"))
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 2: default method with formula-based inputs
   fit <- interpret(x = d, y = y, terms = y ~ .^2)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 3: formula method
   fit <- interpret(y ~ .^2, data = d, verbosity = 0L)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x2 * x1, data = d, verbosity = 0L)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x2:x1 + x1 + x2, data = d, verbosity = 0L)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x1 + x2 + I(x1 * x2), data = d, verbosity = 0L)
   expect_setequal(
-    mid.terms(fit),
+    term.labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
 })
+

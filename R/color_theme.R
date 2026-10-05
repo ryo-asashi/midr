@@ -67,13 +67,13 @@
 #' @returns
 #' \code{color.theme()} returns a "color.theme" object, which is an environment with the special class attribute, containing the \code{...$palette()} and \code{...$ramp} functions, along with other metadata about the theme.
 #'
-#' @seealso \code{\link{scale_color_theme}}, \code{\link{set.color.theme}}, \code{\link{color.theme.info}}
+#' @seealso \code{\link{scale_color_theme}}, \code{\link{to.colors}}, \code{\link{color.theme.register}}, \code{\link{color.themes}}
 #'
 #' @export color.theme
 #'
 color.theme <- function(
     object, kernel.args = list(), options = list(), name = NULL, source = NULL,
-    type = NULL, reverse = FALSE, env = color.theme.env(), ...
+    type = NULL, reverse = FALSE, env = NULL, ...
 ) {
   if (is.null(object)) {
     NULL
@@ -90,6 +90,7 @@ color.theme <- function(
     parsed <- try(parse.theme.name(object), silent = TRUE)
     if (inherits(parsed, "try-error"))
       stop("'", object, "' can't be parsed")
+    env <- env %||% color.theme.registry()
     args <- get.theme(parsed$name, parsed$source %||% source, env)
     args <- list(theme = do.call(make.theme, args), kernel.args = kernel.args,
                  options = options, name = name, source = source, type = type,
@@ -100,6 +101,13 @@ color.theme <- function(
   } else {
     stop("'object' can't be converted to a color theme")
   }
+}
+
+#' @rdname color.theme
+#' @export is.color.theme
+#'
+is.color.theme <- function(object) {
+  inherits(object, "color.theme")
 }
 
 
@@ -133,10 +141,6 @@ is.palette <- function(fun, n.test = 2L, args = list()) {
     return(FALSE)
   e <- try(do.call(fun, c(list(n.test), args)), silent = TRUE)
   !inherits(e, "try-error") && length(e) == n.test && is.color(e)
-}
-
-is.color.theme <- function(object) {
-  inherits(object, "color.theme")
 }
 
 is.kernel <- function(object, args = list()) {
@@ -218,7 +222,7 @@ as.ramp <- function(colors) {
   structure(ramp, class = c("function", "ramp"))
 }
 
-get.theme <- function(name, source = NULL, env = color.theme.env()) {
+get.theme <- function(name, source = NULL, env = color.theme.registry()) {
   if (!exists(name, env))
     stop(sprintf("'%s' is not found in the color theme environment", name))
   if (is.null(source))
@@ -453,47 +457,6 @@ print.color.theme <- function(x, display = TRUE, ...) {
   if (!is.null(x$name)) text <- paste0(text, ' : "', x$name, '" ')
   cat(text)
   if (display) plot.color.theme(x, text = text)
-}
-
-rescale <- function(x, middle = NULL) {
-  if (is.character(x))
-    x <- as.factor(x)
-  if (is.factor(x) || is.logical(x))
-    x <- as.numeric(x)
-  from <- range(x, na.rm = TRUE, finite = TRUE)
-  if (is.null(middle)) {
-    d <- from[2L] - from[1L]
-    if (d == 0)
-      return(ifelse(is.na(x), NA, 0.5))
-    res <- (x - from[1L]) / d
-  } else {
-    d <- 2 * max(abs(from - middle))
-    if (d == 0)
-      return(ifelse(is.na(x), NA, 0.5))
-    res <- (x - middle) / d + 0.5
-  }
-  pmax(0, pmin(1, res))
-}
-
-to.colors <- function(x, theme, middle = 0, na.value = NULL) {
-  theme <- color.theme(theme)
-  if (is.null(na.value))
-    na.value <- theme$options$na.color %||% NA
-  if (is.discrete(x)) {
-    x <- as.integer(as.factor(x))
-    cols <- theme$palette(max(x, na.rm = TRUE))[x]
-  } else {
-    if (theme$type == "qualitative") {
-      stop("qualitative color theme can't be used for continuous variable")
-    } else if (theme$type == "sequential") {
-      cols <- theme$ramp(rescale(x))
-    } else if (theme$type == "diverging") {
-      cols <- theme$ramp(rescale(x, middle = middle))
-    } else
-      cols <- rep.int(1L, length(x))
-  }
-  cols[is.na(cols)] <- na.value
-  cols
 }
 
 hcl.palette <- function(

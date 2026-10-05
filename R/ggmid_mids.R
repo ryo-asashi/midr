@@ -1,7 +1,7 @@
 #' Compare MID Component Functions with ggplot2
 #'
 #' @description
-#' For "mids" collection objects, \code{ggmid()} visualizes and compares a single main effect across multiple models.
+#' For "mids" collection objects, \code{ggmid()} visualizes and compares one or more main effects across multiple models.
 #'
 #' @details
 #' This is an S3 method for the \code{ggmid()} generic that evaluates the specified \code{term} over a grid of values and compares the results across all models in the collection.
@@ -13,7 +13,7 @@
 #' Note: Comparative plotting for interaction terms (2D surfaces) is not supported for collection objects.
 #'
 #' @param object a "mids" collection object to be visualized.
-#' @param term a character string specifying the main effect to evaluate.
+#' @param terms a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y}), it is automatically parsed to extract the relevant terms.
 #' @param type the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param intercept logical. If \code{TRUE}, the model intercept is added to the component effect.
@@ -41,24 +41,85 @@
 #' # Compare the effect of 'wt' as a series plot across the models
 #' ggmid(mids, term = "wt", type = "series")
 #' @returns
-#' \code{ggmid.mids()} returns a "ggplot" object.
+#' \code{ggmid.mids()} returns a "ggplot" object if a single main effect is specified, or a list of "ggplot" objects if multiple main effects are specified.
 #'
 #' @seealso \code{\link{ggmid}}, \code{\link{plot.mids}}
 #'
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mids <- function(
+    object, terms = term.labels(object, order = 1L),
+    type = c("effect", "series"), theme = NULL, intercept = FALSE,
+    limits = c(NA, NA), resolution = NULL, labels = NULL, ...
+) {
+  type <- match.arg(type)
+  labels <- labels %||% base::labels(object)
+  if (length(term.labels(terms, order = 2L)) > 0L)
+    message("interaction term plotting is not implemented for 'mids' objects")
+  tlab <- term.labels(terms, order = 1L)
+  mlab <- match.labels(tlab, term.labels(object, order = 1L))
+  tlab <- tlab[!is.na(mlab)]
+  mlab <- mlab[!is.na(mlab)]
+  n <- length(tlab)
+  if (n == 0L) stop("none of the specified 'terms' are in 'object'")
+  intercept <- if (missing(intercept)) {
+    vapply(tlab, has.intercept, logical(1L))
+  } else rep_len(intercept, n)
+  syncable <- (n > 1L) && (length(unique(intercept)) == 1L)
+  if (syncable && !is.null(limits) && anyNA(limits)) {
+    if (inherits(object, "midrib")) {
+      mats <- lapply(mlab, function(t) as.matrix(object$main.effects[[t]]$mid))
+      values <- do.call(rbind, mats)
+      if (intercept[1L]) {
+        shift <- get.intercept(object)
+        values <- sweep(values, MARGIN = 2L, STATS = shift, FUN = "+")
+      }
+      values <- as.vector(values)
+    } else {
+      shift <- if (intercept[1L])
+        get.intercept(object) else numeric(length(object))
+      values <- unlist(lapply(
+        X = seq_along(object),
+        FUN = function(i) {
+          unlist(lapply(
+            X = mlab,
+            FUN = function(t) object[[i]]$main.effects[[t]]$mid + shift[i]
+          ))
+        }
+      ), use.names = FALSE)
+    }
+    if (is.na(limits[1L])) limits[1L] <- min(values, na.rm = TRUE)
+    if (is.na(limits[2L])) limits[2L] <- max(values, na.rm = TRUE)
+  }
+  out <- list()
+  for (i in seq_along(tlab)) {
+    out[[tlab[i]]] <- .ggmid.mids(
+      object, term = mlab[i], type = type, theme = theme,
+      intercept = intercept[i], limits = limits,
+      resolution = resolution, labels = labels
+    )
+  }
+  if (n == 1L) out[[1L]] else out
+}
+
+.ggmid.mids <- function(
     object, term, type = c("effect", "series"), theme = NULL, intercept = FALSE,
     limits = c(NA, NA), resolution = NULL, labels = base::labels(object), ...
 ) {
-  tags <- term.split(term)
-  term <- term.check(term, mid.terms(object), stop = TRUE)
-  if (length(tags) > 1L) {
-    message("comparative plotting for interaction terms is not supported")
-    return(invisible(NULL))
+  if (inherits(object, "midrib")) {
+    base <- object
+    if (is.null(base$encoders$main.effects[[term]]))
+      stop(sprintf("the term '%s' was not found in the object", term))
+  } else {
+    ok <- vapply(
+      X = object,
+      FUN = function(m) !is.null(m$encoders$main.effects[[term]]),
+      FUN.VALUE = logical(1L)
+    )
+    if (!any(ok))
+      stop(sprintf("the term '%s' was not found in any of the models", term))
+    base <- object[[which(ok)[1L]]]
   }
-  type <- match.arg(type)
-  base <- as.list(object)[[1L]]
   enc <- base$encoders$main.effects[[term]]
   if (enc$type == "factor") {
     xvals <- factor(enc$envir$olvs, levels = enc$envir$olvs)
@@ -70,10 +131,10 @@ ggmid.mids <- function(
     )
     xvals <- seq(rng[1L], rng[2L], length.out = resolution)
   }
-  fmat <- mid.effect(object, term = term, x = xvals)
+  fmat <- term.effect(object, term = term, x = xvals)
   if (intercept) {
-    ints <- vapply(as.list(object), `[[`, 0.0, "intercept")
-    fmat <- sweep(fmat, 2L, ints, "+")
+    ints <- get.intercept(object)
+    fmat <- sweep(fmat, MARGIN = 2L, STATS = ints, FUN = "+")
   }
   n <- nrow(fmat)
   m <- ncol(fmat)
@@ -93,10 +154,7 @@ ggmid.mids <- function(
   colnames(df)[1L] <- term
   discrete <- is.discrete(labels)
   if (type == "effect") {
-    theme <- theme %||% (
-      if (discrete) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||% color.theme.defaults(if (discrete) "qual" else "seq")
     theme <- color.theme(theme)
     pl <- ggplot2::ggplot(
       df, ggplot2::aes(x = .data[[term]], y = .data[["mid"]])
@@ -112,10 +170,8 @@ ggmid.mids <- function(
       ) + scale_color_theme(theme, discrete = discrete)
     }
   } else if (type == "series") {
-    theme <- theme %||% (
-      if (is.discrete(xvals)) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||%
+      color.theme.defaults(if (is.discrete(xvals)) "qual" else "seq")
     theme <- color.theme(theme)
     pl <- ggplot2::ggplot(
       df, ggplot2::aes(x = .data[["label"]], y = .data[["mid"]])
@@ -131,9 +187,10 @@ ggmid.mids <- function(
   pl
 }
 
-
 #' @rdname ggmid.mids
+#'
 #' @exportS3Method ggplot2::autoplot
+#'
 autoplot.mids <- function(object, ...) {
   mcall <- match.call(expand.dots = TRUE)
   mcall[[1L]] <- quote(ggmid)

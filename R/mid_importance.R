@@ -68,7 +68,7 @@ mid.importance <- function(
     if (is.null(weights))
       weights <- object$weights
   }
-  preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")
+  preds <- stats::predict(object, data, type = "terms", na.action = "na.pass")
   if (!is.null(weights) && diff(range(weights, na.rm = TRUE)) == 0)
     weights <- NULL
   n <- nrow(preds)
@@ -79,8 +79,7 @@ mid.importance <- function(
   df <- data.frame(term = factor(names(imp), levels = rev(names(imp))),
                    importance = imp)
   rownames(df) <- NULL
-  df$order <-
-    as.factor(sapply(strsplit(as.character(df$term), split = ":"), length))
+  df$order <- as.factor(lengths(lapply(as.character(df$term), get.variables)))
   out <- list()
   out$importance <- df
   if (!is.null(max.nsamples) && n > max.nsamples) {

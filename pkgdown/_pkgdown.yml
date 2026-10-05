@@ -53,15 +53,15 @@ navbar:
 articles:
 - title: Interpret black-box models with midr
   contents:
-  - articles/regression
-  - articles/classification
-  - articles/survival
+  # - articles/regression
+  # - articles/classification
+  # - articles/survival
 - title: Advanced Tools & Customization
   contents:
   # - articles/graphics
-  - articles/ggplot2
-  - articles/collection
-  - articles/colortheme
+  # - articles/ggplot2
+  # - articles/collection
+  # - articles/colortheme
 
 reference:
 - title: Fit MID models
@@ -69,64 +69,67 @@ reference:
   - interpret
 - subtitle: Methods
   contents:
-  - plot.mid
   - ggmid
-  - plot.mids
   - ggmid.mids
-  - mid.plots
+  - plot.mid
+  - plot.mids
   - predict.mid
-  - mid.effect
   - print.mid
   - summary.mid
-  - mid.terms
 - title: Combine MID objects
   contents:
   - midlist
-  - labels.midlist
+- subtitle: Methods
+  contents:
   - extract.midlist
+  - labels.midlist
 - title: Importance of effects
   contents:
   - mid.importance
 - subtitle: Methods
   contents:
-  - plot.midimp
   - ggmid.midimp
-  - plot.midimps
   - ggmid.midimps
+  - plot.midimp
+  - plot.midimps
 - title: Breakdown of predictions
   contents:
   - mid.breakdown
 - subtitle: Methods
   contents:
-  - plot.midbrk
   - ggmid.midbrk
-  - plot.midbrks
   - ggmid.midbrks
+  - plot.midbrk
+  - plot.midbrks
 - title: Conditional expectations
   contents:
   - mid.conditional
 - subtitle: Methods
   contents:
-  - plot.midcon
   - ggmid.midcon
-  - plot.midcons
   - ggmid.midcons
+  - plot.midcon
+  - plot.midcons
 - title: Other functions
   contents:
-  - get.yhat
   - get.link
+  - get.yhat
+  - term.effect
+  - term.labels
+  - weighted.loss
+- subtitle: Color themes
+  contents:
+  - color.theme
+  - color.theme.register
+  - color.themes
+  - scale_color_theme
+  - to_colors
 - subtitle: Variable encoders
   contents:
   - factor.encoder
   - numeric.encoder
-- subtitle: Color themes
-  contents:
-  - color.theme
-  - color.theme.info
-  - set.color.theme
-  - scale_color_theme
 - subtitle: Miscellaneous
   contents:
-  - theme_midr
-  - weighted.loss
+  - midr.options
   - shapviz.mid
+  - theme_midr

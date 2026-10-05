@@ -10,7 +10,7 @@
   newdata = NULL,
   na.action = "na.pass",
   type = c("response", "link", "terms"),
-  terms = mid.terms(object),
+  terms = term.labels(object),
   ...
 )
 
@@ -61,5 +61,5 @@ predict(mid, airquality[test, ], type = "link")
 predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{mid.effect}}, \code{\link{get.yhat}}
+\code{\link{interpret}}, \code{\link{get.yhat}}
 }

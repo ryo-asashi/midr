@@ -25,7 +25,7 @@ interpret(object, ...)
   lambda = 0,
   kappa = 1e+06,
   na.action = getOption("na.action"),
-  verbosity = 1L,
+  verbosity = NULL,
   frames = list(),
   split = "quantile",
   digits = NULL,
@@ -47,7 +47,7 @@ interpret(object, ...)
   weights = NULL,
   subset = NULL,
   na.action = getOption("na.action"),
-  verbosity = 1L,
+  verbosity = NULL,
   mode = 1L,
   drop.unused.levels = FALSE,
   pred.args = list(),
@@ -211,5 +211,5 @@ points(x = 1L:100L, y = Nile)
 Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, \url{https://arxiv.org/abs/2506.08338}.
 }
 \seealso{
-\code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.plots}}, \code{\link{mid.effect}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
+\code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
 }

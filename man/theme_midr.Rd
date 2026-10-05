@@ -2,7 +2,6 @@
 % Please edit documentation in R/theme_midr.R
 \name{theme_midr}
 \alias{theme_midr}
-\alias{par.midr}
 \title{Default Plotting Themes}
 \usage{
 theme_midr(
@@ -13,8 +12,6 @@ theme_midr(
   base_rect_size = base_size/22,
   ...
 )
-
-par.midr(...)
 }
 \arguments{
 \item{grid_type}{the type of grid lines to display, one of "none", "x", "y" or "xy".}
@@ -27,17 +24,13 @@ par.midr(...)
 
 \item{base_rect_size}{base size for rect elements.}
 
-\item{...}{for \code{theme_midr()}, other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}. For \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.}
+\item{...}{other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}.}
 }
 \value{
 \code{theme_midr()} provides a \strong{ggplot2} theme customized for the \strong{midr} package.
-
-\code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
 }
 \description{
 \code{theme_midr()} returns a complete theme for "ggplot" objects, providing a consistent visual style for \strong{ggplot2} plots.
-
-\code{par.midr()} can be used to set graphical parameters for base R graphics.
 }
 \examples{
 # Use theme_midr() with ggplot2
@@ -51,9 +44,4 @@ ggplot2::ggplot(X) +
 ggplot2::ggplot(X) +
   ggplot2::geom_line(ggplot2::aes(x, y)) +
   theme_midr(grid_type = "xy")
-
-# Use par.midr() for base R graphics
-old.par <- par.midr()
-plot(y ~ x, data = X)
-par(old.par)
 }

@@ -131,10 +131,8 @@ ggmid.midcons <- function(
     }
   }
   if (type == "series") {
-    theme <- theme %||% (
-      if (is.discrete(con[[variable]])) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||%
+      color.theme.defaults(if (is.discrete(con[[variable]])) "qual" else "seq")
     mpg <- ggplot2::aes(
         color = .data[[variable]],
         group = interaction(.data[[".id"]], factor(.data[[variable]]))
@@ -147,10 +145,7 @@ ggmid.midcons <- function(
     pl <- pl + ggplot2::labs(x = NULL) +
       scale_color_theme(theme, discrete = is.discrete(con[[variable]]))
   } else if (type == "iceplot" || type == "centered") {
-    theme <- theme %||% (
-      if (discrete) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||% color.theme.defaults(if (discrete) "qual" else "seq")
     mpg <- ggplot2::aes(
       color = .data[["label"]],
       group = interaction(.data[[".id"]], factor(.data[["label"]]))

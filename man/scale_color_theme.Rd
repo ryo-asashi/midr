@@ -7,7 +7,7 @@
 \title{Color Theme Scales for ggplot2 Graphics}
 \usage{
 scale_color_theme(
-  theme,
+  theme = NULL,
   ...,
   discrete = NULL,
   middle = 0,
@@ -15,14 +15,20 @@ scale_color_theme(
 )
 
 scale_colour_theme(
-  theme,
+  theme = NULL,
   ...,
   discrete = NULL,
   middle = 0,
   aesthetics = "colour"
 )
 
-scale_fill_theme(theme, ..., discrete = NULL, middle = 0, aesthetics = "fill")
+scale_fill_theme(
+  theme = NULL,
+  ...,
+  discrete = NULL,
+  middle = 0,
+  aesthetics = "fill"
+)
 }
 \arguments{
 \item{theme}{a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.}
@@ -31,7 +37,7 @@ scale_fill_theme(theme, ..., discrete = NULL, middle = 0, aesthetics = "fill")
 
 \item{discrete}{logical. If \code{TRUE}, a discrete scale is used regardless of the theme type.}
 
-\item{middle}{a numeric value specifying the middle point for the diverging color themes.}
+\item{middle}{a numeric value specifying the middle point for the diverging color themes. Default is \code{0}.}
 
 \item{aesthetics}{the aesthetic to be scaled. Can be "colour", "color", or "fill".}
 }

@@ -13,34 +13,20 @@ test_that("is.discrete identifies types correctly", {
   expect_false(is.discrete(c(1.5, 2.5)))
 })
 
-test_that("term.split splits interaction terms properly", {
-  expect_equal(term.split("A:B"), c("A", "B"))
-  expect_equal(term.split("A:B:C"), c("A", "B", "C"))
-  expect_equal(term.split("A"), "A")
+test_that("get.variables splits interaction terms properly", {
+  expect_equal(get.variables("A:B"), c("A", "B"))
+  expect_equal(get.variables("A:B:C"), c("A", "B", "C"))
+  expect_equal(get.variables("A"), "A")
 })
 
-test_that("term.check validates and reverses terms correctly", {
-  terms <- c("A", "B", "A:B", "C:D:E")
-  expect_equal(term.check("A", terms), "A")
-  expect_equal(term.check("A:B", terms), "A:B")
-  expect_equal(term.check("B:A", terms), "A:B")
-  expect_error(term.check("C", terms, stop = TRUE), "does not exist")
-  expect_error(term.check("X:Y", terms, stop = TRUE), "does not exist")
-  expect_message(
-    res <- term.check("C", terms, stop = FALSE),
-    "does not exist"
-  )
-  expect_true(is.na(res))
-  expect_error(term.check(NA, terms, stop = TRUE), "term can't be NA")
-  expect_true(is.na(term.check(NA, terms, stop = FALSE)))
-})
-
-test_that("make.formula creates formula correctly", {
-  f1 <- make.formula(xlabels = c("x1", "x2"), ylabel = "y")
-  expect_s3_class(f1, "formula")
-  expect_equal(deparse(f1), "y ~ x1 + x2")
-  f2 <- make.formula(xlabels = c("x1", "x2"))
-  expect_equal(deparse(f2), "~x1 + x2")
+test_that("match.labels validates term labels correctly", {
+  labs <- c("A", "B", "A:B", "C:D:E")
+  expect_equal(match.labels("A", labs), "A")
+  expect_equal(match.labels("B:A", labs, names = "a"), c(a = "A:B"))
+  expect_equal(match.labels("A * B", labs, single = FALSE), "A:B")
+  expect_equal(match.labels("E:C:D", labs), "C:D:E")
+  expect_true(is.na(match.labels("B : A", labs, sort = FALSE)))
+  expect_true(is.na(match.labels("C", labs)))
 })
 
 test_that("interaction.frame combinations are correct", {

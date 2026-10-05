@@ -8,7 +8,7 @@
 #' @param base_family base font family.
 #' @param base_line_size base size for line elements.
 #' @param base_rect_size base size for rect elements.
-#' @param ... for \code{theme_midr()}, other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}. For \code{par.midr()}, optional arguments in \code{tag = value} form to be passed to \code{graphics::par()}.
+#' @param ... other parameters passed on to \code{ggplot2::theme_light()}. \pkg{ggplot2} >= 4.0.0 accepts \code{ink}, \code{paper}, and \code{accent}.
 #'
 #' @examples
 #' # Use theme_midr() with ggplot2
@@ -22,11 +22,6 @@
 #' ggplot2::ggplot(X) +
 #'   ggplot2::geom_line(ggplot2::aes(x, y)) +
 #'   theme_midr(grid_type = "xy")
-#'
-#' # Use par.midr() for base R graphics
-#' old.par <- par.midr()
-#' plot(y ~ x, data = X)
-#' par(old.par)
 #' @returns
 #' \code{theme_midr()} provides a \strong{ggplot2} theme customized for the \strong{midr} package.
 #'
@@ -62,30 +57,3 @@ theme_midr <- function(
   )
   e1 + e2
 }
-
-
-#' @rdname theme_midr
-#'
-#' @description
-#' \code{par.midr()} can be used to set graphical parameters for base R graphics.
-#'
-#' @returns
-#' \code{par.midr()} returns the previous values of the changed parameters in an invisible named list.
-#'
-#' @export par.midr
-#'
-par.midr <- function(...) {
-  dots <- list(...)
-  dots <- dots[names(dots) %in% names(graphics::par(no.readonly = TRUE))]
-  args <- list(
-    bg = "white", bty = "o", mar = c(4.1, 4.1, 2.1, 1.1), family = "serif",
-    font = 1L, font.axis = 1L, font.lab = 1L, font.main = 1L, font.sub = 1L,
-    col = "black", col.axis = "black", col.lab = "black", col.main ="black",
-    col.sub = "black", cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1.2,
-    cex.sub = .9, las = 0L, lty = "solid", lwd = 1, pch = 16L
-  )
-  args <- utils::modifyList(args, dots)
-  do.call(what = graphics::par, args = args)
-}
-
-

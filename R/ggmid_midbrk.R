@@ -49,8 +49,6 @@ ggmid.midbrk <- function(
     terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
     pattern = c("%t=%v", "%t:%t"), format.args = list(), ...) {
   type <- match.arg(type)
-  if (missing(theme))
-    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   bd <- object$breakdown
@@ -81,7 +79,7 @@ ggmid.midbrk <- function(
   values <- unlist(do.call(base::format, format.args))
   for (i in seq_len(nrow(bd) - as.numeric(use.others))) {
     term <- bd[i, "term"]
-    tags <- term.split(term)
+    tags <- get.variables(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
       label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))
@@ -139,7 +137,8 @@ ggmid.midbrk <- function(
     hw <- width / 2
     bd$ymin <- as.integer(bd$term) - hw
     bd$ymax <- as.integer(bd$term) + hw
-    cs <- cumsum(c(object$intercept, bd$mid))
+    ints <- get.intercept(object)
+    cs <- cumsum(c(ints, bd$mid))
     bd$xmin <- cs[1L:nrow(bd)]
     bd$xmax <- cs[2L:(nrow(bd) + 1L)]
     pl <- ggplot2::ggplot(
@@ -148,7 +147,7 @@ ggmid.midbrk <- function(
     tli <- ggplot2::theme_get()$line
     if (vline) {
       pl <- pl + ggplot2::geom_vline(
-        xintercept = object$intercept,
+        xintercept = ints,
         linewidth = (tli$linewidth %||% 0.5) * 0.5,
         colour = tli$colour %||% "black"
       )

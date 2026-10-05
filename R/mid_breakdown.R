@@ -59,28 +59,28 @@ mid.breakdown <- function(
   if (!is.data.frame(data))
     data <- data.frame(data)
   if (!is.null(row))
-    data <- data[row, ]
+    data <- data[row, , drop = FALSE]
   if (nrow(data) != 1L) {
     message("'data' contains multiple observations: the first observation is used")
     data <- data[1L, , drop = FALSE]
   }
   if (nrow(data) == 0L)
     stop("'data' contains no observations to be used")
-  preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")[1L, ]
+  preds <- stats::predict(object, data, type = "terms", na.action = "na.pass")[1L, ]
   terms <- names(if (sort) base::sort(abs(preds), decreasing = TRUE) else preds)
-  orders <- as.factor(sapply(strsplit(terms, split = ":"), length))
+  order <- as.factor(lengths(lapply(terms, get.variables)))
   df <- data.frame(term = factor(terms, levels = rev(terms)),
-                   mid = preds[terms], order = orders)
+                   mid = preds[terms], order = order)
   rownames(df) <- NULL
   out <- list()
   out$breakdown <- df
   out$data <- model.reframe(object, data)
-  out$intercept <- object$intercept
+  out$intercept <- (ints <- get.intercept(object))
   if (!is.null(object$link)) {
-    out$linear.predictor <- object$intercept + sum(preds)
+    out$linear.predictor <- ints + sum(preds)
     out$prediction <- object$link$linkinv(out$linear.predictor)
   } else {
-    out$prediction <- object$intercept + sum(preds)
+    out$prediction <- ints + sum(preds)
   }
   attr(out, "term.labels") <- as.character(df$term)
   class(out) <- c("midbrk")

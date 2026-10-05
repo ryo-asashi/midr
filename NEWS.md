@@ -1,3 +1,23 @@
+# midr 0.6.2.900
+
+The **midr** package is currently undergoing a through reconstruction for the upcoming release.
+
+### New Features
+
+-   `ggmid()` and `plot()` now accept the `terms` argument, allowing them to produce multiple plots.
+-   The handling of "terms" objects has been improved: functions can now accept terms such as `plot(mid, "I(1:10)")` and `ggmid(mid, "x * y + 1")`.
+-   `to.colors()` is exported to enhance the color handling capability for base R graphics.
+-   `midr.options()` is implemented for control global options including `midr.solver.*`, `midr.verbosity` and `midr.color.theme.*` (for `registry` and three color theme types).
+
+### Deprecated & Defunct
+
+-   `set.color.theme()` will be deprecated to standardize the API naming conventions. Please use `color.theme.register()` instead.
+-   `color.theme.info()` is renamed to `color.themes()`.
+-   `color.theme.env()` is deprecated. To access the color theme registry, please use `midr.options("color.theme.registry")` instead.
+-   `mid.terms()` and `mid.effect()` are deprecated and replaced by `term.labels()` and `term.effect()`, which can be applied to any additive model.
+-   `mid.plots()` is deprecated, superseded by the new capabilities of `ggmid()` and `plot()`.
+-   `par.midr()` is renamed to `midr.par()`.
+
 # midr 0.6.1.903
 
 -   Updated `interpret()` to resolve issues related to #20.

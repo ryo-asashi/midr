@@ -75,10 +75,8 @@ plot.midbrks <- function(
     labels <- factor(labels, levels = unique(labels))
     brk$label <- factor(brk$label, levels = levels(labels))
   }
-  theme <- theme %||% (
-    if (type == "series" || discrete) getOption("midr.qualitative", "HCL")
-    else getOption("midr.sequential", "bluescale")
-  )
+  theme <- theme %||%
+    color.theme.defaults(if (type == "series" || discrete) "qual" else "seq")
   theme <- color.theme(theme)
   terms.all <- as.character(unique(brk$term))
   if (!is.null(terms)) {
@@ -108,7 +106,7 @@ plot.midbrks <- function(
   formatted <- character(length(terms.kept))
   for (i in seq_along(terms.kept)) {
     term <- terms.kept[i]
-    tags <- term.split(term)
+    tags <- get.variables(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
       label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))

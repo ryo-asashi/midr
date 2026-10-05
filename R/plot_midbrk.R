@@ -50,8 +50,6 @@ plot.midbrk <- function(
     pattern = c("%t=%v", "%t:%t"), format.args = list(), ...) {
   dots <- override(list(), list(...))
   type <- match.arg(type)
-  if (missing(theme))
-    theme <- getOption("midr.sequential", getOption("midr.qualitative", NULL))
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   bd <- x$breakdown
@@ -82,7 +80,7 @@ plot.midbrk <- function(
   values <- unlist(do.call(base::format, format.args))
   for (i in seq_len(nrow(bd) - as.numeric(use.others))) {
     term <- bd[i, "term"]
-    tags <- term.split(term)
+    tags <- get.variables(term)
     vals <- values[tags]
     if (length(tags) == 1L) {
       label <- sub("%v", vals[1L], sub("%t", tags[1L], pattern[1L]))

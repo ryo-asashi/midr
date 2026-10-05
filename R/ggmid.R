@@ -2,7 +2,7 @@
 #'
 #' @description
 #' \code{ggmid()} is an S3 generic function for creating various visualizations from MID-related objects using \strong{ggplot2}.
-#' For "mid" objects (i.e., fitted MID models), it visualizes a single component function specified by the \code{term} argument.
+#' For "mid" objects (i.e., fitted MID models), it visualizes one or more component functions specified by the \code{terms} argument.
 #'
 #' @details
 #' For "mid" objects, \code{ggmid()} creates a "ggplot" object that visualizes a component function of the fitted MID model.
@@ -33,7 +33,7 @@
 #' # Use a different color theme
 #' ggmid(mid, "clarity:color", theme = "RdBu")
 #' @returns
-#' \code{ggmid.mid()} returns a "ggplot" object.
+#' \code{ggmid.mid()} returns a "ggplot" object if a single term is specified, or a list of "ggplot" objects if multiple terms are specified.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid.midimp}}, \code{\link{ggmid.midcon}}, \code{\link{ggmid.midbrk}}, \code{\link{plot.mid}}
 #'
@@ -45,7 +45,7 @@ UseMethod("ggmid")
 
 #' @rdname ggmid
 #'
-#' @param term a character string specifying the component function to be plotted.
+#' @param terms a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y + x:y}), it is automatically parsed to extract the relevant terms.
 #' @param type the plotting style. One of "effect", "data" or "compound".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
@@ -60,18 +60,52 @@ UseMethod("ggmid")
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mid <- function(
-    object, term, type = c("effect", "data", "compound"), theme = NULL,
+    object, terms = term.labels(object, order = 1L),
+    type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
     jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
-  tags <- term.split(term)
-  term <- term.check(term, mid.terms(object), stop = TRUE)
   type <- match.arg(type)
-  if (missing(theme) && length(tags) == 2L)
-    theme <- if(type == "data") {
-      getOption("midr.sequential", "bluescale")
-    } else {
-      getOption("midr.diverging", "midr")
-    }
+  tlab <- term.labels(terms, order = 1L:2L)
+  mlab <- match.labels(tlab, term.labels(object), single = FALSE)
+  tlab <- tlab[!is.na(mlab)]
+  mlab <- mlab[!is.na(mlab)]
+  n <- length(tlab)
+  if (n == 0L) stop("none of the specified 'terms' are in 'object'")
+  tags <- lapply(tlab, get.variables)
+  intercept <- if (missing(intercept)) {
+    vapply(tlab, has.intercept, logical(1L))
+  } else rep_len(intercept, n)
+  main.effects <- if (missing(main.effects)) {
+    vapply(tlab, is.fully.crossed, logical(1L))
+  } else rep_len(main.effects, n)
+  syncable <- (n > 1L) && (length(unique(intercept)) == 1L) && !any(main.effects)
+  if (syncable && !is.null(limits) && anyNA(limits)) {
+    shift <- if (intercept[1L]) get.intercept(object) else 0
+    dfs <- c(object$main.effects, object$interactions)[mlab]
+    values <- unlist(lapply(dfs, `[[`, "mid"), use.names = FALSE)
+    if (is.na(limits[1L])) limits[1L] <- min(values, na.rm = TRUE) + shift
+    if (is.na(limits[2L])) limits[2L] <- max(values, na.rm = TRUE) + shift
+  }
+  out <- list()
+  for (i in seq_along(tlab)) {
+    out[[tlab[i]]] <- .ggmid.mid(
+      object, term = mlab[i], tags = tags[[i]], type = type, theme = theme,
+      intercept = intercept[i], main.effects = main.effects[i], data = data,
+      limits = limits, jitter = jitter, resolution = resolution,
+      lumped = lumped, ...
+    )
+  }
+  if (n == 1L) out[[1L]] else out
+}
+
+.ggmid.mid <- function(
+    object, term, tags, type = c("effect", "data", "compound"), theme = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
+    jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
+  type <- match.arg(type)
+  ie <- (length(tags) > 1L)
+  if (is.null(theme) && ie)
+    theme <- color.theme.defaults(if (type == "data") "div" else "seq")
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "data" || type == "compound") {
@@ -79,22 +113,22 @@ ggmid.mid <- function(
       data <- model.data(object, env = parent.frame())
     if (is.null(data))
       stop("'data' must be supplied for the '", type, "' plot")
-    preds <- predict.mid(object, data, terms = unique(c(tags, term)),
-                         type = "terms", na.action = "na.pass")
+    preds <- stats::predict(object, data, terms = unique(c(tags, term)),
+                            type = "terms", na.action = "na.pass")
     data <- model.reframe(object, data)
   }
   lumped <- isTRUE(lumped) && isFALSE(main.effects)
-  # main effect
-  if ((len <- length(tags)) == 1L) {
+  ints <- get.intercept(object)
+  if (!ie) {
     enc <- object$encoders$main.effects[[term]]
     if (enc$type != "factor" || lumped) {
       df <- stats::na.omit(object$main.effects[[term]])
     } else {
-      df <- factor.frame(enc$envir$olvs, tag = term)
-      df$mid <- mid.f(object, term, df)
+      df <- factor.frame(enc$envir$olvs, tag = tags)
+      df$mid <- term.effect(object, term, df)
     }
     if (intercept)
-      df$mid <- df$mid + object$intercept
+      df$mid <- df$mid + ints
     pl <- ggplot2::ggplot(
       data = df,
       mapping = ggplot2::aes(x = .data[[term]], y = .data[["mid"]])
@@ -117,7 +151,7 @@ ggmid.mid <- function(
       data$mid <- as.numeric(preds[, term])
       dots <- standardize_param_names(list(...))
       if (intercept)
-        data$mid <- data$mid + object$intercept
+        data$mid <- data$mid + ints
       jit <- 0
       if (enc$type == "factor") {
         jit <- jitter[1L] %||% 0.45
@@ -126,7 +160,7 @@ ggmid.mid <- function(
       pl <- pl + .geom_jitter(data = data, width = jit, height = 0, ...)
     }
     if (use.theme) {
-      middle <- if (intercept) object$intercept else 0
+      middle <- if (intercept) ints else 0
       if (enc$type == "factor") {
         pl <- pl + ggplot2::aes(fill = .data[["mid"]]) +
           scale_fill_theme(theme = theme, limits = limits, middle = middle)
@@ -138,8 +172,8 @@ ggmid.mid <- function(
     }
     if (!is.null(limits))
       pl <- pl + ggplot2::scale_y_continuous(limits = limits)
-  # interaction
-  } else if (len == 2L) {
+    # interaction
+  } else if (ie) {
     encs <- list(object$encoders$interactions[[tags[1L]]],
                  object$encoders$interactions[[tags[2L]]])
     frms <- list()
@@ -159,12 +193,12 @@ ggmid.mid <- function(
       }
     }
     cols <- paste0(rep(tags, each = 2L), c("_min", "_max"))
-    df$mid <- mid.f(object, term, df)
+    df$mid <- term.effect(object, term, df)
     if (intercept)
-      df$mid <- df$mid + object$intercept
+      df$mid <- df$mid + ints
     if (main.effects) {
       df$mid <- df$mid +
-        mid.f(object, tags[1L], df) + mid.f(object, tags[2L], df)
+        term.effect(object, tags[1L], df) + term.effect(object, tags[2L], df)
     }
     pl <- ggplot2::ggplot(
       data = df,
@@ -191,13 +225,13 @@ ggmid.mid <- function(
         rdf <- data.frame(rep(xy[[1L]], times = ms[2L]),
                           rep(xy[[2L]], each = ms[1L]))
         colnames(rdf) <- tags
-        rdf$mid <- mid.f(object, term, rdf)
+        rdf$mid <- term.effect(object, term, rdf)
         if (intercept)
-          rdf$mid <- rdf$mid + object$intercept
+          rdf$mid <- rdf$mid + ints
         if (main.effects) {
           rdf$mid <- rdf$mid +
-            mid.f(object, tags[1L], rdf) +
-            mid.f(object, tags[2L], rdf)
+            term.effect(object, tags[1L], rdf) +
+            term.effect(object, tags[2L], rdf)
         }
         pl <- pl + .geom_raster(
           mapping = ggplot2::aes(fill = .data[["mid"]]), data = rdf, ...
@@ -211,7 +245,7 @@ ggmid.mid <- function(
         pl <- pl + .geom_rect(mapping = mpg, ...)
       }
       if (use.theme) {
-        middle <- if (intercept) object$intercept else 0
+        middle <- if (intercept) ints else 0
         pl <- pl + scale_fill_theme(theme = theme, limits = limits,
                                     middle = middle)
       } else {
@@ -236,13 +270,13 @@ ggmid.mid <- function(
           preds[, c(term, if (main.effects) tags), drop = FALSE]
         )
         if (intercept)
-          data$mid <- data$mid + object$intercept
+          data$mid <- data$mid + ints
         pl <- pl + .geom_jitter(
           mapping = ggplot2::aes(colour = .data[["mid"]]),
           data = data, width = jit[1L], height = jit[2L], ...
         )
         if (use.theme) {
-          middle <- if (intercept) object$intercept else 0
+          middle <- if (intercept) ints else 0
           pl <- pl + scale_color_theme(theme = theme, limits = limits,
                                        middle = middle)
         } else {
@@ -253,7 +287,6 @@ ggmid.mid <- function(
   }
   pl
 }
-
 
 #' @rdname ggmid
 #'

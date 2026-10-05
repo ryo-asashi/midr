@@ -62,7 +62,8 @@ plot.midcon <- function(
   if (!is.null(term)) {
     if (is.null(x$conditional.effects))
       stop("the term effects are not stored in the object")
-    term <- term.check(term, mid.terms(x), stop = TRUE)
+    term <- match.labels(term, term.labels(x))
+    if (is.na(term)) stop("specified 'term' is not found in 'x'")
     yvar <- paste0("mid(", term, ")")
     obs[, yvar] <- x$observed.effects[, term]
     con[, yvar] <- x$conditional.effects[, term]
@@ -95,11 +96,8 @@ plot.midcon <- function(
   if (!is.null(colexpr <- substitute(var.color))) {
     if (is.character(colexpr)) colexpr <- str2lang(colexpr)
     ref <- eval(colexpr, envir = obs)
-    if (!use.theme) {
-      theme <- if (is.discrete(ref))
-        getOption("midr.qualitative", "HCL") else
-        getOption("midr.sequential", "bluescale")
-    }
+    if (!use.theme)
+      theme <- color.theme.defaults(if (is.discrete(ref)) "qual" else "seq")
     aes$col <- to.colors(ref, theme)
   }
   if (!is.null(alphaexpr <- substitute(var.alpha))) {

@@ -36,18 +36,16 @@
 print.mid <- function(
     x, digits = max(3L, getOption("digits") - 2L), main.effects = FALSE, ...) {
   cl <- paste0(trimws(deparse(x$call)), sep = "", collapse = "\n ")
-  cat(paste0("\nCall:\n", cl, "\n", collapse = ""))
+  cat("\nCall:\n", cl, "\n", sep = "")
   if (!is.null(x$model.class))
-    cat(paste0("\nModel Class: ", paste0(x$model.class, collapse = ", "), "\n"))
-  cat(paste0("\nIntercept: ", examples(x$intercept, digits = digits),
-             "\n", collapse = ""))
+    cat("\nModel Class: ", paste0(x$model.class, collapse = ", "), "\n", sep = "")
+  cat("\nIntercept: ", examples(x$intercept, digits = digits), "\n", sep = "")
   m <- length(x$main.effects)
   if (m > 0L) {
     cat("\nMain Effects:\n")
     if (main.effects) {
       for (i in seq_len(m)) {
-        cat(paste0("---\n$",
-                   names(x$main.effects)[i], "\n", collapse=""))
+        cat("---\n$", names(x$main.effects)[i], "\n", sep = "")
         vl <- x$main.effects[[i]][, "mid"]
         nm <- x$main.effects[[i]][, 1L]
         if (is.numeric(nm))
@@ -56,18 +54,18 @@ print.mid <- function(
         print.default(vl, digits = digits)
       }
     } else {
-      cat(paste0(m, " main effect term", if (m > 1L) "s", "\n"))
+      cat(m, " main effect term", if (m > 1L) "s", "\n", sep = "")
     }
   }
   m <- length(x$interactions)
   if (m > 0L) {
-    cat(paste0("\nInteractions:\n",
-               m, " interaction term", if (m > 1L) "s", "\n"))
+    cat("\nInteractions:\n",
+        m, " interaction term", if (m > 1L) "s", "\n", sep = "")
   }
   ur <- x$ratio
   ur <- if (inherits(x, "mid")) ur[1L] else if (is.matrix(ur)) ur[1L, ] else ur
-  cat(paste0("\nUninterpreted Variation Ratio: ",
-             examples(ur, digits = digits), "\n"))
+  cat("\nUninterpreted Variation Ratio: ", examples(ur, digits = digits), "\n",
+      sep = "")
   invisible(x)
 }
 
@@ -103,9 +101,9 @@ print.midimp <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
 ) {
   n <- attr(x, "n", exact = TRUE)
-  cat(paste0("\nMID Importance based on ",
-             n, " Observation", if (n > 1L) "s", "\n"))
-  cat(paste0("\nMeasure: ", x$measure, "\n"))
+  cat("\nMID Importance based on ",
+      n, " Observation", if (n > 1L) "s", "\n", sep = "")
+  cat("\nMeasure: ", x$measure, "\n", sep = "")
   cat("\nImportance:\n")
   print.data.frame(x$importance, digits = digits, ...)
   invisible(x)
@@ -117,13 +115,13 @@ print.midimps <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat(paste0("\nMID Importance based on ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
-  cat(paste0("\nMeasure: ", x[[1L]]$measure, "\n"))
+  cat("\nMID Importance based on ",
+      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
+  cat("\nMeasure: ", x[[1L]]$measure, "\n", sep = "")
   cat("\nImportance:\n")
   smry <- summary(x, shape = "wide")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
-  invisible(smry)
+  invisible(x)
 }
 
 
@@ -134,12 +132,14 @@ print.midbrk <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
 ) {
   cat("\nMID Breakdown of a Prediction\n")
-  cat(paste0("\nIntercept: ", format(x$intercept, digits = digits), "\n"))
+  cat("\nIntercept: ",
+      format(x$intercept, digits = digits), "\n", sep = "")
   if (!is.null(x$linear.predictor)) {
-    cat(paste0("\nLinear Predictor: ",
-               format(x$linear.predictor, digits = digits), "\n"))
+    cat("\nLinear Predictor: ",
+        format(x$linear.predictor, digits = digits), "\n", sep = "")
   } else {
-    cat(paste0("\nPrediction: ", format(x$prediction, digits = digits), "\n"))
+    cat("\nPrediction: ",
+        format(x$prediction, digits = digits), "\n", sep = "")
   }
   cat("\nBreakdown of Effects:\n")
   print.data.frame(x$breakdown, digits = digits, ...)
@@ -153,19 +153,22 @@ print.midbrks <- function(
 ) {
   cat("\nMID Breakdown of a Prediction\n")
   intercept <- vapply(X = x, FUN = function(y) y$intercept, 0.0)
-  cat(paste0("\nIntercept: ", examples(intercept, digits = digits), "\n"))
+  cat("\nIntercept: ",
+      examples(intercept, digits = digits), "\n", sep = "")
   lp <- x[[1L]]$linear.predictor
   if (!is.null(lp)) {
     lp <- vapply(X = x, FUN = function(y) y$linear.predictor, 0.0)
-    cat(paste0("\nLinear Predictor: ", examples(lp, digits = digits), "\n"))
+    cat("\nLinear Predictor: ",
+        examples(lp, digits = digits), "\n", sep = "")
   } else {
     prediction <- vapply(X = x, FUN = function(y) y$prediction, 0.0)
-    cat(paste0("\nPrediction: ", examples(prediction, digits = digits), "\n"))
+    cat("\nPrediction: ",
+        examples(prediction, digits = digits), "\n", sep = "")
   }
   cat("\nBreakdown of Effects:\n")
   smry <- summary(x, shape = "wide")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
-  invisible(smry)
+  invisible(x)
 }
 
 
@@ -176,14 +179,16 @@ print.midcon <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x, "n", exact = TRUE)
-  cat(paste0("\nIndividual Conditional Expectation for ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  cat("\nIndividual Conditional Expectation for ",
+      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
   variable <- x$variable
-  cat(paste0("\nVariable: ", variable, "\n"))
-  cat("\nSample Points: ", examples(x$values, digits = digits), "\n")
+  cat("\nVariable: ", variable, "\n", sep = "")
+  cat("\nSample Points: ", examples(x$values, digits = digits), "\n", sep = "")
   cat("\nConditional Expectations:\n")
-  print.data.frame(utils::head(x$conditional[, c(".id", variable, "yhat")], n),
-                   digits = digits, ...)
+  print.data.frame(
+    utils::head(x$conditional[, c(".id", variable, "yhat")], n),
+    digits = digits, ...
+  )
   invisible(x)
 }
 
@@ -193,13 +198,14 @@ print.midcons <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat(paste0("\nIndividual Conditional Expectation for ",
-             nobs, " Observation", if (nobs > 1L) "s", "\n"))
+  cat("\nIndividual Conditional Expectation for ",
+      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
   variable <- x$variable %||% x[[1L]]$variable
-  cat(paste0("\nVariable: ", variable, "\n"))
-  cat("\nSample Points: ", examples(x[[1L]]$values, digits = digits), "\n")
+  cat("\nVariable: ", variable, "\n", sep = "")
+  cat("\nSample Points: ",
+      examples(x[[1L]]$values, digits = digits), "\n", sep = "")
   cat("\nConditional Expectations:\n")
   smry <- summary(x, shape = "long")
   print.data.frame(utils::head(smry, n), digits = digits, ...)
-  invisible(smry)
+  invisible(x)
 }

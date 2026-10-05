@@ -1,7 +1,7 @@
 #' Plot MID Component Function
 #'
 #' @description
-#' For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes a single component function specified by the \code{term} argument.
+#' For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes one or more component functions specified by the \code{term} argument.
 #'
 #' @details
 #' This is an S3 method for the \code{plot()} generic that produces a plot from a "mid" object, visualizing a component function of the fitted MID model.
@@ -14,7 +14,7 @@
 #' The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
 #'
 #' @param x a "mid" object to be visualized.
-#' @param term a character string specifying the component function to be plotted.
+#' @param terms a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y + x:y}), it is automatically parsed to extract the relevant terms.
 #' @param type the plotting style. One of "effect", "data" or "compound".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param intercept logical. If \code{TRUE}, the intercept is added to the MID values.
@@ -44,27 +44,60 @@
 #' # Use a different color theme
 #' plot(mid, "clarity:color", theme = "RdBu")
 #' @returns
-#' \code{plot.mid()} produces a plot as a side-effect and returns \code{NULL} invisibly.
+#' \code{plot.mid()} produces one or more plots as a side-effect and returns \code{NULL} invisibly.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{ggmid}}
 #'
 #' @exportS3Method base::plot
 #'
 plot.mid <- function(
-    x, term, type = c("effect", "data", "compound"), theme = NULL,
+    x, terms = term.labels(x, order = 1L),
+    type = c("effect", "data", "compound"), theme = NULL,
+    intercept = FALSE, main.effects = FALSE, data = NULL, limits = c(NA, NA),
+    jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
+  type <- match.arg(type)
+  tlab <- term.labels(terms, order = 1L:2L)
+  mlab <- match.labels(tlab, term.labels(x), single = FALSE)
+  tlab <- tlab[!is.na(mlab)]
+  mlab <- mlab[!is.na(mlab)]
+  n <- length(tlab)
+  if (n == 0L) stop("none of the specified 'terms' are in 'x'")
+  tags <- lapply(tlab, get.variables)
+  intercept <- if (missing(intercept)) {
+    vapply(tlab, has.intercept, logical(1L))
+  } else rep_len(intercept, n)
+  main.effects <- if (missing(main.effects)) {
+    vapply(tlab, is.fully.crossed, logical(1L))
+  } else rep_len(main.effects, n)
+  syncable <- (n > 1L) && (length(unique(intercept)) == 1L) && !any(main.effects)
+  if (syncable && !is.null(limits) && anyNA(limits)) {
+    shift <- if (intercept[1L]) get.intercept(x) else 0
+    dfs <- c(x$main.effects, x$interactions)[mlab]
+    values <- unlist(lapply(dfs, `[[`, "mid"), use.names = FALSE)
+    if (is.na(limits[1L])) limits[1L] <- min(values, na.rm = TRUE) + shift
+    if (is.na(limits[2L])) limits[2L] <- max(values, na.rm = TRUE) + shift
+  }
+  if (anyNA(limits)) limits <- NULL
+  for (i in seq_along(tlab)) {
+    .plot.mid(
+      x, term = mlab[i], tags = tags[[i]], type = type, theme = theme,
+      intercept = intercept[i], main.effects = main.effects[i], data = data,
+      limits = limits, jitter = jitter, resolution = resolution,
+      lumped = lumped, ...
+    )
+  }
+}
+
+.plot.mid <- function(
+    x, term, tags, type = c("effect", "data", "compound"), theme = NULL,
     intercept = FALSE, main.effects = FALSE, data = NULL, limits = NULL,
     jitter = NULL, resolution = c(100L, 100L), lumped = TRUE, ...) {
   dots <- override(list(), list(...))
   if (!is.logical(main.effects)) dots$main <- dots$main %||% main.effects
-  tags <- term.split(term)
-  term <- term.check(term, mid.terms(x), stop = TRUE)
   type <- match.arg(type)
-  if (missing(theme) && length(tags) == 2L)
-    theme <- if(type == "data") {
-      getOption("midr.sequential", "bluescale")
-    } else {
-      getOption("midr.diverging", "midr")
-    }
+  ie <- (length(tags) > 1L)
+  if (is.null(theme) && ie)
+    theme <- color.theme.defaults(if (type == "data") "div" else "seq")
   theme <- color.theme(theme)
   use.theme <- inherits(theme, "color.theme")
   if (type == "data" || type == "compound") {
@@ -72,23 +105,24 @@ plot.mid <- function(
       data <- model.data(x, env = parent.frame())
     if (is.null(data))
       stop("'data' must be supplied for the '", type, "' plot")
-    preds <- predict.mid(x, data, terms = unique(c(tags, term)),
-                         type = "terms", na.action = "na.pass")
+    preds <- stats::predict(x, data, terms = unique(c(tags, term)),
+                            type = "terms", na.action = "na.pass")
     data <- model.reframe(x, data)
   }
   lumped <- isTRUE(lumped) && isFALSE(main.effects)
+  ints <- get.intercept(x)
   # main effect
-  if ((len <- length(tags)) == 1L) {
+  if (!ie) {
     enc <- x$encoders$main.effects[[term]]
     if (enc$type != "factor" || lumped) {
       df <- stats::na.omit(x$main.effects[[term]])
     } else {
       df <- factor.frame(enc$envir$olvs, tag = term)
-      df$mid <- mid.f(x, term, df)
+      df$mid <- term.effect(x, term, df)
     }
     if (intercept)
-      df$mid <- df$mid + x$intercept
-    middle <- if (intercept) x$intercept else 0
+      df$mid <- df$mid + ints
+    middle <- if (intercept) ints else 0
     if (type == "effect" || type == "compound") {
       if (enc$type == "constant") {
         cns <- paste0(term, c("_min", "_max"))
@@ -117,7 +151,7 @@ plot.mid <- function(
     if (type == "data" || type == "compound") {
       mids <- as.numeric(preds[, term])
       if (intercept)
-        mids <- mids + x$intercept
+        mids <- mids + ints
       cols <- if (use.theme) to.colors(mids, theme, middle = middle) else 1L
       vals <- data[, term]
       if (enc$type == "factor") {
@@ -156,7 +190,7 @@ plot.mid <- function(
       }
     }
   # interaction
-  } else if (len == 2L) {
+  } else if (ie) {
     encs <- list(x$encoders$interactions[[tags[1L]]],
                  x$encoders$interactions[[tags[2L]]])
     ms <- resolution
@@ -183,12 +217,12 @@ plot.mid <- function(
     rdf <- data.frame(rep(xy[[1L]], times = ms[2L]),
                       rep(xy[[2L]], each = ms[1L]))
     colnames(rdf) <- tags
-    z <- mid.f(x, term, rdf)
+    z <- term.effect(x, term, rdf)
     zmid <- 0
     if (intercept)
-      z <- z + (zmid <- x$intercept)
+      z <- z + (zmid <- ints)
     if (main.effects)
-      z <- z + mid.f(x, tags[1L], rdf) + mid.f(x, tags[2L], rdf)
+      z <- z + term.effect(x, tags[1L], rdf) + term.effect(x, tags[2L], rdf)
     zmat <- matrix(z, nrow = ms[1L], ncol = ms[2L])
     zlim <- limits %||% range(z)
     for (i in seq_len(2L)) {
@@ -241,8 +275,8 @@ plot.mid <- function(
     } else if (type == "data") {
       mid <- rowSums(preds[, c(term, if (main.effects) tags), drop = FALSE])
       if (intercept)
-        mid <- mid + x$intercept
-      middle <- if (intercept) x$intercept else 0
+        mid <- mid + ints
+      middle <- if (intercept) ints else 0
       cols <- to.colors(mid, theme, middle = middle)
       args <- list(x = xval, y = yval, type = "n", col = cols, pch = 16L,
                    cex = 1L, xlab = tags[1L], ylab = tags[2L], axes = FALSE)

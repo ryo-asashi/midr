@@ -6,20 +6,20 @@
 \usage{
 \method{plot}{mids}(
   x,
-  term,
+  terms = term.labels(x, order = 1L),
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
-  limits = NULL,
+  limits = c(NA, NA),
   resolution = NULL,
-  labels = base::labels(x),
+  labels = NULL,
   ...
 )
 }
 \arguments{
 \item{x}{a "mids" collection object to be visualized.}
 
-\item{term}{a character string specifying the main effect to evaluate.}
+\item{terms}{a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y}), it is automatically parsed to extract the relevant terms.}
 
 \item{type}{the plotting style: "effect" plots the effect curve per model, while "series" plots the effect trend over models per feature value.}
 
@@ -36,10 +36,10 @@
 \item{...}{optional parameters passed to the main layer (e.g., \code{linewidth}, \code{alpha}).}
 }
 \value{
-\code{plot.mids()} produces a plot as a side-effect and returns \code{NULL} invisibly.
+\code{plot.mids()} produces one or more plots as a side-effect and returns \code{NULL} invisibly.
 }
 \description{
-For "mids" collection objects, \code{plot()} visualizes and compares a single main effect across multiple models.
+For "mids" collection objects, \code{plot()} visualizes and compares one or more main effects across multiple models.
 }
 \details{
 This is an S3 method for the \code{plot()} generic that evaluates the specified \code{term} over a grid of values and compares the results across all models in the collection.

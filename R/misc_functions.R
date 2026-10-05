@@ -79,34 +79,15 @@ is.discrete <- function(x) {
   is.factor(x) || is.character(x) || is.logical(x)
 }
 
-term.split <- function(x) {
-  unlist(strsplit(x, split = ":"), use.names = FALSE)
-}
-
-term.check <- function(x, terms, stop = TRUE) {
-  if (length(x) > 1L)
-    stop("'x' must be a single term name")
-  if (is.na(x)) {
-    if (stop) stop("term can't be NA")
-    return(NA_character_)
+get.intercept <- function(object) {
+  if (inherits(object, c("mid", "midrib"))) {
+    object$intercept
+  } else if (inherits(object, "mids")) {
+    vapply(as.list(object), FUN = `[[`, FUN.VALUE = numeric(1L), "intercept")
+  } else if (inherits(object, "lm")) {
+    res <- unname(stats::coef(object)["(Intercept)"])
+    if (!is.na(res)) res else 0
   }
-  if (!any(x == terms)) {
-    rx <- paste0(rev(term.split(x)), collapse = ":")
-    if (!any(rx == terms)) {
-      if (stop) stop("term '", x, "' does not exist")
-      message("term '", x, "' does not exist")
-      return(NA_character_)
-    }
-    return(rx)
-  }
-  return(x)
-}
-
-make.formula <- function(xlabels, ylabel = NULL, env = parent.frame()) {
-  stats::as.formula(
-    paste(if (!is.null(ylabel)) ylabel, "~", paste(xlabels, collapse = "+")),
-    env = env
-  )
 }
 
 model.reframe <- function(object, data) {
@@ -191,25 +172,6 @@ mid.frames <- function(object, ...) {
     }
   }
   res
-}
-
-#' @exportS3Method stats::formula
-#'
-formula.mid <- function(x, ...) {
-  fm <- x$call$formula
-  if (!is.null(fm)) {
-    res <- stats::formula(stats::terms(x))
-    environment(res) <- environment(fm)
-    res
-  } else {
-    stats::formula(stats::terms(x))
-  }
-}
-
-#' @exportS3Method stats::model.frame
-#'
-model.frame.mid <- function(object, ...) {
-  model.reframe(object, data = model.data(object))
 }
 
 

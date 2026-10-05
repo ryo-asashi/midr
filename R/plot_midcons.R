@@ -118,10 +118,7 @@ plot.midcons <- function(
   }
   # iceplot and centered
   if (type %in% c("iceplot", "centered")) {
-    theme <- theme %||% (
-      if (discrete) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||% color.theme.defaults(if (discrete) "qual" else "seq")
     theme <- color.theme(theme)
     basecol <- dots$col %||% (
       if (discrete) theme$palette(nlabs) else to.colors(labels, theme)
@@ -158,10 +155,7 @@ plot.midcons <- function(
     return(invisible(NULL))
   # series
   } else if (type == "series") {
-    theme <- theme %||% (
-      if (fv) getOption("midr.qualitative", "HCL")
-      else getOption("midr.sequential", "bluescale")
-    )
+    theme <- theme %||% color.theme.defaults(if (fv) "qual" else "seq")
     theme <- color.theme(theme)
     basecol <- dots$col %||% (
       if (fv) theme$palette(nvals) else to.colors(values, theme)

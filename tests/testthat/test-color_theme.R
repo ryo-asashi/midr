@@ -49,7 +49,7 @@ test_that("color.theme", {
   ct <- color.theme("Mako_r")
   expect_true(ct$kernel.args$rev)
   # test 11
-  set.color.theme(c("white", "black"), type = "qualitative",
+  color.theme.register(c("white", "black"), type = "qualitative",
                   name = "mytheme", source = "custom")
   ct <- color.theme("mytheme")
   expect_equal(ct$palette(1), "white")

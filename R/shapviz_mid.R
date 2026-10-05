@@ -22,17 +22,17 @@ shapviz.mid <- function(object, data = NULL) {
   if (missing(data))
     data <- model.data(object, env = parent.frame())
   preds <- predict.mid(object, data, type = "terms", na.action = "na.pass")
-  xvars <- unique(term.split(colnames(preds)))
+  xvars <- get.variables(colnames(preds))
   shaps <- matrix(0, nrow = nrow(preds), ncol = length(xvars))
   colnames(shaps) <- xvars
   for(i in seq_len(ncol(preds))){
     term <- colnames(preds)[i]
-    tags <- term.split(term)
-    if(length(tags) == 1L){
+    vars <- get.variables(term)
+    if(length(vars) == 1L){
       shaps[, term] <- shaps[, term] + preds[, term]
     } else {
-      shaps[, tags[1L]] <- shaps[, tags[1L]] + preds[, term] / 2
-      shaps[, tags[2L]] <- shaps[, tags[2L]] + preds[, term] / 2
+      shaps[, vars[1L]] <- shaps[, vars[1L]] + preds[, term] / 2
+      shaps[, vars[2L]] <- shaps[, vars[2L]] + preds[, term] / 2
     }
   }
   if (is.null(data)) {

@@ -13,7 +13,7 @@
 #' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.
 #' @param ... optional arguments to be passed to \code{ggplot2::continuous_scale()} or \code{ggplot2::discrete_scale()}.
 #' @param discrete logical. If \code{TRUE}, a discrete scale is used regardless of the theme type.
-#' @param middle a numeric value specifying the middle point for the diverging color themes.
+#' @param middle a numeric value specifying the middle point for the diverging color themes. Default is \code{0}.
 #' @param aesthetics the aesthetic to be scaled. Can be "colour", "color", or "fill".
 #'
 #' @examples
@@ -46,9 +46,11 @@
 #' @export scale_color_theme
 #'
 scale_color_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "colour") {
+    theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "colour"
+) {
   args <- list(...)
   args$aesthetics <- aesthetics
+  theme <- theme %||% color.theme.defaults(if (isTRUE(discrete)) "qual" else "seq")
   theme <- color.theme(theme)
   if (is.null(discrete))
     discrete <- theme$type == "qualitative"
@@ -80,7 +82,8 @@ scale_color_theme <- function(
 #' @export scale_colour_theme
 #'
 scale_colour_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "colour") {
+    theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "colour"
+) {
   scale_color_theme(theme = theme, ..., discrete = discrete,
                     middle = middle, aesthetics = aesthetics)
 }
@@ -90,8 +93,8 @@ scale_colour_theme <- function(
 #' @export scale_fill_theme
 #'
 scale_fill_theme <- function(
-    theme, ..., discrete = NULL, middle = 0, aesthetics = "fill") {
+    theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "fill"
+) {
   scale_color_theme(theme = theme, ..., discrete = discrete,
                     middle = middle, aesthetics = aesthetics)
 }
-

@@ -86,7 +86,7 @@
 #'
 #' If a matrix is provided for \code{y}, \code{interpret()} returns a "midrib" and "mids" object.
 #'
-#' @seealso \code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.plots}}, \code{\link{mid.effect}}, \code{\link{mid.terms}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
+#' @seealso \code{\link{print.mid}}, \code{\link{summary.mid}}, \code{\link{predict.mid}}, \code{\link{plot.mid}}, \code{\link{ggmid}}, \code{\link{mid.importance}}, \code{\link{mid.conditional}}, \code{\link{mid.breakdown}}
 #'
 #' @references Asashiba R, Kozuma R, Iwasawa H (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition.” 2506.08338, \url{https://arxiv.org/abs/2506.08338}.
 #'
@@ -129,13 +129,14 @@ interpret.default <- function(
     object, x, y = NULL, weights = NULL, pred.fun = get.yhat, link = NULL,
     k = c(NA, NA), type = c(1L, 1L), interactions = FALSE, terms = NULL,
     singular.ok = FALSE, mode = 1L, method = NULL, lambda = 0, kappa = 1e6,
-    na.action = getOption("na.action"), verbosity = 1L, frames = list(),
+    na.action = getOption("na.action"), verbosity = NULL, frames = list(),
     split = "quantile", digits = NULL, lump = "none", others = "others", sep = ">",
     max.nelements = 1e9L, nil = 1e-7, tol = 1e-7, pred.args = list(), ...
 ) {
   cl <- match.call()
   cl[[1L]] <- as.name("interpret")
   dots <- list(...)
+  verbosity <- verbosity %||% getOption("midr.verbosity", 1L)
   if (is.null(dots$internal.call) || !dots$internal.call)
     verbose("model fitting started", verbosity, 2L, TRUE)
   if (missing(interactions) && !is.null(dots$ie)) interactions <- dots$ie
@@ -237,25 +238,24 @@ interpret.default <- function(
     stop("sum of 'weights' must be strictly positive")
   if (is.matrix(x)) x <- as.data.frame(x)
   n <- nrow(x)
-  if (n == 0L) stop("no observations found")
+  if (n == 0L) stop("no available observations found")
   weights <- weights / sumw * n
   nuvs <- sapply(x, is.numeric)
   orvs <- nuvs | sapply(x, is.ordered)
-  if (is.null(terms))
-    terms <- if (interactions) ".^2" else "."
-  if (!inherits(terms, "formula"))
-    terms <- make.formula(terms, "..y", env = globalenv())
-  terms <- stats::terms(terms, data = x)
-  tls <- attr(terms, "term.labels")
-  spl <- strsplit(tls, ":")
-  if (!all(unique(unlist(spl)) %in% tags)) {
-    stop("'terms' contains term labels that are not found in 'x'")
-  }
-  spl <- sapply(spl, length)
-  mts <- unique(tls[spl == 1L])
-  its <- unique(tls[spl == 2L])
+  terms <- as.terms(terms %||% if (interactions) ".^2" else ".",
+                    y = "..y", intercept = TRUE, env = globalenv(), data = x)
+  labs <- attr(terms, "term.labels")
+  vars <- get.variables(terms)
+  if (length(vars) > 0L && !all(vars %in% tags))
+    stop("the specified terms contain labels that are not found in 'x'")
+  ord <- attr(terms, "order")
+  mts <- unique(labs[ord == 1L])
+  its <- unique(labs[ord == 2L])
   p <- length(mts)
   q <- length(its)
+  if (p + q == 0L && !fit.intercept)
+    stop("the specified terms contain no valid term labels up to second-order:",
+         "\nset 'fit.intercept = TRUE' to allow an intercept-only model")
   verbose(text = paste0(collapse = "",
     c("'terms' include ", if (p) c(p, " main effect", if (p > 1L) "s"),
     if (p > 0L && q > 0L) " and ", if (q) c(q, " interaction", if (q > 1L) "s"))
@@ -304,7 +304,7 @@ interpret.default <- function(
   if (ie <- (q > 0L)) {
     ienc <- list()
     imat <- list()
-    for (tag in unique(term.split(its))) {
+    for (tag in get.variables(its)) {
       ienc[[tag]] <-
         if (nuvs[tag]) {
           numeric.encoder(
@@ -335,7 +335,7 @@ interpret.default <- function(
     ilen <- sapply(ienc, function(x) x$n)
     plen <- structure(integer(q), names = its)
     for (i in seq_len(q)) {
-      itag <- term.split(its[i])
+      itag <- get.variables(its[i])
       plen[i] <- ilen[itag[1L]] * ilen[itag[2L]]
       s <- s + ilen[itag[1L]] + ilen[itag[2L]]
     }
@@ -377,7 +377,7 @@ interpret.default <- function(
   }
   ## interactions
   for (i in seq_len(q)) {
-    itag <- term.split(its[i])
+    itag <- get.variables(its[i])
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
     mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
     mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
@@ -478,7 +478,7 @@ interpret.default <- function(
   ## interactions
   offs <- p
   for (i in seq_len(q)) {
-    itag <- term.split(its[i])
+    itag <- get.variables(its[i])
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
     vfil <- !vnil[cols]
     nval <- ilen[itag]
@@ -560,7 +560,7 @@ interpret.default <- function(
       ), verbosity, 1L, FALSE)
     } else {
       crsd <- as.matrix(z$residuals)[n + nreg + seq_len(ncon), , drop = FALSE]
-      maxerr <- (max(abs(crsd)) / (rk * n))
+      maxerr <- (max(abs(crsd), 0) / (rk * n))
       if (maxerr > nil) {
         verbose(paste0("not strictly centered: max absolute average effect = ",
                        format(maxerr, digits = 6L)),
@@ -655,7 +655,7 @@ interpret.default <- function(
   ## interactions
   ret.interactions <- list()
   for (i in seq_len(q)) {
-    itag <- term.split(its[i])
+    itag <- get.variables(its[i])
     dat <- interaction.frame(ienc[[itag[1L]]]$frame, ienc[[itag[2L]]]$frame)
     cols <- fiti + u + pcumlen[i] + seq_len(plen[i])
     dat$density <- delt[cols] / n
@@ -740,9 +740,10 @@ interpret.default <- function(
 #'
 interpret.formula <- function(
     formula, data = NULL, model = NULL, pred.fun = get.yhat, weights = NULL,
-    subset = NULL, na.action = getOption("na.action"), verbosity = 1L,
+    subset = NULL, na.action = getOption("na.action"), verbosity = NULL,
     mode = 1L, drop.unused.levels = FALSE, pred.args = list(), ...
 ) {
+  verbosity <- verbosity %||% getOption("midr.verbosity", 1L)
   verbose("model fitting started", verbosity, 2L, TRUE)
   cl <- match.call()
   cl[[1L]] <- as.symbol("interpret")

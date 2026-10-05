@@ -1,7 +1,7 @@
 #' Register Color Themes
 #'
 #' @description
-#' \code{set.color.theme()} registers a custom color theme in the package's theme registry.
+#' \code{color.theme.register()} registers a custom color theme in the package's theme registry.
 #'
 #' @details
 #' This function takes a color vector, a color-generating function, or an existing "color.theme" object and registers it under a specified \code{name} and \code{source} (default is "custom/newtheme").
@@ -21,22 +21,23 @@
 #' @param env an environment where the color themes are registered.
 #'
 #' @returns
-#' \code{set.color.theme()} returns the metadata of the previous theme that was overwritten (or \code{NULL} if none existed) invisibly.
+#' \code{color.theme.register()} returns the metadata of the previous theme that was overwritten (or \code{NULL} if none existed) invisibly.
 #'
-#' @seealso \code{\link{color.theme}}, \code{\link{color.theme.info}}
+#' @seealso \code{\link{color.theme}}, \code{\link{color.themes}}
 #'
-#' @export set.color.theme
+#' @export color.theme.register
 #'
-set.color.theme <- function(
-    kernel, kernel.args = list(), options = list(),
-    name = "newtheme", source = "custom", type = NULL, env = color.theme.env()
+color.theme.register <- function(
+    kernel, kernel.args = list(), options = list(), name = "newtheme",
+    source = "custom", type = NULL, env = NULL
   ) {
+  env <- env %||% color.theme.registry()
   if (is.color.theme(kernel)) {
     args <- as.list(kernel)[c("kernel", "kernel.args", "options", "type")]
     args$name <- name %||% kernel$name
     args$source <- source %||% kernel$source
     args$env = env
-    return(do.call(set.color.theme, args))
+    return(do.call(color.theme.register, args))
   }
   lazy.load.kernel(kernel, args = kernel.args)
   if (!is.list(kernel.args))
@@ -55,4 +56,23 @@ set.color.theme <- function(
   old <- env[[name]][[source]]
   env[[name]][[source]] <- new
   invisible(old)
+}
+
+#' @rdname color.theme.register
+#'
+#' @description
+#' \code{set.color.theme()} is deprecated and will be removed in a future release.
+#' Please use \code{color.theme.register()} instead.
+#'
+#' @export set.color.theme
+#'
+set.color.theme <- function(
+    kernel, kernel.args = list(), options = list(), name = "newtheme",
+    source = "custom", type = NULL, env = NULL
+) {
+  .Deprecated(new = "color.theme.register", package = "midr")
+  color.theme.register(
+    kernel = kernel, kernel.args = kernel.args, options = options,
+    name = name, source = source, type = type, env = env
+  )
 }
