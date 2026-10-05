@@ -125,7 +125,7 @@ reference:
   - color.theme.register
   - color.themes
   - scale_color_theme
-  - to_colors
+  - to.colors
 - subtitle: Variable encoders
   contents:
   - factor.encoder
