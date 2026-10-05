@@ -42,7 +42,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.903</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,7 @@ img {
     <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338">- Working Paper (arXiv)</a></li>
     <li><a class="dropdown-item" href="../midr_jarip.pdf">- JARIP Bulletin (Japanese, PDF)</a></li>
     <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/Convention_A_Asia/">- Convention A Asia (R &amp; Python Demo)</a></li>
+    <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/ICA2026/">- ICA2026 Tokyo (R Demo)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -307,10 +308,10 @@ custom color vector or function to the first argument of
 <div style="background-color: #FF0006 ; width: 100%; height: 25px ; display: inline-block;"></div>
 </div>
 <p>You can register a custom theme to call it by name later in you
-current R session. To do so, use the <code><a href="../reference/set.color.theme.html">set.color.theme()</a></code>
+current R session. To do so, use the <code><a href="../reference/color.theme.register.html">color.theme.register()</a></code>
 function.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/set.color.theme.html">set.color.theme</a></span><span class="op">(</span><span class="va">mytheme</span>, name <span class="op">=</span> <span class="st">"mytheme"</span>, source <span class="op">=</span> <span class="st">"custom"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/color.theme.register.html">color.theme.register</a></span><span class="op">(</span><span class="va">mytheme</span>, name <span class="op">=</span> <span class="st">"mytheme"</span>, source <span class="op">=</span> <span class="st">"custom"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/color.theme.html">color.theme</a></span><span class="op">(</span><span class="st">"mytheme_r@div"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Diverging Color Theme : "mytheme"</span></span></code></pre></div>
 <p><img src="colortheme_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="576"></p>

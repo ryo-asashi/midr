@@ -1,8 +1,8 @@
 # Plot MID Component Function
 
 For "mid" objects (i.e., fitted MID models),
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes a
-single component function specified by the `term` argument.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes one
+or more component functions specified by the `term` argument.
 
 ## Usage
 
@@ -10,13 +10,13 @@ single component function specified by the `term` argument.
 # S3 method for class 'mid'
 plot(
   x,
-  term,
+  terms = term.labels(x, order = 1L),
   type = c("effect", "data", "compound"),
   theme = NULL,
   intercept = FALSE,
   main.effects = FALSE,
   data = NULL,
-  limits = NULL,
+  limits = c(NA, NA),
   jitter = NULL,
   resolution = c(100L, 100L),
   lumped = TRUE,
@@ -30,9 +30,11 @@ plot(
 
   a "mid" object to be visualized.
 
-- term:
+- terms:
 
-  a character string specifying the component function to be plotted.
+  a character vector or a formula specifying the component functions to
+  be plotted. If a formula is provided (e.g., `~ x + y + x:y`), it is
+  automatically parsed to extract the relevant terms.
 
 - type:
 
@@ -85,8 +87,8 @@ plot(
 
 ## Value
 
-`plot.mid()` produces a plot as a side-effect and returns `NULL`
-invisibly.
+`plot.mid()` produces one or more plots as a side-effect and returns
+`NULL` invisibly.
 
 ## Details
 

@@ -2,7 +2,7 @@
 
 For "mids" collection objects,
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
-compares a single main effect across multiple models.
+compares one or more main effects across multiple models.
 
 ## Usage
 
@@ -10,13 +10,13 @@ compares a single main effect across multiple models.
 # S3 method for class 'mids'
 plot(
   x,
-  term,
+  terms = term.labels(x, order = 1L),
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
-  limits = NULL,
+  limits = c(NA, NA),
   resolution = NULL,
-  labels = base::labels(x),
+  labels = NULL,
   ...
 )
 ```
@@ -27,9 +27,11 @@ plot(
 
   a "mids" collection object to be visualized.
 
-- term:
+- terms:
 
-  a character string specifying the main effect to evaluate.
+  a character vector or a formula specifying the component functions to
+  be plotted. If a formula is provided (e.g., `~ x + y`), it is
+  automatically parsed to extract the relevant terms.
 
 - type:
 
@@ -70,8 +72,8 @@ plot(
 
 ## Value
 
-`plot.mids()` produces a plot as a side-effect and returns `NULL`
-invisibly.
+`plot.mids()` produces one or more plots as a side-effect and returns
+`NULL` invisibly.
 
 ## Details
 

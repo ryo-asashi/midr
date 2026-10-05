@@ -3,9 +3,6 @@
 `theme_midr()` returns a complete theme for "ggplot" objects, providing
 a consistent visual style for **ggplot2** plots.
 
-`par.midr()` can be used to set graphical parameters for base R
-graphics.
-
 ## Usage
 
 ``` r
@@ -17,8 +14,6 @@ theme_midr(
   base_rect_size = base_size/22,
   ...
 )
-
-par.midr(...)
 ```
 
 ## Arguments
@@ -45,19 +40,14 @@ par.midr(...)
 
 - ...:
 
-  for `theme_midr()`, other parameters passed on to
+  other parameters passed on to
   [`ggplot2::theme_light()`](https://ggplot2.tidyverse.org/reference/ggtheme.html).
-  ggplot2 \>= 4.0.0 accepts `ink`, `paper`, and `accent`. For
-  `par.midr()`, optional arguments in `tag = value` form to be passed to
-  [`graphics::par()`](https://rdrr.io/r/graphics/par.html).
+  ggplot2 \>= 4.0.0 accepts `ink`, `paper`, and `accent`.
 
 ## Value
 
 `theme_midr()` provides a **ggplot2** theme customized for the **midr**
 package.
-
-`par.midr()` returns the previous values of the changed parameters in an
-invisible named list.
 
 ## Examples
 
@@ -75,11 +65,4 @@ ggplot2::ggplot(X) +
 ggplot2::ggplot(X) +
   ggplot2::geom_line(ggplot2::aes(x, y)) +
   theme_midr(grid_type = "xy")
-
-
-# Use par.midr() for base R graphics
-old.par <- par.midr()
-plot(y ~ x, data = X)
-
-par(old.par)
 ```

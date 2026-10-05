@@ -1,5 +1,48 @@
 # Changelog
 
+## midr 0.6.2.900
+
+The **midr** package is currently undergoing a through reconstruction
+for the upcoming release.
+
+#### New Features
+
+- [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) now accept
+  the `terms` argument, allowing them to produce multiple plots.
+- The handling of “terms” objects has been improved: functions can now
+  accept terms such as `plot(mid, "I(1:10)")` and
+  `ggmid(mid, "x * y + 1")`.
+- [`to.colors()`](https://ryo-asashi.github.io/midr/reference/to.colors.md)
+  is exported to enhance the color handling capability for base R
+  graphics.
+- [`midr.options()`](https://ryo-asashi.github.io/midr/reference/midr.options.md)
+  is implemented for control global options including `midr.solver.*`,
+  `midr.verbosity` and `midr.color.theme.*` (for `registry` and three
+  color theme types).
+
+#### Deprecated & Defunct
+
+- [`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
+  will be deprecated to standardize the API naming conventions. Please
+  use
+  [`color.theme.register()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
+  instead.
+- `color.theme.info()` is renamed to
+  [`color.themes()`](https://ryo-asashi.github.io/midr/reference/color.themes.md).
+- `color.theme.env()` is deprecated. To access the color theme registry,
+  please use `midr.options("color.theme.registry")` instead.
+- `mid.terms()` and `mid.effect()` are deprecated and replaced by
+  [`term.labels()`](https://ryo-asashi.github.io/midr/reference/term.labels.md)
+  and
+  [`term.effect()`](https://ryo-asashi.github.io/midr/reference/term.effect.md),
+  which can be applied to any additive model.
+- `mid.plots()` is deprecated, superseded by the new capabilities of
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
+- `par.midr()` is renamed to
+  [`midr.par()`](https://ryo-asashi.github.io/midr/reference/midr.options.md).
+
 ## midr 0.6.1.903
 
 - Updated
@@ -92,8 +135,7 @@ CRAN release: 2026-03-08
   simultaneous modeling of multiple responses.
 - Introduction of “midlist”: Implemented the “midlist” class to handle
   multiple MID models efficiently. Methods such as
-  [`predict()`](https://rdrr.io/r/stats/predict.html) and
-  [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
+  [`predict()`](https://rdrr.io/r/stats/predict.html) and `mid.effect()`
   have been vectorized to handle “midlist” objects using optimized
   matrix operations.
 - Performance Optimization: Significant reduction in compilation time
@@ -312,10 +354,8 @@ Second release on CRAN.
 - Fixed a bug in
   [`interpret.default()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
   that caused inconsistency between “fitted.values” and “residuals”.
-- Fixed an issue in
-  [`mid.f()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
-  ([`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md))
-  to correctly handle vector recycling when an input’s length is 1.
+- Fixed an issue in `mid.f()` (`mid.effect()`) to correctly handle
+  vector recycling when an input’s length is 1.
 - Fixed `autoplot.mid.conditional()` to avoid redundant evaluation of
   the “mid” object.
 - Updated the automatic determination method for the number of knots

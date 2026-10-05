@@ -79,7 +79,7 @@ comparison.
 
 ``` r
 
-options(midr.qualitative = "viridis")
+midr.options(color.theme.qualitative = "viridis")
 
 p1 <- ggmid(mids, "hr") + theme(legend.position = "bottom")
 p2 <- ggmid(mids, "temp") + theme(legend.position = "none")
@@ -142,7 +142,7 @@ seamless comparative plotting.
 
 ``` r
 
-options(midr.qualitative = "cividis")
+midr.options(color.theme.qualitative = "cividis")
 
 p1 <- ggmid(midrib, "hr") + theme(legend.position = "bottom")
 p2 <- ggmid(midrib, "temp") + theme(legend.position = "none")

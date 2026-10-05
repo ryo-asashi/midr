@@ -125,7 +125,7 @@ print(con)
 #> 
 #> Variable: Wind
 #> 
-#> Sample Points:  2.3000, 2.4859, 2.6717, ... 
+#> Sample Points: 2.3000, 2.4859, 2.6717, ...
 #> 
 #> Conditional Expectations:
 #>    .id Wind   yhat

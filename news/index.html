@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.903</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@ img {
     <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338">- Working Paper (arXiv)</a></li>
     <li><a class="dropdown-item" href="../midr_jarip.pdf">- JARIP Bulletin (Japanese, PDF)</a></li>
     <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/Convention_A_Asia/">- Convention A Asia (R &amp; Python Demo)</a></li>
+    <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/ICA2026/">- ICA2026 Tokyo (R Demo)</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -62,6 +63,35 @@ img {
       <small>Source: <a href="https://github.com/ryo-asashi/midr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.2.900" id="midr-062900">midr 0.6.2.900<a class="anchor" aria-label="anchor" href="#midr-062900"></a></h2>
+<p>The <strong>midr</strong> package is currently undergoing a through reconstruction for the upcoming release.</p>
+<div class="section level4">
+<h4 id="new-features-0-6-2-900">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-2-900"></a></h4>
+<ul><li>
+<code><a href="../reference/ggmid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> now accept the <code>terms</code> argument, allowing them to produce multiple plots.</li>
+<li>The handling of “terms” objects has been improved: functions can now accept terms such as <code>plot(mid, "I(1:10)")</code> and <code>ggmid(mid, "x * y + 1")</code>.</li>
+<li>
+<code><a href="../reference/to.colors.html">to.colors()</a></code> is exported to enhance the color handling capability for base R graphics.</li>
+<li>
+<code><a href="../reference/midr.options.html">midr.options()</a></code> is implemented for control global options including <code>midr.solver.*</code>, <code>midr.verbosity</code> and <code>midr.color.theme.*</code> (for <code>registry</code> and three color theme types).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="deprecated--defunct-0-6-2-900">Deprecated &amp; Defunct<a class="anchor" aria-label="anchor" href="#deprecated--defunct-0-6-2-900"></a></h4>
+<ul><li>
+<code><a href="../reference/color.theme.register.html">set.color.theme()</a></code> will be deprecated to standardize the API naming conventions. Please use <code><a href="../reference/color.theme.register.html">color.theme.register()</a></code> instead.</li>
+<li>
+<code>color.theme.info()</code> is renamed to <code><a href="../reference/color.themes.html">color.themes()</a></code>.</li>
+<li>
+<code>color.theme.env()</code> is deprecated. To access the color theme registry, please use <code>midr.options("color.theme.registry")</code> instead.</li>
+<li>
+<code>mid.terms()</code> and <code>mid.effect()</code> are deprecated and replaced by <code><a href="../reference/term.labels.html">term.labels()</a></code> and <code><a href="../reference/term.effect.html">term.effect()</a></code>, which can be applied to any additive model.</li>
+<li>
+<code>mid.plots()</code> is deprecated, superseded by the new capabilities of <code><a href="../reference/ggmid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
+<li>
+<code>par.midr()</code> is renamed to <code><a href="../reference/midr.options.html">midr.par()</a></code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.1.903" id="midr-061903">midr 0.6.1.903<a class="anchor" aria-label="anchor" href="#midr-061903"></a></h2>
 <ul><li>Updated <code><a href="../reference/interpret.html">interpret()</a></code> to resolve issues related to <a href="https://github.com/ryo-asashi/midr/issues/20" class="external-link">#20</a>.</li>
@@ -110,7 +140,7 @@ img {
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3.903" id="midr-053903">midr 0.5.3.903<a class="anchor" aria-label="anchor" href="#midr-053903"></a></h2>
 <ul><li>Multivariate Response Support: <code><a href="../reference/interpret.html">interpret()</a></code> now accepts a matrix for the response variable <code>y</code>, allowing for simultaneous modeling of multiple responses.</li>
-<li>Introduction of “midlist”: Implemented the “midlist” class to handle multiple MID models efficiently. Methods such as <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code><a href="../reference/mid.effect.html">mid.effect()</a></code> have been vectorized to handle “midlist” objects using optimized matrix operations.</li>
+<li>Introduction of “midlist”: Implemented the “midlist” class to handle multiple MID models efficiently. Methods such as <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code>mid.effect()</code> have been vectorized to handle “midlist” objects using optimized matrix operations.</li>
 <li>Performance Optimization: Significant reduction in compilation time and binary size by removing the heavy dependency on <strong>RcppEigen</strong> headers for the core Laplacian smoothing algorithm.</li>
 </ul></div>
     <div class="section level2">
@@ -235,7 +265,7 @@ img {
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.903" id="midr-050903">midr 0.5.0.903<a class="anchor" aria-label="anchor" href="#midr-050903"></a></h2>
 <ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals”.</li>
-<li>Fixed an issue in <code><a href="../reference/mid.effect.html">mid.f()</a></code> (<code><a href="../reference/mid.effect.html">mid.effect()</a></code>) to correctly handle vector recycling when an input’s length is 1.</li>
+<li>Fixed an issue in <code>mid.f()</code> (<code>mid.effect()</code>) to correctly handle vector recycling when an input’s length is 1.</li>
 <li>Fixed <code>autoplot.mid.conditional()</code> to avoid redundant evaluation of the “mid” object.</li>
 <li>Updated the automatic determination method for the number of knots (<code>k</code>) in <code><a href="../reference/interpret.html">interpret()</a></code>.</li>
 <li>Added support for type suffixes in <code><a href="../reference/color.theme.html">color.theme()</a></code> for easier theme specification.</li>

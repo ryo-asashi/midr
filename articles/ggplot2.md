@@ -50,7 +50,7 @@ name in the `term` argument.
 
 ``` r
 
-p1 <- ggmid(mid, term = "carat")
+p1 <- ggmid(mid, "carat")
 p1
 ```
 
@@ -79,11 +79,11 @@ or overlaying actual data points with
 
 ``` r
 
-p1 <- ggmid(mid, term = "carat", linewidth = 2, color = "dodgerblue4")
-p2 <- ggmid(mid, term = "carat", color = .transparent) +
+p1 <- ggmid(mid, "carat", linewidth = 2, color = "dodgerblue4")
+p2 <- ggmid(mid, "carat", color = .transparent) +
   geom_point(aes(y = log(price) - mean(log(price))), data = diamonds_sample) +
   geom_line(color = "firebrick1")
-p3 <- ggmid(mid, term = "carat", type = "data", theme = "shap") +
+p3 <- ggmid(mid, "carat", type = "data", theme = "shap") +
   geom_line(linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
@@ -99,8 +99,8 @@ when plotting, you can expand and display all levels.
 
 ``` r
 
-p1 <- ggmid(mid, term = "clarity")
-p2 <- ggmid(mid, term = "clarity", lumped = FALSE)
+p1 <- ggmid(mid, "clarity")
+p2 <- ggmid(mid, "clarity", lumped = FALSE)
 p1 + p2
 ```
 
@@ -123,11 +123,11 @@ to simultaneously represent the data distribution for each category.
 
 ``` r
 
-p1 <- ggmid(mid, term = "clarity", fill = "dodgerblue4", lumped = FALSE)
-p2 <- ggmid(mid, term = "clarity", fill = .transparent, lumped = FALSE) +
+p1 <- ggmid(mid, "clarity", fill = "dodgerblue4", lumped = FALSE)
+p2 <- ggmid(mid, "clarity", fill = .transparent, lumped = FALSE) +
   geom_jitter(aes(y = log(price) - mean(log(price))), height = 0, data = diamonds_sample) +
   geom_col(fill = NA, color = "firebrick1")
-p3 <- ggmid(mid, term = "clarity", type = "data", theme = "shap", shape = "|") +
+p3 <- ggmid(mid, "clarity", type = "data", theme = "shap", shape = "|") +
   geom_line(aes(group = NA), linewidth = 4, alpha = .2)
 p1 + p2 + p3
 ```
@@ -136,14 +136,14 @@ p1 + p2 + p3
 
 ### Second-Order Effect
 
-This visualizes the interaction between two variables
-(`term = "var1:var2"`). By specifying `main.effects = TRUE`, you can
-view the overall effect, including the main effects.
+This visualizes the interaction between two variables (`"var1:var2"`).
+By specifying `main.effects = TRUE`, you can view the overall effect,
+including the main effects.
 
 ``` r
 
-p1 <- ggmid(mid, term = "carat:clarity")
-p2 <- ggmid(mid, term = "carat:clarity", main.effects = TRUE)
+p1 <- ggmid(mid, "carat:clarity")
+p2 <- ggmid(mid, "carat:clarity", main.effects = TRUE)
 p1 + p2
 ```
 
@@ -170,11 +170,11 @@ represented intuitively.
 
 ``` r
 
-p1 <- ggmid(mid, term = "carat:clarity", type = "compound",
+p1 <- ggmid(mid, "carat:clarity", type = "compound",
             theme = "Heat", size = 1, shape = 1, lumped = FALSE)
-p2 <- ggmid(mid, term = "carat:clarity", type = "data",
+p2 <- ggmid(mid, "carat:clarity", type = "data",
             theme = "mako", main.effects = TRUE)
-p3 <- ggmid(mid, term = "carat:clarity", type = "data",
+p3 <- ggmid(mid, "carat:clarity", type = "data",
             theme = "shap", main.effects = TRUE) +
   geom_line(aes(group = clarity, color = mid), linewidth = 4, alpha = .2)
 p1 + p2 + p3
@@ -311,13 +311,16 @@ p1 <- ggmid(brk)
 p1
 ```
 
+    #> Warning: Removed 1 row containing missing values or values outside the scale range
+    #> (`geom_segment()`).
+
 ![](ggplot2_files/figure-html/unnamed-chunk-19-1.png)
 
     #> $data
-    #>          term        mid order ymin ymax     xmin     xmax
-    #> 1     carat=1  0.8101023     1  9.7 10.3 7.786768 8.596871
-    #> 2 clarity=SI2 -0.3010599     1  8.7  9.3 8.596871 8.295811
-    #> 3     color=E  0.1052924     1  7.7  8.3 8.295811 8.401103
+    #>          term        mid order ymin ymax      xmin      xmax
+    #> 1     carat=1  0.8101023     1  9.7 10.3 0.8101023 0.5090424
+    #> 2 clarity=SI2 -0.3010599     1  8.7  9.3 0.5090424 0.6143349
+    #> 3     color=E  0.1052924     1  7.7  8.3 0.6143349 0.5618393
     #> 
     #> $mapping
     #> Aesthetic mapping: 
@@ -332,6 +335,17 @@ p2 <- ggmid(brk, pattern = c("%t", "%t, %t"), width = .05)
 p3 <- ggmid(brk, pattern = c("%t\n%v", "%t:%t\n%v:%v"), max.nterms = 7)
 p1 + p2 + p3
 ```
+
+    #> Warning: Removed 1 row containing missing values or values outside the scale range
+    #> (`geom_segment()`).
+
+    #> Warning: Removed 1 row containing missing values or values outside the scale range
+    #> (`geom_text()`).
+
+    #> Warning: Removed 1 row containing missing values or values outside the scale range
+    #> (`geom_segment()`).
+    #> Removed 1 row containing missing values or values outside the scale range
+    #> (`geom_segment()`).
 
 ![](ggplot2_files/figure-html/unnamed-chunk-21-1.png)
 
@@ -440,7 +454,7 @@ mids <- interpret(
 
 ``` r
 
-p1 <- ggmid(mids, term = "karno")
+p1 <- ggmid(mids, "karno")
 p1
 ```
 
@@ -464,7 +478,7 @@ x-axis.
 
 ``` r
 
-p1 <- ggmid(mids, term = "karno", type = "series")
+p1 <- ggmid(mids, "karno", type = "series")
 p1
 ```
 
@@ -487,10 +501,10 @@ functions, such as monochrome (`theme = "grayscale"`).
 
 ``` r
 
-p1 <- ggmid(mids, term = "karno", intercept = TRUE)
-p2 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+p1 <- ggmid(mids, "karno", intercept = TRUE)
+p2 <- ggmid(mids, "karno", type = "series", intercept = TRUE,
             theme = "mako")
-p3 <- ggmid(mids, term = "karno", type = "series", intercept = TRUE,
+p3 <- ggmid(mids, "karno", type = "series", intercept = TRUE,
             theme = "grayscale") +
   geom_line(
     data = data.frame(
@@ -546,10 +560,10 @@ p1
 
 ``` r
 
-p1 <- ggmid(mids, term = "celltype", intercept = TRUE)
-p2 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE,
+p1 <- ggmid(mids, "celltype", intercept = TRUE)
+p2 <- ggmid(mids, "celltype", type = "series", intercept = TRUE,
             theme = "mako")
-p3 <- ggmid(mids, term = "celltype", type = "series", intercept = TRUE) +
+p3 <- ggmid(mids, "celltype", type = "series", intercept = TRUE) +
   geom_line(
     data = data.frame(
       mid = mids$intercept,

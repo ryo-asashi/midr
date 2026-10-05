@@ -44,7 +44,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.903</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +68,7 @@ img {
     <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338">- Working Paper (arXiv)</a></li>
     <li><a class="dropdown-item" href="../midr_jarip.pdf">- JARIP Bulletin (Japanese, PDF)</a></li>
     <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/Convention_A_Asia/">- Convention A Asia (R &amp; Python Demo)</a></li>
+    <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/ICA2026/">- ICA2026 Tokyo (R Demo)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -156,7 +157,7 @@ model and the <em>fidelity</em> of the surrogate model using RMSE.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define utility functions for the following chunks</span></span>
 <span><span class="va">effect_plots</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/mid.plots.html">mid.plots</a></span><span class="op">(</span><span class="va">object</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, sep <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">object</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, sep <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">interaction_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
@@ -383,11 +384,6 @@ model and the <em>fidelity</em> of the surrogate model using RMSE.</p>
 </h3>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">e1071</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'e1071'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:ggplot2':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     element</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html" class="external-link">svm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, kernel <span class="op">=</span> <span class="st">"radial"</span><span class="op">)</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
@@ -428,12 +424,6 @@ model and the <em>fidelity</em> of the surrogate model using RMSE.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgboost.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">train</span><span class="op">[</span>, <span class="op">-</span><span class="fl">11</span><span class="op">]</span><span class="op">)</span>, <span class="va">train</span><span class="op">[</span>, <span class="fl">11</span><span class="op">]</span>, nrounds <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>                 params <span class="op">=</span> <span class="va">params</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in throw_err_or_depr_msg("Parameter(s) have been removed from this</span></span>
-<span><span class="co">#&gt; function: ", : Parameter(s) have been removed from this function: params. This</span></span>
-<span><span class="co">#&gt; warning will become an error in a future version.</span></span>
-<span><span class="co">#&gt; Warning in throw_err_or_depr_msg("Passed unrecognized parameters: ",</span></span>
-<span><span class="co">#&gt; paste(head(names_unrecognized), : Passed unrecognized parameters: verbose. This</span></span>
-<span><span class="co">#&gt; warning will become an error in a future version.</span></span>
 <span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">train</span><span class="op">)</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -550,7 +540,6 @@ model and the <em>fidelity</em> of the surrogate model using RMSE.</p>
 </h3>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, lambda <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'model' not passed: response variable in 'data' is used</span></span>
 <span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="va">pred_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">test</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -590,7 +579,7 @@ model and the <em>fidelity</em> of the surrogate model using RMSE.</p>
 <code class="sourceCode R"><span><span class="va">impl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mid.importance.html">mid.importance</a></span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">impl</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, pch <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">impl</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, terms <span class="op">=</span> <span class="fu"><a href="../reference/mid.terms.html">mid.terms</a></span><span class="op">(</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggmid.html">ggmid</a></span><span class="op">(</span><span class="va">impl</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"dotchart"</span>, terms <span class="op">=</span> <span class="fu"><a href="../reference/term.labels.html">term.labels</a></span><span class="op">(</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="regression_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="700"></p>

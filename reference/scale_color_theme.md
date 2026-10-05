@@ -8,7 +8,7 @@ aesthetics of "ggplot" objects.
 
 ``` r
 scale_color_theme(
-  theme,
+  theme = NULL,
   ...,
   discrete = NULL,
   middle = 0,
@@ -16,14 +16,20 @@ scale_color_theme(
 )
 
 scale_colour_theme(
-  theme,
+  theme = NULL,
   ...,
   discrete = NULL,
   middle = 0,
   aesthetics = "colour"
 )
 
-scale_fill_theme(theme, ..., discrete = NULL, middle = 0, aesthetics = "fill")
+scale_fill_theme(
+  theme = NULL,
+  ...,
+  discrete = NULL,
+  middle = 0,
+  aesthetics = "fill"
+)
 ```
 
 ## Arguments
@@ -50,7 +56,7 @@ scale_fill_theme(theme, ..., discrete = NULL, middle = 0, aesthetics = "fill")
 - middle:
 
   a numeric value specifying the middle point for the diverging color
-  themes.
+  themes. Default is `0`.
 
 - aesthetics:
 

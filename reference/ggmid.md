@@ -2,8 +2,8 @@
 
 `ggmid()` is an S3 generic function for creating various visualizations
 from MID-related objects using **ggplot2**. For "mid" objects (i.e.,
-fitted MID models), it visualizes a single component function specified
-by the `term` argument.
+fitted MID models), it visualizes one or more component functions
+specified by the `terms` argument.
 
 ## Usage
 
@@ -13,7 +13,7 @@ ggmid(object, ...)
 # S3 method for class 'mid'
 ggmid(
   object,
-  term,
+  terms = term.labels(object, order = 1L),
   type = c("effect", "data", "compound"),
   theme = NULL,
   intercept = FALSE,
@@ -40,9 +40,11 @@ autoplot(object, ...)
 
   optional parameters passed to the main plotting layer.
 
-- term:
+- terms:
 
-  a character string specifying the component function to be plotted.
+  a character vector or a formula specifying the component functions to
+  be plotted. If a formula is provided (e.g., `~ x + y + x:y`), it is
+  automatically parsed to extract the relevant terms.
 
 - type:
 
@@ -90,7 +92,8 @@ autoplot(object, ...)
 
 ## Value
 
-`ggmid.mid()` returns a "ggplot" object.
+`ggmid.mid()` returns a "ggplot" object if a single term is specified,
+or a list of "ggplot" objects if multiple terms are specified.
 
 ## Details
 

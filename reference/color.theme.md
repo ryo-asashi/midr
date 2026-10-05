@@ -18,9 +18,11 @@ color.theme(
   source = NULL,
   type = NULL,
   reverse = FALSE,
-  env = color.theme.env(),
+  env = NULL,
   ...
 )
+
+is.color.theme(object)
 ```
 
 ## Arguments
@@ -132,8 +134,9 @@ syntax to specify the source and apply modifications:
 ## See also
 
 [`scale_color_theme`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md),
-[`set.color.theme`](https://ryo-asashi.github.io/midr/reference/set.color.theme.md),
-[`color.theme.info`](https://ryo-asashi.github.io/midr/reference/color.theme.info.md)
+[`to.colors`](https://ryo-asashi.github.io/midr/reference/to.colors.md),
+[`color.theme.register`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md),
+[`color.themes`](https://ryo-asashi.github.io/midr/reference/color.themes.md)
 
 ## Examples
 

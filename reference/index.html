@@ -18,7 +18,7 @@ img {
 
     <a class="navbar-brand me-2" href="../index.html">midr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.903</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@ img {
     <li><a class="external-link dropdown-item" href="https://arxiv.org/abs/2506.08338">- Working Paper (arXiv)</a></li>
     <li><a class="dropdown-item" href="../midr_jarip.pdf">- JARIP Bulletin (Japanese, PDF)</a></li>
     <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/Convention_A_Asia/">- Convention A Asia (R &amp; Python Demo)</a></li>
+    <li><a class="external-link dropdown-item" href="https://ryo-asashi.github.io/ICA2026/">- ICA2026 Tokyo (R Demo)</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -89,24 +90,10 @@ img {
 
       <dl><dt>
 
-          <code><a href="plot.mid.html">plot(<i>&lt;mid&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot MID Component Function</dd>
-
-        <dt>
-
           <code><a href="ggmid.html">ggmid()</a></code> <code><a href="ggmid.html">autoplot(<i>&lt;mid&gt;</i>)</a></code>
 
         </dt>
         <dd>Plot MID Component Function with ggplot2</dd>
-
-        <dt>
-
-          <code><a href="plot.mids.html">plot(<i>&lt;mids&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Compare MID Component Functions</dd>
 
         <dt>
 
@@ -117,10 +104,17 @@ img {
 
         <dt>
 
-          <code><a href="mid.plots.html">mid.plots()</a></code>
+          <code><a href="plot.mid.html">plot(<i>&lt;mid&gt;</i>)</a></code>
 
         </dt>
-        <dd>Plot Multiple MID Component Functions</dd>
+        <dd>Plot MID Component Function</dd>
+
+        <dt>
+
+          <code><a href="plot.mids.html">plot(<i>&lt;mids&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Compare MID Component Functions</dd>
 
         <dt>
 
@@ -128,13 +122,6 @@ img {
 
         </dt>
         <dd>Predict Method for fitted MID Models</dd>
-
-        <dt>
-
-          <code><a href="mid.effect.html">mid.effect()</a></code> <code><a href="mid.effect.html">mid.f()</a></code>
-
-        </dt>
-        <dd>Evaluate Single MID Component Functions</dd>
 
         <dt>
 
@@ -149,13 +136,6 @@ img {
 
         </dt>
         <dd>Summarize MID Models</dd>
-
-        <dt>
-
-          <code><a href="mid.terms.html">mid.terms()</a></code>
-
-        </dt>
-        <dd>Extract Terms from MID Models</dd>
       </dl></div><div class="section level2">
       <h2 id="combine-mid-objects">Combine MID objects<a class="anchor" aria-label="anchor" href="#combine-mid-objects"></a></h2>
 
@@ -172,6 +152,22 @@ img {
 
         </dt>
         <dd>Combine MID Objects</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="methods-1">Methods<a class="anchor" aria-label="anchor" href="#methods-1"></a></h3>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="extract.midlist.html">`[`(<i>&lt;midlist&gt;</i>)</a></code> <code><a href="extract.midlist.html">`[`(<i>&lt;midrib&gt;</i>)</a></code> <code><a href="extract.midlist.html">`[[`(<i>&lt;midrib&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Subset MID Objects</dd>
 
         <dt>
 
@@ -179,13 +175,6 @@ img {
 
         </dt>
         <dd>Label MID Objects</dd>
-
-        <dt>
-
-          <code><a href="extract.midlist.html">`[`(<i>&lt;midlist&gt;</i>)</a></code> <code><a href="extract.midlist.html">`[`(<i>&lt;midrib&gt;</i>)</a></code> <code><a href="extract.midlist.html">`[[`(<i>&lt;midrib&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Subset MID Objects</dd>
       </dl></div><div class="section level2">
       <h2 id="importance-of-effects">Importance of effects<a class="anchor" aria-label="anchor" href="#importance-of-effects"></a></h2>
 
@@ -204,7 +193,7 @@ img {
         <dd>Calculate MID Importance</dd>
       </dl></div><div class="section level2">
 
-      <h3 id="methods-1">Methods<a class="anchor" aria-label="anchor" href="#methods-1"></a></h3>
+      <h3 id="methods-2">Methods<a class="anchor" aria-label="anchor" href="#methods-2"></a></h3>
 
 
       <dl></dl></div><div class="section level2">
@@ -214,13 +203,6 @@ img {
 
       <dl><dt>
 
-          <code><a href="plot.midimp.html">plot(<i>&lt;midimp&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot MID Importance</dd>
-
-        <dt>
-
           <code><a href="ggmid.midimp.html">ggmid(<i>&lt;midimp&gt;</i>)</a></code> <code><a href="ggmid.midimp.html">autoplot(<i>&lt;midimp&gt;</i>)</a></code>
 
         </dt>
@@ -228,17 +210,24 @@ img {
 
         <dt>
 
-          <code><a href="plot.midimps.html">plot(<i>&lt;midimps&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Compare MID Importances</dd>
-
-        <dt>
-
           <code><a href="ggmid.midimps.html">ggmid(<i>&lt;midimps&gt;</i>)</a></code> <code><a href="ggmid.midimps.html">autoplot(<i>&lt;midimps&gt;</i>)</a></code>
 
         </dt>
         <dd>Compare MID Importances with ggplot2</dd>
+
+        <dt>
+
+          <code><a href="plot.midimp.html">plot(<i>&lt;midimp&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot MID Importance</dd>
+
+        <dt>
+
+          <code><a href="plot.midimps.html">plot(<i>&lt;midimps&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Compare MID Importances</dd>
       </dl></div><div class="section level2">
       <h2 id="breakdown-of-predictions">Breakdown of predictions<a class="anchor" aria-label="anchor" href="#breakdown-of-predictions"></a></h2>
 
@@ -257,7 +246,7 @@ img {
         <dd>Calculate MID Breakdown</dd>
       </dl></div><div class="section level2">
 
-      <h3 id="methods-2">Methods<a class="anchor" aria-label="anchor" href="#methods-2"></a></h3>
+      <h3 id="methods-3">Methods<a class="anchor" aria-label="anchor" href="#methods-3"></a></h3>
 
 
       <dl></dl></div><div class="section level2">
@@ -267,13 +256,6 @@ img {
 
       <dl><dt>
 
-          <code><a href="plot.midbrk.html">plot(<i>&lt;midbrk&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot MID Breakdown</dd>
-
-        <dt>
-
           <code><a href="ggmid.midbrk.html">ggmid(<i>&lt;midbrk&gt;</i>)</a></code> <code><a href="ggmid.midbrk.html">autoplot(<i>&lt;midbrk&gt;</i>)</a></code>
 
         </dt>
@@ -281,17 +263,24 @@ img {
 
         <dt>
 
-          <code><a href="plot.midbrks.html">plot(<i>&lt;midbrks&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Compare MID Breakdowns</dd>
-
-        <dt>
-
           <code><a href="ggmid.midbrks.html">ggmid(<i>&lt;midbrks&gt;</i>)</a></code> <code><a href="ggmid.midbrks.html">autoplot(<i>&lt;midbrks&gt;</i>)</a></code>
 
         </dt>
         <dd>Compare MID Breakdowns with ggplot2</dd>
+
+        <dt>
+
+          <code><a href="plot.midbrk.html">plot(<i>&lt;midbrk&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot MID Breakdown</dd>
+
+        <dt>
+
+          <code><a href="plot.midbrks.html">plot(<i>&lt;midbrks&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Compare MID Breakdowns</dd>
       </dl></div><div class="section level2">
       <h2 id="conditional-expectations">Conditional expectations<a class="anchor" aria-label="anchor" href="#conditional-expectations"></a></h2>
 
@@ -310,7 +299,7 @@ img {
         <dd>Calculate MID Conditional Expectation</dd>
       </dl></div><div class="section level2">
 
-      <h3 id="methods-3">Methods<a class="anchor" aria-label="anchor" href="#methods-3"></a></h3>
+      <h3 id="methods-4">Methods<a class="anchor" aria-label="anchor" href="#methods-4"></a></h3>
 
 
       <dl></dl></div><div class="section level2">
@@ -320,13 +309,6 @@ img {
 
       <dl><dt>
 
-          <code><a href="plot.midcon.html">plot(<i>&lt;midcon&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot MID Conditional Expectation</dd>
-
-        <dt>
-
           <code><a href="ggmid.midcon.html">ggmid(<i>&lt;midcon&gt;</i>)</a></code> <code><a href="ggmid.midcon.html">autoplot(<i>&lt;midcon&gt;</i>)</a></code>
 
         </dt>
@@ -334,17 +316,24 @@ img {
 
         <dt>
 
-          <code><a href="plot.midcons.html">plot(<i>&lt;midcons&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Compare MID Conditional Expectations</dd>
-
-        <dt>
-
           <code><a href="ggmid.midcons.html">ggmid(<i>&lt;midcons&gt;</i>)</a></code> <code><a href="ggmid.midcons.html">autoplot(<i>&lt;midcons&gt;</i>)</a></code>
 
         </dt>
         <dd>Compare MID Conditional Expectations with ggplot2</dd>
+
+        <dt>
+
+          <code><a href="plot.midcon.html">plot(<i>&lt;midcon&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot MID Conditional Expectation</dd>
+
+        <dt>
+
+          <code><a href="plot.midcons.html">plot(<i>&lt;midcons&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Compare MID Conditional Expectations</dd>
       </dl></div><div class="section level2">
       <h2 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a></h2>
 
@@ -357,6 +346,13 @@ img {
 
       <dl><dt>
 
+          <code><a href="get.link.html">get.link()</a></code>
+
+        </dt>
+        <dd>Extended Parametric Link Functions</dd>
+
+        <dt>
+
           <code><a href="get.yhat.html">get.yhat()</a></code>
 
         </dt>
@@ -364,10 +360,68 @@ img {
 
         <dt>
 
-          <code><a href="get.link.html">get.link()</a></code>
+          <code><a href="term.effect.html">term.effect()</a></code> <code><a href="term.effect.html">term.f()</a></code>
 
         </dt>
-        <dd>Extended Parametric Link Functions</dd>
+        <dd>Evaluate Single Component Functions of Additive Models</dd>
+
+        <dt>
+
+          <code><a href="term.labels.html">term.labels()</a></code>
+
+        </dt>
+        <dd>Extract and Filter Term Labels</dd>
+
+        <dt>
+
+          <code><a href="weighted.loss.html">weighted.loss()</a></code>
+
+        </dt>
+        <dd>Weighted Loss Function</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="color-themes">Color themes<a class="anchor" aria-label="anchor" href="#color-themes"></a></h3>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="color.theme.html">color.theme()</a></code> <code><a href="color.theme.html">is.color.theme()</a></code>
+
+        </dt>
+        <dd>Color Themes for Graphics</dd>
+
+        <dt>
+
+          <code><a href="color.theme.register.html">color.theme.register()</a></code> <code><a href="color.theme.register.html">set.color.theme()</a></code>
+
+        </dt>
+        <dd>Register Color Themes</dd>
+
+        <dt>
+
+          <code><a href="color.themes.html">color.themes()</a></code>
+
+        </dt>
+        <dd>Retrieve Color Theme Information</dd>
+
+        <dt>
+
+          <code><a href="scale_color_theme.html">scale_color_theme()</a></code> <code><a href="scale_color_theme.html">scale_colour_theme()</a></code> <code><a href="scale_color_theme.html">scale_fill_theme()</a></code>
+
+        </dt>
+        <dd>Color Theme Scales for ggplot2 Graphics</dd>
+
+        <dt>
+
+          <code><a href="to.colors.html">to.colors()</a></code>
+
+        </dt>
+        <dd>Map Values to Colors using Color Themes</dd>
       </dl></div><div class="section level2">
 
       <h3 id="variable-encoders">Variable encoders<a class="anchor" aria-label="anchor" href="#variable-encoders"></a></h3>
@@ -393,43 +447,6 @@ img {
         <dd>Encoder for Quantitative Variables</dd>
       </dl></div><div class="section level2">
 
-      <h3 id="color-themes">Color themes<a class="anchor" aria-label="anchor" href="#color-themes"></a></h3>
-
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="color.theme.html">color.theme()</a></code>
-
-        </dt>
-        <dd>Color Themes for Graphics</dd>
-
-        <dt>
-
-          <code><a href="color.theme.info.html">color.theme.info()</a></code> <code><a href="color.theme.info.html">color.theme.env()</a></code>
-
-        </dt>
-        <dd>Retrieve Color Theme Information</dd>
-
-        <dt>
-
-          <code><a href="set.color.theme.html">set.color.theme()</a></code>
-
-        </dt>
-        <dd>Register Color Themes</dd>
-
-        <dt>
-
-          <code><a href="scale_color_theme.html">scale_color_theme()</a></code> <code><a href="scale_color_theme.html">scale_colour_theme()</a></code> <code><a href="scale_color_theme.html">scale_fill_theme()</a></code>
-
-        </dt>
-        <dd>Color Theme Scales for ggplot2 Graphics</dd>
-      </dl></div><div class="section level2">
-
       <h3 id="miscellaneous">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous"></a></h3>
 
 
@@ -440,17 +457,10 @@ img {
 
       <dl><dt>
 
-          <code><a href="theme_midr.html">theme_midr()</a></code> <code><a href="theme_midr.html">par.midr()</a></code>
+          <code><a href="midr.options.html">midr.options()</a></code> <code><a href="midr.options.html">midr.par()</a></code>
 
         </dt>
-        <dd>Default Plotting Themes</dd>
-
-        <dt>
-
-          <code><a href="weighted.loss.html">weighted.loss()</a></code>
-
-        </dt>
-        <dd>Weighted Loss Function</dd>
+        <dd>Set or Get Global Options for the midr Package</dd>
 
         <dt>
 
@@ -458,6 +468,13 @@ img {
 
         </dt>
         <dd>Calculate MID-Derived Shapley Values</dd>
+
+        <dt>
+
+          <code><a href="theme_midr.html">theme_midr()</a></code>
+
+        </dt>
+        <dd>Default Plotting Themes</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

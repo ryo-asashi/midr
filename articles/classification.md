@@ -26,10 +26,6 @@ interpret the fitted models.
 
 # benchmark classification task
 library(DALEX)
-#> Welcome to DALEX (version: 2.5.4).
-#> Find examples and detailed introduction at: http://ema.drwhy.ai/
-#> Additional features will be available after installation of: ggpubr.
-#> Use 'install_dependencies()' to get all suggested dependencies
 set.seed(42)
 test_rows <- sample(nrow(titanic), 500L)
 train <- titanic[-test_rows, -5]
@@ -75,7 +71,7 @@ upper bound of the effects on the predicted probabilities.
 
 # define utility functions for the following chunks
 effect_plots <- function(object) {
-  plots <- mid.plots(mid, terms = mid.terms(mid)[1:6])
+  plots <- ggmid(mid, terms = term.labels(mid)[1:6])
   for (i in 1:6) {
     plots[[i]] <- plots[[i]] + ggtitle("main effect")
     if (any(i == c(1, 3, 4)))
@@ -87,7 +83,7 @@ effect_plots <- function(object) {
 interaction_plot <- function(
     object, term = NULL, theme = "mako") {
   if (is.null(term))
-    term <- mid.terms(mid.importance(object), main.effect = FALSE)[1L]
+    term <- term.labels(mid.importance(object), order = 2L)[1L]
   ggmid(object, term, type = "data", data = na.omit(titanic), 
         theme = theme, main.effects = TRUE) +
     theme(legend.position = "right") +
@@ -220,11 +216,6 @@ grid.arrange(nrow = 2L,
 ``` r
 
 library(e1071)
-#> 
-#> Attaching package: 'e1071'
-#> The following object is masked from 'package:ggplot2':
-#> 
-#>     element
 model <- svm(survived ~ ., train, kernel = "radial", probability = TRUE)
 mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  pred.args = list(target = "yes"))
@@ -327,7 +318,6 @@ frames$fare <- c(frames$fare, 26.63, 24.56)
 frames$sibsp <- c(frames$fare, 2.5)
 mid <- interpret(survived ~ .^2, train, model, link = scaled_probit_link,
                  singular.ok = TRUE, type = 0, frames = frames)
-#> singular fit encountered
 print(mid)
 #> 
 #> Call:
@@ -369,7 +359,6 @@ grid.arrange(nrow = 2L,
 ``` r
 
 mid <- interpret(survived ~ .^2, train, lambda = .5)
-#> 'model' not passed: response variable in 'data' is used
 print(mid)
 #> 
 #> Call:

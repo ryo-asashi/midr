@@ -115,6 +115,8 @@ mbd <- mid.breakdown(mid, diamonds[1L, ])
 
 # Create a waterfall plot
 ggmid(mbd, type = "waterfall")
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_segment()`).
 
 
 # Create a bar plot with a different theme

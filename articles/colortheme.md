@@ -195,12 +195,12 @@ rainbow$ramp(c(0.00, 0.25, 0.50, 0.75, 1.00))
 
 You can register a custom theme to call it by name later in you current
 R session. To do so, use the
-[`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/set.color.theme.md)
+[`color.theme.register()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
 function.
 
 ``` r
 
-set.color.theme(mytheme, name = "mytheme", source = "custom")
+color.theme.register(mytheme, name = "mytheme", source = "custom")
 color.theme("mytheme_r@div")
 #> Diverging Color Theme : "mytheme"
 ```

@@ -51,7 +51,7 @@ surrogate model using RMSE.
 
 # define utility functions for the following chunks
 effect_plots <- function(object) {
-  mid.plots(object, terms = paste("x", 1:6, sep = "."))
+  ggmid(object, terms = paste("x", 1:6, sep = "."))
 }
 
 interaction_plot <- function(object) {
@@ -316,11 +316,6 @@ ml$nnet <- mid
 ``` r
 
 library(e1071)
-#> 
-#> Attaching package: 'e1071'
-#> The following object is masked from 'package:ggplot2':
-#> 
-#>     element
 model <- svm(y ~ ., train, kernel = "radial")
 mid <- interpret(y ~ .^2, train, model)
 print(mid)
@@ -368,12 +363,6 @@ params <- list(eta = .1, subsample = .7, max_depth = 5)
 set.seed(42)
 model <- xgboost(as.matrix(train[, -11]), train[, 11], nrounds = 100,
                  params = params, verbose = 0)
-#> Warning in throw_err_or_depr_msg("Parameter(s) have been removed from this
-#> function: ", : Parameter(s) have been removed from this function: params. This
-#> warning will become an error in a future version.
-#> Warning in throw_err_or_depr_msg("Passed unrecognized parameters: ",
-#> paste(head(names_unrecognized), : Passed unrecognized parameters: verbose. This
-#> warning will become an error in a future version.
 mid <- interpret(y ~ .^2, as.matrix(train), model)
 print(mid)
 #> 
@@ -515,7 +504,6 @@ ml$tree <- mid
 ``` r
 
 model <- mid <- interpret(y ~ .^2, train, lambda = .2)
-#> 'model' not passed: response variable in 'data' is used
 pred <- pred_mid <- predict(mid, test)
 print(mid)
 #> 
@@ -564,7 +552,7 @@ p6 <- ggmid(ml[5:8], "x.4")
 impl <- mid.importance(ml)
 p1 <- ggmid(impl[1:4], type = "dotchart", pch = 15) +
   theme(legend.position = "bottom")
-p2 <- ggmid(impl[5:8], type = "dotchart", terms = mid.terms(impl)) +
+p2 <- ggmid(impl[5:8], type = "dotchart", terms = term.labels(impl)) +
   theme(legend.position = "bottom")
 p1 + p2
 ```

@@ -212,46 +212,42 @@ and Graphical Statistics*, *24*(1), 44–65.
 
 ### Methods
 
-- [`plot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  : Plot MID Component Function
 - [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
   [`autoplot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
   : Plot MID Component Function with ggplot2
-- [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
-  : Compare MID Component Functions
 - [`ggmid(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mids.md)
   [`autoplot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.mids.md)
   : Compare MID Component Functions with ggplot2
-- [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/mid.plots.md)
-  : Plot Multiple MID Component Functions
+- [`plot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+  : Plot MID Component Function
+- [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
+  : Compare MID Component Functions
 - [`predict(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   [`predict(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   : Predict Method for fitted MID Models
-- [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
-  [`mid.f()`](https://ryo-asashi.github.io/midr/reference/mid.effect.md)
-  : Evaluate Single MID Component Functions
 - [`print(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/print.mid.md)
   [`print(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/print.mid.md)
   : Print MID Models
 - [`summary(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/summary.mid.md)
   [`summary(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/summary.mid.md)
   : Summarize MID Models
-- [`mid.terms()`](https://ryo-asashi.github.io/midr/reference/mid.terms.md)
-  : Extract Terms from MID Models
 
 ## Combine MID objects
 
 - [`midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
   [`as.midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
   : Combine MID Objects
-- [`labels(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
-  [`labels(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
-  [`` `labels<-`() ``](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
-  : Label MID Objects
+
+### Methods
+
 - [`` `[`( ``*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
   [`` `[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
   [`` `[[`( ``*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/extract.midlist.md)
   : Subset MID Objects
+- [`labels(`*`<midlist>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
+  [`labels(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
+  [`` `labels<-`() ``](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
+  : Label MID Objects
 
 ## Importance of effects
 
@@ -260,16 +256,16 @@ and Graphical Statistics*, *24*(1), 44–65.
 
 ### Methods
 
-- [`plot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  : Plot MID Importance
 - [`ggmid(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md)
   [`autoplot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimp.md)
   : Plot MID Importance with ggplot2
-- [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
-  : Compare MID Importances
 - [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
   [`autoplot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
   : Compare MID Importances with ggplot2
+- [`plot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
+  : Plot MID Importance
+- [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+  : Compare MID Importances
 
 ## Breakdown of predictions
 
@@ -278,16 +274,16 @@ and Graphical Statistics*, *24*(1), 44–65.
 
 ### Methods
 
-- [`plot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  : Plot MID Breakdown
 - [`ggmid(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
   [`autoplot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
   : Plot MID Breakdown with ggplot2
-- [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
-  : Compare MID Breakdowns
 - [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
   [`autoplot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrks.md)
   : Compare MID Breakdowns with ggplot2
+- [`plot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
+  : Plot MID Breakdown
+- [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
+  : Compare MID Breakdowns
 
 ## Conditional expectations
 
@@ -296,23 +292,47 @@ and Graphical Statistics*, *24*(1), 44–65.
 
 ### Methods
 
-- [`plot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  : Plot MID Conditional Expectation
 - [`ggmid(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
   [`autoplot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
   : Plot MID Conditional Expectation with ggplot2
-- [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
-  : Compare MID Conditional Expectations
 - [`ggmid(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
   [`autoplot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
   : Compare MID Conditional Expectations with ggplot2
+- [`plot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
+  : Plot MID Conditional Expectation
+- [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
+  : Compare MID Conditional Expectations
 
 ## Other functions
 
-- [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
-  : Wrapper Prediction Function
 - [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
   : Extended Parametric Link Functions
+- [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
+  : Wrapper Prediction Function
+- [`term.effect()`](https://ryo-asashi.github.io/midr/reference/term.effect.md)
+  [`term.f()`](https://ryo-asashi.github.io/midr/reference/term.effect.md)
+  : Evaluate Single Component Functions of Additive Models
+- [`term.labels()`](https://ryo-asashi.github.io/midr/reference/term.labels.md)
+  : Extract and Filter Term Labels
+- [`weighted.loss()`](https://ryo-asashi.github.io/midr/reference/weighted.loss.md)
+  : Weighted Loss Function
+
+### Color themes
+
+- [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
+  [`is.color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
+  : Color Themes for Graphics
+- [`color.theme.register()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
+  [`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
+  : Register Color Themes
+- [`color.themes()`](https://ryo-asashi.github.io/midr/reference/color.themes.md)
+  : Retrieve Color Theme Information
+- [`scale_color_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
+  [`scale_colour_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
+  [`scale_fill_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
+  : Color Theme Scales for ggplot2 Graphics
+- [`to.colors()`](https://ryo-asashi.github.io/midr/reference/to.colors.md)
+  : Map Values to Colors using Color Themes
 
 ### Variable encoders
 
@@ -323,29 +343,15 @@ and Graphical Statistics*, *24*(1), 44–65.
   [`numeric.frame()`](https://ryo-asashi.github.io/midr/reference/numeric.encoder.md)
   : Encoder for Quantitative Variables
 
-### Color themes
-
-- [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  : Color Themes for Graphics
-- [`color.theme.info()`](https://ryo-asashi.github.io/midr/reference/color.theme.info.md)
-  [`color.theme.env()`](https://ryo-asashi.github.io/midr/reference/color.theme.info.md)
-  : Retrieve Color Theme Information
-- [`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/set.color.theme.md)
-  : Register Color Themes
-- [`scale_color_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
-  [`scale_colour_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
-  [`scale_fill_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md)
-  : Color Theme Scales for ggplot2 Graphics
-
 ### Miscellaneous
 
-- [`theme_midr()`](https://ryo-asashi.github.io/midr/reference/theme_midr.md)
-  [`par.midr()`](https://ryo-asashi.github.io/midr/reference/theme_midr.md)
-  : Default Plotting Themes
-- [`weighted.loss()`](https://ryo-asashi.github.io/midr/reference/weighted.loss.md)
-  : Weighted Loss Function
+- [`midr.options()`](https://ryo-asashi.github.io/midr/reference/midr.options.md)
+  [`midr.par()`](https://ryo-asashi.github.io/midr/reference/midr.options.md)
+  : Set or Get Global Options for the midr Package
 - [`shapviz(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/shapviz.mid.md)
   : Calculate MID-Derived Shapley Values
+- [`theme_midr()`](https://ryo-asashi.github.io/midr/reference/theme_midr.md)
+  : Default Plotting Themes
 
 # Articles
 

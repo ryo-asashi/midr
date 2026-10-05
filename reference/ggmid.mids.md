@@ -2,7 +2,7 @@
 
 For "mids" collection objects,
 [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
-visualizes and compares a single main effect across multiple models.
+visualizes and compares one or more main effects across multiple models.
 
 ## Usage
 
@@ -10,13 +10,13 @@ visualizes and compares a single main effect across multiple models.
 # S3 method for class 'mids'
 ggmid(
   object,
-  term,
+  terms = term.labels(object, order = 1L),
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
   limits = c(NA, NA),
   resolution = NULL,
-  labels = base::labels(object),
+  labels = NULL,
   ...
 )
 
@@ -30,9 +30,11 @@ autoplot(object, ...)
 
   a "mids" collection object to be visualized.
 
-- term:
+- terms:
 
-  a character string specifying the main effect to evaluate.
+  a character vector or a formula specifying the component functions to
+  be plotted. If a formula is provided (e.g., `~ x + y`), it is
+  automatically parsed to extract the relevant terms.
 
 - type:
 
@@ -74,7 +76,9 @@ autoplot(object, ...)
 
 ## Value
 
-`ggmid.mids()` returns a "ggplot" object.
+`ggmid.mids()` returns a "ggplot" object if a single main effect is
+specified, or a list of "ggplot" objects if multiple main effects are
+specified.
 
 ## Details
 

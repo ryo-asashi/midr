@@ -14,7 +14,7 @@ predict(
   newdata = NULL,
   na.action = "na.pass",
   type = c("response", "link", "terms"),
-  terms = mid.terms(object),
+  terms = term.labels(object),
   ...
 )
 
@@ -78,7 +78,6 @@ model's component functions, excluding others.
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`mid.effect`](https://ryo-asashi.github.io/midr/reference/mid.effect.md),
 [`get.yhat`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
 
 ## Examples
