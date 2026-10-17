@@ -1,13 +1,13 @@
 #' Evaluate Single Component Functions of Additive Models
 #'
 #' @description
-#' \code{term.effect()} calculates the contribution of a single component function of a fitted additive models.
+#' \code{term.evaluate()} calculates the contribution of a single component function of a fitted additive model.
 #' It serves as a low-level helper function for making predictions or for direct analysis of a term effect.
 #'
 #' @details
-#' \code{term.effect()} is a low-level S3 generic function designed to calculate the contribution of a single component function.
-#' Unlike \code{predict.mid()}, which is designed to return total model predictions, \code{term.effect()} is more flexible.
-#' It accepts vectors, as well as matrices or data frames, as input for \code{x} and \code{y}. If \code{x} is a data frame, the necessary columns are automatically extracted.
+#' \code{term.evaluate()} is a S3 generic function designed to calculate the contribution of a single component function.
+#' Unlike \code{\link[stats]{predict}()}, it accepts vectors, as well as matrices or data frames, as input for \code{x} and \code{y}.
+#' If \code{x} is a data frame, the necessary columns are automatically extracted.
 #' This makes it particularly useful for visualizing a component's effect in combination with standard plotting functions, such as \code{graphics::curve()}.
 #'
 #' For a main effect, the function evaluates the component function \eqn{f_j(x_j)} for a vector of values \eqn{x_j}.
@@ -26,26 +26,26 @@
 #' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 1)
 #'
 #' # Visualize the main effect of "Wind"
-#' curve(term.effect(mid, term = "Wind", x), from = 0, to = 25)
+#' curve(term.evaluate(mid, term = "Wind", x), from = 0, to = 25)
 #'
 #' # Visualize the interaction of "Wind" and "Temp"
 #' curve(term.f(mid, "Wind:Temp", x, 50), 0, 25)
 #' curve(term.f(mid, "Wind:Temp", x, 60), 0, 25, add = TRUE, lty = 2)
 #' curve(term.f(mid, "Wind:Temp", x, 70), 0, 25, add = TRUE, lty = 3)
 #' @returns
-#' \code{term.effect()} returns a numeric vector of the calculated term contributions, with the same length as \code{x}.
+#' \code{term.evaluate()} returns a numeric vector of the calculated term contributions, with the same length as \code{x}.
 #'
-#' For a collection of models ("mids"), \code{term.effect()} returns a numeric matrix where each column corresponds to a model.
+#' For a collection of models ("mids"), \code{term.evaluate()} returns a numeric matrix where each column corresponds to a model.
 #'
-#' @export term.effect
+#' @export term.evaluate
 #'
-term.effect <- function(object, ...)
-UseMethod("term.effect")
+term.evaluate <- function(object, ...)
+UseMethod("term.evaluate")
 
-#' @rdname term.effect
-#' @exportS3Method midr::term.effect
+#' @rdname term.evaluate
+#' @exportS3Method midr::term.evaluate
 #'
-term.effect.mid <- function(object, term, x, y = NULL, ...) {
+term.evaluate.mid <- function(object, term, x, y = NULL, ...) {
   term <- as.terms(term)
   if (!is.single.term(term))
     stop("'term' must be a single term")
@@ -86,7 +86,7 @@ term.effect.mid <- function(object, term, x, y = NULL, ...) {
     }
   }
   if (!ie) {
-    bmat <- object$main.effects[[mlab]]$mid
+    bmat <- object$main.effects[[mlab]]$.effect
     mmat <- object$encoders$main.effects[[mlab]]$encode(x)
     out <- mmat %*% bmat
   } else {
@@ -94,7 +94,7 @@ term.effect.mid <- function(object, term, x, y = NULL, ...) {
       vars <- rev(vars)
       temp <- x; x <- y; y <- temp
     }
-    bmat <- object$interactions[[mlab]]$mid
+    bmat <- object$interactions[[mlab]]$.effect
     xmat <- object$encoders$interactions[[vars[1L]]]$encode(x)
     ymat <- object$encoders$interactions[[vars[2L]]]$encode(y)
     mx <- ncol(xmat)
@@ -118,14 +118,14 @@ term.effect.mid <- function(object, term, x, y = NULL, ...) {
   out
 }
 
-#' @rdname term.effect
-#' @exportS3Method midr::term.effect
+#' @rdname term.evaluate
+#' @exportS3Method midr::term.evaluate
 #'
-term.effect.mids <- function(object, term, x, y = NULL, ...) {
+term.evaluate.mids <- function(object, term, x, y = NULL, ...) {
   if (inherits(object, "midrib")) {
-    term.effect.mid(object, term = term, x = x, y = y, ...)
+    term.evaluate.mid(object, term = term, x = x, y = y, ...)
   } else {
-    res <- sapply(as.list(object), term.effect, term = term, x = x, y = y, ...)
+    res <- sapply(as.list(object), term.evaluate, term = term, x = x, y = y, ...)
     if (!is.matrix(res)) {
       res <- matrix(res, nrow = NROW(x), ncol = length(object))
     }
@@ -134,11 +134,11 @@ term.effect.mids <- function(object, term, x, y = NULL, ...) {
   }
 }
 
-#' @rdname term.effect
+#' @rdname term.evaluate
 #' @param data an optional data frame containing the original training data. Required for additive models if the data cannot be automatically extracted from the model object.
-#' @exportS3Method midr::term.effect
+#' @exportS3Method midr::term.evaluate
 #'
-term.effect.default <- function(object, term, x, y = NULL, data = NULL, ...) {
+term.evaluate.default <- function(object, term, x, y = NULL, data = NULL, ...) {
   term <- as.terms(term)
   if (!is.single.term(term))
     stop("'term' must be a single term")
@@ -173,7 +173,7 @@ term.effect.default <- function(object, term, x, y = NULL, data = NULL, ...) {
     }
   }
   if (is.null(data)) {
-    data <- tryCatch(stats::model.frame(object), error = function(e) NULL)
+    data <- tryCatch(model.data(object), error = function(e) NULL)
     if (is.null(data)) stop("'data' must be supplied for this model class")
   }
   newdata <- data[rep(1L, n), , drop = FALSE]
@@ -191,11 +191,13 @@ term.effect.default <- function(object, term, x, y = NULL, data = NULL, ...) {
 }
 
 
-#' @rdname term.effect
+#' @rdname term.evaluate
 #'
 #' @description
-#' \code{term.f()} is a convenient shorthand for \code{term.effect()}.
+#' \code{term.f()} is a convenient shorthand for \code{term.evaluate()}.
 #'
 #' @export term.f
 #'
-term.f <- term.effect
+term.f <- term.evaluate
+
+term.effect <- function(...) term.evaluate(...)

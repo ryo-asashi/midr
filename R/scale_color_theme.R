@@ -10,7 +10,7 @@
 #' If the theme is "sequential" or "diverging", a continuous scale is used by default.
 #' The "diverging" themes are handled by \code{scales::rescale_mid()} to correctly center the gradient around the \code{middle} value.
 #'
-#' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.
+#' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color_theme} for more details.
 #' @param ... optional arguments to be passed to \code{ggplot2::continuous_scale()} or \code{ggplot2::discrete_scale()}.
 #' @param discrete logical. If \code{TRUE}, a discrete scale is used regardless of the theme type.
 #' @param middle a numeric value specifying the middle point for the diverging color themes. Default is \code{0}.
@@ -41,7 +41,7 @@
 #' @returns
 #' \code{scale_color_theme()} returns a ggplot2 scale object (either a "ScaleContinuous" or "ScaleDiscrete" object) that can be added to a "ggplot" object.
 #'
-#' @seealso \code{\link{color.theme}}
+#' @seealso \code{\link{color_theme}}
 #'
 #' @export scale_color_theme
 #'
@@ -50,8 +50,8 @@ scale_color_theme <- function(
 ) {
   args <- list(...)
   args$aesthetics <- aesthetics
-  theme <- theme %||% color.theme.defaults(if (isTRUE(discrete)) "qual" else "seq")
-  theme <- color.theme(theme)
+  theme <- theme %||% color_theme_defaults(if (isTRUE(discrete)) "qual" else "seq")
+  theme <- color_theme(theme)
   if (is.null(discrete))
     discrete <- theme$type == "qualitative"
   if (discrete) {

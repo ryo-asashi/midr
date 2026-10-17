@@ -1,10 +1,10 @@
 #' Set or Get Global Options for the midr Package
 #'
 #' @description
-#' \code{midr.options()} manages global settings specific to the \strong{midr} package, such as computational solvers and color theme environments.
+#' \code{midr_options()} manages global settings specific to the \strong{midr} package, such as computational solvers and color theme environments.
 #'
 #' @details
-#' \code{midr.options()} provides an interface to R's global \code{options()} but safely scopes all parameters with a \code{midr.} prefix.
+#' \code{midr_options()} provides an interface to R's global \code{options()} but safely scopes all parameters with a \code{midr.} prefix.
 #'  To prevent typos, it validates option names against expected prefixes:
 #' \itemize{
 #'   \item \code{solver.*}: For registering custom least-squares solvers; e.g., \code{solver.TAG = FUN}, where \code{FUN(x, y)} returns a list containing at least \code{coefficients} and possibly \code{residuals} and \code{rank}. The custom solver can be called via \code{interpret(method = "TAG")}.
@@ -12,19 +12,19 @@
 #'   \item \code{verbosity}: For controlling message verbosity. See \code{\link{interpret}()}.
 #' }
 #'
-#' @param ... For \code{midr.options()}: options to be defined in \code{name = value} form.
+#' @param ... For \code{midr_options()}: options to be defined in \code{name = value} form.
 #'   If no arguments are provided, it returns all current package options.
 #'   If character strings are provided, it returns the values of those options.
-#'   For \code{midr.par()}: graphical parameters in \code{name = value} form can be supplied as arguments.
+#'   For \code{midr_par()}: graphical parameters in \code{name = value} form can be supplied as arguments.
 #'
 #' @returns
-#' When called without arguments, \code{midr.options()} returns a named list of all current options with the \code{midr.} prefix.
-#' When called with character strings, \code{midr.options()} returns a named list of the requested options.
-#' When called with \code{name = value} pairs, \code{midr.options()} invisibly returns a named list of the previous values.
+#' When called without arguments, \code{midr_options()} returns a named list of all current options with the \code{midr.} prefix.
+#' When called with character strings, \code{midr_options()} returns a named list of the requested options.
+#' When called with \code{name = value} pairs, \code{midr_options()} invisibly returns a named list of the previous values.
 #'
-#' @export midr.options
+#' @export midr_options
 #'
-midr.options <- function(...) {
+midr_options <- function(...) {
   args <- list(...)
   if (length(args) == 0L) {
     opts <- options()
@@ -59,11 +59,11 @@ midr.options <- function(...) {
   invisible(old)
 }
 
-color.theme.registry <- function() {
+color_theme_registry <- function() {
   getOption("midr.color.theme.registry", kernel.env)
 }
 
-color.theme.defaults <- function(type = NULL) {
+color_theme_defaults <- function(type = NULL) {
   gds <- c(sequential = "bluescale", qualitative = "HCL", diverging = "midr")
   if (is.null(type)) {
     return(c(
@@ -77,20 +77,20 @@ color.theme.defaults <- function(type = NULL) {
 }
 
 
-#' @rdname midr.options
+#' @rdname midr_options
 #'
 #' @description
-#' \code{midr.par()} manages graphical parameters for base R graphics.
+#' \code{midr_par()} manages graphical parameters for base R graphics.
 #'
 #' @details
-#' \code{midr.par()} wraps \code{\link[graphics]{par}()} to enforce a themed aesthetic as the default, which can be further customized by the user.
+#' \code{midr_par()} wraps \code{\link[graphics]{par}()} to enforce a themed aesthetic as the default, which can be further customized by the user.
 #'
 #' @returns
-#' \code{midr.par()} returns the previous values of the changed parameters in an invisible named list.
+#' \code{midr_par()} returns the previous values of the changed parameters in an invisible named list.
 #'
-#' @export midr.par
+#' @export midr_par
 #'
-midr.par <- function(...) {
+midr_par <- function(...) {
   dots <- list(...)
   dots <- dots[names(dots) %in% names(graphics::par(no.readonly = TRUE))]
   args <- list(

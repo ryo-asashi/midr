@@ -8,12 +8,12 @@
 #' The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
 #' The output includes:
 #' \itemize{
-#'   \item \strong{Call}: the function call used to fit the MID model.
-#'   \item \strong{Link}: name of the link function used to fit the MID model, if applicable.
-#'   \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
-#'   \item \strong{Residuals}: five-number summary of (working) residuals.
-#'   \item \strong{Encoding}: summary of encoding schemes per variable.
-#'   \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
+#'   \item Call: the function call used to fit the MID model.
+#'   \item Link: name of the link function used to fit the MID model, if applicable.
+#'   \item Uninterpreted Variation Ratio: proportion of target model variance not explained by MID model.
+#'   \item Residuals: five-number summary of (working) residuals.
+#'   \item Encoding: summary of encoding schemes per variable.
+#'   \item Diagnosis: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
 #' }
 #'
 #' @param object a "mid" or "mids" object to be summarized.
@@ -169,7 +169,7 @@ summarize_midlist <- function(
 
 #' @exportS3Method base::summary
 #'
-summary.midimps <- function(
+summary.termimps <- function(
     object, shape = c("wide", "long"), terms = NULL, ...
 ) {
   shape <- match.arg(shape)
@@ -183,14 +183,14 @@ summary.midimps <- function(
 
 #' @exportS3Method base::summary
 #'
-summary.midbrks <- function(
+summary.termcons <- function(
     object, shape = c("wide", "long"), terms = NULL, ...
 ) {
   shape <- match.arg(shape)
-  terms <- terms %||% term.labels(object[[1L]])
+  terms <- terms %||% term.labels(object)
   summarize_midlist(
     object = object, shape = shape,
-    dfname = "breakdown", keycol = "term", valcol = "mid",
+    dfname = "contribution", keycol = "term", valcol = "contribution",
     keys = "term", targets = terms
   )
 }
@@ -212,13 +212,13 @@ summary.midcons <- function(
 
 #' @exportS3Method base::summary
 #'
-summary.midimp <- function(object, ...) {
+summary.termimp <- function(object, ...) {
   object$importance
 }
 
 #' @exportS3Method base::summary
 #'
-summary.midbrk <- function(object, ...) {
+summary.termcon <- function(object, ...) {
   object$breakdown
 }
 

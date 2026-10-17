@@ -54,13 +54,12 @@ print.mid <- function(
         print.default(vl, digits = digits)
       }
     } else {
-      cat(m, " main effect term", if (m > 1L) "s", "\n", sep = "")
+      cat(add_s(m, "main effect term"), "\n", sep = "")
     }
   }
   m <- length(x$interactions)
   if (m > 0L) {
-    cat("\nInteractions:\n",
-        m, " interaction term", if (m > 1L) "s", "\n", sep = "")
+    cat("\nInteractions:\n", add_s(m, "interaction term"), "\n", sep = "")
   }
   ur <- x$ratio
   ur <- if (inherits(x, "mid")) ur[1L] else if (is.matrix(ur)) ur[1L, ] else ur
@@ -97,12 +96,11 @@ print.mids <- function(x, max.nmodels = 1L, ...) {
 
 #' @exportS3Method base::print
 #'
-print.midimp <- function(
+print.termimp <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
 ) {
   n <- attr(x, "n", exact = TRUE)
-  cat("\nMID Importance based on ",
-      n, " Observation", if (n > 1L) "s", "\n", sep = "")
+  cat("\nTerm Importance based on ", add_s(n, "Observation"), "\n", sep = "")
   cat("\nMeasure: ", x$measure, "\n", sep = "")
   cat("\nImportance:\n")
   print.data.frame(x$importance, digits = digits, ...)
@@ -111,12 +109,10 @@ print.midimp <- function(
 
 #' @exportS3Method base::print
 #'
-print.midimps <- function(
+print.termimps <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
-  nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat("\nMID Importance based on ",
-      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
+  cat("\nTerm Importance\n")
   cat("\nMeasure: ", x[[1L]]$measure, "\n", sep = "")
   cat("\nImportance:\n")
   smry <- summary(x, shape = "wide")
@@ -128,10 +124,10 @@ print.midimps <- function(
 
 #' @exportS3Method base::print
 #'
-print.midbrk <- function(
+print.termcon <- function(
     x, digits = max(3L, getOption("digits") - 2L), ...
 ) {
-  cat("\nMID Breakdown of a Prediction\n")
+  cat("\nTerm Contributions for an Observation\n")
   cat("\nIntercept: ",
       format(x$intercept, digits = digits), "\n", sep = "")
   if (!is.null(x$linear.predictor)) {
@@ -142,16 +138,16 @@ print.midbrk <- function(
         format(x$prediction, digits = digits), "\n", sep = "")
   }
   cat("\nBreakdown of Effects:\n")
-  print.data.frame(x$breakdown, digits = digits, ...)
+  print.data.frame(x$contribution, digits = digits, ...)
   invisible(x)
 }
 
 #' @exportS3Method base::print
 #'
-print.midbrks <- function(
+print.termcons <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
-  cat("\nMID Breakdown of a Prediction\n")
+  cat("\nTerm Contribution\n")
   intercept <- vapply(X = x, FUN = function(y) y$intercept, 0.0)
   cat("\nIntercept: ",
       examples(intercept, digits = digits), "\n", sep = "")
@@ -179,8 +175,7 @@ print.midcon <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x, "n", exact = TRUE)
-  cat("\nIndividual Conditional Expectation for ",
-      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
+  cat("\nIndividual Conditional Expectation for ", add_s(nobs, " Observation"), "\n", sep = "")
   variable <- x$variable
   cat("\nVariable: ", variable, "\n", sep = "")
   cat("\nSample Points: ", examples(x$values, digits = digits), "\n", sep = "")
@@ -198,8 +193,7 @@ print.midcons <- function(
     x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...
 ) {
   nobs <- attr(x[[1L]], "n", exact = TRUE)
-  cat("\nIndividual Conditional Expectation for ",
-      nobs, " Observation", if (nobs > 1L) "s", "\n", sep = "")
+  cat("\nIndividual Conditional Expectation\n")
   variable <- x$variable %||% x[[1L]]$variable
   cat("\nVariable: ", variable, "\n", sep = "")
   cat("\nSample Points: ",

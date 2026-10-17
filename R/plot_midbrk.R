@@ -60,19 +60,19 @@ plot.midbrk <- function(
     idx <- idx[!is.na(idx)]
     if (length(idx) > 0L) {
       resid_idx <- setdiff(seq_len(nrow(bd)), idx)
-      resid_sum <- sum(bd$mid[resid_idx])
+      resid_sum <- sum(bd$contribution[resid_idx])
       bd <- bd[idx, , drop = FALSE]
       if (length(resid_idx) > 0L) {
-        bd[nrow(bd) + 1L, "mid"] <- resid_sum
+        bd[nrow(bd) + 1L, "contribution"] <- resid_sum
         use.others <- TRUE
       }
     }
   }
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
   if (nmax < nrow(bd)) {
-    resid <- sum(bd[nmax:nrow(bd), "mid"])
+    resid <- sum(bd[nmax:nrow(bd), "contribution"])
     bd <- bd[1L:(nmax - 1L), ]
-    bd[nmax, "mid"] <- resid
+    bd[nmax, "contribution"] <- resid
     use.others <- TRUE
   }
   # update labels
@@ -95,13 +95,13 @@ plot.midbrk <- function(
   if (use.others)
     bd[nrow(bd), "term"] <- others
   if (type == "barplot" || type == "dotchart") {
-    args <- list(to = bd$mid, labels = bd$term,
-                 horizontal = TRUE, xlab = "mid")
+    args <- list(to = bd$contribution, labels = bd$term,
+                 horizontal = TRUE, xlab = "contribution")
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
         to.colors(bd$order, theme)
       else
-        to.colors(bd$mid, theme)
+        to.colors(bd$contribution, theme)
     } else "gray35"
     if (type == "dotchart") {
       args$type <- "d"
@@ -119,14 +119,14 @@ plot.midbrk <- function(
   } else if (type == "waterfall") {
     cols <- if (use.theme) {
       if (theme$type == "qualitative")
-        to.colors(bd$mid > 0, theme)
+        to.colors(bd$contribution > 0, theme)
       else
-        to.colors(bd$mid, theme)
+        to.colors(bd$contribution, theme)
     } else "gray35"
     width <- dots$width %||% .6
     hw <- width / 2
     n <- nrow(bd)
-    cs <- cumsum(c(x$intercept, bd$mid))
+    cs <- cumsum(c(x$intercept, bd$contribution))
     bd$xmin <- cs[1L:n]
     bd$xmax <- cs[2L:(n + 1L)]
     args <- list(to = bd$xmax, from = bd$xmin, labels = bd$term, type = "b",

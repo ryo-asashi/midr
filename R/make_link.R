@@ -1,6 +1,6 @@
 #' Extended Parametric Link Functions
 #'
-#' \code{get.link()} creates a link function object (inheriting from "link-glm") capable of handling parametric transformations such as Box-Cox, Yeo-Johnson, and shifted logarithms.
+#' \code{make_link()} creates a link function object (inheriting from "link-glm") capable of handling parametric transformations such as Box-Cox, Yeo-Johnson, and shifted logarithms.
 #' This function serves as a wrapper and extension to \code{\link[stats]{make.link}()}.
 #'
 #' @details
@@ -19,45 +19,45 @@
 #'
 #' @param link a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "ashinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.
 #' @param ... named arguments passed to the specific link generation logic. See Details for available parameters and defaults.
-#' @param simplify logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{get.link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).
+#' @param simplify logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{make_link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).
 #'
 #' @examples
 #' # Standard Box-Cox with lambda = 0.5 (Square root-like)
-#' lk <- get.link("box-cox", lambda = 0.5)
+#' lk <- make_link("box-cox", lambda = 0.5)
 #' plot(x <- seq(1, 100, length.out = 50), lk$linkfun(x), type = "l")
 #'
 #' # Yeo-Johnson with lambda = 1.5 (Handles negative values)
-#' lk <- get.link("yeo-johnson", lambda = 1.5)
+#' lk <- make_link("yeo-johnson", lambda = 1.5)
 #' plot(x <- seq(-100, 100, length.out = 50), lk$linkfun(x), type = "l")
 #'
 #' # Robit link with df=2 (Heavier tails than probit)
-#' lk <- get.link("robit", df = 2)
+#' lk <- make_link("robit", df = 2)
 #' print(lk)
 #' plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
-#' lk <- get.link("robit", df = 1)
+#' lk <- make_link("robit", df = 1)
 #' cat(lk$name) # cauchit
 #' points(x, lk$linkinv(x), type = "l", lty = 2L)
-#' lk <- get.link("robit", df = Inf)
+#' lk <- make_link("robit", df = Inf)
 #' cat(lk$name) # probit
 #' points(x, lk$linkinv(x), type = "l", lty = 3L)
 #'
 #' # Scobit link with alpha=0.5 (Skewed)
-#' lk <- get.link("scobit", alpha = 0.5)
+#' lk <- make_link("scobit", alpha = 0.5)
 #' plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 #'
 #' # Inverse Hyperbolic Sine (Alternative to log for zero-inflated data)
-#' lk <- get.link("asinh", lambda = 10)
+#' lk <- make_link("asinh", lambda = 10)
 #' plot(x <- seq(0, 5, length.out = 50), lk$linkfun(x), type = "l")
-#' lk <- get.link("log1p")
+#' lk <- make_link("log1p")
 #' points(x, lk$linkfun(x), type = "l", lty = 2L)
 #'
 #' # Shifted log simplifies to log1p when h=1
-#' get.link("shifted.log", h = 1) # Returns link="log1p"
+#' make_link("shifted.log", h = 1) # Returns link="log1p"
 #'
 #' # Box-Cox with lambda=1 simplifies to shifted identity
-#' get.link("box-cox", lambda = 1)
+#' make_link("box-cox", lambda = 1)
 #' @returns
-#' \code{get.link()} returns an object of class "link-glm" and "parametric.link" containing:
+#' \code{make_link()} returns an object of class "link-glm" and "parametric.link" containing:
 #' \item{linkfun}{link function \eqn{g(\mu)}.}
 #' \item{linkinv}{inverse link function \eqn{g^{-1}(\eta)}.}
 #' \item{mu.eta}{derivative \eqn{d\mu/d\eta}.}
@@ -66,9 +66,9 @@
 #'
 #' @seealso \code{\link[stats]{make.link}}
 #'
-#' @export get.link
+#' @export make_link
 #'
-get.link <- function(link, ..., simplify = TRUE) {
+make_link <- function(link, ..., simplify = TRUE) {
   link <- as.character(link)
   dots <- list(...)
   pass <- NULL
@@ -97,7 +97,7 @@ get.link <- function(link, ..., simplify = TRUE) {
       )
       h <- params$h
       if (simplify && h == 1) {
-        pass <- get.link
+        pass <- make_link
         args <- list(link = "log1p")
       } else if (simplify && h == 0) {
         pass <- stats::make.link
@@ -238,7 +238,7 @@ get.link <- function(link, ..., simplify = TRUE) {
         pass <- stats::make.link
         args <- list(link = "log")
       } else if (simplify && lambda == 1) {
-        pass <- get.link
+        pass <- make_link
         args <- list(link = "shifted.identity", h = -1)
       } else {
         envir <- rlang::env(rlang::ns_env("stats"), lambda = lambda)
@@ -265,13 +265,13 @@ get.link <- function(link, ..., simplify = TRUE) {
       lambda1 <- params$lambda1
       lambda2 <- params$lambda2
       if (simplify && lambda2 == 0) {
-        pass <- get.link
+        pass <- make_link
         args <- list(link = "box-cox", lambda = lambda1)
       } else if (simplify && lambda1 == 0) {
-        pass <- get.link
+        pass <- make_link
         args <- list(link = "shifted.log", h = lambda2)
       } else if (simplify && lambda1 == 1) {
-        pass <- get.link
+        pass <- make_link
         args <- list(link = "shifted.identity", h = lambda2 - 1)
       } else {
         envir <- rlang::env(
@@ -366,7 +366,8 @@ get.link <- function(link, ..., simplify = TRUE) {
     }
   )
   if (!is.null(pass)) {
-    return(do.call(pass, args))
+    res <- do.call(pass, args)
+    return(structure(res, class = c("parametric.link", "link-glm")))
   }
   environment(linkfun) <- environment(linkinv) <- environment(mu.eta) <-
     environment(valideta) <- envir

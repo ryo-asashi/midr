@@ -1,11 +1,11 @@
 #' Map Values to Colors using Color Themes
 #'
 #' @description
-#' \code{to.colors()} maps a vector of data values to a vector of hexadecimal color codes based on a specified color theme.
+#' \code{map_to_colors()} maps a vector of data values to a vector of hexadecimal color codes based on a specified color theme.
 #' It automatically handles both discrete and continuous variables, appropriately scaling the values and handling missing data.
 #'
 #' @param x a vector of data values (discrete or continuous) to be mapped to colors.
-#' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.
+#' @param theme a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color_theme} for more details.
 #' @param middle a numeric value specifying the middle point for the diverging color themes. Default is \code{0}.
 #' @param na.value a character string specifying the color for \code{NA} values. If \code{NULL} (default), it falls back to the theme's default \code{na.color} option.
 #'
@@ -13,19 +13,19 @@
 #'
 #' @examples
 #' # Continuous mapping (Sequential)
-#' plot(cars, col = to.colors(cars$speed, "Viridis"), pch = 19)
+#' plot(cars, col = map_to_colors(cars$speed, "Viridis"), pch = 19)
 #'
 #' # Discrete mapping (Qualitative)
 #' plot(iris$Sepal.Length, iris$Sepal.Width,
-#'      col = to.colors(iris$Species, "Set2"), pch = 19)
-#' @seealso \code{\link{color.theme}}
+#'      col = map_to_colors(iris$Species, "Set2"), pch = 19)
+#' @seealso \code{\link{color_theme}}
 #'
-#' @export to.colors
+#' @export map_to_colors
 #'
-to.colors <- function(x, theme = NULL, middle = 0, na.value = NULL) {
-  discrete <- is.discrete(x)
-  theme <- theme %||% color.theme.defaults(if (discrete) "qual" else "seq")
-  theme <- color.theme(theme)
+map_to_colors <- function(x, theme = NULL, middle = 0, na.value = NULL) {
+  discrete <- is_discrete(x)
+  theme <- theme %||% color_theme_defaults(if (discrete) "qual" else "seq")
+  theme <- color_theme(theme)
   if (is.null(na.value))
     na.value <- theme$options$na.color %||% NA
   if (discrete) {

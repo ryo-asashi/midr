@@ -1,4 +1,4 @@
-#' Predict Method for fitted MID Models
+#' Predict Method for Fitted MID Models
 #'
 #' @description
 #' \code{predict()} methods for obtaining predictions from a fitted MID model ("mid") or a collection of MID models ("mids").
@@ -13,10 +13,10 @@
 #' The \code{terms} argument allows for predictions based on a subset of the model's component functions, excluding others.
 #'
 #' @param object a fitted model object of class "mid", or a collection object ("mids") to be used for prediction.
-#' @param newdata a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.
-#' @param na.action a function or character string specifying what should happen when the data contain \code{NA} values.
+#' @param newdata a data frame of the new observations. If not provided, data is extracted based on the function call.
 #' @param type the type of prediction required. One of "response", "link", or "terms".
-#' @param terms a character vector of term labels, specifying a subset of component functions to use for predictions.
+#' @param terms a character vector of term labels or an object coercible to a \code{\link[stats]{terms.object}}, specifying a subset of component functions to use for predictions.
+#' @param na.action a function or character string specifying what should happen when the data contain \code{NA} values.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @examples
@@ -37,53 +37,57 @@
 #'
 #' For a collection ("mids"), \code{predict.mids()} returns a numeric matrix where each column corresponds to a model if \code{type} is "response" or "link", or a list of numeric matrices if \code{type = "terms"}.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{get.yhat}}
+#' @seealso \code{\link{interpret}}, \code{\link{get_yhat}}
 #'
 #' @exportS3Method stats::predict
 #'
 predict.mid <- function(
-    object, newdata = NULL, na.action = "na.pass",
-    type = c("response", "link", "terms"), terms = term.labels(object), ...) {
+    object, newdata = NULL, type = c("response", "link", "terms"),
+    terms = NULL, na.action = stats::na.pass, ...) {
   type <- match.arg(type)
-  labs <- match.labels(term.labels(terms), term.labels(object))
-  labs <- unique(labs[!is.na(labs)])
-  if (length(labs) == 0L) {
+  newdata <- newdata %||% model_data(object, env = parent.frame())
+  if (!is.null(terms)) {
+    terms <- as_terms(terms, data = newdata)
+    mlabs <- match_labels(get_labels(terms), get_labels(object))
+    mlabs <- unique(mlabs[!is.na(mlabs)])
+  } else {
+    terms <- as_terms(object)
+    mlabs <- get_labels(terms)
+  }
+  if (length(mlabs) == 0L)
     stop("none of the specified 'terms' are in 'object'")
-  }
-  if (is.null(newdata)) {
-    newdata <- model.data(object, env = parent.frame())
-    if (is.null(newdata)) {
-      stop("'newdata' must be provided")
-    }
-  }
-  newdata <- model.reframe(object, newdata)
+  if (is.null(newdata))
+    stop("'newdata' must be provided")
+  vars <- get_variables(terms)
+  if (!all(vars %in% colnames(newdata)))
+    newdata <- model_reframe(terms, newdata)
   attr(newdata, "na.action") <- NULL
   newdata <- do.call(na.action, list(newdata))
   naa <- stats::na.action(newdata)
   n <- nrow(newdata)
-  m <- length(labs)
-  ints <- get.intercept(object)
+  m <- length(mlabs)
+  ints <- get_intercept(object) * has_intercept(terms %||% "1")
   if (type == "terms") {
-    preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, labs))
+    preds <- matrix(0, nrow = n, ncol = m, dimnames = list(NULL, mlabs))
   } else {
     k <- length(ints)
     preds <- matrix(ints, nrow = n, ncol = k, byrow = TRUE)
   }
-  vlis <- lapply(labs, get.variables)
+  vlis <- lapply(mlabs, get_variables)
   vlen <- lengths(vlis)
   imat <- list()
   for (tag in unique(unlist(vlis[vlen == 2L]))) {
-    imat[[tag]] <- object$encoders$interactions[[tag]]$encode(newdata[, tag])
+    imat[[tag]] <- encode(object, tag, 2L, newdata)
   }
   for (i in seq_len(m)) {
     tags <- vlis[[i]]
     if (length(tags) == 1L) {
-      bmat <- object$main.effects[[tags]]$mid
-      mmat <- object$encoders$main.effects[[tags]]$encode(newdata[, tags])
+      bmat <- object$main.effects[[tags]]$.effect
+      mmat <- encode(object, tags, 1L, newdata)
       term_preds <- mmat %*% bmat
       mmat <- NULL
     } else if (length(tags) == 2L) {
-      bmat <- object$interactions[[labs[i]]]$mid
+      bmat <- object$interactions[[mlabs[i]]]$.effect
       mat1 <- imat[[tags[1L]]]
       mat2 <- imat[[tags[2L]]]
       m1 <- ncol(mat1)
@@ -122,14 +126,24 @@ predict.mid <- function(
 #' @exportS3Method stats::predict
 #'
 predict.mids <- function(
-    object, ...
+    object, newdata = NULL, type = c("response", "link", "terms"),
+    terms = NULL, na.action = stats::na.pass, ...
 ) {
-  type <- list(...)$type
-  if (!is.null(type) && type == "terms") {
-    lapply(X = object, FUN = predict.mid, ...)
+  type <- match.arg(type)
+  if (type == "terms") {
+    lapply(
+      X = object, FUN = predict.mid, newdata = newdata, type = type,
+      terms = terms, na.action = na.action, ...
+    )
   } else if (inherits(object, "midrib")) {
-    predict.mid(object, ...)
+    predict.mid(
+      object = object, newdata = newdata, type = type,
+      terms = terms, na.action = na.action, ...
+    )
   } else {
-    sapply(X = object, FUN = predict.mid, ...)
+    sapply(
+      X = object, FUN = predict.mid, newdata = newdata, type = type,
+      terms = terms, na.action = na.action, ...
+    )
   }
 }

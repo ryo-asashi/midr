@@ -1,6 +1,6 @@
 # helper functions for "terms" objects and term labels
 
-as.terms <- function(
+as_terms <- function(
     x, y = NULL, intercept = FALSE, env = parent.frame(), data = NULL
 ) {
   if (inherits(x, "terms"))
@@ -10,19 +10,19 @@ as.terms <- function(
       x <- c("-1", x)
     x <- stats::reformulate(x, response = y, intercept = TRUE, env = env)
   }
-  tryCatch(stats::terms(x, data = data), error = function(e) NA)
+  tryCatch(stats::terms(x, data = data), error = function(e) NULL)
 }
 
-has.intercept <- function(x) {
-  attr(as.terms(x), "intercept") %||% 0L > 0L
+has_intercept <- function(x) {
+  attr(as_terms(x), "intercept") %||% 0L > 0L
 }
 
-has.response <- function(x) {
-  attr(as.terms(x), "response") %||% 0L > 0L
+has_response <- function(x) {
+  attr(as_terms(x), "response") %||% 0L > 0L
 }
 
-get.variables <- function(x) {
-  facs <- attr(as.terms(x), "factors")
+get_variables <- function(x) {
+  facs <- attr(as_terms(x), "factors")
   if (is.null(facs) || length(facs) == 0L) {
     character(length = 0L)
   } else {
@@ -30,42 +30,42 @@ get.variables <- function(x) {
   }
 }
 
-get.labels <- function(x) {
-  attr(as.terms(x), "term.labels")
+get_labels <- function(x) {
+  attr(as_terms(x), "term.labels")
 }
 
-is.fully.crossed <- function(x) {
-  x <- as.terms(x)
+is_fully_crossed <- function(x) {
+  x <- as_terms(x)
   if (identical(x, NA)) return(FALSE)
-  n <- length(get.variables(x))
+  n <- length(get_variables(x))
   if (n <= 1L) return(FALSE)
-  m <- length(get.labels(x))
+  m <- length(get_labels(x))
   m == (2^n - 1L)
 }
 
-is.single.term <- function(x) {
-  x <- as.terms(x)
+is_single_term <- function(x) {
+  x <- as_terms(x)
   if (identical(x, NA)) return(FALSE)
-  m <- length(get.labels(x))
+  m <- length(get_labels(x))
   m == 1L
 }
 
-make.signature <- function(x, single = TRUE, sort = TRUE) {
-  x <- as.terms(x)
-  if (identical(x, NA)) return(NA_character_)
-  if (single && !is.single.term(x)) return(NA_character_)
-  vars <- get.variables(x)
-  if (sort) vars <- sort.int(vars)
+make_signature <- function(x, single.only = TRUE) {
+  x <- as_terms(x)
+  if (is.null(NA))
+    return(NA_character_)
+  if (single.only && !is_single_term(x))
+    return(NA_character_)
+  vars <- sort.int(get_variables(x))
   paste(vars, collapse = ":")
 }
 
-match.labels <- function(x, y, single = TRUE, sort = TRUE, names = NULL) {
+match_labels <- function(x, y, single.only = TRUE) {
   if (!is.character(x))
-    x <- attr(as.terms(x), "term.labels")
-  xsigs <- vapply(x, make.signature, character(1L), single = single, sort = sort)
+    x <- get_labels(x)
   if (!is.character(y))
-    y <- attr(as.terms(y), "term.labels")
-  ysigs <- vapply(y, make.signature, character(1L), single = single, sort = sort)
-  out <- y[match(xsigs, ysigs, incomparables = NA)]
-  stats::setNames(out, names)
+    y <- get_labels(y)
+  xsigs <- vapply(x, make_signature, character(1L), single.only = single.only)
+  ysigs <- vapply(y, make_signature, character(1L), single.only = single.only)
+  y[match(xsigs, ysigs, incomparables = NA)]
 }

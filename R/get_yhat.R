@@ -1,24 +1,24 @@
 #' Wrapper Prediction Function
 #'
 #' @description
-#' \code{get.yhat()} is a generic function that provides a unified interface for obtaining predictions from various fitted model objects.
+#' \code{get_yhat()} is a generic function that provides a unified interface for obtaining predictions from various fitted model objects.
 #'
 #' @details
 #' While many predictive models have a \code{stats::predict()} method, the structure and type of their outputs are not uniform.
 #' For example, some return a numeric vector, others a matrix of class probabilities, and some a list.
-#' This function, \code{get.yhat()}, abstracts away this complexity.
+#' This function, \code{get_yhat()}, abstracts away this complexity.
 #'
 #' For regression models, it returns the numeric prediction in the original scale of the response variable.
 #' For classification models, it returns the sum of class probabilities for the classes specified by the \code{target} argument.
 #'
-#' Furthermore, \code{get.yhat()} provides more consistent handling of missing values.
-#' While some \code{stats::predict()} methods may return a shorter vector by omitting \code{NA}s, \code{get.yhat()} is designed to return a vector of the same length as \code{newdata}, preserving \code{NA}s in their original positions.
+#' Furthermore, \code{get_yhat()} provides more consistent handling of missing values.
+#' While some \code{stats::predict()} methods may return a shorter vector by omitting \code{NA}s, \code{get_yhat()} is designed to return a vector of the same length as \code{newdata}, preserving \code{NA}s in their original positions.
 #'
-#' The design of \code{get.yhat()} is strongly influenced by \code{DALEX::yhat()}.
+#' The design of \code{get_yhat()} is strongly influenced by \code{DALEX::yhat()}.
 #'
 #' @param object a fitted model object.
 #' @param newdata a data.frame or matrix.
-#' @param target an integer or character vector specifying the target levels used for the classification models that return a matrix or data frame of class probabilities. The default, \code{-1}, represents the probability of not being the base level.
+#' @param target an integer or character vector specifying the target columns used for the models that return a matrix or data frame: e.g., for classification models, \code{-1} represents the probability of not being the base level. Defaults to \code{NULL}.
 #' @param ... optional named arguments passed on to the underlying \code{predict()} method for the \code{object}'s class.
 #'
 #' @examples
@@ -28,18 +28,18 @@
 #' # The output of stats::predict() might not be in the scale of the response variable
 #' predict(model, trees[1:5, ])
 #'
-#' # get.yhat() returns a numeric vector in the original scale of the response variable
-#' get.yhat(model, trees[1:5, ])
+#' # get_yhat() returns a numeric vector in the original scale of the response variable
+#' get_yhat(model, trees[1:5, ])
 #' predict(model, trees[1:5, ], type = "response")
 #' @returns
-#' \code{get.yhat()} returns a numeric vector of model predictions for \code{newdata}.
+#' \code{get_yhat()} returns a numeric vector or matrix of model predictions for \code{newdata}.
 #'
 #' @seealso \code{\link{predict.mid}}
 #'
-#' @export get.yhat
+#' @export get_yhat
 #'
-get.yhat <- function(object, newdata, ..., target)
-UseMethod("get.yhat")
+get_yhat <- function(object, newdata, ..., target)
+UseMethod("get_yhat")
 
 
 checkout <- function(yhat, newdata, target = NULL, exclude = NULL) {
@@ -60,11 +60,11 @@ checkout <- function(yhat, newdata, target = NULL, exclude = NULL) {
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.default <- function(
-    object, newdata, ..., target = -1L
+get_yhat.default <- function(
+    object, newdata, ..., target = NULL
   ) {
   args <- list(object, newdata)
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
@@ -72,10 +72,10 @@ get.yhat.default <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.lm <- function(
+get_yhat.lm <- function(
     object, newdata, ...
   ) {
   args <- list(object = object, newdata = newdata, type = "response",
@@ -85,29 +85,29 @@ get.yhat.lm <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.glm <- get.yhat.lm
+get_yhat.glm <- get_yhat.lm
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.gam <- get.yhat.lm
+get_yhat.gam <- get_yhat.lm
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.mid <- get.yhat.lm
+get_yhat.mid <- get_yhat.lm
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.mids <- function(
-    object, newdata, ..., target = -1L
+get_yhat.mids <- function(
+    object, newdata, ..., target = NULL
   ) {
   args <- list(object = object, newdata = newdata, type = "response",
                na.action = stats::na.pass)
@@ -116,11 +116,11 @@ get.yhat.mids <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.rpart <- function(
-    object, newdata, ..., target = -1L
+get_yhat.rpart <- function(
+    object, newdata, ..., target = NULL
   ) {
   args <- list(object = object, newdata = newdata, na.action = stats::na.pass)
   args$type <- if (object$method == "class") "prob" else "vector"
@@ -129,11 +129,11 @@ get.yhat.rpart <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.randomForest <- function(
-    object, newdata, ..., target = -1L
+get_yhat.randomForest <- function(
+    object, newdata, ..., target = NULL
   ) {
   args <- list(object = object, newdata = newdata)
   args$type <- if (object$type == "regression") "response" else "prob"
@@ -142,11 +142,11 @@ get.yhat.randomForest <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.ranger <- function(
-    object, newdata, ..., target = -1L
+get_yhat.ranger <- function(
+    object, newdata, ..., target = NULL
   ) {
   treetype <- object$treetype
   args <- list(object = object, data = newdata, type = "response")
@@ -163,11 +163,11 @@ get.yhat.ranger <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.rfsrc <- function(
-    object, newdata, ..., target = -1L
+get_yhat.rfsrc <- function(
+    object, newdata, ..., target = NULL
 ) {
   args <- list(object = object, newdata = newdata, na.action = "na.impute")
   args <- utils::modifyList(args, list(...), keep.null = TRUE)
@@ -183,11 +183,11 @@ get.yhat.rfsrc <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.ObliqueForest <- function(
-    object, newdata, ..., target = -1L
+get_yhat.ObliqueForest <- function(
+    object, newdata, ..., target = NULL
 ) {
   .newdata <- stats::na.exclude(newdata)
   exclude <- stats::na.action(.newdata)
@@ -209,11 +209,11 @@ get.yhat.ObliqueForest <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.svm <- function(
-    object, newdata, ..., target = -1L
+get_yhat.svm <- function(
+    object, newdata, ..., target = NULL
   ) {
   args <- list(object = object, newdata = newdata,
                na.action = stats::na.exclude)
@@ -226,11 +226,11 @@ get.yhat.svm <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.ksvm <- function(
-    object, newdata, ..., target = -1L
+get_yhat.ksvm <- function(
+    object, newdata, ..., target = NULL
   ) {
   .newdata <- stats::na.exclude(newdata)
   exclude <- stats::na.action(.newdata)
@@ -246,11 +246,11 @@ get.yhat.ksvm <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.AccurateGLM <- function(
-    object, newdata, ..., target = -1L
+get_yhat.AccurateGLM <- function(
+    object, newdata, ..., target = NULL
   ) {
   .newdata <- stats::na.exclude(newdata)
   exclude <- stats::na.action(.newdata)
@@ -263,11 +263,11 @@ get.yhat.AccurateGLM <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.glmnet <- function(
-    object, newdata, ..., target = -1L
+get_yhat.glmnet <- function(
+    object, newdata, ..., target = NULL
 ) {
   .newdata <- as.matrix(stats::na.exclude(newdata))
   exclude <- stats::na.action(.newdata)
@@ -289,11 +289,11 @@ get.yhat.glmnet <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.model_fit <- function(
-    object, newdata, ..., target = -1L
+get_yhat.model_fit <- function(
+    object, newdata, ..., target = NULL
   ) {
   mode <- object$spec$mode
   args <- list(object = object, new_data = newdata)
@@ -327,11 +327,11 @@ get.yhat.model_fit <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.workflow <- function(
-    object, newdata, ..., target = -1L
+get_yhat.workflow <- function(
+    object, newdata, ..., target = NULL
   ) {
   mode <- object$fit$fit$spec$mode
   args <- list(object = object, new_data = newdata)
@@ -365,11 +365,11 @@ get.yhat.workflow <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.rpf <- function(
-    object, newdata, ..., target = -1L
+get_yhat.rpf <- function(
+    object, newdata, ..., target = NULL
   ) {
   mode <- object$mode
   args <- list(object = object, new_data = newdata)
@@ -403,10 +403,10 @@ get.yhat.rpf <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.coxph <- function(
+get_yhat.coxph <- function(
     object, newdata, ...
 ) {
   .newdata <- stats::na.exclude(newdata)
@@ -421,10 +421,10 @@ get.yhat.coxph <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.flexsurvreg <- function(
+get_yhat.flexsurvreg <- function(
     object, newdata, ...
 ) {
   args <- list(object = object, newdata = newdata, type = "survival")
@@ -440,11 +440,11 @@ get.yhat.flexsurvreg <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.mboost <- function(
-    object, newdata, ..., target = -1L
+get_yhat.mboost <- function(
+    object, newdata, ..., target = NULL
 ) {
   args <- list(object = object, newdata = newdata)
   if(grepl("Cox|Weibull|Log-normal|Log-logistic|PropOdds",
@@ -465,14 +465,14 @@ get.yhat.mboost <- function(
 }
 
 
-#' @rdname get.yhat
-#' @exportS3Method midr::get.yhat
+#' @rdname get_yhat
+#' @exportS3Method midr::get_yhat
 #'
-get.yhat.fitlist <- function(
-    object, newdata, ..., target = -1L
+get_yhat.fitlist <- function(
+    object, newdata, ..., target = NULL
 ) {
   out <- lapply(
-    X = object, FUN = get.yhat, newdata = newdata, ..., target = target
+    X = object, FUN = get_yhat, newdata = newdata, ..., target = target
   )
   if (any(vapply(X = out, FUN = NCOL, FUNVALUE = numeric(1L)) != 1L))
     stop("number of columns for each model must be 1")

@@ -73,7 +73,7 @@ plot.mid <- function(
   if (syncable && !is.null(limits) && anyNA(limits)) {
     shift <- if (intercept[1L]) get.intercept(x) else 0
     dfs <- c(x$main.effects, x$interactions)[mlab]
-    values <- unlist(lapply(dfs, `[[`, "mid"), use.names = FALSE)
+    values <- unlist(lapply(dfs, `[[`, ".effect"), use.names = FALSE)
     if (is.na(limits[1L])) limits[1L] <- min(values, na.rm = TRUE) + shift
     if (is.na(limits[2L])) limits[2L] <- max(values, na.rm = TRUE) + shift
   }
@@ -118,32 +118,32 @@ plot.mid <- function(
       df <- stats::na.omit(x$main.effects[[term]])
     } else {
       df <- factor.frame(enc$envir$olvs, tag = term)
-      df$mid <- term.effect(x, term, df)
+      df$.effect <- term.effect(x, term, df)
     }
     if (intercept)
-      df$mid <- df$mid + ints
+      df$.effect <- df$.effect + ints
     middle <- if (intercept) ints else 0
     if (type == "effect" || type == "compound") {
       if (enc$type == "constant") {
         cns <- paste0(term, c("_min", "_max"))
         rdf <- data.frame(x = as.numeric(t(as.matrix(df[, cns]))),
-                          y = rep(df$mid, each = 2L))
+                          y = rep(df$.effect, each = 2L))
         cols <- if (use.theme) to.colors(rdf$y, theme, middle = middle) else 1L
         args <- list(x = rdf$x, y = rdf$y, type = "l", col = cols,
-                     ylab = "mid", xlab = term, ylim = limits)
+                     ylab = "effect", xlab = term, ylim = limits)
         args <- set.alpha(override(args, dots), on = "col")
         do.call(graphics::plot.default, args)
       } else if (enc$type == "linear") {
-        cols <- if (use.theme) to.colors(df$mid, theme, middle = middle) else 1L
-        args <- list(x = df[[term]], y = df$mid, type = "l", col = cols,
-                     ylab = "mid", xlab = term, ylim = limits)
+        cols <- if (use.theme) to.colors(df$.effect, theme, middle = middle) else 1L
+        args <- list(x = df[[term]], y = df$.effect, type = "l", col = cols,
+                     ylab = "effect", xlab = term, ylim = limits)
         args <- set.alpha(override(args, dots), on = "col")
         do.call(graphics::plot.default, args)
       } else if (enc$type == "factor") {
         cols <- if (use.theme)
-          to.colors(df$mid, theme, middle = middle) else "gray35"
-        args <- list(to = df$mid, labels = df[[term]], limits = limits,
-                     ylab = "mid", xlab = term, fill = cols, col = NA)
+          to.colors(df$.effect, theme, middle = middle) else "gray35"
+        args <- list(to = df$.effect, labels = df[[term]], limits = limits,
+                     ylab = "effect", xlab = term, fill = cols, col = NA)
         args <- set.alpha(override(args, dots), on = "fill")
         do.call(.barplot, args)
       }
@@ -159,8 +159,8 @@ plot.mid <- function(
         vals <- enc$transform(vals, lumped = lumped)
         vals <- as.integer(vals) - stats::runif(length(vals), -jit, jit)
         if (type == "data") {
-          args <- list(to = df$mid, labels = df[[term]], type = "n",
-                       ylab = "mid", xlab = term, limits = limits)
+          args <- list(to = df$.effect, labels = df[[term]], type = "n",
+                       ylab = "effect", xlab = term, limits = limits)
           do.call(.barplot, override(args, dots))
           args <- list(x = vals, y = mids, col = cols, pch = 16L, cex = 1L)
           args <- set.alpha(override(args, dots), on = "col")
@@ -175,7 +175,7 @@ plot.mid <- function(
         }
       } else {
         if (type == "data") {
-            args <- list(x = vals, y = mids, xlab = term, ylab = "mid",
+            args <- list(x = vals, y = mids, xlab = term, ylab = "effect",
                          ylim = limits, type = "p", col = cols, pch = 16L)
             args <- set.alpha(override(args, dots), on = "col")
             do.call(graphics::plot.default, args)

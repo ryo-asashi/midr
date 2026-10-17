@@ -1,7 +1,7 @@
-#' Compare MID Breakdowns
+#' Compare Term Contributions
 #'
 #' @description
-#' For "midbrks" collection objects, \code{plot()} visualizes and compares the breakdown of a prediction by component functions across multiple models using base R graphics.
+#' For "termcons" collection objects, \code{plot()} visualizes and compares the breakdown of a prediction by component functions across multiple models using base R graphics.
 #'
 #' @details
 #' This is an S3 method for the \code{plot()} generic that evaluates the component contributions to a single prediction and compares the results across all models in the collection.
@@ -11,7 +11,7 @@
 #' The \code{type = "dotchart"} option creates a grouped dot plot, offering a cleaner comparison across models.
 #' The \code{type = "series"} option plots the contribution trend over the models for each component term.
 #'
-#' @param x a "midbrks" collection object to be visualized.
+#' @param x a "termcons" collection object to be visualized.
 #' @param type the plotting style. One of "barplot", "dotchart", or "series".
 #' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
 #' @param terms an optional character vector specifying which terms to display. If \code{NULL}, terms are automatically extracted from the object.
@@ -45,13 +45,13 @@
 #' # Create a series plot to observe trends across models
 #' plot(brks, type = "series")
 #' @returns
-#' \code{plot.midbrks()} produces a plot as a side effect and returns \code{NULL} invisibly.
+#' \code{plot.termcons()} produces a plot as a side effect and returns \code{NULL} invisibly.
 #'
-#' @seealso \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrks}}
+#' @seealso \code{\link{plot.midbrk}}, \code{\link{ggmid.termcons}}
 #'
 #' @exportS3Method base::plot
 #'
-plot.midbrks <- function(
+plot.termcons <- function(
     x, type = c("barplot", "dotchart", "series"), theme = NULL,
     terms = NULL, max.nterms = 15L, vline = TRUE, others = "others",
     pattern = c("%t=%v", "%t:%t"), format.args = list(), labels = NULL, ...
@@ -99,7 +99,7 @@ plot.midbrks <- function(
     brk <- brk[brk$term %in% terms.kept, c("term", "label", "mid"), drop = FALSE]
     brk <- rbind(brk, df.resid[, c("term", "label", "mid")])
   } else {
-    brk <- brk[brk$term %in% terms.kept, c("term", "label", "mid"), drop = FALSE]
+    brk <- brk[brk$term %in% terms.kept, c("term", "label", "contribution"), drop = FALSE]
   }
   format.args$x <- as.data.frame(x[[1L]]$data)
   values <- unlist(do.call(base::format, format.args))
@@ -129,11 +129,11 @@ plot.midbrks <- function(
   mat <- matrix(NA_real_, nrow = n, ncol = m)
   for (i in seq_len(m)) {
     subbrk <- brk[brk$label == labels[i], ]
-    mat[, i] <- subbrk$mid[match(terms, subbrk$term)]
+    mat[, i] <- subbrk$contribution[match(terms, subbrk$term)]
   }
   if (type == "barplot" || type == "dotchart") {
     cols <- to.colors(labels, theme)
-    args <- list(to = mat, labels = terms, horizontal = TRUE, xlab = "mid")
+    args <- list(to = mat, labels = terms, horizontal = TRUE, xlab = "contribution")
     if (type == "dotchart") {
       args$type <- "d"
       args$col <- cols
@@ -158,13 +158,13 @@ plot.midbrks <- function(
     if (discrete) {
       x_pos <- seq_len(m)
       args <- list(x = x_pos, y = t(mat), type = "b", pch = 16L, col = cols,
-                   lty = 1L, xaxt = "n", xlab = "", ylab = "mid")
+                   lty = 1L, xaxt = "n", xlab = "", ylab = "contribution")
       args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
       graphics::axis(side = 1L, at = x_pos, labels = as.character(labels))
     } else {
       args <- list(x = labels, y = t(mat), type = "l", col = cols,
-                   lty = 1L, xlab = "", ylab = "mid")
+                   lty = 1L, xlab = "", ylab = "contribution")
       args <- set.alpha(override(args, dots), on = "col")
       do.call(graphics::matplot, args)
     }

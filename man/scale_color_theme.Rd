@@ -31,7 +31,7 @@ scale_fill_theme(
 )
 }
 \arguments{
-\item{theme}{a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color.theme} for more details.}
+\item{theme}{a color theme name (e.g., "Viridis"), a character vector of color names, or a palette/ramp function. See \code{?color_theme} for more details.}
 
 \item{...}{optional arguments to be passed to \code{ggplot2::continuous_scale()} or \code{ggplot2::discrete_scale()}.}
 
@@ -78,5 +78,5 @@ v + scale_fill_theme("Plasma")
 v + scale_fill_theme("midr", middle = 0.017)
 }
 \seealso{
-\code{\link{color.theme}}
+\code{\link{color_theme}}
 }

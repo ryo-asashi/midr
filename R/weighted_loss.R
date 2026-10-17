@@ -35,31 +35,34 @@ weighted.loss <- function(
     method = c("rmse", "mse", "mae", "medae", "r2")
   ) {
   method <- match.arg(method)
+  nx <- length(x)
+  if (!is.null(w) && length(w) != nx)
+    stop("'x' and 'w' must have the same length")
+  if (!is.null(y)) {
+    if (length(y) == 1L)
+      y <- rep.int(y, times = nx)
+    else if (length(y) != nx)
+      stop("'x' and 'y' must have the same length")
+  }
   if (na.rm) {
     ok <- !is.na(x)
-    if (!is.null(w))
-      ok <- ok & !is.na(w) & w > 0
     if (!is.null(y))
       ok <- ok & !is.na(y)
-    x <- x[ok]
     if (!is.null(w))
-      w <- w[ok]
-    if (!is.null(y))
-      y <- y[ok]
+      ok <- ok & !is.na(w) & (w > 0)
+    x <- x[ok]
+    w <- w[ok]
+    y <- y[ok]
   }
-  if (!is.null(w) && length(w) != length(x))
-    stop("'x' and 'w' must have the same length")
+  if (is.null(y)) {
+    y <- if (is.null(w)) sum(x) / length(x) else sum(x * w) / sum(w)
+  }
   if (method == "r2") {
     if (is.null(y))
       return(0)
     rms <- weighted.loss(x, y, w, FALSE, "mse")
     tms <- weighted.loss(x, NULL, w, FALSE, "mse")
     return(1 - rms / tms)
-  }
-  if (is.null(y)) {
-    y <- if (is.null(w)) sum(x) / length(x) else sum(x * w) / sum(w)
-  } else if (length(y) != length(x)) {
-    stop("'x' and 'y' must have the same length")
   }
   x <- x - y
   if (method == "rmse") {
@@ -72,10 +75,9 @@ weighted.loss <- function(
     if (is.null(w)) sum(abs(x)) / length(x)
     else sum(abs(x) * w) / sum(w)
   } else if (method == "medae") {
-    if (is.null(w)) stats::quantile(abs(x), probs = 0.5, na.rm = na.rm,
-                                    names = FALSE, type = 1L)
-    else weighted.quantile(abs(x), w, probs = 0.5, na.rm = na.rm,
-                           names = FALSE, type = 1L)
+    weighted.quantile(
+      abs(x), w, probs = 0.5, na.rm = na.rm, names = FALSE, type = 1L
+    )
   }
 }
 

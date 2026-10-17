@@ -38,12 +38,12 @@ It prints a comprehensive summary of the model structure and fit quality.
 The S3 method \code{summary.mid()} generates a comprehensive overview of the fitted MID model.
 The output includes:
 \itemize{
-  \item \strong{Call}: the function call used to fit the MID model.
-  \item \strong{Link}: name of the link function used to fit the MID model, if applicable.
-  \item \strong{Uninterpreted Variation Ratio}: proportion of target model variance not explained by MID model.
-  \item \strong{Residuals}: five-number summary of (working) residuals.
-  \item \strong{Encoding}: summary of encoding schemes per variable.
-  \item \strong{Diagnosis}: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
+  \item Call: the function call used to fit the MID model.
+  \item Link: name of the link function used to fit the MID model, if applicable.
+  \item Uninterpreted Variation Ratio: proportion of target model variance not explained by MID model.
+  \item Residuals: five-number summary of (working) residuals.
+  \item Encoding: summary of encoding schemes per variable.
+  \item Diagnosis: residuals vs fitted values plot (displayed only when \code{diagnose = TRUE}).
 }
 }
 \examples{

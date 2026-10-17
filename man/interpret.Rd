@@ -10,10 +10,10 @@ interpret(object, ...)
 
 \method{interpret}{default}(
   object,
-  x,
+  x = NULL,
   y = NULL,
   weights = NULL,
-  pred.fun = get.yhat,
+  pred.fun = get_yhat,
   link = NULL,
   k = c(NA, NA),
   type = c(1L, 1L),
@@ -26,7 +26,7 @@ interpret(object, ...)
   kappa = 1e+06,
   na.action = getOption("na.action"),
   verbosity = NULL,
-  frames = list(),
+  encoders = list(),
   split = "quantile",
   digits = NULL,
   lump = "none",
@@ -43,7 +43,7 @@ interpret(object, ...)
   formula,
   data = NULL,
   model = NULL,
-  pred.fun = get.yhat,
+  pred.fun = get_yhat,
   weights = NULL,
   subset = NULL,
   na.action = getOption("na.action"),
@@ -65,9 +65,9 @@ interpret(object, ...)
 
 \item{weights}{a numeric vector of sample weights for each observation in \code{x}.}
 
-\item{pred.fun}{a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get.yhat()}.}
+\item{pred.fun}{a function to obtain predictions from a fitted model, where the first argument is for the fitted model and the second argument is for new data. The default is \code{get_yhat()}.}
 
-\item{link}{a character string specifying the link function. This can be one of the links from \code{\link[stats]{make.link}()} (e.g., "log", "logit", "probit", "cauchit"), one of the links from \code{\link{get.link}()} (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object containing at least the \code{linkfun()} and \code{linkinv()} functions.}
+\item{link}{a character string specifying the link function. This can be one of the links from \code{\link[stats]{make.link}()} (e.g., "log", "logit", "probit", "cauchit"), one of the links from \code{\link{make_link}()} (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object containing at least the \code{linkfun()} and \code{linkinv()} functions.}
 
 \item{k}{an integer or a vector of two integers specifying the maximum number of sample points for main effects (\code{k[1]}) and interactions (\code{k[2]}). If a single integer is provided, it is used for main effects while the value for interactions is automatically determined. Any \code{NA} value will also trigger this automatic determination. With non-positive values, all unique data points are used as sample points.}
 
@@ -91,7 +91,7 @@ interpret(object, ...)
 
 \item{verbosity}{the level of verbosity. \code{0}: fatal, \code{1}: warning (default), \code{2}: info or \code{3}: debug.}
 
-\item{frames}{a named list of encoding frames ("numeric.frame" or "factor.frame" objects). The encoding frames are used to encode the variable of the corresponding name. If the name begins with "|" or ":", the encoding frame is used only for main effects or interactions, respectively.}
+\item{encoders}{a named list of atomic vectors or "encoder" objects. Atomic vectors are automatically converted into encoders, and each encoder is used to encode the variable of the corresponding name. If a nested list named \code{main.effects} or \code{interactions} is provided, the enclosed encoders are used exclusively for main effects or interactions, respectively.}
 
 \item{split}{a character string specifying the splitting strategy for numeric variables: \code{"quantile"} or \code{"uniform"}.}
 

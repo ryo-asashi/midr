@@ -3,29 +3,36 @@
 \name{predict.mid}
 \alias{predict.mid}
 \alias{predict.mids}
-\title{Predict Method for fitted MID Models}
+\title{Predict Method for Fitted MID Models}
 \usage{
 \method{predict}{mid}(
   object,
   newdata = NULL,
-  na.action = "na.pass",
   type = c("response", "link", "terms"),
-  terms = term.labels(object),
+  terms = NULL,
+  na.action = stats::na.pass,
   ...
 )
 
-\method{predict}{mids}(object, ...)
+\method{predict}{mids}(
+  object,
+  newdata = NULL,
+  type = c("response", "link", "terms"),
+  terms = NULL,
+  na.action = stats::na.pass,
+  ...
+)
 }
 \arguments{
 \item{object}{a fitted model object of class "mid", or a collection object ("mids") to be used for prediction.}
 
-\item{newdata}{a data frame of the new observations. If \code{NULL}, the original fitted values are extracted and returned.}
-
-\item{na.action}{a function or character string specifying what should happen when the data contain \code{NA} values.}
+\item{newdata}{a data frame of the new observations. If not provided, data is extracted based on the function call.}
 
 \item{type}{the type of prediction required. One of "response", "link", or "terms".}
 
-\item{terms}{a character vector of term labels, specifying a subset of component functions to use for predictions.}
+\item{terms}{a character vector of term labels or an object coercible to a \code{\link[stats]{terms.object}}, specifying a subset of component functions to use for predictions.}
+
+\item{na.action}{a function or character string specifying what should happen when the data contain \code{NA} values.}
 
 \item{...}{further arguments passed to or from other methods.}
 }
@@ -61,5 +68,5 @@ predict(mid, airquality[test, ], type = "link")
 predict(mid, airquality[test, ], terms = c("Temp", "Wind"), type = "terms")
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{get.yhat}}
+\code{\link{interpret}}, \code{\link{get_yhat}}
 }

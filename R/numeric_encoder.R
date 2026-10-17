@@ -234,19 +234,3 @@ numeric.frame <- function(reps = NULL, breaks = NULL, type = NULL,
 }
 
 
-#' @exportS3Method base::print
-#'
-print.encoder <- function(x, digits = NULL, ...) {
-  ty <- switch(x$type, c("Null", "class", "es"),
-               linear = c("Linear", "knot", "s"),
-               constant = c("Constant", "interval", "s"),
-               factor = c("Factor", "level", "s"))
-  cat(paste0("\n", ty[1L], " encoder with ", x$n, " ",
-             ty[2L], if(x$n > 1) ty[3L], "\n"))
-  if (ty[1L] != "Null") {
-    cat("\nFrame:\n")
-    cl <- switch(x$type, linear = 1L, constant = 2L:3L, factor = 1L)
-    print.data.frame(x$frame[, cl, drop = FALSE], digits = digits)
-    cat("\n")
-  }
-}
