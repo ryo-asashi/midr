@@ -619,13 +619,15 @@ interpret.default <- function(
   ret.main.effects <- list()
   for (i in seq_len(p)) {
     mtag <- mts[i]
-    dat <- menc[[mts[i]]]$frame
+    dat <- menc[[mtag]]$frame
     cols <- fiti + mcumlen[i] + seq_len(mlen[i])
     dat$.density <- delt[cols] / n
     bmat <- beta[cols, , drop = FALSE]
     dat$.effect <- if (ntargets == 1L) as.numeric(bmat) else
       I(structure(bmat, dimnames = list(NULL, colnames(y))))
-    ret.main.effects[[mts[i]]] <- dat
+    ret.main.effects[[mtag]] <- structure(
+      dat, class = c("term_frame", "data.frame"), type = menc[[mtag]]$type
+    )
     lp <- lp + (mmat[[mtag]] %||% menc[[mtag]]$encode(x[[mtag]])) %*% bmat
   }
   ## interactions
@@ -638,7 +640,10 @@ interpret.default <- function(
     bmat <- beta[cols, , drop = FALSE]
     dat$.effect <- if (ntargets == 1L) as.numeric(bmat) else
       I(structure(bmat, dimnames = list(NULL, colnames(y))))
-    ret.interactions[[its[i]]] <- dat
+    ret.interactions[[its[i]]] <- structure(
+      dat, class = c("term_frame", "data.frame"),
+      type = c(ienc[[itag[1L]]]$type, ienc[[itag[2L]]]$type)
+    )
     mat1 <- imat[[itag[1L]]] %||% ienc[[itag[1L]]]$encode(x[[itag[1L]]])
     mat2 <- imat[[itag[2L]]] %||% ienc[[itag[2L]]]$encode(x[[itag[2L]]])
     n1 <- ilen[itag[1L]]

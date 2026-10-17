@@ -48,8 +48,7 @@ predict.mid <- function(
   newdata <- newdata %||% model_data(object, env = parent.frame())
   if (!is.null(terms)) {
     terms <- as_terms(terms, data = newdata)
-    mlabs <- match_labels(get_labels(terms), get_labels(object))
-    mlabs <- unique(mlabs[!is.na(mlabs)])
+    mlabs <- unique(match_labels(terms, object, nomatch = 0L))
   } else {
     terms <- as_terms(object)
     mlabs <- get_labels(terms)

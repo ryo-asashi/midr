@@ -529,17 +529,3 @@ encode.midrib <- function(object, ...) {
   encode.mid(object, ...)
 }
 
-
-interaction_frame <- function(x, y) {
-  nx <- nrow(x)
-  ny <- nrow(y)
-  z <- data.frame(
-    x[rep(seq_len(nx), times = ny), , drop = FALSE],
-    y[rep(seq_len(ny), each = nx), , drop = FALSE],
-    row.names = NULL, check.names = FALSE
-  )
-  attributes(z) <- list(
-    names = names(z), row.names = attr(z, "row.names"), class = "data.frame"
-  )
-  z
-}

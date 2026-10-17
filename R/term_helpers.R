@@ -50,22 +50,22 @@ is_single_term <- function(x) {
   m == 1L
 }
 
-make_signature <- function(x, single.only = TRUE) {
+make_signature <- function(x, strict = TRUE) {
   x <- as_terms(x)
   if (is.null(NA))
     return(NA_character_)
-  if (single.only && !is_single_term(x))
+  if (strict && !is_single_term(x))
     return(NA_character_)
   vars <- sort.int(get_variables(x))
   paste(vars, collapse = ":")
 }
 
-match_labels <- function(x, y, single.only = TRUE) {
+match_labels <- function(x, y, strict = TRUE, nomatch = NA) {
   if (!is.character(x))
     x <- get_labels(x)
   if (!is.character(y))
     y <- get_labels(y)
-  xsigs <- vapply(x, make_signature, character(1L), single.only = single.only)
-  ysigs <- vapply(y, make_signature, character(1L), single.only = single.only)
-  y[match(xsigs, ysigs, incomparables = NA)]
+  xsigs <- vapply(x, make_signature, character(1L), strict = strict)
+  ysigs <- vapply(y, make_signature, character(1L), strict = strict)
+  y[match(xsigs, ysigs, nomatch = nomatch, incomparables = NA)]
 }

@@ -219,3 +219,22 @@ hcl_palette <- function(
     hues <- rev(hues)
   grDevices::hcl(h = hues, c = chroma, l = luminance, alpha = alpha)
 }
+
+
+interaction_frame <- function(x, y) {
+  if (!is.data.frame(x) && !is.matrix(x))
+    x <- as.matrix(x)
+  if (!is.data.frame(y) && !is.matrix(y))
+    y <- as.matrix(y)
+  nx <- nrow(x)
+  ny <- nrow(y)
+  z <- data.frame(
+    x[rep(seq_len(nx), times = ny), , drop = FALSE],
+    y[rep(seq_len(ny), each = nx), , drop = FALSE],
+    row.names = NULL, check.names = FALSE
+  )
+  attributes(z) <- list(
+    names = names(z), row.names = attr(z, "row.names"), class = "data.frame"
+  )
+  z
+}

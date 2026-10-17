@@ -10,6 +10,10 @@ submodel(object, ...)
 \method{submodel}{mid}(object, terms = NULL, intercept = NULL, ...)
 }
 \arguments{
+\item{object}{a fitted model object.}
+
+\item{...}{further arguments.}
+
 \item{terms}{a character vector or object coercible to \code{\link[state]{terms.object}}.}
 
 \item{intercept}{logical. If \code{TRUE}, the intercept is preserved.}
