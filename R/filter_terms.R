@@ -1,12 +1,12 @@
 #' Extract and Filter Term Labels
 #'
 #' @description
-#' \code{term_labels()} extracts term labels from a fitted model object.
+#' \code{filter_terms()} extracts term labels from a fitted model object.
 #' Its primary strength is the ability to filter terms based on their order or their associated underlying variables.
 #'
 #' @details
 #' A "term" refers to an individual component in a formula, such as a main effect (e.g., \code{"Wind"}) or an interaction effect (e.g., \code{"Wind:Temp"}).
-#' \code{term_labels()} parses the model's terms and provides a way to select a subset of them, which is useful for plotting, summarizing, or other downstream analyses.
+#' \code{filter_terms()} parses the model's terms and provides a way to select a subset of them, which is useful for plotting, summarizing, or other downstream analyses.
 #'
 #' @param object a \code{\link[stats]{terms.object}} or an object containing term labels.
 #' @param order an integer vector specifying the order of terms to retain (e.g., \code{1} for only main effects, \code{2} for only two-way interactions).
@@ -19,23 +19,23 @@
 #' mid <- interpret(Ozone ~ .^2, airquality, lambda = 1)
 #'
 #' # Get only main effect terms
-#' term_labels(mid, order = 1)
+#' filter_terms(mid, order = 1)
 #'
 #' # Get terms related to "Wind" or "Temp"
-#' term_labels(mid, require = c("Wind", "Temp"))
+#' filter_terms(mid, require = c("Wind", "Temp"))
 #'
 #' # Get terms related to "Wind" or "Temp", but exclude any with "Day"
-#' term_labels(mid, require = c("Wind", "Temp"), remove = "Day")
+#' filter_terms(mid, require = c("Wind", "Temp"), remove = "Day")
 #' @returns A character vector of the selected term labels.
-#' @export term_labels
+#' @export filter_terms
 #'
-term_labels <- function(object, ...)
-UseMethod("term_labels")
+filter_terms <- function(object, ...)
+UseMethod("filter_terms")
 
-#' @rdname term_labels
-#' @exportS3Method midr::term_labels
+#' @rdname filter_terms
+#' @exportS3Method midr::filter_terms
 #'
-term_labels.default <- function(
+filter_terms.default <- function(
     object, order = NULL, require = NULL, remove = NULL, ...
   ) {
   filt.order <- !is.null(order)
@@ -95,25 +95,25 @@ term_labels.default <- function(
   labs[keep]
 }
 
-#' @rdname term_labels
-#' @exportS3Method midr::term_labels
+#' @rdname filter_terms
+#' @exportS3Method midr::filter_terms
 #'
-term_labels.midlist <- function(object, ...) {
-  unique(unlist(lapply(X = object, FUN = term_labels, ...), use.names = FALSE))
+filter_terms.midlist <- function(object, ...) {
+  unique(unlist(lapply(X = object, FUN = filter_terms, ...), use.names = FALSE))
 }
 
 #' @exportS3Method base::labels
 #'
-labels.mid <- function(object, ...) term_labels(object = object, ...)
+labels.mid <- function(object, ...) filter_terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.midimp <- function(object, ...) term_labels(object = object, ...)
+labels.midimp <- function(object, ...) filter_terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.midbrk <- function(object, ...) term_labels(object = object, ...)
+labels.midbrk <- function(object, ...) filter_terms(object = object, ...)
 
 #' @exportS3Method base::labels
 #'
-labels.midcon <- function(object, ...) term_labels(object = object, ...)
+labels.midcon <- function(object, ...) filter_terms(object = object, ...)
