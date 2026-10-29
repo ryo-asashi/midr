@@ -90,19 +90,19 @@
   if (drop) names(x$intercept) <- NULL
   if (!is.null(x$main.effects)) {
     for (j in seq_along(x$main.effects)) {
-      x$main.effects[[j]]$mid <- if (drop) {
-        as.numeric(x$main.effects[[j]]$mid[, i])
+      x$main.effects[[j]]$.effect <- if (drop) {
+        as.numeric(x$main.effects[[j]]$.effect[, i])
       } else {
-        I(x$main.effects[[j]]$mid[, i, drop = FALSE])
+        I(x$main.effects[[j]]$.effect[, i, drop = FALSE])
       }
     }
   }
   if (!is.null(x$interactions)) {
     for (j in seq_along(x$interactions)) {
-      x$interactions[[j]]$mid <- if (drop) {
-        as.numeric(x$interactions[[j]]$mid[, i])
+      x$interactions[[j]]$.effect <- if (drop) {
+        as.numeric(x$interactions[[j]]$.effect[, i])
       } else {
-        I(x$interactions[[j]]$mid[, i, drop = FALSE])
+        I(x$interactions[[j]]$.effect[, i, drop = FALSE])
       }
     }
   }

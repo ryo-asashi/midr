@@ -6,9 +6,10 @@
 \usage{
 collapse(
   object,
-  direction = c("none", "row", "column", "layer"),
-  method = NULL,
-  by = attr(object, "gma.axis"),
+  direction = c("row", "column", "layer"),
+  method = "mean",
+  group = NULL,
+  weights = NULL,
   ...
 )
 }
@@ -18,9 +19,6 @@ collapse(
 \item{direction}{a character string specifying the dimension to collapse: \code{"none"}, \code{"row"} (across grid points), \code{"column"} (across terms/variables), or \code{"layer"} (across models).}
 
 \item{method}{a character string or function specifying the method to collapse (e.g., \code{"mean"}, \code{"sum"}, \code{"mean_abs"}, \code{"sd"}).}
-
-\item{by}{a character vector of grid variables to group by when \code{direction = "row"}.
-Defaults to the \code{axis} attribute of the grid (Use \code{by = FALSE} or \code{NULL} to collapse all rows into a scalar).}
 }
 \description{
 Collapse Evaluation Arrays

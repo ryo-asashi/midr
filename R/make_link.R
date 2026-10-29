@@ -17,7 +17,7 @@
 #'   \item "yeo-johnson": Yeo-Johnson transformation with a parameter \code{lambda} (default 0). Handles negative values.
 #' }
 #'
-#' @param link a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "ashinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.
+#' @param link a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "asinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.
 #' @param ... named arguments passed to the specific link generation logic. See Details for available parameters and defaults.
 #' @param simplify logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{make_link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).
 #'
@@ -57,7 +57,7 @@
 #' # Box-Cox with lambda=1 simplifies to shifted identity
 #' make_link("box-cox", lambda = 1)
 #' @returns
-#' \code{make_link()} returns an object of class "link-glm" and "parametric.link" containing:
+#' \code{make_link()} returns an object of class "link-glm" and "parametric_link" containing:
 #' \item{linkfun}{link function \eqn{g(\mu)}.}
 #' \item{linkinv}{inverse link function \eqn{g^{-1}(\eta)}.}
 #' \item{mu.eta}{derivative \eqn{d\mu/d\eta}.}
@@ -76,25 +76,13 @@ make_link <- function(link, ..., simplify = TRUE) {
   switch(
     link,
     "log1p" = {
-      envir <- rlang::ns_env("stats")
-      linkfun <- function(mu) {
-        log1p(mu)
-      }
-      linkinv <- function(eta) {
-        pmax(expm1(eta), .Machine$double.eps - 1)
-      }
-      mu.eta <- function(eta) {
-        pmax(exp(eta), .Machine$double.eps)
-      }
-      valideta <- function(eta) {
-        TRUE
-      }
+      params <- list()
+      linkfun <- function(mu) log1p(mu)
+      linkinv <- function(eta) pmax(expm1(eta), .Machine$double.eps - 1)
+      mu.eta <- function(eta) pmax(exp(eta), .Machine$double.eps)
+      valideta <- function(eta) TRUE
     }, "shifted.log" = {
-      params <- do.call(
-        function(h = 1, ...) {
-          list(h = h)
-        }, dots
-      )
+      params <- do.call(function(h = 1, ...) list(h = h), dots)
       h <- params$h
       if (simplify && h == 1) {
         pass <- make_link
@@ -103,44 +91,22 @@ make_link <- function(link, ..., simplify = TRUE) {
         pass <- stats::make.link
         args <- list(link = "log")
       } else {
-        envir <- rlang::env(rlang::ns_env("stats"), h = h)
-        linkfun <- function(mu) {
-          log(mu + h)
-        }
-        linkinv <- function(eta) {
-          pmax(exp(eta) - h, .Machine$double.eps - h)
-        }
-        mu.eta <- function(eta) {
-          pmax(exp(eta), .Machine$double.eps)
-        }
-        valideta <- function(eta) {
-          TRUE
-        }
+        linkfun <- function(mu) log(mu + h)
+        linkinv <- function(eta) pmax(exp(eta) - h, .Machine$double.eps - h)
+        mu.eta <- function(eta) pmax(exp(eta), .Machine$double.eps)
+        valideta <- function(eta) TRUE
       }
     }, "shifted.identity" = {
-      params <- do.call(
-        function(h = 1, ...) {
-          list(h = h)
-        }, dots
-      )
+      params <- do.call(function(h = 1, ...) list(h = h), dots)
       h <- params$h
       if (simplify && h == 0) {
         pass <- stats::make.link
         args <- list(link = "identity")
       } else {
-        envir <- rlang::env(rlang::ns_env("stats"), h = h)
-        linkfun <- function(mu) {
-          mu + h
-        }
-        linkinv <- function(eta) {
-          eta - h
-        }
-        mu.eta <- function(eta) {
-          rep.int(1, times = length(eta))
-        }
-        valideta <- function(eta) {
-          TRUE
-        }
+        linkfun <- function(mu) mu + h
+        linkinv <- function(eta) eta - h
+        mu.eta <- function(eta) rep.int(1, times = length(eta))
+        valideta <- function(eta) TRUE
       }
     }, "robit" = {
       params <- do.call(
@@ -159,33 +125,17 @@ make_link <- function(link, ..., simplify = TRUE) {
       } else {
         if (df <= 0)
           stop("'df' must be positive for robit link")
-        envir <- rlang::env(rlang::ns_env("stats"), df = df)
-        linkfun <- function(mu) {
-          stats::qt(mu, df = df)
-        }
-        linkinv <- function(eta) {
-          stats::pt(eta, df = df)
-        }
-        mu.eta <- function(eta) {
-          stats::dt(eta, df = df)
-        }
-        valideta <- function(eta) {
-          TRUE
-        }
+        linkfun <- function(mu) stats::qt(mu, df = df)
+        linkinv <- function(eta) stats::pt(eta, df = df)
+        mu.eta <- function(eta) stats::dt(eta, df = df)
+        valideta <- function(eta) TRUE
       }
     }, "asinh" = {
-      params <- do.call(
-        function(lambda = 1, ...) {
-          list(lambda = lambda)
-        }, dots
-      )
+      params <- do.call(function(lambda = 1, ...) list(lambda = lambda), dots)
       lambda <- params$lambda
       if (abs(lambda) < .Machine$double.eps)
         stop("'lambda' cannot be zero for inverse hyperbolic sine (asinh) link")
-      envir <- rlang::env(rlang::ns_env("stats"), lambda = lambda)
-      linkfun <- function(mu) {
-        asinh(lambda * mu)
-      }
+      linkfun <- function(mu) asinh(lambda * mu)
       linkinv <- function(eta) {
         thresh <- asinh(.Machine$double.xmax)
         eta <- pmin(pmax(eta, -thresh), thresh)
@@ -196,43 +146,29 @@ make_link <- function(link, ..., simplify = TRUE) {
         eta <- pmin(pmax(eta, -thresh), thresh)
         cosh(eta) / lambda
       }
-      valideta <- function(eta) {
-        TRUE
-      }
+      valideta <- function(eta) TRUE
     }, "scobit" = {
-      params <- do.call(
-        function(alpha = 1, ...) {
-          list(alpha = alpha)
-        }, dots
-      )
+      params <- do.call(function(alpha = 1, ...) list(alpha = alpha), dots)
       alpha <- params$alpha
       if (simplify && alpha == 1) {
         pass <- stats::make.link
         args <- list(link = "logit")
       } else {
-        if (alpha <= 0) stop("'alpha' must be positive for scobit link")
-        envir <- rlang::env(rlang::ns_env("stats"), alpha = alpha)
+        if (alpha <= 0)
+          stop("'alpha' must be positive for scobit link")
         linkfun <- function(mu) {
           mu <- pmin(pmax(mu, .Machine$double.eps), 1 - .Machine$double.eps)
           stats::qlogis(mu ^ (1 / alpha))
         }
-        linkinv <- function(eta) {
-          stats::plogis(eta) ^ alpha
-        }
+        linkinv <- function(eta) stats::plogis(eta) ^ alpha
         mu.eta <- function(eta) {
           p <- stats::plogis(eta)
           alpha * (p ^ alpha) * (1 - p)
         }
-        valideta <- function(eta) {
-          TRUE
-        }
+        valideta <- function(eta) TRUE
       }
     }, "box-cox" = {
-      params <- do.call(
-        function(lambda = 0, ...) {
-          list(lambda = lambda)
-        }, dots
-      )
+      params <- do.call(function(lambda = 0, ...) list(lambda = lambda), dots)
       lambda <- params$lambda
       if (simplify && lambda == 0) {
         pass <- stats::make.link
@@ -241,20 +177,16 @@ make_link <- function(link, ..., simplify = TRUE) {
         pass <- make_link
         args <- list(link = "shifted.identity", h = -1)
       } else {
-        envir <- rlang::env(rlang::ns_env("stats"), lambda = lambda)
-        linkfun <- function(mu) {
-          (mu ^ lambda - 1) / lambda
-        }
+        if (lambda == 0)
+          stop("'lambda' cannot be zero for box-cox link")
+        linkfun <- function(mu) (mu ^ lambda - 1) / lambda
         linkinv <- function(eta) {
           pmax(lambda * eta + 1, .Machine$double.eps) ^ (1 / lambda)
         }
         mu.eta <- function(eta) {
-          mu <- pmax(lambda * eta + 1, .Machine$double.eps) ^ (1 / lambda)
-          mu ^ (1 - lambda)
+          pmax(lambda * eta + 1, .Machine$double.eps) ^ ((1 - lambda) / lambda)
         }
-        valideta <- function(eta) {
-          all(lambda * eta + 1 > 0)
-        }
+        valideta <- function(eta) all(lambda * eta + 1 > 0)
       }
     }, "box-cox2" = {
       params <- do.call(
@@ -274,35 +206,24 @@ make_link <- function(link, ..., simplify = TRUE) {
         pass <- make_link
         args <- list(link = "shifted.identity", h = lambda2 - 1)
       } else {
-        envir <- rlang::env(
-          rlang::ns_env("stats"), lambda1 = lambda1, lambda2 = lambda2
-        )
-        linkfun <- function(mu) {
-          ((mu + lambda2) ^ lambda1 - 1) / lambda1
-        }
+        if (lambda1 == 0)
+          stop("'lambda1' cannot be zero for box-cox2 link")
+        linkfun <- function(mu) ((mu + lambda2) ^ lambda1 - 1) / lambda1
         linkinv <- function(eta) {
           pmax(lambda1 * eta + 1, .Machine$double.eps) ^ (1 / lambda1) - lambda2
         }
         mu.eta <- function(eta) {
-          mu <- pmax(lambda1 * eta + 1, .Machine$double.eps) ^ (1 / lambda1) - lambda2
-          mu ^ (1 - lambda1)
+          pmax(lambda1 * eta + 1, .Machine$double.eps) ^ ((1 - lambda1) / lambda1)
         }
-        valideta <- function(eta) {
-          all(lambda1 * eta + 1 > 0)
-        }
+        valideta <- function(eta) all(lambda1 * eta + 1 > 0)
       }
     }, "yeo-johnson" = {
-      params <- do.call(
-        function(lambda = 0, ...) {
-          list(lambda = lambda)
-        }, dots
-      )
+      params <- do.call(function(lambda = 0, ...) list(lambda = lambda), dots)
       lambda <- params$lambda
       if (simplify && lambda == 1) {
         pass <- stats::make.link
         args <- list(link = "identity")
       } else {
-        envir <- rlang::env(rlang::ns_env("stats"), lambda = lambda)
         linkfun <- function(mu) {
           pos <- (mu >= 0)
           out <- mu
@@ -367,23 +288,24 @@ make_link <- function(link, ..., simplify = TRUE) {
   )
   if (!is.null(pass)) {
     res <- do.call(pass, args)
-    return(structure(res, class = c("parametric.link", "link-glm")))
+    return(structure(res, class = c("parametric_link", "link-glm")))
   }
-  environment(linkfun) <- environment(linkinv) <- environment(mu.eta) <-
-    environment(valideta) <- envir
+  envir <- list2env(params, parent = getNamespace("stats"))
+  environment(linkfun) <- environment(linkinv) <-
+    environment(mu.eta) <- environment(valideta) <- envir
   structure(
     list(linkfun = linkfun, linkinv = linkinv, mu.eta = mu.eta,
          valideta = valideta, name = link, envir = envir),
-    class = c("parametric.link", "link-glm")
+    class = c("parametric_link", "link-glm")
   )
 }
 
 
 #' @exportS3Method base::print
 #'
-print.parametric.link <- function(x, ...) {
+print.parametric_link <- function(x, ...) {
   nm <- x$name %||% attr(x, "name", exact = TRUE)
-  cat(paste0("Link function: ", nm %||% "custom"))
+  cat(paste0("Link Function: ", nm %||% "custom"))
   envir <- x$envir
   if (!is.null(envir) &&
       !tryCatch(rlang::is_namespace(envir), error = function(e) FALSE)) {
@@ -392,6 +314,7 @@ print.parametric.link <- function(x, ...) {
       cat("(", paste(names(args), args, sep = " = ", collapse = ", "), ")", sep = "")
     }
   }
-  cat("\n")
+  cat("\n\n")
+  print.function(x$linkfun)
   invisible(x)
 }

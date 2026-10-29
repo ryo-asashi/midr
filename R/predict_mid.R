@@ -46,13 +46,8 @@ predict.mid <- function(
     terms = NULL, na.action = stats::na.pass, ...) {
   type <- match.arg(type)
   newdata <- newdata %||% model_data(object, env = parent.frame())
-  if (!is.null(terms)) {
-    terms <- as_terms(terms, data = newdata)
-    mlabs <- unique(match_labels(terms, object, nomatch = 0L))
-  } else {
-    terms <- as_terms(object)
-    mlabs <- get_labels(terms)
-  }
+  terms <- as_terms(terms %||% object, intercept = TRUE, data = newdata)
+  mlabs <- unique(match_labels(terms, object, nomatch = "fail"))
   if (length(mlabs) == 0L)
     stop("none of the specified 'terms' are in 'object'")
   if (is.null(newdata))

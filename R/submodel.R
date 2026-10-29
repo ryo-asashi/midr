@@ -22,15 +22,17 @@ UseMethod("submodel")
 submodel.mid <- function(
     object, terms = NULL, intercept = NULL, ...
 ) {
-  .terms <- stats::terms(object)
-  terms <- as_terms(
-    terms, data = model_data(object, env = parent.frame())
-  ) %||% .terms
-  mlabs <- unique(match_labels(terms, .terms, nomatch = 0L))
-  intercept <- intercept %||% has_intercept(terms)
+  full <- stats::terms(object)
+  sub <- as_terms(
+    x = terms,
+    data = model_data(object, env = parent.frame()),
+    env = environment(full)
+  ) %||% full
+  mlabs <- unique(match_labels(sub, full, nomatch = "fail"))
+  intercept <- intercept %||% has_intercept(sub)
   obj <- object
   if (!intercept)
-    obj$intercept <- 0
+    obj$intercept <- numeric(length(obj$intercept))
   if (!is.null(obj$main.effects)) {
     keep <- intersect(names(obj$main.effects), mlabs)
     obj$main.effects <- obj$main.effects[keep]
@@ -39,7 +41,7 @@ submodel.mid <- function(
     keep <- intersect(names(obj$interactions), mlabs)
     obj$interactions <- obj$interactions[keep]
   }
-  obj$terms <- as_terms(mlabs, intercept = intercept)
+  obj$terms <- as_terms(mlabs, intercept = intercept, env = environment(full))
   obj$ratio <- NA
   obj
 }

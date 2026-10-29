@@ -69,3 +69,21 @@ coef.mid <- function(object, ...) {
 coef.midrib <- function(object, ...) {
   coef.mid(object, ...)
 }
+
+
+#' @exportS3Method base::print
+#'
+print.term_frame <- function(x, ...) {
+  type <- attr(x, "type")
+  cols <- seq_len(NCOL(x))
+  if (length(type) == 1L) {
+    rems <- switch(type, linear = 2L:3L, constant = 1L, factor = 2L)
+    cols <- cols[-rems]
+  } else {
+    rem1 <- switch(type[1L], linear = 2L:3L, constant = 1L, factor = 2L)
+    ofs1 <- switch(type[1L], linear = 1L, constant = 2L, factor = 1L)
+    rem2 <- switch(type[2L], linear = 2L:3L, constant = 1L, factor = 2L)
+    cols <- cols[-rem1][-(rem2 + ofs1)]
+  }
+  base::print.data.frame(x[, cols], ...)
+}

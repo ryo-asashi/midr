@@ -567,8 +567,25 @@ print.color_theme <- function(x, display = TRUE, ...) {
   substr(type, 1L, 1L) <- toupper(substr(type, 1L, 1L))
   text <- paste0(type, " Color Theme")
   if (!is.null(x$name))
-    text <- paste0(text, ' : "', x$name, '"')
-  cat(text, "\n", sep = "")
+    text <- paste0(text, ": '", x$name, "'")
+  cat(text, "\n\n", sep = "")
+  cat("Kernel Class: ", x$kernel.class, "\n", sep = "")
+  if (length(x$options) > 0L) {
+    cat("\nOptions:\n")
+    nms <- format(paste0(" ", names(x$options)), justify = "left")
+    vals <- vapply(x$options, function(v) {
+      if (is.function(v)) "<function>" else deparse1(v)
+    }, character(1L))
+    cat(paste0(nms, ": ", vals, collapse = "\n"), "\n", sep = "")
+  }
+  if (length(x$kernel.args) > 0L) {
+    cat("\nKernel Arguments:\n")
+    nms <- format(paste0(" ", names(x$kernel.args)), justify = "left")
+    vals <- vapply(x$kernel.args, function(v) {
+      if (is.function(v)) "<function>" else deparse1(v)
+    }, character(1L))
+    cat(paste0(nms, ": ", vals, collapse = "\n"), "\n", sep = "")
+  }
   if (display)
     plot.color_theme(x, text = text)
   invisible(x)

@@ -269,7 +269,7 @@ make_encoder.numeric <- function(
       prob <- prob[seq.int(2L, 2L * k, by = 2L)]
     }
     if (split == "quantile") {
-      reps <- weighted.quantile(
+      reps <- weighted_quantile(
         x = x, w = weights, probs = prob, na.rm = TRUE, names = FALSE, type = 1L
       )
     } else {
@@ -336,7 +336,7 @@ make_encoder.factor <- function(
     map <- NULL
   } else if (lump == "order") {
     if (!is.ordered(x)) x <- ordered(x)
-    tbl <- weighted.tabulate(bin = match(x, olvs), w = weights)
+    tbl <- weighted_tabulate(bin = match(x, olvs), w = weights)
     wcum <- cumsum(tbl)
     wsum <- wcum[length(wcum)]
     cuts <- wsum * seq(0, 1, length.out = k + 1L)
@@ -351,7 +351,7 @@ make_encoder.factor <- function(
     others <- NULL
     map <- stats::setNames(rep(flvs, times = table(grps)), olvs)
   } else {
-    tbl <- weighted.tabulate(bin = match(x, olvs), w = weights)
+    tbl <- weighted_tabulate(bin = match(x, olvs), w = weights)
     ord <- order(tbl, decreasing = TRUE)
     flvs <- olvs[ord][seq_len(k - 1L)]
     flvs <- olvs[olvs %in% flvs]
@@ -529,3 +529,9 @@ encode.midrib <- function(object, ...) {
   encode.mid(object, ...)
 }
 
+
+# helpers
+
+get_levels <- function(x, original = FALSE) {
+  if (original) x$envir$olvs else x$envir$flvs
+}

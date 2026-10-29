@@ -7,7 +7,7 @@
 \usage{
 evaluate(object, ...)
 
-\method{evaluate}{mid}(object, type = c("terms", "response", "linear", "variables"), ...)
+\method{evaluate}{mid}(object, type = c("terms", "response", "link", "variables"), ...)
 }
 \arguments{
 \item{object}{a fitted model object.}

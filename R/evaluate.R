@@ -18,31 +18,34 @@ UseMethod("evaluate")
 #' @exportS3Method midr::evaluate
 #'
 evaluate.mid <- function(
-    object, type = c("terms", "response", "linear", "variables"), ...
+    object, type = c("terms", "response", "link", "variables"), ...
 ) {
   type <- match.arg(type)
   grid <- object$gma.grid %||% set_grid(object, ...)$gma.grid
-  if (type == "response" || type == "linear") {
-    vmat <- as.matrix(stats::predict(object, newdata = grid, type = type))
-    if (ncol(vmat) == 1L)
-      colnames(vmat) <- ".prediction"
+  if (type == "response" || type == "link") {
+    out <- as.matrix(stats::predict(object, newdata = grid, type = type))
+    if (ncol(out) == 1L)
+      colnames(out) <- "prediction"
   } else if (type == "terms" || type == "variables") {
-    vmat <- stats::predict(object, newdata = grid, type = "terms")
-  } else if (type == "variables") {
-    vlist <- lapply(colnames(vmat), get_variables)
-    vlens <- lengths(vlist)
-    for (j in seq_along(vlens)) {
-      if (vlens[j] > 1L) {
-        vmat[, vlist[j]] <- vmat[, vlist[j]] + vmat[, j] / vlens[j]
-      }
-    }
-    vmat <- vmat[, vlens == 1L]
+    out <- as.matrix(stats::predict(object, newdata = grid, type = "terms"))
   }
-  structure(
-    vmat,
-    grid = grid,
-    type = type,
-    row.weights = attr(grid, "gma.weights"),
-    axis = attr(grid, "gma.axis")
-  )
+  if (type == "variables") {
+    varlist <- lapply(colnames(out), get_variables)
+    varlens <- lengths(varlist)
+    allvars <- unique(unlist(varlist))
+    trueout <- matrix(0, nrow = nrow(out), ncol = length(allvars))
+    for (j in seq_along(varlens)) {
+      vars <- varlist[[j]]
+      trueout[, vars] <- trueout[, vars] + out[, j] / varlens[j]
+    }
+    out <- trueout
+  }
+  structure(out, type = type, grid = grid, class = c("gma_eval", class(out)))
+}
+
+
+#' @exportS3Method midr::evaluate
+#'
+evaluate.mids <- function(object, ...) {
+
 }

@@ -7,14 +7,14 @@
 make_link(link, ..., simplify = TRUE)
 }
 \arguments{
-\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "ashinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.}
+\item{link}{a character string naming the link function: "log1p", "shifted.log", "shifted.identity", "robit", "asinh", "scobit", "box-cox", "box-cox2", or "yeo-johnson". Standard links (e.g., "logit", "probit", "log") are passed to \code{stats::make.link()}.}
 
 \item{...}{named arguments passed to the specific link generation logic. See Details for available parameters and defaults.}
 
 \item{simplify}{logical. If \code{TRUE} (default), the function returns a standard link object or recursively calls \code{make_link} when parameters equate to a simpler and more computationally efficient form (e.g., \code{box-cox} with \code{lambda=0} becomes \code{log}).}
 }
 \value{
-\code{make_link()} returns an object of class "link-glm" and "parametric.link" containing:
+\code{make_link()} returns an object of class "link-glm" and "parametric_link" containing:
 \item{linkfun}{link function \eqn{g(\mu)}.}
 \item{linkinv}{inverse link function \eqn{g^{-1}(\eta)}.}
 \item{mu.eta}{derivative \eqn{d\mu/d\eta}.}

@@ -10,11 +10,12 @@ set_grid(object, ...)
 \method{set_grid}{mid}(
   object,
   axis = NULL,
-  method = c("raster", "data", "knots"),
+  method = c("raster", "data"),
   data = NULL,
   weights = NULL,
   resolution = 100L,
   lumped = FALSE,
+  max.nrow = Inf,
   ...
 )
 }
@@ -25,7 +26,7 @@ set_grid(object, ...)
 
 \item{axis}{a character vector or formula specifying the primary variables of interest.}
 
-\item{method}{character string specifying how to construct the axis grid: "raster" (uniform mesh over the domain), "data" (observed points), or "knots" (encoder frame points weighted by \code{.distribution}).}
+\item{method}{character string specifying how to construct the axis grid: "raster" (uniform mesh over the domain), "data" (observed points), or "frame" (encoder frame points weighted by \code{.distribution}).}
 
 \item{data}{a data.frame to be referred to for creating the grid.}
 
@@ -36,5 +37,5 @@ set_grid(object, ...)
 \item{lumped}{logical. If \code{TRUE}, lumped factor levels are used for the grid.}
 }
 \description{
-\code{set_grid()} constructs and attaches an evaluation grid (\code{gma.grid}) to a fitted model object for subsequent model analysis.
+\code{set_grid()} constructs and attaches an evaluation grid (\code{ema.grid}) to a fitted model object for subsequent model analysis.
 }

@@ -1,10 +1,10 @@
 #' Weighted Sample Quantile
 #'
 #' @description
-#' \code{weighted.quantile()} produces weighted sample quantiles corresponding to the given probabilities.
+#' \code{weighted_quantile()} produces weighted sample quantiles corresponding to the given probabilities.
 #'
 #' @details
-#' \code{weighted.quantile()} is a wrapper function of \code{stats::quantile()} for weighted quantiles.
+#' \code{weighted_quantile()} is a wrapper function of \code{stats::quantile()} for weighted quantiles.
 #' For the weighted quantile, only the "type 1" quantile, the inverse of the empirical distribution function, is available.
 #' This function is used in \code{numeric.encoder()} to enable weights-based encoding.
 #'
@@ -18,13 +18,13 @@
 #' @param ... further arguments passed to \code{stats::quantile()} when weights are not passed.
 #'
 #' @returns
-#' \code{weighted.quantile()} returns weighted sample quantiles corresponding to the given probabilities.
+#' \code{weighted_quantile()} returns weighted sample quantiles corresponding to the given probabilities.
 #'
-#' @seealso \code{\link{weighted.tabulate}}
+#' @seealso \code{\link{weighted_tabulate}}
 #'
 #' @keywords internal
 #'
-weighted.quantile <- function(
+weighted_quantile <- function(
     x, w = NULL, probs = seq(0, 1, 0.25), na.rm = FALSE,
     names = TRUE, digits = 7L, type = 1L, ...)
 {
@@ -84,10 +84,10 @@ weighted.quantile <- function(
 #' Weighted Tabulation for Vectors
 #'
 #' @description
-#' \code{weighted.tabulate()} returns the sum of weights for each integer in the vector \code{bin}.
+#' \code{weighted_tabulate()} returns the sum of weights for each integer in the vector \code{bin}.
 #'
 #' @details
-#' \code{weighted.tabulate()} is a wrapper function of \code{tabulate()} to reflect sample weights.
+#' \code{weighted_tabulate()} is a wrapper function of \code{tabulate()} to reflect sample weights.
 #' This function is used in \code{factor.encoder()} to enable weights-based encoding.
 #'
 #' @param bin a numeric vector of positive integers, or a factor.
@@ -95,13 +95,13 @@ weighted.quantile <- function(
 #' @param nbins the number of bins to be used.
 #'
 #' @returns
-#' \code{weighted.tabulate()} returns a numeric vector.
+#' \code{weighted_tabulate()} returns a numeric vector.
 #'
-#' @seealso \code{\link{weighted.quantile}}
+#' @seealso \code{\link{weighted_quantile}}
 #'
 #' @keywords internal
 #'
-weighted.tabulate <- function(
+weighted_tabulate <- function(
     bin, w = NULL, nbins = max(1L, bin, na.rm = TRUE)) {
   if (is.null(w) || diff(range(w, na.rm = TRUE)) == 0)
     return(tabulate(bin = bin, nbins = nbins))
