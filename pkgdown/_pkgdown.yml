@@ -110,6 +110,6 @@ reference:
 - subtitle: Miscellaneous
   contents:
   - midr_options
-  - shapviz.mid
   - theme_monograph
   - par_monograph
+  # - shapviz.mid
