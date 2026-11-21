@@ -12,10 +12,10 @@ interpret(object, ...)
 # Default S3 method
 interpret(
   object,
-  x,
+  x = NULL,
   y = NULL,
   weights = NULL,
-  pred.fun = get.yhat,
+  pred.fun = get_yhat,
   link = NULL,
   k = c(NA, NA),
   type = c(1L, 1L),
@@ -28,7 +28,7 @@ interpret(
   kappa = 1e+06,
   na.action = getOption("na.action"),
   verbosity = NULL,
-  frames = list(),
+  encoders = list(),
   split = "quantile",
   digits = NULL,
   lump = "none",
@@ -46,7 +46,7 @@ interpret(
   formula,
   data = NULL,
   model = NULL,
-  pred.fun = get.yhat,
+  pred.fun = get_yhat,
   weights = NULL,
   subset = NULL,
   na.action = getOption("na.action"),
@@ -91,14 +91,14 @@ interpret(
   a function to obtain predictions from a fitted model, where the first
   argument is for the fitted model and the second argument is for new
   data. The default is
-  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md).
+  [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md).
 
 - link:
 
   a character string specifying the link function. This can be one of
   the links from [`make.link()`](https://rdrr.io/r/stats/make.link.html)
   (e.g., "log", "logit", "probit", "cauchit"), one of the links from
-  [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
+  [`make_link()`](https://ryo-asashi.github.io/midr/reference/make_link.md)
   (e.g., "log1p", "robit", "scobit", "box-cox"), or a custom object
   containing at least the `linkfun()` and `linkinv()` functions.
 
@@ -175,12 +175,13 @@ interpret(
   the level of verbosity. `0`: fatal, `1`: warning (default), `2`: info
   or `3`: debug.
 
-- frames:
+- encoders:
 
-  a named list of encoding frames ("numeric.frame" or "factor.frame"
-  objects). The encoding frames are used to encode the variable of the
-  corresponding name. If the name begins with "\|" or ":", the encoding
-  frame is used only for main effects or interactions, respectively.
+  a named list of atomic vectors or "encoder" objects. Atomic vectors
+  are automatically converted into encoders, and each encoder is used to
+  encode the variable of the corresponding name. If a nested list named
+  `main.effects` or `interactions` is provided, the enclosed encoders
+  are used exclusively for main effects or interactions, respectively.
 
 - split:
 
@@ -400,10 +401,10 @@ Models by Maximum Interpretation Decomposition.” 2506.08338,
 [`summary.mid`](https://ryo-asashi.github.io/midr/reference/summary.mid.md),
 [`predict.mid`](https://ryo-asashi.github.io/midr/reference/predict.mid.md),
 [`plot.mid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
-[`ggmid`](https://ryo-asashi.github.io/midr/reference/ggmid.md),
-[`mid.importance`](https://ryo-asashi.github.io/midr/reference/mid.importance.md),
-[`mid.conditional`](https://ryo-asashi.github.io/midr/reference/mid.conditional.md),
-[`mid.breakdown`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
+[`ggmid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
+[`eval_importance`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
+[`eval_conditional`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
+[`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
 
 ## Examples
 

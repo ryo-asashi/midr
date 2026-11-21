@@ -89,7 +89,7 @@ cat("RMSE: ", weighted.loss(valid$medv, preds_mid))
 ```
 
 To visualize the main and interaction effects of the variables, apply
-[`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) or
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) or
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) to the fitted
 MID model.
 
@@ -119,9 +119,8 @@ grid.arrange(grobs = mid.plots(mid), nrow = 3)
 
 ![](reference/figures/README-ggmid-2.png)
 
-[`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
-helps to compute and compare the importance of main and interaction
-effects.
+`mid.importance()` helps to compute and compare the importance of main
+and interaction effects.
 
 ``` r
 
@@ -140,10 +139,9 @@ grid.arrange(nrow = 1L,
 
 ![](reference/figures/README-mid_importance-1.png)
 
-[`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
-provides a way to analyze individual predictions by decomposing the
-differences between the intercept and the predicted value into variable
-effects.
+`mid.breakdown()` provides a way to analyze individual predictions by
+decomposing the differences between the intercept and the predicted
+value into variable effects.
 
 ``` r
 
@@ -163,10 +161,9 @@ grid.arrange(nrow = 1L,
 
 ![](reference/figures/README-mid_breakdown-1.png)
 
-[`mid.conditional()`](https://ryo-asashi.github.io/midr/reference/mid.conditional.md)
-can be used to compute the ICE curves (Goldstein et al. 2015) of the
-fitted MID model, as well as the breakdown of the ICE curves by main and
-interaction effects.
+`mid.conditional()` can be used to compute the ICE curves (Goldstein et
+al. 2015) of the fitted MID model, as well as the breakdown of the ICE
+curves by main and interaction effects.
 
 ``` r
 

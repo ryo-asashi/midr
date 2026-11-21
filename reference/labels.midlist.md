@@ -1,4 +1,4 @@
-# Label MID Objects
+# Label MID Collection Objects
 
 S3 methods to get or set the labels (names) of a "midrib" or "midlist"
 object.
@@ -85,6 +85,6 @@ class(mid)
 
 # Subset the collection to keep only the first two models using [
 sub <- collection[1:2]
-class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
+class(sub) # Maintains the collection class (e.g., "midrib"-"mids")
 #> [1] "mids"   "midrib"
 ```

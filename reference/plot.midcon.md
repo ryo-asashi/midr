@@ -1,9 +1,12 @@
-# Plot MID Conditional Expectation
+# Plot and Compare MID Conditional Expectations (ICE)
 
-For "midcon" objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes
-Individual Conditional Expectation (ICE) curves derived from a fitted
-MID model.
+Visualize Individual Conditional Expectation (ICE) curves for a
+`"midcon"` object, or compare ICE curves across a `"midcons"`
+collection. [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
+renders via base graphics, while
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return **ggplot2** objects.
 
 ## Usage
 
@@ -23,106 +26,114 @@ plot(
   sample = NULL,
   ...
 )
+
+# S3 method for class 'midcon'
+ggmid(
+  object,
+  type = c("iceplot", "centered"),
+  theme = NULL,
+  term = NULL,
+  var.alpha = NULL,
+  var.color = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  reference = 1L,
+  points = TRUE,
+  sample = NULL,
+  ...
+)
+
+# S3 method for class 'midcon'
+autoplot(object, ...)
+
+# S3 method for class 'midcons'
+plot(
+  x,
+  type = c("iceplot", "centered", "series"),
+  theme = NULL,
+  var.alpha = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  reference = 1L,
+  sample = NULL,
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'midcons'
+ggmid(
+  object,
+  type = c("iceplot", "centered", "series"),
+  theme = NULL,
+  var.alpha = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  reference = 1L,
+  sample = NULL,
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'midcons'
+autoplot(object, ...)
 ```
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "midcon" object to be visualized.
+  a `"midcon"` or `"midcons"` object.
 
 - type:
 
-  the plotting style. One of "iceplot" or "centered".
+  visualization style: for `"midcon"`, one of `"iceplot"` (default) or
+  `"centered"`; for `"midcons"`, one of `"iceplot"` (default),
+  `"centered"`, or `"series"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  optional color theme name or `"colortheme"` object.
 
 - term:
 
-  an optional character string specifying an interaction term. If
-  passed, the ICE curve for the specified term is plotted.
+  optional term label to plot a single component's ICE curve (requires
+  `keep.effects = TRUE`).
 
-- var.alpha:
+- var.alpha, var.color, var.linetype, var.linewidth:
 
-  a variable name or expression to map to the alpha aesthetic.
-
-- var.color:
-
-  a variable name or expression to map to the color aesthetic.
-
-- var.linetype:
-
-  a variable name or expression to map to the linetype aesthetic.
-
-- var.linewidth:
-
-  a variable name or expression to map to the linewidth aesthetic.
+  optional variable names or expressions evaluated in `observed` to map
+  aesthetics across curves.
 
 - reference:
 
-  an integer specifying the index of the evaluation point to use as the
-  reference for centering the c-ICE plot.
+  integer index of the grid point used for centering when
+  `type = "centered"`.
 
 - points:
 
-  logical. If `TRUE`, points representing the actual predictions for
-  each observation are plotted.
+  logical. If `TRUE` (default), overlays observed predictions for
+  `"midcon"`.
 
 - sample:
 
-  an optional vector specifying the names of observations to be plotted.
+  optional character vector of observation IDs (`.id`) to display.
 
 - ...:
 
-  optional parameters passed on to the graphing functions.
+  additional graphical parameters.
+
+- labels:
+
+  optional numeric or character vector of model labels for `"midcons"`.
 
 ## Value
 
-`plot.midcon()` produces an ICE plot as a side-effect and returns `NULL`
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
 invisibly.
-
-## Details
-
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces ICE curves from a "midcon" object. ICE plots are a
-model-agnostic tool for visualizing how a model's prediction for a
-single observation changes as one feature varies. This function plots
-one line for each observation in the data.
-
-The `type` argument controls the visualization style: The default,
-`type = "iceplot"`, plots the raw ICE curves. The `type = "centered"`
-option creates the centered ICE (c-ICE) plot, where each curve is
-shifted to start at zero, making it easier to compare the slopes of the
-curves.
-
-The `var.color`, `var.alpha`, etc., arguments allow you to map
-aesthetics to other variables in your data using (possibly) unquoted
-expressions.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return a `"ggplot"` object.
 
 ## See also
 
-[`mid.conditional`](https://ryo-asashi.github.io/midr/reference/mid.conditional.md),
-[`ggmid.midcon`](https://ryo-asashi.github.io/midr/reference/ggmid.midcon.md)
-
-## Examples
-
-``` r
-data(airquality, package = "datasets")
-library(midr)
-mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 0.1)
-#> 'model' not passed: response variable in 'data' is used
-ice <- mid.conditional(mid, "Temp", data = airquality)
-
-# Create an ICE plot, coloring lines by 'Wind'
-plot(ice, var.color = "Wind")
-
-
-# Create a centered ICE plot, mapping color and linetype to other variables
-plot(ice, type = "centered", theme = "Purple-Yellow",
-     var.color = factor(Month), var.linetype = Wind > 10)
-```
+[`eval_conditional`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)

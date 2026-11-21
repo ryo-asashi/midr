@@ -1,8 +1,11 @@
-# Plot MID Component Function
+# Plot and Compare MID Component Functions
 
-For "mid" objects (i.e., fitted MID models),
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes one
-or more component functions specified by the `term` argument.
+Visualize component functions of a fitted MID model (`"mid"`) or compare
+main effects across a collection of models (`"mids"`).
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
+base graphics, while `ggmid()` and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return **ggplot2** objects via the `dualplot` engine.
 
 ## Usage
 
@@ -10,7 +13,7 @@ or more component functions specified by the `term` argument.
 # S3 method for class 'mid'
 plot(
   x,
-  terms = term.labels(x, order = 1L),
+  terms = NULL,
   type = c("effect", "data", "compound"),
   theme = NULL,
   intercept = FALSE,
@@ -22,117 +25,159 @@ plot(
   lumped = TRUE,
   ...
 )
+
+ggmid(object, ...)
+
+# S3 method for class 'mid'
+ggmid(
+  object,
+  terms = NULL,
+  type = c("effect", "data", "compound"),
+  theme = NULL,
+  intercept = FALSE,
+  main.effects = FALSE,
+  data = NULL,
+  limits = c(NA, NA),
+  jitter = NULL,
+  resolution = c(100L, 100L),
+  lumped = TRUE,
+  ...
+)
+
+# S3 method for class 'mid'
+autoplot(object, ...)
+
+# S3 method for class 'mids'
+plot(
+  x,
+  terms = NULL,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  limits = c(NA, NA),
+  resolution = NULL,
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'mids'
+ggmid(
+  object,
+  terms = NULL,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  limits = c(NA, NA),
+  resolution = NULL,
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'mids'
+autoplot(object, ...)
 ```
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "mid" object to be visualized.
+  a `"mid"` or `"mids"` object to be visualized.
 
 - terms:
 
-  a character vector or a formula specifying the component functions to
-  be plotted. If a formula is provided (e.g., `~ x + y + x:y`), it is
-  automatically parsed to extract the relevant terms.
+  a character vector of term labels/expressions or a formula specifying
+  what to plot. Defaults to all main effects.
 
 - type:
 
-  the plotting style. One of "effect", "data" or "compound".
+  visualization style: `"effect"`, `"data"`, or `"compound"` for
+  `"mid"`; `"effect"` or `"series"` for `"mids"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  a color theme name or `"colortheme"` object.
 
 - intercept:
 
-  logical. If `TRUE`, the intercept is added to the MID values.
+  logical. If `TRUE`, adds the intercept to the plotted effect (or
+  inferred from each term expression when omitted).
 
 - main.effects:
 
-  logical. If `TRUE`, main effects are included in the interaction plot.
+  logical. If `TRUE`, includes constituent main effects when plotting an
+  interaction term.
 
 - data:
 
-  a data frame to be plotted with the corresponding MID values. If not
-  provided, data is automatically extracted from the function call.
+  a data.frame used for `type = "data"` / `"compound"` or when plotting
+  raw-variable expressions (e.g., `"x"` when `log(x)` is in the model).
 
 - limits:
 
-  a numeric vector of length two specifying the limits of the plotting
-  scale.
+  optional numeric vector of length 2 for the effect axis/color limits
+  (may contain `NA` for partial specification).
 
 - jitter:
 
-  a numeric value specifying the amount of jitter for the data points.
+  numeric amount of jitter for discrete axes when plotting points.
 
 - resolution:
 
-  an integer or vector of two integers specifying the resolution of the
-  raster plot for interactions.
+  integer (or length-2 integer vector for 2D surfaces) specifying the
+  evaluation grid density for continuous variables.
 
 - lumped:
 
-  logical. If `TRUE`, uses the lumped factor levels; if `FALSE`, uses
-  the original levels from the data. Always `FALSE` when
-  `main.effects = TRUE`.
+  logical. If `TRUE` (default), uses lumped factor levels when a
+  variable appears only in main effects or only in interactions;
+  automatically set to `FALSE` for any variable that mixes both.
 
 - ...:
 
-  optional parameters to be passed to the graphing function. Possible
-  arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of
-  them.
+  additional graphical parameters passed to the underlying `dualplot`
+  layer.
+
+- labels:
+
+  optional numeric or character vector of model labels for `"mids"`
+  comparisons.
 
 ## Value
 
-`plot.mid()` produces one or more plots as a side-effect and returns
-`NULL` invisibly.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
+invisibly. `ggmid()` and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return a `"ggplot"` object for a single plot, or a named list of
+`"ggplot"` objects for multiple plots.
 
 ## Details
 
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces a plot from a "mid" object, visualizing a component function of
-the fitted MID model.
+For `"mid"` objects, each element of `terms` produces one plot. A single
+element may be a term label (e.g., `"Wind"`, `"Wind:Temp"`) or a
+formula-like expression string (e.g., `"Wind * Temp + 1"` or
+`"Wind + Temp"`), which is extracted via
+[`subset.mid()`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
+and rendered as a 1D curve/bar chart or a 2D surface depending on the
+number of constituent variables. For 2D plots, the order in which
+variables appear in the term expression determines the x- and y-axes
+(e.g., `"Wind:Temp"` vs `"Temp:Wind"`). If a `formula` is passed (e.g.,
+`~ Wind + Temp`), it is expanded into individual term plots.
 
-The `type` argument controls the visualization style. The default,
-`type = "effect"`, plots the component function itself. In this style,
-the plotting method is automatically selected based on the effect's
-type: a line plot for quantitative main effects; a bar plot for
-qualitative main effects; and a filled contour (level) plot for
-interactions. The `type = "data"` option creates a scatter plot of
-`data`, colored by the values of the component function. The
-`type = "compound"` option combines both approaches, plotting the
-component function alongside the data points.
+The `type` argument selects the visualization style:
+
+- `"effect"` (default): plots the component function(s) alone.
+
+- `"data"`: plots observed points from `data` colored by the component
+  effect.
+
+- `"compound"`: overlays observed points on top of the component
+  function.
+
+- `"series"` (`"mids"` only): transposes the comparison to show effect
+  trends across models for each feature value.
 
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`ggmid`](https://ryo-asashi.github.io/midr/reference/ggmid.md)
-
-## Examples
-
-``` r
-data(diamonds, package = "ggplot2")
-set.seed(42)
-idx <- sample(nrow(diamonds), 1e4)
-mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-#> 'model' not passed: response variable in 'data' is used
-
-# Plot a quantitative main effect
-plot(mid, "carat")
-
-
-# Plot a qualitative main effect
-plot(mid, "clarity")
-
-
-# Plot an interaction effect with data points and a raster layer
-plot(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
-
-
-# Use a different color theme
-plot(mid, "clarity:color", theme = "RdBu")
-```
+[`subset.mid`](https://ryo-asashi.github.io/midr/reference/subset.mid.md),
+[`predict.mid`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)

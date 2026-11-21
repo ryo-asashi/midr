@@ -1,4 +1,4 @@
-# Predict Method for fitted MID Models
+# Predict Method for Fitted MID Models
 
 [`predict()`](https://rdrr.io/r/stats/predict.html) methods for
 obtaining predictions from a fitted MID model ("mid") or a collection of
@@ -12,14 +12,21 @@ retrieve the fitted values from the original data.
 predict(
   object,
   newdata = NULL,
-  na.action = "na.pass",
   type = c("response", "link", "terms"),
-  terms = term.labels(object),
+  terms = NULL,
+  na.action = stats::na.pass,
   ...
 )
 
 # S3 method for class 'mids'
-predict(object, ...)
+predict(
+  object,
+  newdata = NULL,
+  type = c("response", "link", "terms"),
+  terms = NULL,
+  na.action = stats::na.pass,
+  ...
+)
 ```
 
 ## Arguments
@@ -31,13 +38,8 @@ predict(object, ...)
 
 - newdata:
 
-  a data frame of the new observations. If `NULL`, the original fitted
-  values are extracted and returned.
-
-- na.action:
-
-  a function or character string specifying what should happen when the
-  data contain `NA` values.
+  a data frame of the new observations. If not provided, data is
+  extracted based on the function call.
 
 - type:
 
@@ -46,8 +48,14 @@ predict(object, ...)
 
 - terms:
 
-  a character vector of term labels, specifying a subset of component
-  functions to use for predictions.
+  a character vector of term labels or an object coercible to a
+  [`terms.object`](https://rdrr.io/r/stats/terms.object.html),
+  specifying a subset of component functions to use for predictions.
+
+- na.action:
+
+  a function or character string specifying what should happen when the
+  data contain `NA` values.
 
 - ...:
 
@@ -78,7 +86,7 @@ model's component functions, excluding others.
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
-[`get.yhat`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
+[`get_yhat`](https://ryo-asashi.github.io/midr/reference/get_yhat.md)
 
 ## Examples
 

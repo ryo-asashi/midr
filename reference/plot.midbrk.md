@@ -1,8 +1,12 @@
-# Plot MID Breakdown
+# Plot and Compare MID Breakdown
 
-For "midbrk" objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes the
-breakdown of a prediction by component functions.
+Visualize the prediction breakdown for a `"midbrk"` object, or compare
+breakdowns across a `"midbrks"` collection.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
+base graphics, while
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return **ggplot2** objects via the `dualplot` engine.
 
 ## Usage
 
@@ -20,105 +24,119 @@ plot(
   format.args = list(),
   ...
 )
+
+# S3 method for class 'midbrk'
+ggmid(
+  object,
+  type = c("waterfall", "barplot", "dotchart"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("%t=%v", "%t:%t"),
+  format.args = list(),
+  ...
+)
+
+# S3 method for class 'midbrk'
+autoplot(object, ...)
+
+# S3 method for class 'midbrks'
+plot(
+  x,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("%t=%v", "%t:%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'midbrks'
+ggmid(
+  object,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("%t=%v", "%t:%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'midbrks'
+autoplot(object, ...)
 ```
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "midbrk" object to be visualized.
+  a `"midbrk"` or `"midbrks"` object.
 
 - type:
 
-  the plotting style. One of "waterfall", "barplot" or "dotchart".
+  visualization style: for `"midbrk"`, one of `"waterfall"` (default),
+  `"barplot"`, or `"dotchart"`; for `"midbrks"`, one of `"barplot"`
+  (default), `"dotchart"`, or `"series"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  optional color theme name or `"colortheme"` object.
 
 - terms:
 
-  an optional character vector specifying which terms to display.
+  optional character vector specifying which terms/variables to display.
 
 - max.nterms:
 
-  the maximum number of terms to display in the plot. Less important
-  terms will be grouped into a "catchall" category.
+  maximum number of terms to display; remaining terms are aggregated
+  into `others`.
 
 - vline:
 
-  logical. If `TRUE`, a vertical line is drawn at the zero or intercept
-  line.
+  logical. If `TRUE` (default), draws a reference line at zero (or at
+  the intercept for waterfall plots).
 
 - others:
 
-  a character string for the catchall label.
+  character label for the aggregated residual category (default
+  `"others"`).
 
 - pattern:
 
-  a character vector of length one or two specifying the format of the
-  axis labels. The first element is used for main effects (default
-  `"%t = %v"`), and the second is for interactions (default `"%t:%t"`).
-  Use `"%t"` for the term name and `"%v"` for its value.
+  character vector of length 1 or 2 controlling axis label formatting
+  (`"%t"` for variable/term name, `"%v"` for observed value).
 
 - format.args:
 
-  a named list of additional arguments passed to
-  [`format`](https://rdrr.io/r/base/format.html) for formatting the
-  values. Common arguments include `digits`, `nsmall`, and `big.mark`.
+  named list of additional arguments passed to
+  [`format()`](https://rdrr.io/r/base/format.html).
 
 - ...:
 
-  optional parameters passed on to the graphing function. Possible
-  arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of
-  them.
+  additional graphical parameters passed to `dualplot`.
+
+- labels:
+
+  optional numeric or character vector of model labels for `"midbrks"`.
 
 ## Value
 
-`plot.midbrk()` produces a plot as a side effect and returns `NULL`
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
 invisibly.
-
-## Details
-
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces a breakdown plot from a "midbrk" object, visualizing the
-contribution of each component function to a single prediction.
-
-The `type` argument controls the visualization style. The default,
-`type = "waterfall"`, creates a waterfall plot that shows how the
-prediction builds from the intercept, with each term's contribution
-sequentially added or subtracted. The `type = "barplot"` option creates
-a standard bar plot where the length of each bar represents the
-magnitude of the term's contribution. The `type = "dotchart"` option
-creates a dot plot showing the contribution of each term as a point
-connected to a zero baseline.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+return a `"ggplot"` object.
 
 ## See also
 
-[`mid.breakdown`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md),
-[`ggmid.midbrk`](https://ryo-asashi.github.io/midr/reference/ggmid.midbrk.md)
-
-## Examples
-
-``` r
-data(diamonds, package = "ggplot2")
-set.seed(42)
-idx <- sample(nrow(diamonds), 1e4)
-mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-#> 'model' not passed: response variable in 'data' is used
-mbd <- mid.breakdown(mid, diamonds[1L, ])
-
-# Create a waterfall plot
-plot(mbd, type = "waterfall")
-
-
-# Create a bar plot with a different theme
-plot(mbd, type = "barplot", theme = "highlight")
-
-
-# Create a dot chart
-plot(mbd, type = "dotchart", size = 1.5)
-```
+[`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)

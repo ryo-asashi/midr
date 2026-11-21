@@ -1,5 +1,87 @@
 # Changelog
 
+## midr 0.7.0
+
+A major refactoring release modernizing the API, visualization engine,
+and internal data structures.
+
+#### New Features & API Modernization
+
+- Adopted a consistent snake_case naming convention across the package
+  and converted post-hoc interpretation tools into S3 generics:
+  [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
+  [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md),
+  [`eval_conditional()`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
+  `eval_loss()`, `weighted_r2()`,
+  [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md),
+  [`make_encoder()`](https://ryo-asashi.github.io/midr/reference/make_encoder.md),
+  [`make_link()`](https://ryo-asashi.github.io/midr/reference/make_link.md),
+  and
+  [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md).
+- [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
+  and
+  [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
+  now support `by = "variable"` to aggregate main effects and equally
+  split interaction effects into variable-level attributions.
+- [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
+  now accepts multiple `rows` for `"mid"` objects, returning a
+  `"midbrks"` collection for multi-observation comparison.
+- Added [`subset()`](https://rdrr.io/r/base/subset.html) and
+  [`coef()`](https://rdrr.io/r/stats/coef.html) S3 methods for `"mid"`
+  and `"mids"` objects to extract submodels and component effects using
+  standard R modeling idioms, along with
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) methods
+  for `"midimp"`, `"midbrk"`, and `"midcon"` objects.
+- `eval_loss()` evaluates surrogate fidelity and prediction error
+  directly against a target `model` (via
+  [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md))
+  or observed response.
+
+#### Visualization & Color Themes
+
+- Unified [`plot()`](https://rdrr.io/r/graphics/plot.default.html),
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
+  and
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  across `"mid"`, `"midimp"`, `"midbrk"`, `"midcon"`, and their
+  collection classes onto a dual-backend (`graphics` / `ggplot2`)
+  rendering engine with consistent behavior and
+  [`theme_monograph()`](https://ryo-asashi.github.io/midr/reference/theme_monograph.md)
+  /
+  [`par_monograph()`](https://ryo-asashi.github.io/midr/reference/par_monograph.md)
+  styling.
+- Replaced the legacy `color.theme()` utilities with the internalized
+  `colortheme` engine
+  ([`colortheme()`](https://ryo-asashi.github.io/midr/reference/colortheme.md),
+  [`colorthemes()`](https://ryo-asashi.github.io/midr/reference/colorthemes.md),
+  [`register_colortheme()`](https://ryo-asashi.github.io/midr/reference/colorthemes.md),
+  [`map_to_colors()`](https://ryo-asashi.github.io/midr/reference/map_to_colors.md),
+  [`scale_color_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md),
+  [`scale_fill_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md),
+  [`as_palette()`](https://ryo-asashi.github.io/midr/reference/as_palette.md),
+  [`as_ramp()`](https://ryo-asashi.github.io/midr/reference/as_palette.md)).
+- [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md)
+  now provides a single interface for package verbosity, solver hooks,
+  plotting backend (`engine`, `gg.theme`), and default color themes
+  (`sequential`, `diverging`, `qualitative`).
+
+#### Improvements & Dependencies
+
+- Streamlined
+  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
+  and encoder internals (`encoder$frame` and getter helpers) to reduce
+  memory footprint and copy-on-modify overhead.
+- Removed the `Imports` dependency on **rlang**.
+
+#### Deprecated & Removed
+
+- Legacy dot-case functions (including `mid.importance()`,
+  `mid.breakdown()`, `mid.conditional()`, `get.yhat()`, `color.theme()`,
+  `weighted.loss()`, `mid.terms()`, `mid.effect()`, and `mid.plots()`)
+  are deprecated or superseded by their snake_case, `eval_*()`,
+  [`subset()`](https://rdrr.io/r/base/subset.html), and
+  [`coef()`](https://rdrr.io/r/stats/coef.html) counterparts.
+
 ## midr 0.6.2.900
 
 The **midr** package is currently undergoing a through reconstruction
@@ -7,41 +89,32 @@ for the upcoming release.
 
 #### New Features
 
-- [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) and
-  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) now accept
-  the `terms` argument, allowing them to produce multiple plots.
+- [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) now
+  accept the `terms` argument, allowing them to produce multiple plots.
 - The handling of “terms” objects has been improved: functions can now
   accept terms such as `plot(mid, "I(1:10)")` and
   `ggmid(mid, "x * y + 1")`.
-- [`to.colors()`](https://ryo-asashi.github.io/midr/reference/to.colors.md)
-  is exported to enhance the color handling capability for base R
-  graphics.
-- [`midr.options()`](https://ryo-asashi.github.io/midr/reference/midr.options.md)
-  is implemented for control global options including `midr.solver.*`,
-  `midr.verbosity` and `midr.color.theme.*` (for `registry` and three
-  color theme types).
+- `to.colors()` is exported to enhance the color handling capability for
+  base R graphics.
+- `midr.options()` is implemented for control global options including
+  `midr.solver.*`, `midr.verbosity` and `midr.color.theme.*` (for
+  `registry` and three color theme types).
 
 #### Deprecated & Defunct
 
-- [`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
-  will be deprecated to standardize the API naming conventions. Please
-  use
-  [`color.theme.register()`](https://ryo-asashi.github.io/midr/reference/color.theme.register.md)
-  instead.
-- `color.theme.info()` is renamed to
-  [`color.themes()`](https://ryo-asashi.github.io/midr/reference/color.themes.md).
+- `set.color.theme()` will be deprecated to standardize the API naming
+  conventions. Please use `color.theme.register()` instead.
+- `color.theme.info()` is renamed to `color.themes()`.
 - `color.theme.env()` is deprecated. To access the color theme registry,
   please use `midr.options("color.theme.registry")` instead.
 - `mid.terms()` and `mid.effect()` are deprecated and replaced by
-  [`term.labels()`](https://ryo-asashi.github.io/midr/reference/term.labels.md)
-  and
-  [`term.effect()`](https://ryo-asashi.github.io/midr/reference/term.effect.md),
-  which can be applied to any additive model.
+  `term.labels()` and `term.effect()`, which can be applied to any
+  additive model.
 - `mid.plots()` is deprecated, superseded by the new capabilities of
-  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) and
-  [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
-- `par.midr()` is renamed to
-  [`midr.par()`](https://ryo-asashi.github.io/midr/reference/midr.options.md).
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
+- `par.midr()` is renamed to `midr.par()`.
 
 ## midr 0.6.1.903
 
@@ -67,25 +140,20 @@ for the upcoming release.
 CRAN release: 2026-05-01
 
 - Fixed methods of
-  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/ggmid.md) for
-  better compatibility with **ggplot2** ecosystem.
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+  for better compatibility with **ggplot2** ecosystem.
 
 ## midr 0.6.0.904
 
-- Fixed methods of
-  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
-  for models created with packages including “model_fit”, “workflow” and
-  “rpf”.
-- [`theme_midr()`](https://ryo-asashi.github.io/midr/reference/theme_midr.md)
-  now accepts optional arguments `...` for new parameters introduced
-  from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
+- Fixed methods of `get.yhat()` for models created with packages
+  including “model_fit”, “workflow” and “rpf”.
+- `theme_midr()` now accepts optional arguments `...` for new parameters
+  introduced from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
 
 ## midr 0.6.0.903
 
-- Added methods of
-  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
-  for models created with packages including **aorsf**, **flexsurv** and
-  **mboost**.
+- Added methods of `get.yhat()` for models created with packages
+  including **aorsf**, **flexsurv** and **mboost**.
 
 ## midr 0.6.0.902
 
@@ -122,10 +190,8 @@ CRAN release: 2026-03-08
 
 ## midr 0.5.3.904
 
-- Fixed memory issues in
-  [`get.link()`](https://ryo-asashi.github.io/midr/reference/get.link.md)
-  and added support for parametric link functions (including Box-Cox,
-  Yeo-Johnson, Robit, and Scobit).
+- Fixed memory issues in `get.link()` and added support for parametric
+  link functions (including Box-Cox, Yeo-Johnson, Robit, and Scobit).
 
 ## midr 0.5.3.903
 
@@ -147,8 +213,7 @@ CRAN release: 2026-03-08
 - The `digits` argument of
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
   now defaults to `NULL`.
-- [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
-  has new method for `workflow` objects.
+- `get.yhat()` has new method for `workflow` objects.
 
 ## midr 0.5.3.901
 
@@ -213,9 +278,7 @@ efficiency improvements for large-scale data analysis.
 
 ## midr 0.5.2.906
 
-- The `format` argument in
-  [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/mid.breakdown.md)
-  is deprecated.
+- The `format` argument in `mid.breakdown()` is deprecated.
 - `plot.mid.breakdown()` and `ggmid.mid.breakdown()` now have a new
   argument `format.args`, which is passed to
   [`base::format()`](https://rdrr.io/r/base/format.html) to format the
@@ -238,15 +301,13 @@ efficiency improvements for large-scale data analysis.
   term-wise decomposition of the fitted values).
 - Optimized [`predict()`](https://rdrr.io/r/stats/predict.html) engine:
   Re-implemented the prediction logic using a matrix-free approach.
-- On-demand Decomposition: Functions like
-  [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
-  now perform term-wise decomposition on-the-fly using the new optimized
-  prediction engine.
-- [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/mid.importance.md)
-  introduced a new argument `max.nkeeps` (default: 10,000). While
-  importance scores are calculated using the full dataset for maximum
-  accuracy, the function now optionally retains only a weighted random
-  sample of the term-wise predictions.
+- On-demand Decomposition: Functions like `mid.importance()` now perform
+  term-wise decomposition on-the-fly using the new optimized prediction
+  engine.
+- `mid.importance()` introduced a new argument `max.nkeeps` (default:
+  10,000). While importance scores are calculated using the full dataset
+  for maximum accuracy, the function now optionally retains only a
+  weighted random sample of the term-wise predictions.
 - Standardized `predict` outputs: For `type = "terms"`, the intercept is
   now stored in the `constant` attribute of the returned matrix,
   aligning with standard R conventions (e.g., `predict.lm`).
@@ -260,8 +321,8 @@ efficiency improvements for large-scale data analysis.
 
 ## midr 0.5.2.902
 
-- [`weighted.loss()`](https://ryo-asashi.github.io/midr/reference/weighted.loss.md)
-  supports the R-squared metrics by passing `method = "r2"`.
+- `weighted.loss()` supports the R-squared metrics by passing
+  `method = "r2"`.
 
 ## midr 0.5.2.901
 
@@ -299,15 +360,10 @@ Second release on CRAN.
 
 ## midr 0.5.0.909
 
-- Vectorized the design matrix encoding process in
-  [`factor.encoder()`](https://ryo-asashi.github.io/midr/reference/factor.encoder.md)
-  and
-  [`numeric.encoder()`](https://ryo-asashi.github.io/midr/reference/numeric.encoder.md)
-  for improved performance.
+- Vectorized the design matrix encoding process in `factor.encoder()`
+  and `numeric.encoder()` for improved performance.
 - Unified `weighted.rmse()` and its related functions into a single,
-  more versatile
-  [`weighted.loss()`](https://ryo-asashi.github.io/midr/reference/weighted.loss.md)
-  function.
+  more versatile `weighted.loss()` function.
 - Updated and improved various help documents for clarity and
   completeness.
 - Changed some argument names for consistency (e.g., changed `max.bars`
@@ -317,17 +373,14 @@ Second release on CRAN.
 
 ## midr 0.5.0.908
 
-- Rewrote
-  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  to significantly enhance its functionality and flexibility.
+- Rewrote `color.theme()` to significantly enhance its functionality and
+  flexibility.
 
 ## midr 0.5.0.906
 
-- Fixed a memory leak issue where
-  [`numeric.encoder()`](https://ryo-asashi.github.io/midr/reference/numeric.encoder.md)
-  and
-  [`factor.encoder()`](https://ryo-asashi.github.io/midr/reference/factor.encoder.md)
-  held an unnecessary reference to the execution environment of
+- Fixed a memory leak issue where `numeric.encoder()` and
+  `factor.encoder()` held an unnecessary reference to the execution
+  environment of
   [`interpret.default()`](https://ryo-asashi.github.io/midr/reference/interpret.md).
 - Updated the hex logo and favicons.
 
@@ -335,13 +388,10 @@ Second release on CRAN.
 
 - Rewrote
   [`interpret.formula()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
-  and
-  [`factor.encoder()`](https://ryo-asashi.github.io/midr/reference/factor.encoder.md)
-  to correctly support `subset` and `drop.unused.levels` arguments.
-- Updated
-  [`get.yhat()`](https://ryo-asashi.github.io/midr/reference/get.yhat.md)
-  methods to ensure prediction outputs always have the same length as
-  the number of input observations.
+  and `factor.encoder()` to correctly support `subset` and
+  `drop.unused.levels` arguments.
+- Updated `get.yhat()` methods to ensure prediction outputs always have
+  the same length as the number of input observations.
 
 ## midr 0.5.0.904
 
@@ -361,9 +411,8 @@ Second release on CRAN.
 - Updated the automatic determination method for the number of knots
   (`k`) in
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md).
-- Added support for type suffixes in
-  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for easier theme specification.
+- Added support for type suffixes in `color.theme()` for easier theme
+  specification.
 
 ## midr 0.5.0.902
 
@@ -379,8 +428,7 @@ Second release on CRAN.
 - Corrected the “HCL” color theme to be properly categorized as a
   “qualitative” theme.
 - Changed the rounding method used in numeric “encoder” objects.
-- Updated the article and examples related to
-  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/color.theme.md).
+- Updated the article and examples related to `color.theme()`.
 
 ## midr 0.5.0.900
 

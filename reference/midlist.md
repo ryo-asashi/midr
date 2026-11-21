@@ -19,7 +19,7 @@ as.midlist(x)
 
   objects to be combined, possibly named. All inputs must inherit from
   exactly one of the supported base classes: "mid", "midimp", "midcon",
-  or "midbrk". Collection classes (e.g., "mids"-"midrib",
+  or "midbrk". Collection classes (e.g., "midrib"-"mids",
   "midimps"-"midlist") are also accepted and will be flattened
   appropriately.
 

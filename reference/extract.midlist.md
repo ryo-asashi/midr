@@ -1,4 +1,4 @@
-# Subset MID Objects
+# Subset MID Collection Objects
 
 S3 methods to extract parts of a "midlist" or "midrib" collection
 object.
@@ -86,6 +86,6 @@ class(mid)
 
 # Subset the collection to keep only the first two models using [
 sub <- collection[1:2]
-class(sub) # Maintains the collection class (e.g., "mids"-"midrib")
+class(sub) # Maintains the collection class (e.g., "midrib"-"mids")
 #> [1] "mids"   "midrib"
 ```
