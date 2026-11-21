@@ -1,7 +1,7 @@
 Package: midr
 Type: Package
 Title: Learning from Black-Box Models by Maximum Interpretation Decomposition
-Version: 0.6.2.900
+Version: 0.7.0
 Authors@R: c(
     person("Ryoichi", "Asashiba", email = "ryoichi.asashiba@gmail.com",
            role = c("aut", "cre"), comment = c(ORCID = "0009-0001-9532-7000")),
@@ -14,7 +14,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  graphics, grDevices, Rcpp, RcppEigen, rlang, stats, utils
+  graphics, grDevices, Rcpp, RcppEigen, stats, utils
 Suggests:
   datasets, ggplot2, khroma, knitr, RColorBrewer, rmarkdown, scales, testthat, viridisLite
 Config/testthat/edition: 3

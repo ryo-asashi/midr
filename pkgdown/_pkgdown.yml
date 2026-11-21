@@ -27,21 +27,21 @@ navbar:
       text: Articles
       menu:
         - text: "Package Articles"
-          href: articles/index.html
-        - text: "- Interpretation of Regression Models"
-          href: articles/regression.html
-        - text: "- Interpretation of Classification Models"
-          href: articles/classification.html
-        - text: "- Interpretation of Survival Models"
-          href: articles/survival.html
+        #   href: articles/index.html
+        # - text: "- Interpretation of Regression Models"
+        #   href: articles/regression.html
+        # - text: "- Interpretation of Classification Models"
+        #   href: articles/classification.html
+        # - text: "- Interpretation of Survival Models"
+        #   href: articles/survival.html
         # - text: "- Visualization with graphics package"
         #   href: articles/graphics.html
-        - text: "- Visualization with ggplot2 package"
-          href: articles/ggplot2.html
-        - text: "- Getting Started with MID Collections"
-          href: articles/collection.html
-        - text: "- Getting Started with Color Themes"
-          href: articles/colortheme.html
+        # - text: "- Visualization with ggplot2 package"
+        #   href: articles/ggplot2.html
+        # - text: "- Getting Started with MID Collections"
+        #   href: articles/collection.html
+        # - text: "- Getting Started with Color Themes"
+        #   href: articles/colortheme.html
         - text: "Publications"
         - text: "- Working Paper (arXiv)"
           href: https://arxiv.org/abs/2506.08338
@@ -52,18 +52,18 @@ navbar:
         - text: "- ICA2026 Tokyo (R Demo)"
           href: https://ryo-asashi.github.io/ICA2026/
 
-articles:
-- title: Interpret black-box models with midr
-  contents:
-  - articles/regression
-  - articles/classification
-  - articles/survival
-- title: Advanced Tools & Customization
-  contents:
-  # - articles/graphics
-  - articles/ggplot2
-  - articles/collection
-  - articles/colortheme
+# articles:
+# - title: Interpret black-box models with midr
+#   contents:
+#   - articles/regression
+#   - articles/classification
+#   - articles/survival
+# - title: Advanced Tools & Customization
+#   contents:
+#   # - articles/graphics
+#   - articles/ggplot2
+#   - articles/collection
+#   - articles/colortheme
 
 reference:
 - title: Fit MID models
@@ -71,13 +71,12 @@ reference:
   - interpret
 - subtitle: Methods
   contents:
-  - ggmid
-  - ggmid.mids
   - plot.mid
-  - plot.mids
   - predict.mid
   - print.mid
   - summary.mid
+  - subset.mid
+  - coef.mid
 - title: Combine MID objects
   contents:
   - midlist
@@ -87,51 +86,30 @@ reference:
   - labels.midlist
 - title: Importance of effects
   contents:
-  - mid.importance
+  - eval_importance
 - subtitle: Methods
   contents:
-  - ggmid.midimp
-  - ggmid.midimps
   - plot.midimp
-  - plot.midimps
 - title: Breakdown of predictions
   contents:
-  - mid.breakdown
+  - eval_breakdown
 - subtitle: Methods
   contents:
-  - ggmid.midbrk
-  - ggmid.midbrks
   - plot.midbrk
-  - plot.midbrks
 - title: Conditional expectations
   contents:
-  - mid.conditional
+  - eval_conditional
 - subtitle: Methods
   contents:
-  - ggmid.midcon
-  - ggmid.midcons
   - plot.midcon
-  - plot.midcons
 - title: Other functions
   contents:
-  - get.link
-  - get.yhat
-  - term.effect
-  - term.labels
-  - weighted.loss
-- subtitle: Color themes
-  contents:
-  - color.theme
-  - color.theme.register
-  - color.themes
-  - scale_color_theme
-  - to.colors
-- subtitle: Variable encoders
-  contents:
-  - factor.encoder
-  - numeric.encoder
+  - get_yhat
+  - make_link
+  - make_encoder
 - subtitle: Miscellaneous
   contents:
-  - midr.options
+  - midr_options
   - shapviz.mid
-  - theme_midr
+  - theme_monograph
+  - par_monograph

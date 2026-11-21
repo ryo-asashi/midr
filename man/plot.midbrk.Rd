@@ -2,7 +2,12 @@
 % Please edit documentation in R/plot_midbrk.R
 \name{plot.midbrk}
 \alias{plot.midbrk}
-\title{Plot MID Breakdown}
+\alias{ggmid.midbrk}
+\alias{autoplot.midbrk}
+\alias{plot.midbrks}
+\alias{ggmid.midbrks}
+\alias{autoplot.midbrks}
+\title{Plot and Compare MID Breakdown}
 \usage{
 \method{plot}{midbrk}(
   x,
@@ -16,58 +21,88 @@
   format.args = list(),
   ...
 )
+
+\method{ggmid}{midbrk}(
+  object,
+  type = c("waterfall", "barplot", "dotchart"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
+  ...
+)
+
+\method{autoplot}{midbrk}(object, ...)
+
+\method{plot}{midbrks}(
+  x,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
+
+\method{ggmid}{midbrks}(
+  object,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 15L,
+  vline = TRUE,
+  others = "others",
+  pattern = c("\%t=\%v", "\%t:\%t"),
+  format.args = list(),
+  labels = NULL,
+  ...
+)
+
+\method{autoplot}{midbrks}(object, ...)
 }
 \arguments{
-\item{x}{a "midbrk" object to be visualized.}
+\item{x, object}{a \code{"midbrk"} or \code{"midbrks"} object.}
 
-\item{type}{the plotting style. One of "waterfall", "barplot" or "dotchart".}
+\item{type}{visualization style:
+for \code{"midbrk"}, one of \code{"waterfall"} (default), \code{"barplot"}, or \code{"dotchart"};
+for \code{"midbrks"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.}
 
-\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
+\item{theme}{optional color theme name or \code{"colortheme"} object.}
 
-\item{terms}{an optional character vector specifying which terms to display.}
+\item{terms}{optional character vector specifying which terms/variables to display.}
 
-\item{max.nterms}{the maximum number of terms to display in the plot. Less important terms will be grouped into a "catchall" category.}
+\item{max.nterms}{maximum number of terms to display; remaining terms are aggregated into \code{others}.}
 
-\item{vline}{logical. If \code{TRUE}, a vertical line is drawn at the zero or intercept line.}
+\item{vline}{logical. If \code{TRUE} (default), draws a reference line at zero (or at the intercept for waterfall plots).}
 
-\item{others}{a character string for the catchall label.}
+\item{others}{character label for the aggregated residual category (default \code{"others"}).}
 
-\item{pattern}{a character vector of length one or two specifying the format of the axis labels. The first element is used for main effects (default \code{"\%t = \%v"}), and the second is for interactions (default \code{"\%t:\%t"}). Use \code{"\%t"} for the term name and \code{"\%v"} for its value.}
+\item{pattern}{character vector of length 1 or 2 controlling axis label formatting
+(\code{"\%t"} for variable/term name, \code{"\%v"} for observed value).}
 
-\item{format.args}{a named list of additional arguments passed to \code{\link[base]{format}} for formatting the values. Common arguments include \code{digits}, \code{nsmall}, and \code{big.mark}.}
+\item{format.args}{named list of additional arguments passed to \code{\link[base]{format}()}.}
 
-\item{...}{optional parameters passed on to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{...}{additional graphical parameters passed to \code{dualplot}.}
+
+\item{labels}{optional numeric or character vector of model labels for \code{"midbrks"}.}
 }
 \value{
-\code{plot.midbrk()} produces a plot as a side effect and returns \code{NULL} invisibly.
+\code{plot()} returns \code{NULL} invisibly.
+\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
 }
 \description{
-For "midbrk" objects, \code{plot()} visualizes the breakdown of a prediction by component functions.
-}
-\details{
-This is an S3 method for the \code{plot()} generic that produces a breakdown plot from a "midbrk" object, visualizing the contribution of each component function to a single prediction.
-
-The \code{type} argument controls the visualization style.
-The default, \code{type = "waterfall"}, creates a waterfall plot that shows how the prediction builds from the intercept, with each term's contribution sequentially added or subtracted.
-The \code{type = "barplot"} option creates a standard bar plot where the length of each bar represents the magnitude of the term's contribution.
-The \code{type = "dotchart"} option creates a dot plot showing the contribution of each term as a point connected to a zero baseline.
-}
-\examples{
-data(diamonds, package = "ggplot2")
-set.seed(42)
-idx <- sample(nrow(diamonds), 1e4)
-mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-mbd <- mid.breakdown(mid, diamonds[1L, ])
-
-# Create a waterfall plot
-plot(mbd, type = "waterfall")
-
-# Create a bar plot with a different theme
-plot(mbd, type = "barplot", theme = "highlight")
-
-# Create a dot chart
-plot(mbd, type = "dotchart", size = 1.5)
+Visualize the prediction breakdown for a \code{"midbrk"} object, or compare
+breakdowns across a \code{"midbrks"} collection.
+\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
+return \strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \seealso{
-\code{\link{mid.breakdown}}, \code{\link{ggmid.midbrk}}
+\code{\link{eval_breakdown}}
 }

@@ -1,147 +1,474 @@
-#' Plot MID Conditional Expectation
+# R/plot_midcon.R
+
+#' Plot and Compare MID Conditional Expectations (ICE)
 #'
 #' @description
-#' For "midcon" objects, \code{plot()} visualizes Individual Conditional Expectation (ICE) curves derived from a fitted MID model.
+#' Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"}
+#' object, or compare ICE curves across a \code{"midcons"} collection.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
+#' return \strong{ggplot2} objects.
 #'
-#' @details
-#' This is an S3 method for the \code{plot()} generic that produces ICE curves from a "midcon" object.
-#' ICE plots are a model-agnostic tool for visualizing how a model's prediction for a single observation changes as one feature varies.
-#' This function plots one line for each observation in the data.
+#' @param x,object a \code{"midcon"} or \code{"midcons"} object.
+#' @param type visualization style:
+#'   for \code{"midcon"}, one of \code{"iceplot"} (default) or \code{"centered"};
+#'   for \code{"midcons"}, one of \code{"iceplot"} (default), \code{"centered"}, or \code{"series"}.
+#' @param theme optional color theme name or \code{"colortheme"} object.
+#' @param term optional term label to plot a single component's ICE curve (requires \code{keep.effects = TRUE}).
+#' @param var.alpha,var.color,var.linetype,var.linewidth optional variable names or
+#'   expressions evaluated in \code{observed} to map aesthetics across curves.
+#' @param reference integer index of the grid point used for centering when \code{type = "centered"}.
+#' @param points logical. If \code{TRUE} (default), overlays observed predictions for \code{"midcon"}.
+#' @param sample optional character vector of observation IDs (\code{.id}) to display.
+#' @param labels optional numeric or character vector of model labels for \code{"midcons"}.
+#' @param ... additional graphical parameters.
 #'
-#' The \code{type} argument controls the visualization style:
-#' The default, \code{type = "iceplot"}, plots the raw ICE curves.
-#' The \code{type = "centered"} option creates the centered ICE (c-ICE) plot, where each curve is shifted to start at zero, making it easier to compare the slopes of the curves.
-#'
-#' The \code{var.color}, \code{var.alpha}, etc., arguments allow you to map aesthetics to other variables in your data using (possibly) unquoted expressions.
-#'
-#' @param x a "midcon" object to be visualized.
-#' @param type the plotting style. One of "iceplot" or "centered".
-#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
-#' @param term an optional character string specifying an interaction term. If passed, the ICE curve for the specified term is plotted.
-#' @param var.alpha a variable name or expression to map to the alpha aesthetic.
-#' @param var.color a variable name or expression to map to the color aesthetic.
-#' @param var.linetype a variable name or expression to map to the linetype aesthetic.
-#' @param var.linewidth a variable name or expression to map to the linewidth aesthetic.
-#' @param reference an integer specifying the index of the evaluation point to use as the reference for centering the c-ICE plot.
-#' @param points logical. If \code{TRUE}, points representing the actual predictions for each observation are plotted.
-#' @param sample an optional vector specifying the names of observations to be plotted.
-#' @param ... optional parameters passed on to the graphing functions.
-#'
-#' @examples
-#' data(airquality, package = "datasets")
-#' library(midr)
-#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = 0.1)
-#' ice <- mid.conditional(mid, "Temp", data = airquality)
-#'
-#' # Create an ICE plot, coloring lines by 'Wind'
-#' plot(ice, var.color = "Wind")
-#'
-#' # Create a centered ICE plot, mapping color and linetype to other variables
-#' plot(ice, type = "centered", theme = "Purple-Yellow",
-#'      var.color = factor(Month), var.linetype = Wind > 10)
 #' @returns
-#' \code{plot.midcon()} produces an ICE plot as a side-effect and returns \code{NULL} invisibly.
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{mid.conditional}}, \code{\link{ggmid.midcon}}
+#' @seealso \code{\link{eval_conditional}}
 #'
+#' @name plot.midcon
+#' @rdname plot.midcon
 #' @exportS3Method base::plot
 #'
 plot.midcon <- function(
     x, type = c("iceplot", "centered"), theme = NULL, term = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
-    reference = 1L, points = TRUE, sample = NULL, ...) {
-  dots <- override(list(), list(...))
-  type <- match.arg(type)
-  theme <- color.theme(theme)
-  use.theme <- inherits(theme, "color.theme")
+    reference = 1L, points = TRUE, sample = NULL, ...
+) {
+  render_midcon(
+    x = x, type = type, theme = theme, term = term,
+    col_expr = substitute(var.color), alpha_expr = substitute(var.alpha),
+    lty_expr = substitute(var.linetype), lwd_expr = substitute(var.linewidth),
+    reference = reference, points = points, sample = sample,
+    engine = "graphics", ...
+  )
+  invisible(NULL)
+}
+
+
+#' @rdname plot.midcon
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midcon <- function(
+    object, type = c("iceplot", "centered"), theme = NULL, term = NULL,
+    var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
+    reference = 1L, points = TRUE, sample = NULL, ...
+) {
+  render_midcon(
+    x = object, type = type, theme = theme, term = term,
+    col_expr = substitute(var.color), alpha_expr = substitute(var.alpha),
+    lty_expr = substitute(var.linetype), lwd_expr = substitute(var.linewidth),
+    reference = reference, points = points, sample = sample,
+    engine = "ggplot2", ...
+  )
+}
+
+
+#' @rdname plot.midcon
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.midcon <- function(object, ...) {
+  ggmid(object, ...)
+}
+
+
+#' @rdname plot.midcon
+#' @exportS3Method base::plot
+#'
+plot.midcons <- function(
+    x, type = c("iceplot", "centered", "series"), theme = NULL,
+    var.alpha = NULL, var.linetype = NULL, var.linewidth = NULL,
+    reference = 1L, sample = NULL, labels = NULL, ...
+) {
+  render_midcons(
+    x = x, type = type, theme = theme,
+    alpha_expr = substitute(var.alpha), lty_expr = substitute(var.linetype),
+    lwd_expr = substitute(var.linewidth),
+    reference = reference, sample = sample, labels = labels,
+    engine = "graphics", ...
+  )
+  invisible(NULL)
+}
+
+
+#' @rdname plot.midcon
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midcons <- function(
+    object, type = c("iceplot", "centered", "series"), theme = NULL,
+    var.alpha = NULL, var.linetype = NULL, var.linewidth = NULL,
+    reference = 1L, sample = NULL, labels = NULL, ...
+) {
+  render_midcons(
+    x = object, type = type, theme = theme,
+    alpha_expr = substitute(var.alpha), lty_expr = substitute(var.linetype),
+    lwd_expr = substitute(var.linewidth),
+    reference = reference, sample = sample, labels = labels,
+    engine = "ggplot2", ...
+  )
+}
+
+
+#' @rdname plot.midcon
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.midcons <- function(object, ...) {
+  ggmid(object, ...)
+}
+
+
+# internal rendering engines ----
+
+eval_var_expr <- function(expr, env_df) {
+  if (is.null(expr)) return(NULL)
+  if (is.character(expr) && length(expr) == 1L) {
+    if (expr %in% names(env_df)) return(env_df[[expr]])
+    expr <- str2lang(expr)
+  }
+  eval(expr, envir = env_df, enclos = parent.frame())
+}
+
+rescale01 <- function(x) {
+  if (is_discrete(x)) x <- as.numeric(factor(x))
+  rng <- range(x, na.rm = TRUE, finite = TRUE)
+  if (!all(is.finite(rng)) || diff(rng) == 0) return(rep(0.5, length(x)))
+  (x - rng[1L]) / diff(rng)
+}
+
+render_midcon <- function(
+    x, type, theme, term, col_expr, alpha_expr, lty_expr, lwd_expr,
+    reference, points, sample, engine, ...
+) {
+  dots <- list(...)
+  type <- match.arg(type, c("iceplot", "centered"))
   variable <- x$variable
   obs <- x$observed
   con <- x$conditional
   values <- x$values
   yvar <- "yhat"
+
   if (!is.null(term)) {
-    if (is.null(x$conditional.effects))
-      stop("the term effects are not stored in the object")
-    term <- match.labels(term, term.labels(x))
-    if (is.na(term)) stop("specified 'term' is not found in 'x'")
+    if (is.null(x$conditional.effects)) {
+      stop("term effects are not stored in 'x' (re-run with keep.effects = TRUE)", call. = FALSE)
+    }
+    term <- match_labels(term, attr(x, "term.labels", exact = TRUE), nomatch = "NA")
+    if (is.na(term)) stop("specified 'term' is not found in 'x'", call. = FALSE)
     yvar <- paste0("mid(", term, ")")
-    obs[, yvar] <- x$observed.effects[, term]
-    con[, yvar] <- x$conditional.effects[, term]
+    obs[[yvar]] <- x$observed.effects[, term]
+    con[[yvar]] <- x$conditional.effects[, term]
   }
+
   if (type == "centered") {
-    if (reference < 0) reference <- length(values)
-    refval <- values[min(length(values), max(1L, reference))]
+    if (reference < 0L) reference <- length(values)
+    refval <- values[min(length(values), max(1L, as.integer(reference)))]
     ref <- con[con[[variable]] == refval, , drop = FALSE]
     ynew <- paste0("centered ", yvar)
-    obs[, ynew] <- obs[, yvar] - ref[[yvar]][match(obs$.id, ref$.id)]
-    con[, ynew] <- con[, yvar] - ref[[yvar]][match(con$.id, ref$.id)]
+    obs[[ynew]] <- obs[[yvar]] - ref[[yvar]][match(obs$.id, ref$.id)]
+    con[[ynew]] <- con[[yvar]] - ref[[yvar]][match(con$.id, ref$.id)]
     yvar <- ynew
   }
+
   if (!is.null(sample)) {
-    obs <- obs[obs$.id %in% sample, ]
-    con <- con[con$.id %in% sample, ]
+    obs <- obs[obs$.id %in% sample, , drop = FALSE]
+    con <- con[con$.id %in% sample, , drop = FALSE]
   }
   n <- nrow(obs)
   if (n == 0L) {
     message("no observations found")
     return(invisible(NULL))
   }
-  mat <- matrix(NA_real_, ncol = n, nrow = length(values),
-                dimnames = list(as.character(values), obs$.id))
-  cols <- match(con$.id, obs$.id)
-  rows <- match(con[[variable]], values)
-  ok <- !is.na(rows) & !is.na(cols)
-  mat[cbind(rows[ok], cols[ok])] <- con[[yvar]][ok]
-  aes <- list(col = 1, lty = 1, lwd = 1, alpha = 1)
-  if (!is.null(colexpr <- substitute(var.color))) {
-    if (is.character(colexpr)) colexpr <- str2lang(colexpr)
-    ref <- eval(colexpr, envir = obs)
-    if (!use.theme)
-      theme <- color.theme.defaults(if (is.discrete(ref)) "qual" else "seq")
-    aes$col <- to.colors(ref, theme)
+
+  col_val <- eval_var_expr(col_expr, obs)
+  alpha_val <- eval_var_expr(alpha_expr, obs)
+  lty_val <- eval_var_expr(lty_expr, obs)
+  lwd_val <- eval_var_expr(lwd_expr, obs)
+
+  if (!is.null(col_val) && is.null(theme)) {
+    theme <- colortheme_default(if (is_discrete(col_val)) "qualitative" else "sequential")
   }
-  if (!is.null(alphaexpr <- substitute(var.alpha))) {
-    if (is.character(alphaexpr)) alphaexpr <- str2lang(alphaexpr)
-    ref <- rescale(eval(alphaexpr, envir = obs))
-    aes$alpha <- ref * .75 + .25
-  }
-  if (!is.null(ltyexpr <- substitute(var.linetype))) {
-    if (is.character(ltyexpr)) ltyexpr <- str2lang(ltyexpr)
-    ref <- rescale(eval(ltyexpr, envir = obs))
-    aes$lty <- pmin(ref * 6 + 1, 6L)
-  }
-  if (!is.null(lwdexpr <- substitute(var.linewidth))) {
-    if (is.character(lwdexpr)) lwdexpr <- str2lang(lwdexpr)
-    ref <- rescale(eval(lwdexpr, envir = obs))
-    aes$lwd <- ref * 3
-  }
-  fv <- is.discrete(values)
-  if (fv) flvs <- levels(factor(values))
-  xvals <- if (fv) seq_along(flvs) else values
-  args <- list(
-    x = xvals,
-    xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
-    xlab = variable, ylab = yvar, type = "n", xaxt = if (fv) "n"
-    )
-  args <- set.alpha(override(args, dots), on = "col")
-  do.call(graphics::plot.default, args)
-  if (fv)
-    graphics::axis(side = 1L, at = seq_along(values), labels = flvs)
-  args <- list(
-    x = xvals, y = mat, type = "l", add = TRUE,
-    col = aes$col, lty = aes$lty, lwd = aes$lwd, alpha = aes$alpha
-  )
-  args <- set.alpha(override(args, dots), on = "col")
-  do.call(graphics::matplot, args)
-  if (points) {
-    if (fv) {
-      obs[, variable] <- factor(obs[ , variable], levels = flvs)
-      if (!is.null(attr(values, "others")))
-        obs[is.na(obs[, variable]), variable] <- attr(values, "others")
+
+  if (engine == "ggplot2") {
+    check_ggplot2()
+    idx <- match(con$.id, obs$.id)
+    con$.x <- con[[variable]]
+    con$.y <- con[[yvar]]
+    obs$.x <- obs[[variable]]
+    obs$.y <- obs[[yvar]]
+
+    aes_map <- ggplot2::aes(x = .data[[".x"]], y = .data[[".y"]], group = .data[[".id"]])
+    legend_on <- character(0L)
+    ltitle <- NULL
+    if (!is.null(col_val)) {
+      con$.cval <- col_val[idx]
+      obs$.cval <- col_val
+      aes_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
+      legend_on <- "color"
+      ltitle <- if (is.character(col_expr)) col_expr else deparse(col_expr)[1L]
     }
-    args <- list(x = obs[, variable], y = obs[, yvar], pch = 16L, col = aes$col)
-    args <- set.alpha(override(args, dots), on = "col")
-    do.call(graphics::points.default, args)
+    if (!is.null(alpha_val)) {
+      con$.aval <- alpha_val[idx]
+      aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
+    }
+    if (!is.null(lty_val)) {
+      con$.lty <- if (is_discrete(lty_val)) lty_val[idx] else factor(lty_val[idx])
+      aes_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
+    }
+    if (!is.null(lwd_val)) {
+      con$.lwd <- lwd_val[idx]
+      aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
+    }
+
+    pl <- ggplot2::ggplot(con, aes_map) + layer_line(...)
+    if (isTRUE(points)) {
+      pt_map <- ggplot2::aes(x = .data[[".x"]], y = .data[[".y"]])
+      if (!is.null(col_val)) pt_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
+      pl <- pl + layer_point(mapping = pt_map, data = obs, ...)
+    }
+    if (!is.null(theme)) {
+      pl <- pl + scale_color_theme(theme = theme)
+    }
+    pl <- pl + extract_gg_labs(dots, xlab = variable, ylab = yvar)
+    legend_opt <- dots$legend %||% (!is.null(col_val))
+    return(apply_theme_and_legend(pl, legend = legend_opt, legend.on = legend_on, legend.title = ltitle))
+  }
+
+  # graphics backend
+  mat <- matrix(NA_real_, nrow = length(values), ncol = n, dimnames = list(as.character(values), obs$.id))
+  cols_idx <- match(con$.id, obs$.id)
+  rows_idx <- match(con[[variable]], values)
+  ok <- !is.na(rows_idx) & !is.na(cols_idx)
+  mat[cbind(rows_idx[ok], cols_idx[ok])] <- con[[yvar]][ok]
+
+  aes_col <- if (!is.null(col_val)) map_to_colors(col_val, theme = theme) else dots$col %||% 1L
+  aes_alpha <- if (!is.null(alpha_val)) rescale01(alpha_val) * 0.75 + 0.25 else dots$alpha %||% 1
+  aes_lty <- if (!is.null(lty_val)) pmin(floor(rescale01(lty_val) * 5) + 1L, 6L) else dots$lty %||% 1L
+  aes_lwd <- if (!is.null(lwd_val)) rescale01(lwd_val) * 2.5 + 0.5 else dots$lwd %||% 1
+
+  fv <- is_discrete(values)
+  flvs <- if (fv) levels(factor(values)) else NULL
+  xvals <- if (fv) seq_along(flvs) else values
+
+  legend_opt <- dots$legend %||% FALSE
+  opar <- graphics::par("mai")
+  on.exit(graphics::par(mai = opar), add = TRUE)
+  graphics::par(mai = adjust_legend_margin(legend_opt, opar))
+
+  p_args <- cast_to_base_params(
+    dots = dots,
+    defaults = list(
+      x = xvals, y = rep(NA_real_, length(xvals)),
+      xlim = range(xvals, na.rm = TRUE), ylim = range(c(mat, obs[[yvar]]), na.rm = TRUE),
+      xlab = variable, ylab = yvar, type = "n", xaxt = if (fv) "n" else "s"
+    ),
+    alpha.on = NULL
+  )
+  do.call(graphics::plot.default, p_args)
+  if (fv) graphics::axis(side = 1L, at = seq_along(flvs), labels = flvs)
+
+  m_args <- cast_to_base_params(
+    dots = dots,
+    defaults = list(x = xvals, y = mat, type = "l", add = TRUE, col = aes_col, lty = aes_lty, lwd = aes_lwd, alpha = aes_alpha),
+    alpha.on = "col"
+  )
+  do.call(graphics::matplot, m_args)
+
+  if (isTRUE(points)) {
+    px <- if (fv) match(as.character(obs[[variable]]), flvs) else obs[[variable]]
+    pt_args <- cast_to_base_params(
+      dots = dots,
+      defaults = list(x = px, y = obs[[yvar]], pch = 16L, col = aes_col, alpha = aes_alpha),
+      allowed = c("x", "y", "col", "pch", "cex", "bg", "alpha"),
+      alpha.on = "col"
+    )
+    do.call(graphics::points.default, pt_args)
+  }
+  if (!is.null(col_val) && !isFALSE(legend_opt)) {
+    ltitle <- dots$legend.title %||% (if (is.character(col_expr)) col_expr else deparse(col_expr)[1L])
+    draw_base_legend(values = col_val, theme = theme, legend = legend_opt, title = ltitle, style = "line")
+  }
+  invisible(NULL)
+}
+
+
+render_midcons <- function(
+    x, type, theme, alpha_expr, lty_expr, lwd_expr,
+    reference, sample, labels, engine, ...
+) {
+  dots <- list(...)
+  type <- match.arg(type, c("iceplot", "centered", "series"))
+  objs <- as.list(x)
+  first <- objs[[1L]]
+  variable <- first$variable
+  obs <- first$observed
+  values <- first$values
+  con <- summary(x, shape = "long")
+
+  olabs <- as.character(unique(con$label))
+  labels <- labels %||% olabs
+  if (length(labels) != length(olabs)) {
+    stop("length of 'labels' must match the number of models in 'x'", call. = FALSE)
+  }
+  con$label <- labels[match(as.character(con$label), olabs)]
+  nums <- suppressWarnings(as.numeric(labels))
+  labels_parsed <- if (!anyNA(nums)) nums else factor(labels, levels = unique(labels))
+  discrete <- is_discrete(labels_parsed)
+  con$.lbl <- if (discrete) factor(con$label, levels = levels(labels_parsed)) else as.numeric(con$label)
+
+  yvar <- "yhat"
+  if (type == "centered") {
+    nvals <- length(values)
+    if (reference < 0L) reference <- nvals
+    refval <- values[min(nvals, max(1L, as.integer(reference)))]
+    ref <- con[con[[variable]] == refval, , drop = FALSE]
+    key1 <- paste(con$.id, con$label, sep = "\r")
+    key2 <- paste(ref$.id, ref$label, sep = "\r")
+    ynew <- "centered yhat"
+    con[[ynew]] <- con[[yvar]] - ref[[yvar]][match(key1, key2)]
+    yvar <- ynew
+  }
+
+  if (!is.null(sample)) {
+    obs <- obs[obs$.id %in% sample, , drop = FALSE]
+    con <- con[con$.id %in% sample, , drop = FALSE]
+  }
+  n <- nrow(obs)
+  if (n == 0L) {
+    message("no observations found")
+    return(invisible(NULL))
+  }
+
+  alpha_val <- eval_var_expr(alpha_expr, obs)
+  lty_val <- eval_var_expr(lty_expr, obs)
+  lwd_val <- eval_var_expr(lwd_expr, obs)
+  fv <- is_discrete(values)
+
+  if (engine == "ggplot2") {
+    check_ggplot2()
+    idx <- match(con$.id, obs$.id)
+    con$.y <- con[[yvar]]
+    if (type == "series") {
+      th <- theme %||% colortheme_default(if (fv) "qualitative" else "sequential")
+      con$.x <- con$.lbl
+      con$.grp <- paste(con$.id, con[[variable]], sep = "\r")
+      con$.cval <- con[[variable]]
+      ltitle <- variable
+      xlab <- ""
+    } else {
+      th <- theme %||% colortheme_default(if (discrete) "qualitative" else "sequential")
+      con$.x <- con[[variable]]
+      con$.grp <- paste(con$.id, con$.lbl, sep = "\r")
+      con$.cval <- con$.lbl
+      ltitle <- NULL
+      xlab <- variable
+    }
+    aes_map <- ggplot2::aes(
+      x = .data[[".x"]], y = .data[[".y"]],
+      group = .data[[".grp"]], colour = .data[[".cval"]]
+    )
+    if (!is.null(alpha_val)) {
+      con$.aval <- alpha_val[idx]
+      aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
+    }
+    if (!is.null(lty_val)) {
+      con$.lty <- if (is_discrete(lty_val)) lty_val[idx] else factor(lty_val[idx])
+      aes_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
+    }
+    if (!is.null(lwd_val)) {
+      con$.lwd <- lwd_val[idx]
+      aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
+    }
+
+    pl <- ggplot2::ggplot(con, aes_map) + layer_line(...) + scale_color_theme(theme = th)
+    pl <- pl + extract_gg_labs(dots, xlab = xlab, ylab = yvar)
+    return(apply_theme_and_legend(pl, legend = dots$legend %||% TRUE, legend.on = "color", legend.title = ltitle))
+  }
+
+  # graphics backend
+  nlabs <- length(labels)
+  nvals <- length(values)
+  aes_alpha <- if (!is.null(alpha_val)) rescale01(alpha_val) * 0.75 + 0.25 else rep(1, n)
+  aes_lty <- if (!is.null(lty_val)) pmin(floor(rescale01(lty_val) * 5) + 1L, 6L) else rep(1L, n)
+  aes_lwd <- if (!is.null(lwd_val)) rescale01(lwd_val) * 2.5 + 0.5 else rep(1, n)
+
+  if (type == "series") {
+    th <- theme %||% colortheme_default(if (fv) "qualitative" else "sequential")
+    basecol <- dots$col %||% map_to_colors(values, theme = th)
+    mat <- matrix(NA_real_, nrow = nlabs, ncol = n * nvals)
+    r_idx <- match(as.character(con$label), as.character(labels))
+    c_idx <- (match(con[[variable]], values) - 1L) * n + match(con$.id, obs$.id)
+    ok <- !is.na(r_idx) & !is.na(c_idx)
+    mat[cbind(r_idx[ok], c_idx[ok])] <- con[[yvar]][ok]
+
+    ord <- if (discrete) seq_len(nlabs) else order(labels_parsed)
+    xvals <- if (discrete) seq_len(nlabs) else labels_parsed
+    xaxt_val <- if (discrete) "n" else "s"
+    xlab <- ""
+    col_vec <- rep(basecol, each = n)
+    lty_vec <- rep(aes_lty, times = nvals)
+    lwd_vec <- rep(aes_lwd, times = nvals)
+    alp_vec <- rep(aes_alpha, times = nvals)
+    leg_vals <- values
+    leg_title <- variable
+  } else {
+    th <- theme %||% colortheme_default(if (discrete) "qualitative" else "sequential")
+    basecol <- dots$col %||% map_to_colors(labels_parsed, theme = th)
+    mat <- matrix(NA_real_, nrow = nvals, ncol = n * nlabs)
+    r_idx <- match(con[[variable]], values)
+    c_idx <- (match(as.character(con$label), as.character(labels)) - 1L) * n + match(con$.id, obs$.id)
+    ok <- !is.na(r_idx) & !is.na(c_idx)
+    mat[cbind(r_idx[ok], c_idx[ok])] <- con[[yvar]][ok]
+
+    ord <- seq_len(nvals)
+    xvals <- if (fv) seq_len(nvals) else values
+    xaxt_val <- if (fv) "n" else "s"
+    xlab <- variable
+    col_vec <- rep(basecol, each = n)
+    lty_vec <- rep(aes_lty, times = nlabs)
+    lwd_vec <- rep(aes_lwd, times = nlabs)
+    alp_vec <- rep(aes_alpha, times = nlabs)
+    leg_vals <- labels_parsed
+    leg_title <- NULL
+  }
+
+  legend_opt <- dots$legend %||% FALSE
+  opar <- graphics::par("mai")
+  on.exit(graphics::par(mai = opar), add = TRUE)
+  graphics::par(mai = adjust_legend_margin(legend_opt, opar))
+
+  p_args <- cast_to_base_params(
+    dots = dots,
+    defaults = list(
+      x = xvals[ord], y = rep(NA_real_, length(xvals)),
+      xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
+      xlab = xlab, ylab = yvar, type = "n", xaxt = xaxt_val
+    ),
+    alpha.on = NULL
+  )
+  do.call(graphics::plot.default, p_args)
+  if (type == "series" && discrete) {
+    graphics::axis(side = 1L, at = seq_len(nlabs), labels = as.character(labels))
+  } else if (type != "series" && fv) {
+    graphics::axis(side = 1L, at = seq_len(nvals), labels = as.character(values))
+  }
+
+  m_args <- cast_to_base_params(
+    dots = dots,
+    defaults = list(
+      x = xvals[ord], y = mat[ord, , drop = FALSE], add = TRUE,
+      type = if ((type == "series" && discrete) || (type != "series" && fv)) "b" else "l",
+      pch = 16L, col = col_vec, lty = lty_vec, lwd = lwd_vec, alpha = alp_vec
+    ),
+    alpha.on = "col"
+  )
+  do.call(graphics::matplot, m_args)
+
+  if (!isFALSE(legend_opt)) {
+    draw_base_legend(
+      values = leg_vals, theme = th, legend = legend_opt,
+      title = dots$legend.title %||% leg_title, style = "line"
+    )
   }
   invisible(NULL)
 }

@@ -1,147 +1,269 @@
-#' Plot MID Importance
+# R/plot_midimp.R
+
+#' Plot and Compare MID Importance
 #'
 #' @description
-#' For "midimp" objects, \code{plot()} visualizes the importance of component functions of the fitted MID model.
+#' Visualize term or variable importance for a \code{"midimp"} object, or compare
+#' importance across a \code{"midimps"} collection.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
+#' return \strong{ggplot2} objects via the \code{dualplot} engine.
 #'
-#' @details
-#' This is an S3 method for the \code{plot()} generic that produces an importance plot from a "midimp" object, visualizing the average contribution of component functions to the fitted MID model.
+#' @param x,object a \code{"midimp"} or \code{"midimps"} object.
+#' @param type visualization style:
+#'   for \code{"midimp"}, one of \code{"barplot"} (default), \code{"dotchart"},
+#'   \code{"heatmap"} (when \code{by = "term"}), or \code{"boxplot"};
+#'   for \code{"midimps"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.
+#' @param theme optional color theme name or \code{"colortheme"} object.
+#' @param terms optional character vector specifying which terms/variables to display.
+#' @param max.nterms maximum number of terms to display (ignored for \code{"heatmap"}).
+#' @param labels optional numeric or character vector of model labels for \code{"midimps"}.
+#' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
-#' The \code{type} argument controls the visualization style.
-#' The default, \code{type = "barplot"}, creates a standard bar plot where the length of each bar represents the overall importance of the term.
-#' The \code{type = "dotchart"} option creates a dot plot, offering a clean alternative to the bar plot for visualizing term importance.
-#' The \code{type = "heatmap"} option creates a matrix-shaped heat map where the color of each cell represents the importance of the interaction between a pair of variables, or the main effect on the diagonal.
-#' The \code{type = "boxplot"} option creates a box plot where each box shows the distribution of a term's contributions across all observations, providing insight into the variability of each term's effect.
-#'
-#' @param x a "midimp" object to be visualized.
-#' @param type the plotting style. One of "barplot", "dotchart", "heatmap", or "boxplot".
-#' @param theme a character string or object defining the color theme. See \code{\link{color.theme}} for details.
-#' @param terms an optional character vector specifying which terms to display.
-#' @param max.nterms the maximum number of terms to display. Defaults to 30 for bar, dot and box plots.
-#' @param ... optional parameters passed on to the graphing functions. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.
-#'
-#' @examples
-#' data(diamonds, package = "ggplot2")
-#' set.seed(42)
-#' idx <- sample(nrow(diamonds), 1e4)
-#' mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-#' imp <- mid.importance(mid)
-#'
-#' # Create a bar plot (default)
-#' plot(imp)
-#'
-#' # Create a dot chart
-#' plot(imp, type = "dotchart", theme = "Okabe-Ito", cex = 1.5)
-#'
-#' # Create a heatmap
-#' plot(imp, type = "heatmap")
-#'
-#' # Create a boxplot to see the distribution of effects
-#' plot(imp, type = "boxplot")
 #' @returns
-#' \code{plot.midimp()} produces a plot as a side effect and returns \code{NULL} invisibly.
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{mid.importance}}, \code{\link{ggmid.midimp}}
+#' @seealso \code{\link{eval_importance}}
 #'
+#' @name plot.midimp
+#' @rdname plot.midimp
 #' @exportS3Method base::plot
 #'
 plot.midimp <- function(
     x, type = c("barplot", "dotchart", "heatmap", "boxplot"),
-    theme = NULL, terms = NULL, max.nterms = 30L, ...) {
-  dots <- override(list(), list(...))
-  type <- match.arg(type)
-  theme <- color.theme(theme)
-  use.theme <- inherits(theme, "color.theme")
+    theme = NULL, terms = NULL, max.nterms = 30L, ...
+) {
+  render_midimp(
+    x = x, type = type, theme = theme, terms = terms,
+    max.nterms = max.nterms, engine = "graphics", ...
+  )
+  invisible(NULL)
+}
+
+
+#' @rdname plot.midimp
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midimp <- function(
+    object, type = c("barplot", "dotchart", "heatmap", "boxplot"),
+    theme = NULL, terms = NULL, max.nterms = 30L, ...
+) {
+  render_midimp(
+    x = object, type = type, theme = theme, terms = terms,
+    max.nterms = max.nterms, engine = "ggplot2", ...
+  )
+}
+
+
+#' @rdname plot.midimp
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.midimp <- function(object, ...) {
+  ggmid(object, ...)
+}
+
+
+#' @rdname plot.midimp
+#' @exportS3Method base::plot
+#'
+plot.midimps <- function(
+    x, type = c("barplot", "dotchart", "series"), theme = NULL,
+    terms = NULL, max.nterms = 30L, labels = NULL, ...
+) {
+  render_midimps(
+    x = x, type = type, theme = theme, terms = terms,
+    max.nterms = max.nterms, labels = labels, engine = "graphics", ...
+  )
+  invisible(NULL)
+}
+
+
+#' @rdname plot.midimp
+#' @exportS3Method midr::ggmid
+#'
+ggmid.midimps <- function(
+    object, type = c("barplot", "dotchart", "series"), theme = NULL,
+    terms = NULL, max.nterms = 30L, labels = NULL, ...
+) {
+  render_midimps(
+    x = object, type = type, theme = theme, terms = terms,
+    max.nterms = max.nterms, labels = labels, engine = "ggplot2", ...
+  )
+}
+
+
+#' @rdname plot.midimp
+#' @exportS3Method ggplot2::autoplot
+#'
+autoplot.midimps <- function(object, ...) {
+  ggmid(object, ...)
+}
+
+
+# internal rendering engines ----
+
+render_midimp <- function(
+    x, type, theme, terms, max.nterms, engine, ...
+) {
+  dots <- list(...)
+  type <- match.arg(type, c("barplot", "dotchart", "heatmap", "boxplot"))
   imp <- x$importance
-  if (!is.null(terms))
-    imp <- imp[match(terms, imp$term, nomatch = 0L), , drop = FALSE]
-  if (type != "heatmap")
+  if (!is.null(terms)) {
+    idx <- match(terms, as.character(imp$term), nomatch = 0L)
+    imp <- imp[idx, , drop = FALSE]
+  }
+  if (nrow(imp) == 0L) {
+    stop("none of the specified 'terms' are in 'x'", call. = FALSE)
+  }
+  if (type != "heatmap" && !is.null(max.nterms) && !is.na(max.nterms)) {
     imp <- utils::head(imp, max.nterms)
-  imp$term <- factor(imp$term, levels = rev(imp$term))
-  # barplot and dotchart
-  if (type == "barplot" || type == "dotchart") {
-    cols <- if (use.theme) {
-      if (theme$type == "qualitative")
-        to.colors(imp$order, theme)
-      else
-        to.colors(imp$importance, theme)
-    } else "gray35"
-    args <- list(to = imp$importance, labels = as.character(imp$term),
-                 horizontal = TRUE, xlab = "importance")
-    if (type == "dotchart") {
-      args$type <- "d"
-      args$col <- cols
-      alpha.on <- "col"
-    } else {
-      args$type <- "b"
-      args$fill <- cols
-      alpha.on <- "fill"
-    }
-    args <- set.alpha(override(args, dots), on = alpha.on)
-    do.call(.barplot, args)
-  # heatmap
-  } else if (type == "heatmap") {
-    rownames(imp) <- terms <- as.character(imp$term)
-    tags <- unique(get.variables(terms))
-    m <- length(tags)
-    mat <- matrix(NA, m, m)
-    for (i in seq_len(m)) {
-      for (j in seq_len(m)) {
-        if (tags[i] == tags[j]) {
-          term <- tags[i]
-        } else {
-          term <- paste0(tags[i], ":", tags[j])
-          if (!term %in% terms)
-            term <- paste0(tags[j], ":", tags[i])
-        }
-        if (term %in% rownames(imp))
-          mat[i, j] <- imp[term, "importance"]
+  }
+
+  term_names <- as.character(imp$term)
+
+  if (type %in% c("barplot", "dotchart")) {
+    bar_type <- if (type == "dotchart") "dot" else "bar"
+    tvals <- NULL
+    ltitle <- "importance"
+    if (!is.null(theme)) {
+      ct <- colortheme(theme)
+      if (ct$type == "qualitative" && "order" %in% names(imp)) {
+        tvals <- imp$order
+        ltitle <- "order"
+      } else {
+        tvals <- imp$importance
       }
     }
-    if (!use.theme)
-      theme <- color.theme("grayscale")
-    cols <- to.colors(0:11, theme)
-    opar <- graphics::par("mai", "mar", "las")
-    on.exit(graphics::par(opar))
-    graphics::par(mai = adjusted_margin(tags), las = 1L)
-    args <- list(x = seq_len(m), y = seq_len(m), z = mat, fill = cols, col = NA,
-                 axes = FALSE, xlab = "", ylab = "", lty = 1L, lwd = 1L)
-    args <- set.alpha(override(args, dots), on = "fill")
-    lcol <- args$col[1L]
-    args$col <- args$fill
-    args$fill <- NULL
-    do.call(graphics::image.default, args)
-    at <- seq_len(m + 2) - 1
-    graphics::axis(1L, at = at, labels = c("", tags, ""))
-    graphics::axis(2L, at = at, labels = c("", tags, ""))
-    graphics::axis(3L, labels = FALSE, tick = TRUE, at = at, lwd.ticks = 0)
-    graphics::axis(4L, labels = FALSE, tick = TRUE, at = at, lwd.ticks = 0)
-    if (!is.na(lcol)) {
-      graphics::abline(v = 1:m - 1/2, h = 1:m - 1/2, col = lcol,
-                       lty = args$lty, lwd = args$lwd)
-    }
-  # boxplot
-  } else if (type == "boxplot") {
-    terms <- as.character(imp$term)
-    opar <- graphics::par("mai", "mar", "las")
-    on.exit(graphics::par(opar))
-    graphics::par(mai = adjusted_margin(terms), las = 1L)
-    plist <- lapply(rev(terms), function(term) x$predictions[, term])
-    names(plist) <- rev(terms)
-    cols <- if (use.theme) {
-      if (theme$type == "qualitative")
-        to.colors(rev(imp$order), theme)
-      else
-        to.colors(rev(imp$importance), theme)
-    } else NA
-    args <- list(x = plist, fill = cols, col = "black", pch = 16L,
-                 xlab = "mid", ylab = NULL, horizontal = TRUE)
-    args <- set.alpha(override(args, dots), on = "fill")
-    args$border <- args$col
-    args$col <- args$fill
-    args$fill <- NULL
-    args$boxwex <- args$boxwex %||% args$width
-    args$width <- NULL
-    do.call(graphics::boxplot.default, args)
+    return(call_dualplot(
+      draw_bars,
+      list(
+        to = imp$importance, ticks = term_names, horizontal = TRUE,
+        type = bar_type, theme = theme, theme.values = tvals,
+        legend.title = ltitle, xlab = "importance", engine = engine
+      ),
+      dots
+    ))
   }
-  invisible(NULL)
+
+  if (type == "heatmap") {
+    if (identical(x$by, "variable")) {
+      stop("type = 'heatmap' is only supported when 'by = \"term\"'", call. = FALSE)
+    }
+    rownames(imp) <- term_names
+    tags <- unique(unlist(lapply(term_names, get_variables), use.names = FALSE))
+    m <- length(tags)
+    mat <- matrix(NA_real_, nrow = m, ncol = m, dimnames = list(tags, tags))
+    for (i in seq_len(m)) {
+      for (j in seq_len(m)) {
+        tlab <- if (tags[i] == tags[j]) {
+          tags[i]
+        } else {
+          cand <- paste0(tags[i], ":", tags[j])
+          if (cand %in% term_names) cand else paste0(tags[j], ":", tags[i])
+        }
+        if (tlab %in% term_names) {
+          mat[i, j] <- imp[tlab, "importance"]
+        }
+      }
+    }
+    use_theme <- theme %||% colortheme_default("sequential")
+    return(call_dualplot(
+      draw_matrix,
+      list(
+        z = mat, ticks = tags, theme = use_theme,
+        legend.title = "importance", engine = engine
+      ),
+      dots
+    ))
+  }
+
+  # boxplot
+  plist <- lapply(term_names, function(tlab) x$predictions[, tlab])
+  names(plist) <- term_names
+  tvals <- NULL
+  ltitle <- "importance"
+  if (!is.null(theme)) {
+    ct <- colortheme(theme)
+    if (ct$type == "qualitative" && "order" %in% names(imp)) {
+      tvals <- imp$order
+      ltitle <- "order"
+    } else {
+      tvals <- imp$importance
+    }
+  }
+  call_dualplot(
+    draw_boxes,
+    list(
+      x = plist, horizontal = TRUE, theme = theme, theme.values = tvals,
+      legend.title = ltitle, xlab = "effect", engine = engine
+    ),
+    dots
+  )
+}
+
+
+render_midimps <- function(
+    x, type, theme, terms, max.nterms, labels, engine, ...
+) {
+  dots <- list(...)
+  type <- match.arg(type, c("barplot", "dotchart", "series"))
+  imp <- summary(x, shape = "long")
+  olabs <- as.character(unique(imp$label))
+  labels <- labels %||% olabs
+  if (length(labels) != length(olabs)) {
+    stop("length of 'labels' must match the number of models in 'x'", call. = FALSE)
+  }
+  imp$label <- labels[match(as.character(imp$label), olabs)]
+  nums <- suppressWarnings(as.numeric(labels))
+  labels_parsed <- if (!anyNA(nums)) nums else factor(labels, levels = unique(labels))
+  discrete_labels <- is_discrete(labels_parsed)
+
+  all_terms <- as.character(unique(imp$term))
+  terms <- if (is.null(terms)) {
+    all_terms
+  } else {
+    all_terms[match(terms, all_terms, nomatch = 0L)]
+  }
+  if (!is.null(max.nterms) && !is.na(max.nterms)) {
+    terms <- utils::head(terms, max.nterms)
+  }
+  if (length(terms) == 0L) {
+    stop("none of the specified 'terms' are in 'x'", call. = FALSE)
+  }
+
+  n <- length(terms)
+  m <- length(labels)
+  mat <- matrix(NA_real_, nrow = n, ncol = m, dimnames = list(terms, as.character(labels)))
+  for (j in seq_len(m)) {
+    subimp <- imp[as.character(imp$label) == as.character(labels[j]), , drop = FALSE]
+    mat[, j] <- subimp$importance[match(terms, as.character(subimp$term))]
+  }
+
+  if (type %in% c("barplot", "dotchart")) {
+    th <- theme %||% colortheme_default(if (discrete_labels) "qualitative" else "sequential")
+    bar_type <- if (type == "dotchart") "dot" else "bar"
+    return(call_dualplot(
+      draw_bars,
+      list(
+        to = mat, ticks = terms, horizontal = TRUE, type = bar_type,
+        theme = th, theme.values = rep(labels_parsed, each = n),
+        legend.title = NULL, xlab = "importance", engine = engine
+      ),
+      dots
+    ))
+  }
+
+  # series
+  th <- theme %||% colortheme_default("qualitative")
+  ymat <- t(mat)
+  colnames(ymat) <- terms
+  call_dualplot(
+    draw_lines,
+    list(
+      x = labels_parsed, y = ymat, discrete = discrete_labels,
+      theme = th, theme.values = factor(terms, levels = terms),
+      legend.title = NULL, xlab = "", ylab = "importance", engine = engine
+    ),
+    dots
+  )
 }

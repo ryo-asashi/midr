@@ -2,11 +2,17 @@
 % Please edit documentation in R/plot_mid.R
 \name{plot.mid}
 \alias{plot.mid}
-\title{Plot MID Component Function}
+\alias{ggmid}
+\alias{ggmid.mid}
+\alias{autoplot.mid}
+\alias{plot.mids}
+\alias{ggmid.mids}
+\alias{autoplot.mids}
+\title{Plot and Compare MID Component Functions}
 \usage{
 \method{plot}{mid}(
   x,
-  terms = term.labels(x, order = 1L),
+  terms = NULL,
   type = c("effect", "data", "compound"),
   theme = NULL,
   intercept = FALSE,
@@ -18,66 +24,101 @@
   lumped = TRUE,
   ...
 )
+
+ggmid(object, ...)
+
+\method{ggmid}{mid}(
+  object,
+  terms = NULL,
+  type = c("effect", "data", "compound"),
+  theme = NULL,
+  intercept = FALSE,
+  main.effects = FALSE,
+  data = NULL,
+  limits = c(NA, NA),
+  jitter = NULL,
+  resolution = c(100L, 100L),
+  lumped = TRUE,
+  ...
+)
+
+\method{autoplot}{mid}(object, ...)
+
+\method{plot}{mids}(
+  x,
+  terms = NULL,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  limits = c(NA, NA),
+  resolution = NULL,
+  labels = NULL,
+  ...
+)
+
+\method{ggmid}{mids}(
+  object,
+  terms = NULL,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  limits = c(NA, NA),
+  resolution = NULL,
+  labels = NULL,
+  ...
+)
+
+\method{autoplot}{mids}(object, ...)
 }
 \arguments{
-\item{x}{a "mid" object to be visualized.}
+\item{x, object}{a \code{"mid"} or \code{"mids"} object to be visualized.}
 
-\item{terms}{a character vector or a formula specifying the component functions to be plotted. If a formula is provided (e.g., \code{~ x + y + x:y}), it is automatically parsed to extract the relevant terms.}
+\item{terms}{a character vector of term labels/expressions or a formula specifying what to plot. Defaults to all main effects.}
 
-\item{type}{the plotting style. One of "effect", "data" or "compound".}
+\item{type}{visualization style: \code{"effect"}, \code{"data"}, or \code{"compound"} for \code{"mid"}; \code{"effect"} or \code{"series"} for \code{"mids"}.}
 
-\item{theme}{a character string or object defining the color theme. See \code{\link{color.theme}} for details.}
+\item{theme}{a color theme name or \code{"colortheme"} object.}
 
-\item{intercept}{logical. If \code{TRUE}, the intercept is added to the MID values.}
+\item{intercept}{logical. If \code{TRUE}, adds the intercept to the plotted effect (or inferred from each term expression when omitted).}
 
-\item{main.effects}{logical. If \code{TRUE}, main effects are included in the interaction plot.}
+\item{main.effects}{logical. If \code{TRUE}, includes constituent main effects when plotting an interaction term.}
 
-\item{data}{a data frame to be plotted with the corresponding MID values. If not provided, data is automatically extracted from the function call.}
+\item{data}{a data.frame used for \code{type = "data"} / \code{"compound"} or when plotting raw-variable expressions (e.g., \code{"x"} when \code{log(x)} is in the model).}
 
-\item{limits}{a numeric vector of length two specifying the limits of the plotting scale.}
+\item{limits}{optional numeric vector of length 2 for the effect axis/color limits (may contain \code{NA} for partial specification).}
 
-\item{jitter}{a numeric value specifying the amount of jitter for the data points.}
+\item{jitter}{numeric amount of jitter for discrete axes when plotting points.}
 
-\item{resolution}{an integer or vector of two integers specifying the resolution of the raster plot for interactions.}
+\item{resolution}{integer (or length-2 integer vector for 2D surfaces) specifying the evaluation grid density for continuous variables.}
 
-\item{lumped}{logical. If \code{TRUE}, uses the lumped factor levels; if \code{FALSE}, uses the original levels from the data. Always \code{FALSE} when \code{main.effects = TRUE}.}
+\item{lumped}{logical. If \code{TRUE} (default), uses lumped factor levels when a variable appears only in main effects or only in interactions; automatically set to \code{FALSE} for any variable that mixes both.}
 
-\item{...}{optional parameters to be passed to the graphing function. Possible arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of them.}
+\item{...}{additional graphical parameters passed to the underlying \code{dualplot} layer.}
+
+\item{labels}{optional numeric or character vector of model labels for \code{"mids"} comparisons.}
 }
 \value{
-\code{plot.mid()} produces one or more plots as a side-effect and returns \code{NULL} invisibly.
+\code{plot()} returns \code{NULL} invisibly.
+\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
 }
 \description{
-For "mid" objects (i.e., fitted MID models), \code{plot()} visualizes one or more component functions specified by the \code{term} argument.
+Visualize component functions of a fitted MID model (\code{"mid"}) or compare main effects across a collection of models (\code{"mids"}).
+\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()} return \strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \details{
-This is an S3 method for the \code{plot()} generic that produces a plot from a "mid" object, visualizing a component function of the fitted MID model.
+For \code{"mid"} objects, each element of \code{terms} produces one plot.
+A single element may be a term label (e.g., \code{"Wind"}, \code{"Wind:Temp"}) or a formula-like expression string (e.g., \code{"Wind * Temp + 1"} or \code{"Wind + Temp"}), which is extracted via \code{\link{subset.mid}()} and rendered as a 1D curve/bar chart or a 2D surface depending on the number of constituent variables.
+For 2D plots, the order in which variables appear in the term expression determines the x- and y-axes (e.g., \code{"Wind:Temp"} vs \code{"Temp:Wind"}).
+If a \code{formula} is passed (e.g., \code{~ Wind + Temp}), it is expanded into individual term plots.
 
-The \code{type} argument controls the visualization style.
-The default, \code{type = "effect"}, plots the component function itself.
-In this style, the plotting method is automatically selected based on the effect's type:
-a line plot for quantitative main effects; a bar plot for qualitative main effects; and a filled contour (level) plot for interactions.
-The \code{type = "data"} option creates a scatter plot of \code{data}, colored by the values of the component function.
-The \code{type = "compound"} option combines both approaches, plotting the component function alongside the data points.
+The \code{type} argument selects the visualization style:
+\itemize{
+  \item \code{"effect"} (default): plots the component function(s) alone.
+  \item \code{"data"}: plots observed points from \code{data} colored by the component effect.
+  \item \code{"compound"}: overlays observed points on top of the component function.
+  \item \code{"series"} (\code{"mids"} only): transposes the comparison to show effect trends across models for each feature value.
 }
-\examples{
-data(diamonds, package = "ggplot2")
-set.seed(42)
-idx <- sample(nrow(diamonds), 1e4)
-mid <- interpret(price ~ (carat + cut + color + clarity)^2, diamonds[idx, ])
-
-# Plot a quantitative main effect
-plot(mid, "carat")
-
-# Plot a qualitative main effect
-plot(mid, "clarity")
-
-# Plot an interaction effect with data points and a raster layer
-plot(mid, "carat:clarity", type = "compound", data = diamonds[idx, ])
-
-# Use a different color theme
-plot(mid, "clarity:color", theme = "RdBu")
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{ggmid}}
+\code{\link{interpret}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
 }

@@ -10,7 +10,7 @@ midlist(...)
 as.midlist(x)
 }
 \arguments{
-\item{...}{objects to be combined, possibly named. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "mids"-"midrib", "midimps"-"midlist") are also accepted and will be flattened appropriately.}
+\item{...}{objects to be combined, possibly named. All inputs must inherit from exactly one of the supported base classes: "mid", "midimp", "midcon", or "midbrk". Collection classes (e.g., "midrib"-"mids", "midimps"-"midlist") are also accepted and will be flattened appropriately.}
 
 \item{x}{object to be coerced or tested.}
 }

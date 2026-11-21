@@ -1,3 +1,31 @@
+# midr 0.7.0
+
+A major refactoring release modernizing the API, visualization engine, and internal data structures.
+
+### New Features & API Modernization
+
+-   Adopted a consistent snake_case naming convention across the package and converted post-hoc interpretation tools into S3 generics: `eval_importance()`, `eval_breakdown()`, `eval_conditional()`, `eval_loss()`, `weighted_r2()`, `get_yhat()`, `make_encoder()`, `make_link()`, and `midr_options()`.
+-   `eval_importance()` and `eval_breakdown()` now support `by = "variable"` to aggregate main effects and equally split interaction effects into variable-level attributions.
+-   `eval_breakdown()` now accepts multiple `rows` for `"mid"` objects, returning a `"midbrks"` collection for multi-observation comparison.
+-   Added `subset()` and `coef()` S3 methods for `"mid"` and `"mids"` objects to extract submodels and component effects using standard R modeling idioms, along with `as.data.frame()` methods for `"midimp"`, `"midbrk"`, and `"midcon"` objects.
+-   `eval_loss()` evaluates surrogate fidelity and prediction error directly against a target `model` (via `get_yhat()`) or observed response.
+
+### Visualization & Color Themes
+
+-   Unified `plot()`, `ggmid()`, and `autoplot()` across `"mid"`, `"midimp"`, `"midbrk"`, `"midcon"`, and their collection classes onto a dual-backend (`graphics` / `ggplot2`) rendering engine with consistent behavior and `theme_monograph()` / `par_monograph()` styling.
+-   Replaced the legacy `color.theme()` utilities with the internalized `colortheme` engine (`colortheme()`, `colorthemes()`, `register_colortheme()`, `map_to_colors()`, `scale_color_theme()`, `scale_fill_theme()`, `as_palette()`, `as_ramp()`).
+-   `midr_options()` now provides a single interface for package verbosity, solver hooks, plotting backend (`engine`, `gg.theme`), and default color themes (`sequential`, `diverging`, `qualitative`).
+
+### Improvements & Dependencies
+
+-   Streamlined `interpret()` and encoder internals (`encoder$frame` and getter helpers) to reduce memory footprint and copy-on-modify overhead.
+-   Removed the `Imports` dependency on **rlang**.
+
+### Deprecated & Removed
+
+-   Legacy dot-case functions (including `mid.importance()`, `mid.breakdown()`, `mid.conditional()`, `get.yhat()`, `color.theme()`, `weighted.loss()`, `mid.terms()`, `mid.effect()`, and `mid.plots()`) are deprecated or superseded by their snake_case, `eval_*()`, `subset()`, and `coef()` counterparts.
+
+
 # midr 0.6.2.900
 
 The **midr** package is currently undergoing a through reconstruction for the upcoming release.

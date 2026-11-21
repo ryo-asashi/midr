@@ -4,13 +4,13 @@ test_that("interpret() returns weighted least-norm solutions", {
   x2 = 1L:2L
   mid <- interpret(formula = x1^2 ~ x1 + x2, singular.ok = TRUE)
   expect_equal(mid$ratio, 0L, ignore_attr = TRUE)
-  expect_equal(mid$main.effects$x1$mid, c(-.75, .75), ignore_attr = TRUE)
+  expect_equal(mid$main.effects$x1$.effect, c(-.75, .75), ignore_attr = TRUE)
   # test 2 : rank deficient case 2
   x1 <- c(1, 1, 2, 2, -1, -1, -2, -2)
   x2 <- c(1, -1, 2, -2, 1, -1, 2, -2)
   mid <- interpret(formula = x1^2 ~ x1 + x2, singular.ok = TRUE)
   expect_equal(mid$ratio, 0L, ignore_attr = TRUE)
-  expect_equal(mid$main.effects$x1$mid, c(.75, -.75, -.75, .75),
+  expect_equal(mid$main.effects$x1$.effect, c(.75, -.75, -.75, .75),
                ignore_attr = TRUE)
   # test 3 : rank deficient case 3
   x1 <- c(1, 1, 2, 2)
@@ -18,7 +18,7 @@ test_that("interpret() returns weighted least-norm solutions", {
   x3 <- c(1, 2, 2, 2)
   mid <- interpret(formula = x1 * x2 * x3 ~ x1 + x2 + x3, singular.ok = TRUE)
   expect_equal(mid$ratio, 0L, ignore_attr = TRUE)
-  expect_equal(mid$main.effects$x1$mid, c(-.45, .45), ignore_attr = TRUE)
+  expect_equal(mid$main.effects$x1$.effect, c(-.45, .45), ignore_attr = TRUE)
 })
 
 
@@ -28,26 +28,26 @@ test_that("interpret() returns valid 'na.action'", {
   X <- data.frame(x = x, y = c(2, 2, 2, NA, 2))
   # test 1 : formula, vector x
   mid <- interpret(formula = y ~ x)
-  expect_equal(mid$na.action, c(3, 5), ignore_attr = TRUE)
-  expect_s3_class(mid$na.action, "omit")
+  expect_equal(stats::na.action(mid), c(3, 5), ignore_attr = TRUE)
+  expect_s3_class(stats::na.action(mid), "omit")
   # test 2 : formula, use model
   mid <- interpret(formula = y ~ x, model = NULL, data = X,
                    pred.fun = function(X.model, newdata) {newdata$x})
-  expect_equal(mid$na.action, c(4, 5), ignore_attr = TRUE)
+  expect_equal(stats::na.action(mid), c(4, 5), ignore_attr = TRUE)
   # test 3 : formula, na.exclude
   mid <- interpret(formula = y ~ x, na.action = "na.exclude")
-  expect_s3_class(mid$na.action, "exclude")
+  expect_s3_class(stats::na.action(mid), "exclude")
   expect_equal(predict(mid, na.action = "na.exclude"),
                c(1, 2, NA, 4, NA), ignore_attr = TRUE)
   # test 4 : default, vector x
   mid <- interpret(object = NULL, x = x, y = y)
-  expect_equal(mid$na.action, c(3, 5), ignore_attr = TRUE)
+  expect_equal(stats::na.action(mid), c(3, 5), ignore_attr = TRUE)
   # test 5 : default, na.exclude (character)
   mid <- interpret(object = NULL, x = X, y = y, na.action = "na.exclude")
-  expect_equal(mid$na.action, c(3, 4, 5), ignore_attr = TRUE)
+  expect_equal(stats::na.action(mid), c(3, 4, 5), ignore_attr = TRUE)
   # test 6 : default, stats::na.exclude (function)
   mid <- interpret(object = NULL, x = x, y = y, na.action = stats::na.exclude)
-  expect_equal(mid$na.action, c(3, 5), ignore_attr = TRUE)
+  expect_equal(stats::na.action(mid), c(3, 5), ignore_attr = TRUE)
 })
 
 
@@ -104,60 +104,60 @@ test_that("interpret() runs successfully with terms", {
   # test 0: default method without terms input
   fit <- interpret(x = cbind(x1, x2), y = y)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = cbind(x1, x2), y = y, interactions = TRUE)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 1: default method with label-based inputs
   fit <- interpret(x = d, y = y, terms = c("x2", "x1", "x1 : x2"))
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = d, y = y, terms = c("x2 * x1"))
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = d, y = y, terms = c("x2 : x1", "x1", "x2"))
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(x = cbind(x1, x2), y = y, terms = c(".^2"))
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 2: default method with formula-based inputs
   fit <- interpret(x = d, y = y, terms = y ~ .^2)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   # test 3: formula method
   fit <- interpret(y ~ .^2, data = d, verbosity = 0L)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x2 * x1, data = d, verbosity = 0L)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x2:x1 + x1 + x2, data = d, verbosity = 0L)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
   fit <- interpret(y ~ x1 + x2 + I(x1 * x2), data = d, verbosity = 0L)
   expect_setequal(
-    term.labels(fit),
+    labels(fit),
     c(names(fit$main.effects), names(fit$interactions))
   )
 })
