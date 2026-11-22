@@ -90,18 +90,21 @@ reference:
 - subtitle: Methods
   contents:
   - plot.midimp
+  - plot.midimps
 - title: Breakdown of predictions
   contents:
   - eval_breakdown
 - subtitle: Methods
   contents:
   - plot.midbrk
+  - plot.midbrks
 - title: Conditional expectations
   contents:
   - eval_conditional
 - subtitle: Methods
   contents:
   - plot.midcon
+  - plot.midcons
 - title: Other functions
   contents:
   - get_yhat
