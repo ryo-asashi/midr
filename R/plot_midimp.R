@@ -15,6 +15,19 @@
 #' @param max.nterms maximum number of terms to display (ignored for \code{"heatmap"}).
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
+#' @examples
+#' data(airquality, package = "datasets")
+#' aq <- na.omit(airquality)
+#' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#' imp_v <- eval_importance(mid, by = "variable")
+#'
+#' plot(imp_v, type = "boxplot", theme = "azurerose")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   imp <- eval_importance(mid)
+#'   ggmid(imp, type = "heatmap") +
+#'     ggplot2::geom_text(ggplot2::aes(label = round(importance, 1)), colour = "white")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
@@ -73,6 +86,17 @@ autoplot.midimp <- function(object, ...) {
 #' @param labels optional numeric or character vector of model labels.
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
+#' @examples
+#' data(iris, package = "datasets")
+#' mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
+#' imps <- eval_importance(mids, by = "variable")
+#'
+#' plot(imps, type = "dotchart", legend = "bottomright")
+#' plot(imps, type = "series", legend = "bottom")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(imps, type = "dotchart")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.

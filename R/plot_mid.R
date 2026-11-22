@@ -39,6 +39,16 @@
 #' @param lumped logical. If \code{TRUE} (default), uses lumped factor levels when a variable appears only in main effects or only in interactions; automatically set to \code{FALSE} for any variable that mixes both.
 #' @param ... additional graphical parameters passed to the underlying \code{dualplot} layer.
 #'
+#' @examples
+#' data(trees, package = "datasets")
+#' mid <- interpret(Volume ~ Girth * Height, data = trees, lambda = 0.2)
+#'
+#' plot(mid, terms = "Girth")
+#' plot(mid, terms = "Girth:Height")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(mid, terms = "Girth * Height + 1")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
@@ -121,6 +131,19 @@ autoplot.mid <- function(object, ...) {
 #' @param labels optional numeric or character vector of model labels.
 #' @param ... additional graphical parameters passed to the underlying \code{dualplot} layer.
 #'
+#' @examples
+#' data(iris, package = "datasets")
+#' mids <- interpret(
+#'   cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+#'   data = iris, lambda = 0.5
+#' )
+#'
+#' plot(mids, terms = "Petal.Length", legend = "topleft")
+#' plot(mids, terms = "Petal.Length", type = "series", legend = "bottom")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(mids, terms = "Petal.Length", type = "series")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.

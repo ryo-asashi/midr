@@ -64,6 +64,20 @@ The \code{type} argument selects the comparison layout:
   \item \code{"series"}: transposes the comparison to show effect trends across models for each feature value.
 }
 }
+\examples{
+data(iris, package = "datasets")
+mids <- interpret(
+  cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+  data = iris, lambda = 0.5
+)
+
+plot(mids, terms = "Petal.Length", legend = "topleft")
+plot(mids, terms = "Petal.Length", type = "series", legend = "bottom")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(mids, terms = "Petal.Length", type = "series")
+}
+}
 \seealso{
 \code{\link{plot.mid}}, \code{\link{midlist}}
 }

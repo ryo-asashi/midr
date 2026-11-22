@@ -49,6 +49,18 @@ Compare term or variable importance across a \code{"midimps"} collection.
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
+\examples{
+data(iris, package = "datasets")
+mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
+imps <- eval_importance(mids, by = "variable")
+
+plot(imps, type = "dotchart", legend = "bottomright")
+plot(imps, type = "series", legend = "bottom")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(imps, type = "dotchart")
+}
+}
 \seealso{
 \code{\link{eval_importance}}, \code{\link{plot.midimp}}, \code{\link{midlist}}
 }

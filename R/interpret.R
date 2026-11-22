@@ -41,35 +41,26 @@
 #' @examples
 #' # Fit a MID model as a surrogate for another model
 #' data(cars, package = "datasets")
-#' model <- lm(dist ~ I(speed^2) + speed, cars)
-#' mid <- interpret(dist ~ speed, cars, model)
-#' plot(mid, "speed", intercept = TRUE)
-#' points(cars)
+#' fit <- lm(dist ~ I(speed^2) + speed, cars)
+#' mid_sur <- interpret(dist ~ speed, data = cars, model = fit)
+#' plot(mid_sur, "speed", type = "compound", intercept = TRUE)
 #'
-#' # Fit a MID model as a standalone predictive model
+#' # Fit a standalone MID model with two-way interactions
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ .^2, data = airquality, lambda = .5)
-#' plot(mid, "Wind")
-#' plot(mid, "Temp")
-#' plot(mid, "Wind:Temp", main.effects = TRUE)
+#' mid_aq <- interpret(Ozone ~ .^2, data = airquality, lambda = 0.5)
+#' plot(mid_aq, terms = c("Wind", "Temp"))
+#' plot(mid_aq, terms = "Wind * Temp")
 #'
+#' # Compare knot resolution (k) and smoothing penalty (lambda)
 #' data(Nile, package = "datasets")
-#' nile <- data.frame(time = 1:length(Nile), flow = as.numeric(Nile))
+#' nile <- data.frame(time = seq_along(Nile), flow = as.numeric(Nile))
 #'
-#' # A flexible fit with many knots
-#' mid <- interpret(flow ~ time, data = nile, k = 100L)
-#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
+#' m_flex   <- interpret(flow ~ time, data = nile, k = 100L)
+#' m_coarse <- interpret(flow ~ time, data = nile, k = 10L)
+#' m_smooth <- interpret(flow ~ time, data = nile, k = 100L, lambda = 10L)
 #'
-#' # A smoother fit with fewer knots
-#' mid <- interpret(flow ~ time, data = nile, k = 10L)
-#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
-#'
-#' # A pseudo-smoothed fit using a penalty
-#' mid <- interpret(flow ~ time, data = nile, k = 100L, lambda = 100L)
-#' plot(mid, "time", intercept = TRUE, limits = c(600L, 1300L))
-#' points(x = 1L:100L, y = Nile)
+#' mids <- midlist("k = 100" = m_flex, "k = 10" = m_coarse, "lambda = 10" = m_smooth)
+#' plot(mids, "time", intercept = TRUE, legend = "topright", lwd = 1.5)
 #' @returns
 #' \code{interpret()} returns an object of class "mid". This is a list with the following components:
 #' \item{weights}{a numeric vector of the sample weights.}

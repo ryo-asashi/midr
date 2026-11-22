@@ -78,6 +78,14 @@ When \code{by = "variable"}, each main effect is attributed to its variable
 and each interaction effect is split equally among its constituent variables
 before computing the importance summary.
 }
+\examples{
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+
+eval_importance(mid)
+eval_importance(mid, by = "variable", measure = "rmse")
+}
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{plot.midimps}}
 }

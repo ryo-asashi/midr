@@ -22,6 +22,13 @@
 #' @param object a \code{"mid"} or \code{"mids"} object.
 #' @param ... additional arguments passed to methods.
 #'
+#' @examples
+#' data(airquality, package = "datasets")
+#' aq <- na.omit(airquality)
+#' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#'
+#' eval_importance(mid)
+#' eval_importance(mid, by = "variable", measure = "rmse")
 #' @returns
 #' For a \code{"mid"} object, an object of class \code{"midimp"} containing
 #' \code{importance}, \code{predictions}, \code{measure}, and \code{by}.

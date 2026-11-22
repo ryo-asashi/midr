@@ -91,6 +91,17 @@ The \code{type} argument selects the visualization style:
   \item \code{"compound"}: overlays observed points on top of the component function.
 }
 }
+\examples{
+data(trees, package = "datasets")
+mid <- interpret(Volume ~ Girth * Height, data = trees, lambda = 0.2)
+
+plot(mid, terms = "Girth")
+plot(mid, terms = "Girth:Height")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(mid, terms = "Girth * Height + 1")
+}
+}
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.mids}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
 }

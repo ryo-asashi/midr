@@ -46,6 +46,20 @@ Visualize term or variable importance for a \code{"midimp"} object.
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
+\examples{
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+imp_v <- eval_importance(mid, by = "variable")
+
+plot(imp_v, type = "boxplot", theme = "azurerose")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  imp <- eval_importance(mid)
+  ggmid(imp, type = "heatmap") +
+    ggplot2::geom_text(ggplot2::aes(label = round(importance, 1)), colour = "white")
+}
+}
 \seealso{
 \code{\link{eval_importance}}, \code{\link{plot.midimps}}
 }
