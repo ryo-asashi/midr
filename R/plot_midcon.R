@@ -236,8 +236,8 @@ render_midcon <- function(
       if (!is.null(col_val)) pt_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
       pl <- pl + layer_point(mapping = pt_map, data = obs, ...)
     }
-    if (!is.null(theme)) {
-      pl <- pl + scale_color_theme(theme = theme)
+    if (!is.null(theme) && !is.null(col_val)) {
+      pl <- pl + scale_color_theme(theme = theme, discrete = is_discrete(con$.cval))
     }
     pl <- pl + extract_gg_labs(dots, xlab = variable, ylab = yvar)
     legend_opt <- legend_dot %||% (!is.null(col_val))
@@ -274,6 +274,7 @@ render_midcon <- function(
     ),
     alpha.on = NULL
   )
+  p_args$alpha <- NULL
   do.call(graphics::plot.default, p_args)
   if (fv) graphics::axis(side = 1L, at = seq_along(flvs), labels = flvs)
 
@@ -381,10 +382,15 @@ render_midcons <- function(
       ltitle <- NULL
       xlab <- variable
     }
+    gg_dots <- cast_to_gg_params(dots)
+    use_col_aes <- is.null(gg_dots$colour)
     aes_map <- ggplot2::aes(
       x = .data[[".x"]], y = .data[[".y"]],
-      group = .data[[".grp"]], colour = .data[[".cval"]]
+      group = .data[[".grp"]]
     )
+    if (use_col_aes) {
+      aes_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
+    }
     if (!is.null(alpha_val)) {
       con$.aval <- alpha_val[idx]
       aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
@@ -398,9 +404,20 @@ render_midcons <- function(
       aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
     }
 
-    pl <- ggplot2::ggplot(con, aes_map) + layer_line(...) + scale_color_theme(theme = th)
+    pl <- ggplot2::ggplot(con, aes_map) + layer_line(...)
+    if (type == "series" && discrete) {
+      pl <- pl + layer_point(...)
+    }
+    if (use_col_aes) {
+      pl <- pl + scale_color_theme(theme = th, discrete = is_discrete(con$.cval))
+    }
     pl <- pl + extract_gg_labs(dots, xlab = xlab, ylab = yvar)
-    return(apply_theme_and_legend(pl, legend = legend_dot %||% TRUE, legend.on = "color", legend.title = legend_title_dot %||% ltitle))
+    return(apply_theme_and_legend(
+      pl,
+      legend = legend_dot %||% TRUE,
+      legend.on = if (use_col_aes) "color" else character(0L),
+      legend.title = legend_title_dot %||% ltitle
+    ))
   }
 
   # graphics backend
@@ -464,6 +481,7 @@ render_midcons <- function(
     ),
     alpha.on = NULL
   )
+  p_args$alpha <- NULL
   do.call(graphics::plot.default, p_args)
   if (type == "series" && discrete) {
     graphics::axis(side = 1L, at = seq_len(nlabs), labels = as.character(labels))
@@ -475,7 +493,7 @@ render_midcons <- function(
     dots = dots,
     defaults = list(
       x = xvals[ord], y = mat[ord, , drop = FALSE], add = TRUE,
-      type = if ((type == "series" && discrete) || (type != "series" && fv)) "b" else "l",
+      type = if (type == "series" && discrete) "b" else "l",
       pch = 16L, col = col_vec, lty = lty_vec, lwd = lwd_vec, alpha = alp_vec
     ),
     alpha.on = "col"

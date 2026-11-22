@@ -339,7 +339,7 @@ draw_bars_gg <- function(
       pl <- pl + do.call(layer_col, c(col_args, list(...)))
     }
     if (use_theme) {
-      pl <- pl + scale_fill_theme(theme = ct, middle = middle)
+      pl <- pl + scale_fill_theme(theme = ct, discrete = is_discrete(df$.cval), middle = middle)
     }
   } else {
     w <- width %||% 0.6
@@ -354,7 +354,7 @@ draw_bars_gg <- function(
     if (!use_theme && is.null(dots$colour)) dot_args$colour <- "gray35"
     pl <- pl + do.call(layer_dotchart, c(dot_args, list(...)))
     if (use_theme) {
-      pl <- pl + scale_color_theme(theme = ct, middle = middle)
+      pl <- pl + scale_color_theme(theme = ct, discrete = is_discrete(df$.cval), middle = middle)
     }
   }
 
@@ -430,7 +430,7 @@ draw_lines_gg <- function(
   }
 
   if (use_theme) {
-    pl <- pl + scale_color_theme(theme = theme)
+    pl <- pl + scale_color_theme(theme = theme, discrete = is_discrete(df$.cval))
   }
   if (!is.null(limits)) {
     pl <- pl + ggplot2::coord_cartesian(ylim = limits)
@@ -471,7 +471,7 @@ draw_points_gg <- function(
     ylim <- ylim %||% c(0.5, length(yticks) + 0.5)
   }
   if (use_theme) {
-    pl <- pl + scale_color_theme(theme = theme, middle = middle)
+    pl <- pl + scale_color_theme(theme = theme, discrete = is_discrete(df$.cval), middle = middle)
   }
   if (!is.null(xlim) || !is.null(ylim)) {
     pl <- pl + ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
@@ -585,7 +585,7 @@ draw_boxes_gg <- function(
   }
 
   if (use_theme) {
-    pl <- pl + scale_fill_theme(theme = theme)
+    pl <- pl + scale_fill_theme(theme = theme, discrete = is_discrete(df$.cval))
   }
   pl <- pl + ggplot2::labs(title = main, subtitle = sub, x = xlab, y = ylab)
   apply_theme_and_legend(
