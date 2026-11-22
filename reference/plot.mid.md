@@ -137,3 +137,20 @@ The `type` argument selects the visualization style:
 [`plot.mids`](https://ryo-asashi.github.io/midr/reference/plot.mids.md),
 [`subset.mid`](https://ryo-asashi.github.io/midr/reference/subset.mid.md),
 [`predict.mid`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
+
+## Examples
+
+``` r
+data(trees, package = "datasets")
+mid <- interpret(Volume ~ Girth * Height, data = trees, lambda = 0.2)
+#> 'model' not passed: response variable in 'data' is used
+
+plot(mid, terms = "Girth")
+
+plot(mid, terms = "Girth:Height")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(mid, terms = "Girth * Height + 1")
+}
+```

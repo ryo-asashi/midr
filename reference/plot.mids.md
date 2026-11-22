@@ -99,3 +99,23 @@ The `type` argument selects the comparison layout:
 
 [`plot.mid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+
+## Examples
+
+``` r
+data(iris, package = "datasets")
+mids <- interpret(
+  cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+  data = iris, lambda = 0.5
+)
+#> 'model' not passed: response variable in 'data' is used
+
+plot(mids, terms = "Petal.Length", legend = "topleft")
+
+plot(mids, terms = "Petal.Length", type = "series", legend = "bottom")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(mids, terms = "Petal.Length", type = "series")
+}
+```

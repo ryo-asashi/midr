@@ -68,3 +68,22 @@ returns a `"ggplot"` object.
 
 [`eval_importance`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
 [`plot.midimps`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+
+## Examples
+
+``` r
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#> 'model' not passed: response variable in 'data' is used
+imp_v <- eval_importance(mid, by = "variable")
+
+plot(imp_v, type = "boxplot", theme = "azurerose")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  imp <- eval_importance(mid)
+  ggmid(imp, type = "heatmap") +
+    ggplot2::geom_text(ggplot2::aes(label = round(importance, 1)), colour = "white")
+}
+```

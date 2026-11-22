@@ -75,3 +75,21 @@ returns a `"ggplot"` object.
 [`eval_importance`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
 [`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+
+## Examples
+
+``` r
+data(iris, package = "datasets")
+mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
+#> 'model' not passed: response variable in 'data' is used
+imps <- eval_importance(mids, by = "variable")
+
+plot(imps, type = "dotchart", legend = "bottomright")
+
+plot(imps, type = "series", legend = "bottom")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(imps, type = "dotchart")
+}
+```

@@ -106,3 +106,38 @@ variables before computing the importance summary.
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
 [`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
 [`plot.midimps`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+
+## Examples
+
+``` r
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#> 'model' not passed: response variable in 'data' is used
+
+eval_importance(mid)
+#> 
+#> MID Importance based on 111 Observations
+#> 
+#> Measure: Mean Absolute Contribution
+#> 
+#> Importance:
+#>           term importance order
+#> 1         Temp   13.22779     1
+#> 2         Wind   11.03303     1
+#> 3      Solar.R    5.93010     1
+#> 4 Solar.R:Wind    1.17039     2
+#> 5 Solar.R:Temp    0.98962     2
+#> 6    Wind:Temp    0.59487     2
+eval_importance(mid, by = "variable", measure = "rmse")
+#> 
+#> MID Importance based on 111 Observations
+#> 
+#> Measure: Root Mean Square Contribution
+#> 
+#> Importance:
+#>      term importance
+#> 1    Temp     15.354
+#> 2    Wind     15.066
+#> 3 Solar.R      7.200
+```
