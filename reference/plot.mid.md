@@ -1,11 +1,9 @@
-# Plot and Compare MID Component Functions
+# Plot MID Component Functions
 
-Visualize component functions of a fitted MID model (`"mid"`) or compare
-main effects across a collection of models (`"mids"`).
+Visualize component functions of a fitted MID model (`"mid"`).
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
-base graphics, while `ggmid()` and
-[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-return **ggplot2** objects via the `dualplot` engine.
+base graphics, while `ggmid()` returns **ggplot2** objects via the
+`dualplot` engine.
 
 ## Usage
 
@@ -43,45 +41,13 @@ ggmid(
   lumped = TRUE,
   ...
 )
-
-# S3 method for class 'mid'
-autoplot(object, ...)
-
-# S3 method for class 'mids'
-plot(
-  x,
-  terms = NULL,
-  type = c("effect", "series"),
-  theme = NULL,
-  intercept = FALSE,
-  limits = c(NA, NA),
-  resolution = NULL,
-  labels = NULL,
-  ...
-)
-
-# S3 method for class 'mids'
-ggmid(
-  object,
-  terms = NULL,
-  type = c("effect", "series"),
-  theme = NULL,
-  intercept = FALSE,
-  limits = c(NA, NA),
-  resolution = NULL,
-  labels = NULL,
-  ...
-)
-
-# S3 method for class 'mids'
-autoplot(object, ...)
 ```
 
 ## Arguments
 
 - x, object:
 
-  a `"mid"` or `"mids"` object to be visualized.
+  a `"mid"` object to be visualized.
 
 - terms:
 
@@ -90,8 +56,7 @@ autoplot(object, ...)
 
 - type:
 
-  visualization style: `"effect"`, `"data"`, or `"compound"` for
-  `"mid"`; `"effect"` or `"series"` for `"mids"`.
+  visualization style: `"effect"`, `"data"`, or `"compound"`.
 
 - theme:
 
@@ -137,25 +102,18 @@ autoplot(object, ...)
   additional graphical parameters passed to the underlying `dualplot`
   layer.
 
-- labels:
-
-  optional numeric or character vector of model labels for `"mids"`
-  comparisons.
-
 ## Value
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
-invisibly. `ggmid()` and
-[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-return a `"ggplot"` object for a single plot, or a named list of
-`"ggplot"` objects for multiple plots.
+invisibly. `ggmid()` returns a `"ggplot"` object for a single plot, or a
+named list of `"ggplot"` objects for multiple plots.
 
 ## Details
 
-For `"mid"` objects, each element of `terms` produces one plot. A single
-element may be a term label (e.g., `"Wind"`, `"Wind:Temp"`) or a
-formula-like expression string (e.g., `"Wind * Temp + 1"` or
-`"Wind + Temp"`), which is extracted via
+Each element of `terms` produces one plot. A single element may be a
+term label (e.g., `"Wind"`, `"Wind:Temp"`) or a formula-like expression
+string (e.g., `"Wind * Temp + 1"` or `"Wind + Temp"`), which is
+extracted via
 [`subset.mid()`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
 and rendered as a 1D curve/bar chart or a 2D surface depending on the
 number of constituent variables. For 2D plots, the order in which
@@ -173,11 +131,9 @@ The `type` argument selects the visualization style:
 - `"compound"`: overlays observed points on top of the component
   function.
 
-- `"series"` (`"mids"` only): transposes the comparison to show effect
-  trends across models for each feature value.
-
 ## See also
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
+[`plot.mids`](https://ryo-asashi.github.io/midr/reference/plot.mids.md),
 [`subset.mid`](https://ryo-asashi.github.io/midr/reference/subset.mid.md),
 [`predict.mid`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)

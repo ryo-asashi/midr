@@ -210,11 +210,11 @@ and Graphical Statistics*, *24*(1), 44–65.
 ### Methods
 
 - [`plot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  [`autoplot(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  [`autoplot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
-  : Plot and Compare MID Component Functions
+  [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) :
+  Plot MID Component Functions
+- [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
+  [`ggmid(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
+  : Compare MID Component Functions Across Models
 - [`predict(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   [`predict(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   : Predict Method for Fitted MID Models
@@ -250,62 +250,44 @@ and Graphical Statistics*, *24*(1), 44–65.
 ## Importance of effects
 
 - [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  [`print(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  [`print(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  [`summary(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  [`summary(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  [`as.data.frame(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
   : Evaluate Importance of Model Components
 
 ### Methods
 
 - [`plot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
   [`ggmid(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  [`autoplot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  [`autoplot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  : Plot and Compare MID Importance
+  : Plot Term or Variable Importance
+- [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+  [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
+  : Compare Term or Variable Importance Across Models
 
 ## Breakdown of predictions
 
 - [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  [`print(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  [`print(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  [`summary(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  [`summary(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  [`as.data.frame(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
   : Evaluate Breakdown of Model Predictions
 
 ### Methods
 
 - [`plot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
   [`ggmid(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  [`autoplot(`*`<midbrk>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  [`autoplot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
-  : Plot and Compare MID Breakdown
+  : Plot Prediction Breakdown
+- [`plot(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
+  [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
+  : Compare Prediction Breakdowns Across Models
 
 ## Conditional expectations
 
 - [`eval_conditional()`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  [`print(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  [`print(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  [`summary(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  [`summary(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  [`as.data.frame(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  : Evaluate Individual Conditional Expectation (ICE)
+  : Evaluate Conditional Expectation (ICE)
 
 ### Methods
 
 - [`plot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
   [`ggmid(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  [`autoplot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  [`ggmid(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  [`autoplot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  : Plot and Compare MID Conditional Expectations (ICE)
+  : Plot Conditional Expectations (ICE)
+- [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
+  [`ggmid(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
+  : Compare Conditional Expectations (ICE) Across Models
 
 ## Other functions
 

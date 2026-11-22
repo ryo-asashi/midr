@@ -28,21 +28,6 @@ eval_breakdown(
   by = c("term", "variable"),
   ...
 )
-
-# S3 method for class 'midbrk'
-print(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-# S3 method for class 'midbrks'
-print(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...)
-
-# S3 method for class 'midbrk'
-summary(object, ...)
-
-# S3 method for class 'midbrks'
-summary(object, shape = c("wide", "long"), terms = NULL, fill = 0, ...)
-
-# S3 method for class 'midbrk'
-as.data.frame(x, row.names = NULL, optional = FALSE, ...)
 ```
 
 ## Arguments
@@ -76,37 +61,6 @@ as.data.frame(x, row.names = NULL, optional = FALSE, ...)
   character: `"term"` (default) for component-term breakdown or
   `"variable"` for variable-level breakdown (splitting interactions
   equally).
-
-- x:
-
-  a `"midbrk"` or `"midbrks"` object.
-
-- digits:
-
-  number of significant digits to print.
-
-- n:
-
-  maximum number of rows to print for `"midbrks"`.
-
-- shape:
-
-  output table shape for `summary.midbrks()`: `"wide"` (default) or
-  `"long"`.
-
-- terms:
-
-  optional character vector of terms/variables to include.
-
-- fill:
-
-  value used for terms absent from a model in `wide` format (default
-  `0`).
-
-- row.names, optional:
-
-  passed to
-  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html).
 
 ## Value
 

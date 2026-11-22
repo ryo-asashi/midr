@@ -1,12 +1,10 @@
-# Plot and Compare MID Breakdown
+# Plot Prediction Breakdown
 
-Visualize the prediction breakdown for a `"midbrk"` object, or compare
-breakdowns across a `"midbrks"` collection.
+Visualize the prediction breakdown for a `"midbrk"` object.
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
 base graphics, while
-[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
-[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-return **ggplot2** objects via the `dualplot` engine.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns **ggplot2** objects via the `dualplot` engine.
 
 ## Usage
 
@@ -38,55 +36,18 @@ ggmid(
   format.args = list(),
   ...
 )
-
-# S3 method for class 'midbrk'
-autoplot(object, ...)
-
-# S3 method for class 'midbrks'
-plot(
-  x,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 15L,
-  vline = TRUE,
-  others = "others",
-  pattern = c("%t=%v", "%t:%t"),
-  format.args = list(),
-  labels = NULL,
-  ...
-)
-
-# S3 method for class 'midbrks'
-ggmid(
-  object,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 15L,
-  vline = TRUE,
-  others = "others",
-  pattern = c("%t=%v", "%t:%t"),
-  format.args = list(),
-  labels = NULL,
-  ...
-)
-
-# S3 method for class 'midbrks'
-autoplot(object, ...)
 ```
 
 ## Arguments
 
 - x, object:
 
-  a `"midbrk"` or `"midbrks"` object.
+  a `"midbrk"` object.
 
 - type:
 
-  visualization style: for `"midbrk"`, one of `"waterfall"` (default),
-  `"barplot"`, or `"dotchart"`; for `"midbrks"`, one of `"barplot"`
-  (default), `"dotchart"`, or `"series"`.
+  visualization style: `"waterfall"` (default), `"barplot"`, or
+  `"dotchart"`.
 
 - theme:
 
@@ -125,18 +86,14 @@ autoplot(object, ...)
 
   additional graphical parameters passed to `dualplot`.
 
-- labels:
-
-  optional numeric or character vector of model labels for `"midbrks"`.
-
 ## Value
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
 invisibly.
-[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) and
-[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-return a `"ggplot"` object.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns a `"ggplot"` object.
 
 ## See also
 
-[`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
+[`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md),
+[`plot.midbrks`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)

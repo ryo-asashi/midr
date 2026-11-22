@@ -1,9 +1,11 @@
-# Compare MID Conditional Expectations
+# Compare Conditional Expectations (ICE) Across Models
 
-For "midcons" collection objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
-compares Individual Conditional Expectation (ICE) curves derived from
-multiple fitted MID models.
+Compare Individual Conditional Expectation (ICE) curves across a
+`"midcons"` collection.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
+base graphics, while
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns **ggplot2** objects.
 
 ## Usage
 
@@ -21,105 +23,68 @@ plot(
   labels = NULL,
   ...
 )
+
+# S3 method for class 'midcons'
+ggmid(
+  object,
+  type = c("iceplot", "centered", "series"),
+  theme = NULL,
+  var.alpha = NULL,
+  var.linetype = NULL,
+  var.linewidth = NULL,
+  reference = 1L,
+  sample = NULL,
+  labels = NULL,
+  ...
+)
 ```
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "midcons" collection object to be visualized.
+  a `"midcons"` collection object.
 
 - type:
 
-  the plotting style. One of "iceplot", "centered", or "series".
+  visualization style: `"iceplot"` (default), `"centered"`, or
+  `"series"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  optional color theme name or `"colortheme"` object.
 
-- var.alpha:
+- var.alpha, var.linetype, var.linewidth:
 
-  a variable name or expression to map to the alpha aesthetic.
-
-- var.linetype:
-
-  a variable name or expression to map to the linetype aesthetic.
-
-- var.linewidth:
-
-  a variable name or expression to map to the linewidth aesthetic.
+  optional variable names or expressions evaluated in `observed` to map
+  aesthetics across curves.
 
 - reference:
 
-  an integer specifying the index of the evaluation point to use as the
-  reference for centering the c-ICE plot.
+  integer index of the grid point used for centering when
+  `type = "centered"`.
 
 - sample:
 
-  an optional vector specifying the names of observations to be plotted.
+  optional character vector of observation IDs (`.id`) to display.
 
 - labels:
 
-  an optional numeric or character vector to specify the model labels.
-  Defaults to the labels found in the object.
+  optional numeric or character vector of model labels.
 
 - ...:
 
-  optional parameters passed on to the graphing functions (e.g., `col`,
-  `lty`, `lwd`).
+  additional graphical parameters.
 
 ## Value
 
-`plot.midcons()` produces a plot as a side effect and returns `NULL`
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
 invisibly.
-
-## Details
-
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-produces comparative ICE curves from a "midcons" object. It plots one
-line for each observation in the data per model.
-
-For `type = "iceplot"` and `"centered"`, lines are colored by the model
-label. For `type = "series"`, lines are colored by the feature value and
-plotted across models.
-
-The `var.alpha`, `var.linetype`, and `var.linewidth` arguments allow you
-to map aesthetics to other variables in your data using (possibly)
-unquoted expressions.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns a `"ggplot"` object.
 
 ## See also
 
 [`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
-[`ggmid.midcons`](https://ryo-asashi.github.io/midr/reference/ggmid.midcons.md)
-
-## Examples
-
-``` r
-data(mtcars, package = "datasets")
-
-# Fit two different models for comparison
-mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
-#> 'model' not passed: response variable in 'data' is used
-mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
-#> 'model' not passed: response variable in 'data' is used
-
-# Calculate conditional expectations for both models
-cons <- midlist(
-  "Main Effects" = mid.conditional(mid1, "wt", data = mtcars[3:5, ]),
-  "Interactions" = mid.conditional(mid2, "wt", data = mtcars[3:5, ])
-)
-
-# Create an ICE plot (default)
-plot(cons)
-
-
-# Create a centered-ICE plot
-plot(cons, type = "centered")
-
-
-# Create a series plot to observe trends across models
-plot(cons, type = "series", var.linetype = ".id")
-```
+[`eval_conditional`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
+[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)

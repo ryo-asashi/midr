@@ -1,9 +1,10 @@
-# Compare MID Importances
+# Compare Term or Variable Importance Across Models
 
-For "midimps" collection objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
-compares the importance of component functions across multiple fitted
-MID models.
+Compare term or variable importance across a `"midimps"` collection.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
+base graphics, while
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns **ggplot2** objects via the `dualplot` engine.
 
 ## Usage
 
@@ -18,97 +19,59 @@ plot(
   labels = NULL,
   ...
 )
+
+# S3 method for class 'midimps'
+ggmid(
+  object,
+  type = c("barplot", "dotchart", "series"),
+  theme = NULL,
+  terms = NULL,
+  max.nterms = 30L,
+  labels = NULL,
+  ...
+)
 ```
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "midimps" collection object to be visualized.
+  a `"midimps"` collection object.
 
 - type:
 
-  the plotting style. One of "barplot", "dotchart", or "series".
+  visualization style: `"barplot"` (default), `"dotchart"`, or
+  `"series"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  optional color theme name or `"colortheme"` object.
 
 - terms:
 
-  an optional character vector specifying which terms to display. If
-  `NULL`, terms are automatically extracted from the object.
+  optional character vector specifying which terms/variables to display.
 
 - max.nterms:
 
-  the maximum number of terms to display. Defaults to 30.
+  maximum number of terms to display.
 
 - labels:
 
-  an optional numeric or character vector to specify the model labels.
-  Defaults to the labels found in the object.
+  optional numeric or character vector of model labels.
 
 - ...:
 
-  optional parameters passed on to the graphing functions. Possible
-  arguments are "col", "fill", "pch", "cex", "lty", "lwd" and aliases of
-  them.
+  additional graphical parameters passed to `dualplot`.
 
 ## Value
 
-`plot.midimps()` produces a plot as a side effect and returns `NULL`
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
 invisibly.
-
-## Details
-
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-creates a comparative importance plot from a "midimps" collection
-object. It visualizes the average contribution of component functions to
-the fitted MID models, allowing for easy comparison across different
-models.
-
-The `type` argument controls the visualization style: The default,
-`type = "barplot"`, creates a standard grouped bar plot where the length
-of each bar represents the overall importance of the term, positioned
-side-by-side by model label. The `type = "dotchart"` option creates a
-grouped dot plot, offering a clean alternative to the bar plot for
-visualizing and comparing term importance across models. The
-`type = "series"` option plots the importance trend over the models for
-each component function.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns a `"ggplot"` object.
 
 ## See also
 
 [`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
-[`ggmid.midimps`](https://ryo-asashi.github.io/midr/reference/ggmid.midimps.md)
-
-## Examples
-
-``` r
-data(mtcars, package = "datasets")
-
-# Fit two different models for comparison
-mid1 <- interpret(mpg ~ wt + hp + cyl, data = mtcars)
-#> 'model' not passed: response variable in 'data' is used
-mid2 <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars)
-#> 'model' not passed: response variable in 'data' is used
-
-# Calculate importance for both models and combine them
-imps <- midlist(
-  "Main Effects" = mid.importance(mid1),
-  "Interactions" = mid.importance(mid2)
-)
-
-# Create a comparative grouped bar plot (default)
-plot(imps)
-
-
-# Create a comparative dot chart with a specific theme
-plot(rev(imps), type = "dotchart", theme = "Okabe-Ito")
-
-
-# Create a series plot to observe trends across models
-plot(imps, type = "series")
-```
+[`eval_importance`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
+[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)

@@ -1,8 +1,10 @@
-# Compare MID Component Functions
+# Compare MID Component Functions Across Models
 
-For "mids" collection objects,
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) visualizes and
-compares one or more main effects across multiple models.
+Compare main effects across a collection of MID models (`"mids"`).
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
+base graphics, while
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns **ggplot2** objects via the `dualplot` engine.
 
 ## Usage
 
@@ -10,7 +12,20 @@ compares one or more main effects across multiple models.
 # S3 method for class 'mids'
 plot(
   x,
-  terms = term.labels(x, order = 1L),
+  terms = NULL,
+  type = c("effect", "series"),
+  theme = NULL,
+  intercept = FALSE,
+  limits = c(NA, NA),
+  resolution = NULL,
+  labels = NULL,
+  ...
+)
+
+# S3 method for class 'mids'
+ggmid(
+  object,
+  terms = NULL,
   type = c("effect", "series"),
   theme = NULL,
   intercept = FALSE,
@@ -23,97 +38,64 @@ plot(
 
 ## Arguments
 
-- x:
+- x, object:
 
-  a "mids" collection object to be visualized.
+  a `"mids"` collection object.
 
 - terms:
 
-  a character vector or a formula specifying the component functions to
-  be plotted. If a formula is provided (e.g., `~ x + y`), it is
-  automatically parsed to extract the relevant terms.
+  optional character vector or formula specifying main-effect terms to
+  plot.
 
 - type:
 
-  the plotting style: "effect" plots the effect curve per model, while
-  "series" plots the effect trend over models per feature value.
+  comparison style: `"effect"` (default) or `"series"`.
 
 - theme:
 
-  a character string or object defining the color theme. See
-  [`color.theme`](https://ryo-asashi.github.io/midr/reference/color.theme.md)
-  for details.
+  a color theme name or `"colortheme"` object.
 
 - intercept:
 
-  logical. If `TRUE`, the model intercept is added to the component
-  effect.
+  logical. If `TRUE`, adds the intercept to the plotted effect (or
+  inferred from `terms` when omitted).
 
 - limits:
 
-  a numeric vector of length two specifying the limits of the plotting
-  scale.
+  optional numeric vector of length 2 for the effect axis limits.
 
 - resolution:
 
-  an integer specifying the number of evaluation points for continuous
+  optional integer specifying evaluation grid density for continuous
   variables.
 
 - labels:
 
-  an optional numeric or character vector to specify the model labels.
-  Defaults to `labels(object)`. The function attempts to parse these
-  labels into numeric values where possible.
+  optional numeric or character vector of model labels.
 
 - ...:
 
-  optional parameters passed to the main layer (e.g., `linewidth`,
-  `alpha`).
+  additional graphical parameters passed to the underlying `dualplot`
+  layer.
 
 ## Value
 
-`plot.mids()` produces one or more plots as a side-effect and returns
-`NULL` invisibly.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`
+invisibly.
+[`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
+returns a `"ggplot"` object for a single plot, or a named list of
+`"ggplot"` objects for multiple plots.
 
 ## Details
 
-This is an S3 method for the
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) generic that
-evaluates the specified `term` over a grid of values and compares the
-results across all models in the collection.
+The `type` argument selects the comparison layout:
 
-The `type` argument controls the visualization style. The default,
-`type = "effect"`, plots the component functions of the specified `term`
-for each model individually. The `type = "series"` option transposes the
-view to plot the effect trend over the models for each feature value.
+- `"effect"` (default): overlays component curves/bars across models.
 
-Note: Comparative plotting for interaction terms (2D surfaces) is not
-supported for collection objects.
+- `"series"`: transposes the comparison to show effect trends across
+  models for each feature value.
 
 ## See also
 
 [`plot.mid`](https://ryo-asashi.github.io/midr/reference/plot.mid.md),
-[`ggmid.mids`](https://ryo-asashi.github.io/midr/reference/ggmid.mids.md)
-
-## Examples
-
-``` r
-# Use a lightweight dataset for fast execution
-data(mtcars, package = "datasets")
-
-# Fit two models with different complexities
-fit1 <- lm(mpg ~ wt, data = mtcars)
-mid1 <- interpret(mpg ~ wt, data = mtcars, model = fit1)
-fit2 <- lm(mpg ~ wt + hp, data = mtcars)
-mid2 <- interpret(mpg ~ wt + hp, data = mtcars, model = fit2)
-
-# Combine them into a "midlist" collection (which inherits from "mids")
-mids <- midlist("wt" = mid1, "wt + hp" = mid2)
-
-# Compare the main effect of 'wt' across both models
-plot(mids, term = "wt")
-
-
-# Compare the effect of 'wt' as a series plot across the models
-plot(mids, term = "wt", type = "series")
-```
+[`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)

@@ -34,21 +34,6 @@ eval_importance(
   seed = NULL,
   ...
 )
-
-# S3 method for class 'midimp'
-print(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-# S3 method for class 'midimps'
-print(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...)
-
-# S3 method for class 'midimp'
-summary(object, ...)
-
-# S3 method for class 'midimps'
-summary(object, shape = c("wide", "long"), terms = NULL, fill = NA_real_, ...)
-
-# S3 method for class 'midimp'
-as.data.frame(x, row.names = NULL, optional = FALSE, long = FALSE, ...)
 ```
 
 ## Arguments
@@ -95,42 +80,6 @@ as.data.frame(x, row.names = NULL, optional = FALSE, long = FALSE, ...)
 - seed:
 
   optional integer seed for subsampling.
-
-- x:
-
-  a `"midimp"` or `"midimps"` object.
-
-- digits:
-
-  number of significant digits to print.
-
-- n:
-
-  maximum number of rows to print for `"midimps"`.
-
-- shape:
-
-  output table shape for `summary.midimps()`: `"wide"` (default) or
-  `"long"`.
-
-- terms:
-
-  optional character vector of terms/variables to include.
-
-- fill:
-
-  value used for terms absent from a model in `wide` format (default
-  `NA_real_`).
-
-- row.names, optional:
-
-  passed to
-  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html).
-
-- long:
-
-  logical. If `TRUE`, returns a long-format data.frame of sample-level
-  term contributions merged with `importance` (and `order`).
 
 ## Value
 

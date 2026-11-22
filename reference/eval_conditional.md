@@ -1,4 +1,4 @@
-# Evaluate Individual Conditional Expectation (ICE)
+# Evaluate Conditional Expectation (ICE)
 
 `eval_conditional()` calculates Individual Conditional Expectation (ICE)
 curves from a fitted model for a single predictor variable.
@@ -33,21 +33,6 @@ eval_conditional(
   keep.effects = TRUE,
   ...
 )
-
-# S3 method for class 'midcon'
-print(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-# S3 method for class 'midcons'
-print(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-# S3 method for class 'midcon'
-summary(object, ...)
-
-# S3 method for class 'midcons'
-summary(object, shape = c("long", "wide"), ids = NULL, ...)
-
-# S3 method for class 'midcon'
-as.data.frame(x, row.names = NULL, optional = FALSE, ...)
 ```
 
 ## Arguments
@@ -90,28 +75,6 @@ as.data.frame(x, row.names = NULL, optional = FALSE, ...)
 
   logical. If `TRUE` (default), stores individual term contributions for
   `variable`.
-
-- x:
-
-  a `"midcon"` or `"midcons"` object.
-
-- digits:
-
-  number of significant digits to print.
-
-- shape:
-
-  output table shape for `summary.midcons()`: `"long"` (default) or
-  `"wide"`.
-
-- ids:
-
-  optional character vector of observation IDs to include.
-
-- row.names, optional:
-
-  passed to
-  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html).
 
 ## Value
 
