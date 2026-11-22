@@ -146,6 +146,27 @@ expressions evaluated in <code>observed</code> to map aesthetics across curves.<
     <div class="dont-index"><p><code><a href="eval_conditional.html">eval_conditional</a></code>, <code><a href="plot.midcon.html">plot.midcon</a></code>, <code><a href="midlist.html">midlist</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="op">(</span><span class="va">Petal.Length</span> <span class="op">+</span> <span class="va">Petal.Width</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">iris</span>, lambda <span class="op">=</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
+<span class="r-in"><span><span class="va">cons</span> <span class="op">&lt;-</span> <span class="fu"><a href="eval_conditional.html">eval_conditional</a></span><span class="op">(</span><span class="va">mids</span>, variable <span class="op">=</span> <span class="st">"Petal.Length"</span>, data <span class="op">=</span> <span class="va">iris</span>, max.nsamples <span class="op">=</span> <span class="fl">20L</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cons</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.midcons-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.midcons-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plot.mid.html">ggmid</a></span><span class="op">(</span><span class="va">cons</span>, type <span class="op">=</span> <span class="st">"series"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-plt img"><img src="plot.midcons-3.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

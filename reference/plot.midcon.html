@@ -135,7 +135,16 @@ expressions evaluated in <code>observed</code> to map aesthetics across curves.<
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional graphical parameters.</p></dd>
+<dd><p>additional graphical parameters.</p>
+<p>data(airquality, package = "datasets")
+aq &lt;- na.omit(airquality)
+mid &lt;- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)</p>
+<p># Slice the Wind:Temp interaction via subset()
+sub &lt;- subset(mid, "Wind:Temp")
+con &lt;- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)</p>
+<p>plot(con, type = "centered", var.color = Temp, legend = "topleft")</p>
+<p>if (requireNamespace("ggplot2", quietly = TRUE))
+  ggmid(con, type = "centered", var.color = Temp)</p></dd>
 
 </dl></div>
     <div class="section level2">

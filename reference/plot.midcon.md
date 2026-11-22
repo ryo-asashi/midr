@@ -77,6 +77,19 @@ ggmid(
 
   additional graphical parameters.
 
+  data(airquality, package = "datasets") aq \<- na.omit(airquality) mid
+  \<- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda =
+  0.5)
+
+  \# Slice the Wind:Temp interaction via subset() sub \<- subset(mid,
+  "Wind:Temp") con \<- eval_conditional(sub, variable = "Wind", data =
+  aq, max.nsamples = 30L)
+
+  plot(con, type = "centered", var.color = Temp, legend = "topleft")
+
+  if (requireNamespace("ggplot2", quietly = TRUE)) ggmid(con, type =
+  "centered", var.color = Temp)
+
 ## Value
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) returns `NULL`

@@ -88,3 +88,28 @@ holding all other predictors \\\mathbf{x}\_{i,\setminus j}\\ fixed:
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
 [`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
 [`ggmid.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
+
+## Examples
+
+``` r
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#> 'model' not passed: response variable in 'data' is used
+
+eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
+#> number of observations exceeds 'max.nsamples': a sample of 30 observations from 'data' is used
+#> 
+#> MID Conditional Expectation for 'Wind' (30 Observations)
+#> 
+#> Grid Values: 2.3000, 2.4859, 2.6717, ...
+#> 
+#> Observed Head:
+#>   .id    yhat Ozone Solar.R Wind Temp
+#> 1  76  20.903     7      48 14.3   80
+#> 2  30  83.775   115     223  5.7   79
+#> 3 116  49.986    45     212  9.7   79
+#> 4  99 124.851   122     255  4.0   89
+#> 5 142  25.830    24     238 10.3   68
+#> 6 143  47.160    16     201  8.0   82
+```

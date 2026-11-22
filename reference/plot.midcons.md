@@ -88,3 +88,24 @@ returns a `"ggplot"` object.
 [`eval_conditional`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
 [`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+
+## Examples
+
+``` r
+data(iris, package = "datasets")
+mids <- interpret(
+  cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+  data = iris, lambda = 0.5
+)
+#> 'model' not passed: response variable in 'data' is used
+cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
+
+plot(cons)
+
+plot(cons, type = "series")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(cons, type = "series")
+}
+```

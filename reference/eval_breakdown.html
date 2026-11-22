@@ -150,6 +150,59 @@ breakdowns across observations.</p>
     <div class="dont-index"><p><code><a href="interpret.html">interpret</a></code>, <code><a href="plot.midbrk.html">plot.midbrk</a></code>, <code><a href="plot.midbrks.html">plot.midbrks</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="interpret.html">interpret</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="op">(</span><span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">cyl</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, data <span class="op">=</span> <span class="va">mtcars</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'model' not passed: response variable in 'data' is used</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">eval_breakdown</span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">mtcars</span>, rows <span class="op">=</span> <span class="st">"Toyota Corolla"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MID Breakdown of a Prediction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Intercept: 20.091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 32.598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     term     effect order</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     wt  6.1942339     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     hp  6.1633548     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    cyl  0.1606907     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  wt:hp -0.0084929     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 hp:cyl -0.0016391     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 wt:cyl -0.0010518     2</span>
+<span class="r-in"><span><span class="fu">eval_breakdown</span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">mtcars</span>, rows <span class="op">=</span> <span class="st">"Toyota Corolla"</span>, by <span class="op">=</span> <span class="st">"variable"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MID Breakdown of a Prediction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Intercept: 20.091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 32.598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   term  effect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   wt 6.18946</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   hp 6.15829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  cyl 0.15935</span>
+<span class="r-in"><span><span class="fu">eval_breakdown</span><span class="op">(</span><span class="va">mid</span>, data <span class="op">=</span> <span class="va">mtcars</span>, rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Toyota Corolla"</span>, <span class="st">"Mazda RX4"</span>, <span class="st">"Maserati Bora"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MID Breakdown of Predictions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Intercept: 20.091, 20.091, 20.091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction: 32.598, 21.537, 14.617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Breakdown of Effects:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     term Toyota Corolla  Mazda RX4 Maserati Bora</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     wt      6.1942339  0.2825245   -2.1008e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     hp      6.1633548  1.1376198   -3.2679e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    cyl      0.1606907  0.0137268   -1.3312e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  wt:hp     -0.0084929 -0.0088640    1.7928e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 hp:cyl     -0.0016391  0.0096769    2.1584e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 wt:cyl     -0.0010518  0.0118479    1.0071e-02</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

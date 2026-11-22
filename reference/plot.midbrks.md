@@ -103,3 +103,25 @@ returns a `"ggplot"` object.
 [`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md),
 [`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
+
+## Examples
+
+``` r
+data(mtcars, package = "datasets")
+mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+#> 'model' not passed: response variable in 'data' is used
+brks <- eval_breakdown(
+  mid, data = mtcars,
+  rows = c("Toyota Corolla", "Mazda RX4", "Maserati Bora"),
+  by = "variable"
+)
+
+plot(brks, type = "dotchart", legend = "bottomright")
+
+plot(brks, type = "series")
+
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(brks, type = "dotchart")
+}
+```
