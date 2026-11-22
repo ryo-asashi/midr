@@ -3,11 +3,7 @@
 \name{plot.midcon}
 \alias{plot.midcon}
 \alias{ggmid.midcon}
-\alias{autoplot.midcon}
-\alias{plot.midcons}
-\alias{ggmid.midcons}
-\alias{autoplot.midcons}
-\title{Plot and Compare MID Conditional Expectations (ICE)}
+\title{Plot Conditional Expectations (ICE)}
 \usage{
 \method{plot}{midcon}(
   x,
@@ -38,43 +34,11 @@
   sample = NULL,
   ...
 )
-
-\method{autoplot}{midcon}(object, ...)
-
-\method{plot}{midcons}(
-  x,
-  type = c("iceplot", "centered", "series"),
-  theme = NULL,
-  var.alpha = NULL,
-  var.linetype = NULL,
-  var.linewidth = NULL,
-  reference = 1L,
-  sample = NULL,
-  labels = NULL,
-  ...
-)
-
-\method{ggmid}{midcons}(
-  object,
-  type = c("iceplot", "centered", "series"),
-  theme = NULL,
-  var.alpha = NULL,
-  var.linetype = NULL,
-  var.linewidth = NULL,
-  reference = 1L,
-  sample = NULL,
-  labels = NULL,
-  ...
-)
-
-\method{autoplot}{midcons}(object, ...)
 }
 \arguments{
-\item{x, object}{a \code{"midcon"} or \code{"midcons"} object.}
+\item{x, object}{a \code{"midcon"} object.}
 
-\item{type}{visualization style:
-for \code{"midcon"}, one of \code{"iceplot"} (default) or \code{"centered"};
-for \code{"midcons"}, one of \code{"iceplot"} (default), \code{"centered"}, or \code{"series"}.}
+\item{type}{visualization style: \code{"iceplot"} (default) or \code{"centered"}.}
 
 \item{theme}{optional color theme name or \code{"colortheme"} object.}
 
@@ -85,24 +49,21 @@ expressions evaluated in \code{observed} to map aesthetics across curves.}
 
 \item{reference}{integer index of the grid point used for centering when \code{type = "centered"}.}
 
-\item{points}{logical. If \code{TRUE} (default), overlays observed predictions for \code{"midcon"}.}
+\item{points}{logical. If \code{TRUE} (default), overlays observed predictions.}
 
 \item{sample}{optional character vector of observation IDs (\code{.id}) to display.}
 
 \item{...}{additional graphical parameters.}
-
-\item{labels}{optional numeric or character vector of model labels for \code{"midcons"}.}
 }
 \value{
 \code{plot()} returns \code{NULL} invisibly.
-\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+\code{ggmid()} returns a \code{"ggplot"} object.
 }
 \description{
-Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"}
-object, or compare ICE curves across a \code{"midcons"} collection.
-\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-return \strong{ggplot2} objects.
+Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"} object.
+\code{plot()} renders via base graphics, while \code{ggmid()} returns
+\strong{ggplot2} objects.
 }
 \seealso{
-\code{\link{eval_conditional}}
+\code{\link{eval_conditional}}, \code{\link{plot.midcons}}
 }

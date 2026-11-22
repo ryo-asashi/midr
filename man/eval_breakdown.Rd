@@ -4,11 +4,6 @@
 \alias{eval_breakdown}
 \alias{eval_breakdown.mid}
 \alias{eval_breakdown.mids}
-\alias{print.midbrk}
-\alias{print.midbrks}
-\alias{summary.midbrk}
-\alias{summary.midbrks}
-\alias{as.data.frame.midbrk}
 \title{Evaluate Breakdown of Model Predictions}
 \usage{
 eval_breakdown(object, ...)
@@ -30,16 +25,6 @@ eval_breakdown(object, ...)
   by = c("term", "variable"),
   ...
 )
-
-\method{print}{midbrk}(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-\method{print}{midbrks}(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...)
-
-\method{summary}{midbrk}(object, ...)
-
-\method{summary}{midbrks}(object, shape = c("wide", "long"), terms = NULL, fill = 0, ...)
-
-\method{as.data.frame}{midbrk}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
 \item{object}{a \code{"mid"} or \code{"mids"} object.}
@@ -58,20 +43,6 @@ absolute magnitude.}
 
 \item{by}{character: \code{"term"} (default) for component-term breakdown or
 \code{"variable"} for variable-level breakdown (splitting interactions equally).}
-
-\item{x}{a \code{"midbrk"} or \code{"midbrks"} object.}
-
-\item{digits}{number of significant digits to print.}
-
-\item{n}{maximum number of rows to print for \code{"midbrks"}.}
-
-\item{shape}{output table shape for \code{summary.midbrks()}: \code{"wide"} (default) or \code{"long"}.}
-
-\item{terms}{optional character vector of terms/variables to include.}
-
-\item{fill}{value used for terms absent from a model in \code{wide} format (default \code{0}).}
-
-\item{row.names, optional}{passed to \code{as.data.frame()}.}
 }
 \value{
 For a single observation, an object of class \code{"midbrk"} containing

@@ -1,32 +1,28 @@
 # R/plot_midcon.R
 
-#' Plot and Compare MID Conditional Expectations (ICE)
+#' Plot Conditional Expectations (ICE)
 #'
 #' @description
-#' Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"}
-#' object, or compare ICE curves across a \code{"midcons"} collection.
-#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-#' return \strong{ggplot2} objects.
+#' Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"} object.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects.
 #'
-#' @param x,object a \code{"midcon"} or \code{"midcons"} object.
-#' @param type visualization style:
-#'   for \code{"midcon"}, one of \code{"iceplot"} (default) or \code{"centered"};
-#'   for \code{"midcons"}, one of \code{"iceplot"} (default), \code{"centered"}, or \code{"series"}.
+#' @param x,object a \code{"midcon"} object.
+#' @param type visualization style: \code{"iceplot"} (default) or \code{"centered"}.
 #' @param theme optional color theme name or \code{"colortheme"} object.
 #' @param term optional term label to plot a single component's ICE curve (requires \code{keep.effects = TRUE}).
 #' @param var.alpha,var.color,var.linetype,var.linewidth optional variable names or
 #'   expressions evaluated in \code{observed} to map aesthetics across curves.
 #' @param reference integer index of the grid point used for centering when \code{type = "centered"}.
-#' @param points logical. If \code{TRUE} (default), overlays observed predictions for \code{"midcon"}.
+#' @param points logical. If \code{TRUE} (default), overlays observed predictions.
 #' @param sample optional character vector of observation IDs (\code{.id}) to display.
-#' @param labels optional numeric or character vector of model labels for \code{"midcons"}.
 #' @param ... additional graphical parameters.
 #'
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
-#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{eval_conditional}}
+#' @seealso \code{\link{eval_conditional}}, \code{\link{plot.midcons}}
 #'
 #' @name plot.midcon
 #' @rdname plot.midcon
@@ -66,7 +62,6 @@ ggmid.midcon <- function(
 }
 
 
-#' @rdname plot.midcon
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midcon <- function(object, ...) {
@@ -74,7 +69,31 @@ autoplot.midcon <- function(object, ...) {
 }
 
 
-#' @rdname plot.midcon
+#' Compare Conditional Expectations (ICE) Across Models
+#'
+#' @description
+#' Compare Individual Conditional Expectation (ICE) curves across a \code{"midcons"} collection.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects.
+#'
+#' @param x,object a \code{"midcons"} collection object.
+#' @param type visualization style: \code{"iceplot"} (default), \code{"centered"}, or \code{"series"}.
+#' @param theme optional color theme name or \code{"colortheme"} object.
+#' @param var.alpha,var.linetype,var.linewidth optional variable names or
+#'   expressions evaluated in \code{observed} to map aesthetics across curves.
+#' @param reference integer index of the grid point used for centering when \code{type = "centered"}.
+#' @param sample optional character vector of observation IDs (\code{.id}) to display.
+#' @param labels optional numeric or character vector of model labels.
+#' @param ... additional graphical parameters.
+#'
+#' @returns
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
+#'
+#' @seealso \code{\link{plot.midcon}}, \code{\link{eval_conditional}}, \code{\link{midlist}}
+#'
+#' @name plot.midcons
+#' @rdname plot.midcons
 #' @exportS3Method base::plot
 #'
 plot.midcons <- function(
@@ -93,7 +112,7 @@ plot.midcons <- function(
 }
 
 
-#' @rdname plot.midcon
+#' @rdname plot.midcons
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midcons <- function(
@@ -111,7 +130,6 @@ ggmid.midcons <- function(
 }
 
 
-#' @rdname plot.midcon
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midcons <- function(object, ...) {
@@ -303,7 +321,11 @@ render_midcons <- function(
   variable <- first$variable
   obs <- first$observed
   values <- first$values
-  con <- summary(x, shape = "long")
+  con <- summarize_midlist(
+    object = x, shape = "long",
+    dfname = "conditional", keycol = ".id", valcol = "yhat",
+    keys = c(".id", variable), targets = first$ids
+  )
 
   olabs <- as.character(unique(con$label))
   labels <- labels %||% olabs

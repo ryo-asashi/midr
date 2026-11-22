@@ -165,9 +165,6 @@ eval_importance.mids <- function(
 }
 
 
-#' @rdname eval_importance
-#' @param x a \code{"midimp"} or \code{"midimps"} object.
-#' @param digits number of significant digits to print.
 #' @exportS3Method base::print
 #'
 print.midimp <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
@@ -180,8 +177,6 @@ print.midimp <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
 }
 
 
-#' @rdname eval_importance
-#' @param n maximum number of rows to print for \code{"midimps"}.
 #' @exportS3Method base::print
 #'
 print.midimps <- function(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...) {
@@ -190,13 +185,12 @@ print.midimps <- function(x, digits = max(3L, getOption("digits") - 2L), n = 20L
   cat("\nMID Importance based on ", nobs, " Observation", if (nobs != 1L) "s", "\n", sep = "")
   cat("\nMeasure: ", first$measure, "\n", sep = "")
   cat("\nImportance:\n")
-  smry <- summary(x, shape = "wide")
+  smry <- summary(x)
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(x)
 }
 
 
-#' @rdname eval_importance
 #' @exportS3Method base::summary
 #'
 summary.midimp <- function(object, ...) {
@@ -204,25 +198,17 @@ summary.midimp <- function(object, ...) {
 }
 
 
-#' @rdname eval_importance
-#' @param shape output table shape for \code{summary.midimps()}: \code{"wide"} (default) or \code{"long"}.
-#' @param terms optional character vector of terms/variables to include.
-#' @param fill value used for terms absent from a model in \code{wide} format (default \code{NA_real_}).
 #' @exportS3Method base::summary
 #'
-summary.midimps <- function(object, shape = c("wide", "long"), terms = NULL, fill = NA_real_, ...) {
+summary.midimps <- function(object, ...) {
   summarize_midlist(
-    object = object, shape = shape,
+    object = object, shape = "wide",
     dfname = "importance", keycol = "term", valcol = "importance",
-    keys = "term", targets = terms, fill = fill
+    keys = "term", fill = NA_real_
   )
 }
 
 
-#' @rdname eval_importance
-#' @param row.names,optional passed to \code{as.data.frame()}.
-#' @param long logical. If \code{TRUE}, returns a long-format data.frame of
-#'   sample-level term contributions merged with \code{importance} (and \code{order}).
 #' @exportS3Method base::as.data.frame
 #'
 as.data.frame.midimp <- function(x, row.names = NULL, optional = FALSE, long = FALSE, ...) {
@@ -243,6 +229,17 @@ as.data.frame.midimp <- function(x, row.names = NULL, optional = FALSE, long = F
     out$order <- rep(imp$order, each = nr)
   }
   out
+}
+
+
+#' @exportS3Method base::as.data.frame
+#'
+as.data.frame.midimps <- function(x, row.names = NULL, optional = FALSE, ...) {
+  summarize_midlist(
+    object = x, shape = "long",
+    dfname = "importance", keycol = "term", valcol = "importance",
+    keys = "term"
+  )
 }
 
 
@@ -282,24 +279,32 @@ aggregate_effects_by_variable <- function(preds) {
 }
 
 
-weighted_mae <- function(x, w = NULL) {
+weighted_mae <- function(x, w = NULL, na.rm = TRUE) {
   if (is.null(w)) {
-    mean(abs(x), na.rm = TRUE)
-  } else {
-    stats::weighted.mean(abs(x), w = w, na.rm = TRUE)
+    return(mean(abs(x), na.rm = na.rm))
   }
+  if (isTRUE(na.rm)) {
+    ok <- !is.na(x) & !is.na(w)
+    x <- x[ok]
+    w <- w[ok]
+  }
+  stats::weighted.mean(abs(x), w = w, na.rm = FALSE)
 }
 
 
-weighted_rmse <- function(x, w = NULL) {
+weighted_rmse <- function(x, w = NULL, na.rm = TRUE) {
   if (is.null(w)) {
-    sqrt(mean(x^2, na.rm = TRUE))
-  } else {
-    sqrt(stats::weighted.mean(x^2, w = w, na.rm = TRUE))
+    return(sqrt(mean(x^2, na.rm = na.rm)))
   }
+  if (isTRUE(na.rm)) {
+    ok <- !is.na(x) & !is.na(w)
+    x <- x[ok]
+    w <- w[ok]
+  }
+  sqrt(stats::weighted.mean(x^2, w = w, na.rm = FALSE))
 }
 
 
-weighted_medae <- function(x, w = NULL) {
-  unname(weighted_quantile(abs(x), w = w, probs = 0.5, na.rm = TRUE, names = FALSE))
+weighted_medae <- function(x, w = NULL, na.rm = TRUE) {
+  unname(weighted_quantile(abs(x), w = w, probs = 0.5, na.rm = na.rm, names = FALSE))
 }

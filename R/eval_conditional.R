@@ -1,6 +1,6 @@
 # R/eval_conditional.R
 
-#' Evaluate Individual Conditional Expectation (ICE)
+#' Evaluate Conditional Expectation (ICE)
 #'
 #' @description
 #' \code{eval_conditional()} calculates Individual Conditional Expectation (ICE)
@@ -170,9 +170,6 @@ eval_conditional.mids <- function(
 }
 
 
-#' @rdname eval_conditional
-#' @param x a \code{"midcon"} or \code{"midcons"} object.
-#' @param digits number of significant digits to print.
 #' @exportS3Method base::print
 #'
 print.midcon <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
@@ -186,7 +183,6 @@ print.midcon <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
 }
 
 
-#' @rdname eval_conditional
 #' @exportS3Method base::print
 #'
 print.midcons <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
@@ -201,7 +197,6 @@ print.midcons <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
 }
 
 
-#' @rdname eval_conditional
 #' @exportS3Method base::summary
 #'
 summary.midcon <- function(object, ...) {
@@ -209,28 +204,27 @@ summary.midcon <- function(object, ...) {
 }
 
 
-#' @rdname eval_conditional
-#' @param shape output table shape for \code{summary.midcons()}: \code{"long"} (default) or \code{"wide"}.
-#' @param ids optional character vector of observation IDs to include.
 #' @exportS3Method base::summary
 #'
-summary.midcons <- function(object, shape = c("long", "wide"), ids = NULL, ...) {
-  shape <- match.arg(shape)
+summary.midcons <- function(object, ...) {
   first <- as.list(object)[[1L]]
-  ids <- ids %||% first$ids
-  variable <- first$variable
   summarize_midlist(
-    object = object, shape = shape,
+    object = object, shape = "long",
     dfname = "conditional", keycol = ".id", valcol = "yhat",
-    keys = c(".id", variable), targets = ids
+    keys = c(".id", first$variable), targets = first$ids
   )
 }
 
 
-#' @rdname eval_conditional
-#' @param row.names,optional passed to \code{as.data.frame()}.
 #' @exportS3Method base::as.data.frame
 #'
 as.data.frame.midcon <- function(x, row.names = NULL, optional = FALSE, ...) {
   x$conditional
+}
+
+
+#' @exportS3Method base::as.data.frame
+#'
+as.data.frame.midcons <- function(x, row.names = NULL, optional = FALSE, ...) {
+  summary.midcons(x)
 }

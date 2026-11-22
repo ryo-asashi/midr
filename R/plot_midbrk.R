@@ -1,17 +1,14 @@
 # R/plot_midbrk.R
 
-#' Plot and Compare MID Breakdown
+#' Plot Prediction Breakdown
 #'
 #' @description
-#' Visualize the prediction breakdown for a \code{"midbrk"} object, or compare
-#' breakdowns across a \code{"midbrks"} collection.
-#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-#' return \strong{ggplot2} objects via the \code{dualplot} engine.
+#' Visualize the prediction breakdown for a \code{"midbrk"} object.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
 #'
-#' @param x,object a \code{"midbrk"} or \code{"midbrks"} object.
-#' @param type visualization style:
-#'   for \code{"midbrk"}, one of \code{"waterfall"} (default), \code{"barplot"}, or \code{"dotchart"};
-#'   for \code{"midbrks"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.
+#' @param x,object a \code{"midbrk"} object.
+#' @param type visualization style: \code{"waterfall"} (default), \code{"barplot"}, or \code{"dotchart"}.
 #' @param theme optional color theme name or \code{"colortheme"} object.
 #' @param terms optional character vector specifying which terms/variables to display.
 #' @param max.nterms maximum number of terms to display; remaining terms are aggregated into \code{others}.
@@ -20,14 +17,13 @@
 #' @param pattern character vector of length 1 or 2 controlling axis label formatting
 #'   (\code{"\%t"} for variable/term name, \code{"\%v"} for observed value).
 #' @param format.args named list of additional arguments passed to \code{\link[base]{format}()}.
-#' @param labels optional numeric or character vector of model labels for \code{"midbrks"}.
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
-#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{eval_breakdown}}
+#' @seealso \code{\link{eval_breakdown}}, \code{\link{plot.midbrks}}
 #'
 #' @name plot.midbrk
 #' @rdname plot.midbrk
@@ -63,7 +59,6 @@ ggmid.midbrk <- function(
 }
 
 
-#' @rdname plot.midbrk
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midbrk <- function(object, ...) {
@@ -71,7 +66,34 @@ autoplot.midbrk <- function(object, ...) {
 }
 
 
-#' @rdname plot.midbrk
+#' Compare Prediction Breakdowns Across Models
+#'
+#' @description
+#' Compare prediction breakdowns across a \code{"midbrks"} collection.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
+#'
+#' @param x,object a \code{"midbrks"} collection object.
+#' @param type visualization style: \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.
+#' @param theme optional color theme name or \code{"colortheme"} object.
+#' @param terms optional character vector specifying which terms/variables to display.
+#' @param max.nterms maximum number of terms to display; remaining terms are aggregated into \code{others}.
+#' @param vline logical. If \code{TRUE} (default), draws a reference line at zero.
+#' @param others character label for the aggregated residual category (default \code{"others"}).
+#' @param pattern character vector of length 1 or 2 controlling axis label formatting
+#'   (\code{"\%t"} for variable/term name, \code{"\%v"} for observed value).
+#' @param format.args named list of additional arguments passed to \code{\link[base]{format}()}.
+#' @param labels optional numeric or character vector of model or observation labels.
+#' @param ... additional graphical parameters passed to \code{dualplot}.
+#'
+#' @returns
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
+#'
+#' @seealso \code{\link{plot.midbrk}}, \code{\link{eval_breakdown}}, \code{\link{midlist}}
+#'
+#' @name plot.midbrks
+#' @rdname plot.midbrks
 #' @exportS3Method base::plot
 #'
 plot.midbrks <- function(
@@ -90,7 +112,7 @@ plot.midbrks <- function(
 }
 
 
-#' @rdname plot.midbrk
+#' @rdname plot.midbrks
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midbrks <- function(
@@ -108,7 +130,6 @@ ggmid.midbrks <- function(
 }
 
 
-#' @rdname plot.midbrk
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midbrks <- function(object, ...) {
@@ -225,7 +246,10 @@ render_midbrks <- function(
 ) {
   dots <- list(...)
   type <- match.arg(type, c("barplot", "dotchart", "series"))
-  brk <- summary(x, shape = "long", fill = 0)
+  brk <- summarize_midlist(
+    object = x, shape = "long",
+    dfname = "breakdown", keycol = "term", valcol = "mid", keys = "term", fill = 0
+  )
   brk$term <- as.character(brk$term)
   olabs <- as.character(unique(brk$label))
   labels <- labels %||% olabs

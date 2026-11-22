@@ -1,28 +1,34 @@
 # R/plot_mid.R
 
-#' Plot and Compare MID Component Functions
+#' Plot MID Component Functions
 #'
 #' @description
-#' Visualize component functions of a fitted MID model (\code{"mid"}) or compare main effects across a collection of models (\code{"mids"}).
-#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()} return \strong{ggplot2} objects via the \code{dualplot} engine.
+#' Visualize component functions of a fitted MID model (\code{"mid"}).
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
 #'
 #' @details
-#' For \code{"mid"} objects, each element of \code{terms} produces one plot.
-#' A single element may be a term label (e.g., \code{"Wind"}, \code{"Wind:Temp"}) or a formula-like expression string (e.g., \code{"Wind * Temp + 1"} or \code{"Wind + Temp"}), which is extracted via \code{\link{subset.mid}()} and rendered as a 1D curve/bar chart or a 2D surface depending on the number of constituent variables.
-#' For 2D plots, the order in which variables appear in the term expression determines the x- and y-axes (e.g., \code{"Wind:Temp"} vs \code{"Temp:Wind"}).
-#' If a \code{formula} is passed (e.g., \code{~ Wind + Temp}), it is expanded into individual term plots.
+#' Each element of \code{terms} produces one plot.
+#' A single element may be a term label (e.g., \code{"Wind"}, \code{"Wind:Temp"})
+#' or a formula-like expression string (e.g., \code{"Wind * Temp + 1"} or
+#' \code{"Wind + Temp"}), which is extracted via \code{\link{subset.mid}()}
+#' and rendered as a 1D curve/bar chart or a 2D surface depending on the
+#' number of constituent variables.
+#' For 2D plots, the order in which variables appear in the term expression
+#' determines the x- and y-axes (e.g., \code{"Wind:Temp"} vs \code{"Temp:Wind"}).
+#' If a \code{formula} is passed (e.g., \code{~ Wind + Temp}), it is expanded
+#' into individual term plots.
 #'
 #' The \code{type} argument selects the visualization style:
 #' \itemize{
 #'   \item \code{"effect"} (default): plots the component function(s) alone.
 #'   \item \code{"data"}: plots observed points from \code{data} colored by the component effect.
 #'   \item \code{"compound"}: overlays observed points on top of the component function.
-#'   \item \code{"series"} (\code{"mids"} only): transposes the comparison to show effect trends across models for each feature value.
 #' }
 #'
-#' @param x,object a \code{"mid"} or \code{"mids"} object to be visualized.
+#' @param x,object a \code{"mid"} object to be visualized.
 #' @param terms a character vector of term labels/expressions or a formula specifying what to plot. Defaults to all main effects.
-#' @param type visualization style: \code{"effect"}, \code{"data"}, or \code{"compound"} for \code{"mid"}; \code{"effect"} or \code{"series"} for \code{"mids"}.
+#' @param type visualization style: \code{"effect"}, \code{"data"}, or \code{"compound"}.
 #' @param theme a color theme name or \code{"colortheme"} object.
 #' @param intercept logical. If \code{TRUE}, adds the intercept to the plotted effect (or inferred from each term expression when omitted).
 #' @param main.effects logical. If \code{TRUE}, includes constituent main effects when plotting an interaction term.
@@ -31,14 +37,13 @@
 #' @param jitter numeric amount of jitter for discrete axes when plotting points.
 #' @param resolution integer (or length-2 integer vector for 2D surfaces) specifying the evaluation grid density for continuous variables.
 #' @param lumped logical. If \code{TRUE} (default), uses lumped factor levels when a variable appears only in main effects or only in interactions; automatically set to \code{FALSE} for any variable that mixes both.
-#' @param labels optional numeric or character vector of model labels for \code{"mids"} comparisons.
 #' @param ... additional graphical parameters passed to the underlying \code{dualplot} layer.
 #'
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
-#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
+#' \code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.mids}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
 #'
 #' @name plot.mid
 #' @rdname plot.mid
@@ -85,7 +90,6 @@ ggmid.mid <- function(
 }
 
 
-#' @rdname plot.mid
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mid <- function(object, ...) {
@@ -93,7 +97,38 @@ autoplot.mid <- function(object, ...) {
 }
 
 
-#' @rdname plot.mid
+#' Compare MID Component Functions Across Models
+#'
+#' @description
+#' Compare main effects across a collection of MID models (\code{"mids"}).
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
+#'
+#' @details
+#' The \code{type} argument selects the comparison layout:
+#' \itemize{
+#'   \item \code{"effect"} (default): overlays component curves/bars across models.
+#'   \item \code{"series"}: transposes the comparison to show effect trends across models for each feature value.
+#' }
+#'
+#' @param x,object a \code{"mids"} collection object.
+#' @param terms optional character vector or formula specifying main-effect terms to plot.
+#' @param type comparison style: \code{"effect"} (default) or \code{"series"}.
+#' @param theme a color theme name or \code{"colortheme"} object.
+#' @param intercept logical. If \code{TRUE}, adds the intercept to the plotted effect (or inferred from \code{terms} when omitted).
+#' @param limits optional numeric vector of length 2 for the effect axis limits.
+#' @param resolution optional integer specifying evaluation grid density for continuous variables.
+#' @param labels optional numeric or character vector of model labels.
+#' @param ... additional graphical parameters passed to the underlying \code{dualplot} layer.
+#'
+#' @returns
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
+#'
+#' @seealso \code{\link{plot.mid}}, \code{\link{midlist}}
+#'
+#' @name plot.mids
+#' @rdname plot.mids
 #' @exportS3Method base::plot
 #'
 plot.mids <- function(
@@ -110,7 +145,7 @@ plot.mids <- function(
 }
 
 
-#' @rdname plot.mid
+#' @rdname plot.mids
 #' @exportS3Method midr::ggmid
 #'
 ggmid.mids <- function(
@@ -126,7 +161,6 @@ ggmid.mids <- function(
 }
 
 
-#' @rdname plot.mid
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.mids <- function(object, ...) {

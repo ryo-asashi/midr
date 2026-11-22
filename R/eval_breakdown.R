@@ -118,9 +118,6 @@ eval_breakdown.mids <- function(
 }
 
 
-#' @rdname eval_breakdown
-#' @param x a \code{"midbrk"} or \code{"midbrks"} object.
-#' @param digits number of significant digits to print.
 #' @exportS3Method base::print
 #'
 print.midbrk <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
@@ -137,8 +134,6 @@ print.midbrk <- function(x, digits = max(3L, getOption("digits") - 2L), ...) {
 }
 
 
-#' @rdname eval_breakdown
-#' @param n maximum number of rows to print for \code{"midbrks"}.
 #' @exportS3Method base::print
 #'
 print.midbrks <- function(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...) {
@@ -154,13 +149,12 @@ print.midbrks <- function(x, digits = max(3L, getOption("digits") - 2L), n = 20L
     cat("\nPrediction: ", examples(pred, digits = digits), "\n", sep = "")
   }
   cat("\nBreakdown of Effects:\n")
-  smry <- summary(x, shape = "wide")
+  smry <- summary(x)
   print.data.frame(utils::head(smry, n), digits = digits, ...)
   invisible(x)
 }
 
 
-#' @rdname eval_breakdown
 #' @exportS3Method base::summary
 #'
 summary.midbrk <- function(object, ...) {
@@ -168,27 +162,32 @@ summary.midbrk <- function(object, ...) {
 }
 
 
-#' @rdname eval_breakdown
-#' @param shape output table shape for \code{summary.midbrks()}: \code{"wide"} (default) or \code{"long"}.
-#' @param terms optional character vector of terms/variables to include.
-#' @param fill value used for terms absent from a model in \code{wide} format (default \code{0}).
 #' @exportS3Method base::summary
 #'
-summary.midbrks <- function(object, shape = c("wide", "long"), terms = NULL, fill = 0, ...) {
+summary.midbrks <- function(object, ...) {
   summarize_midlist(
-    object = object, shape = shape,
+    object = object, shape = "wide",
     dfname = "breakdown", keycol = "term", valcol = "mid",
-    keys = "term", targets = terms, fill = fill
+    keys = "term", fill = 0
   )
 }
 
 
-#' @rdname eval_breakdown
-#' @param row.names,optional passed to \code{as.data.frame()}.
 #' @exportS3Method base::as.data.frame
 #'
 as.data.frame.midbrk <- function(x, row.names = NULL, optional = FALSE, ...) {
   x$breakdown
+}
+
+
+#' @exportS3Method base::as.data.frame
+#'
+as.data.frame.midbrks <- function(x, row.names = NULL, optional = FALSE, ...) {
+  summarize_midlist(
+    object = x, shape = "long",
+    dfname = "breakdown", keycol = "term", valcol = "mid",
+    keys = "term"
+  )
 }
 
 

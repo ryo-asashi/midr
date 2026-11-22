@@ -4,11 +4,6 @@
 \alias{eval_importance}
 \alias{eval_importance.mid}
 \alias{eval_importance.mids}
-\alias{print.midimp}
-\alias{print.midimps}
-\alias{summary.midimp}
-\alias{summary.midimps}
-\alias{as.data.frame.midimp}
 \title{Evaluate Importance of Model Components}
 \usage{
 eval_importance(object, ...)
@@ -36,16 +31,6 @@ eval_importance(object, ...)
   seed = NULL,
   ...
 )
-
-\method{print}{midimp}(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-\method{print}{midimps}(x, digits = max(3L, getOption("digits") - 2L), n = 20L, ...)
-
-\method{summary}{midimp}(object, ...)
-
-\method{summary}{midimps}(object, shape = c("wide", "long"), terms = NULL, fill = NA_real_, ...)
-
-\method{as.data.frame}{midimp}(x, row.names = NULL, optional = FALSE, long = FALSE, ...)
 }
 \arguments{
 \item{object}{a \code{"mid"} or \code{"mids"} object.}
@@ -70,23 +55,6 @@ for root mean square effect, or \code{"medae"} (or \code{3}) for median absolute
 Larger datasets are randomly subsampled (weighted if \code{weights} is supplied).}
 
 \item{seed}{optional integer seed for subsampling.}
-
-\item{x}{a \code{"midimp"} or \code{"midimps"} object.}
-
-\item{digits}{number of significant digits to print.}
-
-\item{n}{maximum number of rows to print for \code{"midimps"}.}
-
-\item{shape}{output table shape for \code{summary.midimps()}: \code{"wide"} (default) or \code{"long"}.}
-
-\item{terms}{optional character vector of terms/variables to include.}
-
-\item{fill}{value used for terms absent from a model in \code{wide} format (default \code{NA_real_}).}
-
-\item{row.names, optional}{passed to \code{as.data.frame()}.}
-
-\item{long}{logical. If \code{TRUE}, returns a long-format data.frame of
-sample-level term contributions merged with \code{importance} (and \code{order}).}
 }
 \value{
 For a \code{"mid"} object, an object of class \code{"midimp"} containing

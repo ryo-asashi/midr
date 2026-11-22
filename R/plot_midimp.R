@@ -1,29 +1,25 @@
 # R/plot_midimp.R
 
-#' Plot and Compare MID Importance
+#' Plot Term or Variable Importance
 #'
 #' @description
-#' Visualize term or variable importance for a \code{"midimp"} object, or compare
-#' importance across a \code{"midimps"} collection.
-#' \code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-#' return \strong{ggplot2} objects via the \code{dualplot} engine.
+#' Visualize term or variable importance for a \code{"midimp"} object.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
 #'
-#' @param x,object a \code{"midimp"} or \code{"midimps"} object.
-#' @param type visualization style:
-#'   for \code{"midimp"}, one of \code{"barplot"} (default), \code{"dotchart"},
-#'   \code{"heatmap"} (when \code{by = "term"}), or \code{"boxplot"};
-#'   for \code{"midimps"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.
+#' @param x,object a \code{"midimp"} object.
+#' @param type visualization style: \code{"barplot"} (default), \code{"dotchart"},
+#'   \code{"heatmap"} (when \code{by = "term"}), or \code{"boxplot"}.
 #' @param theme optional color theme name or \code{"colortheme"} object.
 #' @param terms optional character vector specifying which terms/variables to display.
 #' @param max.nterms maximum number of terms to display (ignored for \code{"heatmap"}).
-#' @param labels optional numeric or character vector of model labels for \code{"midimps"}.
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
-#' \code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{eval_importance}}
+#' @seealso \code{\link{eval_importance}}, \code{\link{plot.midimps}}
 #'
 #' @name plot.midimp
 #' @rdname plot.midimp
@@ -55,7 +51,6 @@ ggmid.midimp <- function(
 }
 
 
-#' @rdname plot.midimp
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midimp <- function(object, ...) {
@@ -63,7 +58,29 @@ autoplot.midimp <- function(object, ...) {
 }
 
 
-#' @rdname plot.midimp
+#' Compare Term or Variable Importance Across Models
+#'
+#' @description
+#' Compare term or variable importance across a \code{"midimps"} collection.
+#' \code{plot()} renders via base graphics, while \code{ggmid()} returns
+#' \strong{ggplot2} objects via the \code{dualplot} engine.
+#'
+#' @param x,object a \code{"midimps"} collection object.
+#' @param type visualization style: \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.
+#' @param theme optional color theme name or \code{"colortheme"} object.
+#' @param terms optional character vector specifying which terms/variables to display.
+#' @param max.nterms maximum number of terms to display.
+#' @param labels optional numeric or character vector of model labels.
+#' @param ... additional graphical parameters passed to \code{dualplot}.
+#'
+#' @returns
+#' \code{plot()} returns \code{NULL} invisibly.
+#' \code{ggmid()} returns a \code{"ggplot"} object.
+#'
+#' @seealso \code{\link{plot.midimp}}, \code{\link{eval_importance}}, \code{\link{midlist}}
+#'
+#' @name plot.midimps
+#' @rdname plot.midimps
 #' @exportS3Method base::plot
 #'
 plot.midimps <- function(
@@ -78,7 +95,7 @@ plot.midimps <- function(
 }
 
 
-#' @rdname plot.midimp
+#' @rdname plot.midimps
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midimps <- function(
@@ -92,7 +109,6 @@ ggmid.midimps <- function(
 }
 
 
-#' @rdname plot.midimp
 #' @exportS3Method ggplot2::autoplot
 #'
 autoplot.midimps <- function(object, ...) {
@@ -207,7 +223,10 @@ render_midimps <- function(
 ) {
   dots <- list(...)
   type <- match.arg(type, c("barplot", "dotchart", "series"))
-  imp <- summary(x, shape = "long")
+  imp <- summarize_midlist(
+    object = x, shape = "long",
+    dfname = "importance", keycol = "term", valcol = "importance", keys = "term"
+  )
   olabs <- as.character(unique(imp$label))
   labels <- labels %||% olabs
   if (length(labels) != length(olabs)) {

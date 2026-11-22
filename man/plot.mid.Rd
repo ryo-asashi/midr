@@ -4,11 +4,7 @@
 \alias{plot.mid}
 \alias{ggmid}
 \alias{ggmid.mid}
-\alias{autoplot.mid}
-\alias{plot.mids}
-\alias{ggmid.mids}
-\alias{autoplot.mids}
-\title{Plot and Compare MID Component Functions}
+\title{Plot MID Component Functions}
 \usage{
 \method{plot}{mid}(
   x,
@@ -41,41 +37,13 @@ ggmid(object, ...)
   lumped = TRUE,
   ...
 )
-
-\method{autoplot}{mid}(object, ...)
-
-\method{plot}{mids}(
-  x,
-  terms = NULL,
-  type = c("effect", "series"),
-  theme = NULL,
-  intercept = FALSE,
-  limits = c(NA, NA),
-  resolution = NULL,
-  labels = NULL,
-  ...
-)
-
-\method{ggmid}{mids}(
-  object,
-  terms = NULL,
-  type = c("effect", "series"),
-  theme = NULL,
-  intercept = FALSE,
-  limits = c(NA, NA),
-  resolution = NULL,
-  labels = NULL,
-  ...
-)
-
-\method{autoplot}{mids}(object, ...)
 }
 \arguments{
-\item{x, object}{a \code{"mid"} or \code{"mids"} object to be visualized.}
+\item{x, object}{a \code{"mid"} object to be visualized.}
 
 \item{terms}{a character vector of term labels/expressions or a formula specifying what to plot. Defaults to all main effects.}
 
-\item{type}{visualization style: \code{"effect"}, \code{"data"}, or \code{"compound"} for \code{"mid"}; \code{"effect"} or \code{"series"} for \code{"mids"}.}
+\item{type}{visualization style: \code{"effect"}, \code{"data"}, or \code{"compound"}.}
 
 \item{theme}{a color theme name or \code{"colortheme"} object.}
 
@@ -94,31 +62,35 @@ ggmid(object, ...)
 \item{lumped}{logical. If \code{TRUE} (default), uses lumped factor levels when a variable appears only in main effects or only in interactions; automatically set to \code{FALSE} for any variable that mixes both.}
 
 \item{...}{additional graphical parameters passed to the underlying \code{dualplot} layer.}
-
-\item{labels}{optional numeric or character vector of model labels for \code{"mids"} comparisons.}
 }
 \value{
 \code{plot()} returns \code{NULL} invisibly.
-\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
+\code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.
 }
 \description{
-Visualize component functions of a fitted MID model (\code{"mid"}) or compare main effects across a collection of models (\code{"mids"}).
-\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()} return \strong{ggplot2} objects via the \code{dualplot} engine.
+Visualize component functions of a fitted MID model (\code{"mid"}).
+\code{plot()} renders via base graphics, while \code{ggmid()} returns
+\strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \details{
-For \code{"mid"} objects, each element of \code{terms} produces one plot.
-A single element may be a term label (e.g., \code{"Wind"}, \code{"Wind:Temp"}) or a formula-like expression string (e.g., \code{"Wind * Temp + 1"} or \code{"Wind + Temp"}), which is extracted via \code{\link{subset.mid}()} and rendered as a 1D curve/bar chart or a 2D surface depending on the number of constituent variables.
-For 2D plots, the order in which variables appear in the term expression determines the x- and y-axes (e.g., \code{"Wind:Temp"} vs \code{"Temp:Wind"}).
-If a \code{formula} is passed (e.g., \code{~ Wind + Temp}), it is expanded into individual term plots.
+Each element of \code{terms} produces one plot.
+A single element may be a term label (e.g., \code{"Wind"}, \code{"Wind:Temp"})
+or a formula-like expression string (e.g., \code{"Wind * Temp + 1"} or
+\code{"Wind + Temp"}), which is extracted via \code{\link{subset.mid}()}
+and rendered as a 1D curve/bar chart or a 2D surface depending on the
+number of constituent variables.
+For 2D plots, the order in which variables appear in the term expression
+determines the x- and y-axes (e.g., \code{"Wind:Temp"} vs \code{"Temp:Wind"}).
+If a \code{formula} is passed (e.g., \code{~ Wind + Temp}), it is expanded
+into individual term plots.
 
 The \code{type} argument selects the visualization style:
 \itemize{
   \item \code{"effect"} (default): plots the component function(s) alone.
   \item \code{"data"}: plots observed points from \code{data} colored by the component effect.
   \item \code{"compound"}: overlays observed points on top of the component function.
-  \item \code{"series"} (\code{"mids"} only): transposes the comparison to show effect trends across models for each feature value.
 }
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
+\code{\link{interpret}}, \code{\link{plot.mids}}, \code{\link{subset.mid}}, \code{\link{predict.mid}}
 }

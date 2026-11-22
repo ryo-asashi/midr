@@ -3,11 +3,7 @@
 \name{plot.midbrk}
 \alias{plot.midbrk}
 \alias{ggmid.midbrk}
-\alias{autoplot.midbrk}
-\alias{plot.midbrks}
-\alias{ggmid.midbrks}
-\alias{autoplot.midbrks}
-\title{Plot and Compare MID Breakdown}
+\title{Plot Prediction Breakdown}
 \usage{
 \method{plot}{midbrk}(
   x,
@@ -34,45 +30,11 @@
   format.args = list(),
   ...
 )
-
-\method{autoplot}{midbrk}(object, ...)
-
-\method{plot}{midbrks}(
-  x,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 15L,
-  vline = TRUE,
-  others = "others",
-  pattern = c("\%t=\%v", "\%t:\%t"),
-  format.args = list(),
-  labels = NULL,
-  ...
-)
-
-\method{ggmid}{midbrks}(
-  object,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 15L,
-  vline = TRUE,
-  others = "others",
-  pattern = c("\%t=\%v", "\%t:\%t"),
-  format.args = list(),
-  labels = NULL,
-  ...
-)
-
-\method{autoplot}{midbrks}(object, ...)
 }
 \arguments{
-\item{x, object}{a \code{"midbrk"} or \code{"midbrks"} object.}
+\item{x, object}{a \code{"midbrk"} object.}
 
-\item{type}{visualization style:
-for \code{"midbrk"}, one of \code{"waterfall"} (default), \code{"barplot"}, or \code{"dotchart"};
-for \code{"midbrks"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.}
+\item{type}{visualization style: \code{"waterfall"} (default), \code{"barplot"}, or \code{"dotchart"}.}
 
 \item{theme}{optional color theme name or \code{"colortheme"} object.}
 
@@ -90,19 +52,16 @@ for \code{"midbrks"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \
 \item{format.args}{named list of additional arguments passed to \code{\link[base]{format}()}.}
 
 \item{...}{additional graphical parameters passed to \code{dualplot}.}
-
-\item{labels}{optional numeric or character vector of model labels for \code{"midbrks"}.}
 }
 \value{
 \code{plot()} returns \code{NULL} invisibly.
-\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+\code{ggmid()} returns a \code{"ggplot"} object.
 }
 \description{
-Visualize the prediction breakdown for a \code{"midbrk"} object, or compare
-breakdowns across a \code{"midbrks"} collection.
-\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-return \strong{ggplot2} objects via the \code{dualplot} engine.
+Visualize the prediction breakdown for a \code{"midbrk"} object.
+\code{plot()} renders via base graphics, while \code{ggmid()} returns
+\strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \seealso{
-\code{\link{eval_breakdown}}
+\code{\link{eval_breakdown}}, \code{\link{plot.midbrks}}
 }

@@ -3,11 +3,7 @@
 \name{plot.midimp}
 \alias{plot.midimp}
 \alias{ggmid.midimp}
-\alias{autoplot.midimp}
-\alias{plot.midimps}
-\alias{ggmid.midimps}
-\alias{autoplot.midimps}
-\title{Plot and Compare MID Importance}
+\title{Plot Term or Variable Importance}
 \usage{
 \method{plot}{midimp}(
   x,
@@ -26,38 +22,12 @@
   max.nterms = 30L,
   ...
 )
-
-\method{autoplot}{midimp}(object, ...)
-
-\method{plot}{midimps}(
-  x,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 30L,
-  labels = NULL,
-  ...
-)
-
-\method{ggmid}{midimps}(
-  object,
-  type = c("barplot", "dotchart", "series"),
-  theme = NULL,
-  terms = NULL,
-  max.nterms = 30L,
-  labels = NULL,
-  ...
-)
-
-\method{autoplot}{midimps}(object, ...)
 }
 \arguments{
-\item{x, object}{a \code{"midimp"} or \code{"midimps"} object.}
+\item{x, object}{a \code{"midimp"} object.}
 
-\item{type}{visualization style:
-for \code{"midimp"}, one of \code{"barplot"} (default), \code{"dotchart"},
-\code{"heatmap"} (when \code{by = "term"}), or \code{"boxplot"};
-for \code{"midimps"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \code{"series"}.}
+\item{type}{visualization style: \code{"barplot"} (default), \code{"dotchart"},
+\code{"heatmap"} (when \code{by = "term"}), or \code{"boxplot"}.}
 
 \item{theme}{optional color theme name or \code{"colortheme"} object.}
 
@@ -66,19 +36,16 @@ for \code{"midimps"}, one of \code{"barplot"} (default), \code{"dotchart"}, or \
 \item{max.nterms}{maximum number of terms to display (ignored for \code{"heatmap"}).}
 
 \item{...}{additional graphical parameters passed to \code{dualplot}.}
-
-\item{labels}{optional numeric or character vector of model labels for \code{"midimps"}.}
 }
 \value{
 \code{plot()} returns \code{NULL} invisibly.
-\code{ggmid()} and \code{autoplot()} return a \code{"ggplot"} object.
+\code{ggmid()} returns a \code{"ggplot"} object.
 }
 \description{
-Visualize term or variable importance for a \code{"midimp"} object, or compare
-importance across a \code{"midimps"} collection.
-\code{plot()} renders via base graphics, while \code{ggmid()} and \code{autoplot()}
-return \strong{ggplot2} objects via the \code{dualplot} engine.
+Visualize term or variable importance for a \code{"midimp"} object.
+\code{plot()} renders via base graphics, while \code{ggmid()} returns
+\strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \seealso{
-\code{\link{eval_importance}}
+\code{\link{eval_importance}}, \code{\link{plot.midimps}}
 }

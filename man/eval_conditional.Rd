@@ -4,12 +4,7 @@
 \alias{eval_conditional}
 \alias{eval_conditional.mid}
 \alias{eval_conditional.mids}
-\alias{print.midcon}
-\alias{print.midcons}
-\alias{summary.midcon}
-\alias{summary.midcons}
-\alias{as.data.frame.midcon}
-\title{Evaluate Individual Conditional Expectation (ICE)}
+\title{Evaluate Conditional Expectation (ICE)}
 \usage{
 eval_conditional(object, ...)
 
@@ -36,16 +31,6 @@ eval_conditional(object, ...)
   keep.effects = TRUE,
   ...
 )
-
-\method{print}{midcon}(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-\method{print}{midcons}(x, digits = max(3L, getOption("digits") - 2L), ...)
-
-\method{summary}{midcon}(object, ...)
-
-\method{summary}{midcons}(object, shape = c("long", "wide"), ids = NULL, ...)
-
-\method{as.data.frame}{midcon}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
 \item{object}{a \code{"mid"} or \code{"mids"} object.}
@@ -68,16 +53,6 @@ are randomly subsampled.}
 
 \item{keep.effects}{logical. If \code{TRUE} (default), stores individual
 term contributions for \code{variable}.}
-
-\item{x}{a \code{"midcon"} or \code{"midcons"} object.}
-
-\item{digits}{number of significant digits to print.}
-
-\item{shape}{output table shape for \code{summary.midcons()}: \code{"long"} (default) or \code{"wide"}.}
-
-\item{ids}{optional character vector of observation IDs to include.}
-
-\item{row.names, optional}{passed to \code{as.data.frame()}.}
 }
 \value{
 For a \code{"mid"} object, an object of class \code{"midcon"} containing
