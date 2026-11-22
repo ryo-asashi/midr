@@ -1,4 +1,4 @@
-# Plot Conditional Expectations (ICE)
+# Plot Conditional Expectations
 
 Visualize Individual Conditional Expectation (ICE) curves for a
 `"midcon"` object.

@@ -1,4 +1,4 @@
-# Compare Conditional Expectations (ICE) Across Models
+# Compare Conditional Expectations Across Models
 
 Compare Individual Conditional Expectation (ICE) curves across a
 `"midcons"` collection.

@@ -1,6 +1,6 @@
 # Package index
 
-## Fit MID models
+## Fit MID Models
 
 - [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
   : Fit MID Models
@@ -30,7 +30,7 @@
   [`coef(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
   : Extract Submodels and Coefficients from MID Models
 
-## Combine MID objects
+## Combine MID Objects
 
 - [`midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
   [`as.midlist()`](https://ryo-asashi.github.io/midr/reference/midlist.md)
@@ -47,7 +47,7 @@
   [`` `labels<-`() ``](https://ryo-asashi.github.io/midr/reference/labels.midlist.md)
   : Label MID Collection Objects
 
-## Importance of effects
+## Term or Variable Importance
 
 - [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
   : Evaluate Term or Variable Importance
@@ -61,7 +61,7 @@
   [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
   : Compare Term or Variable Importance Across Models
 
-## Breakdown of predictions
+## Prediction Breakdowns
 
 - [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
   : Evaluate Prediction Breakdowns
@@ -75,21 +75,21 @@
   [`ggmid(`*`<midbrks>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)
   : Compare Prediction Breakdowns Across Models
 
-## Conditional expectations
+## Conditional Expectations
 
 - [`eval_conditional()`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  : Evaluate Individual Conditional Expectations (ICE)
+  : Evaluate Conditional Expectations
 
 ### Methods
 
 - [`plot(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
   [`ggmid(`*`<midcon>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md)
-  : Plot Conditional Expectations (ICE)
+  : Plot Conditional Expectations
 - [`plot(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
   [`ggmid(`*`<midcons>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midcons.md)
-  : Compare Conditional Expectations (ICE) Across Models
+  : Compare Conditional Expectations Across Models
 
-## Other functions
+## Other Functions
 
 - [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md)
   : Wrapper Prediction Function

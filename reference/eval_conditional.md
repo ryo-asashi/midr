@@ -1,4 +1,4 @@
-# Evaluate Individual Conditional Expectations (ICE)
+# Evaluate Conditional Expectations
 
 `eval_conditional()` calculates Individual Conditional Expectation (ICE)
 curves from a fitted model for a single predictor variable.
