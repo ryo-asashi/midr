@@ -13,6 +13,8 @@
 - [`plot(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
   [`ggmid(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.mids.md)
   : Compare MID Component Functions Across Models
+- [`persp(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/persp.mid.md)
+  : Perspective Plots of MID Component Functions
 - [`predict(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   [`predict(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
   : Predict Method for Fitted MID Models
@@ -24,9 +26,9 @@
   : Summarize MID Models
 - [`subset(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
   [`subset(`*`<mids>`*`)`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
-  : Extract Submodels from MID Models
-- [`coef(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/coef.mid.md)
-  : Extract Component Effects from MID Models
+  [`coef(`*`<mid>`*`)`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
+  [`coef(`*`<midrib>`*`)`](https://ryo-asashi.github.io/midr/reference/subset.mid.md)
+  : Extract Submodels and Coefficients from MID Models
 
 ## Combine MID objects
 
@@ -48,7 +50,7 @@
 ## Importance of effects
 
 - [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  : Evaluate Importance of Model Components
+  : Evaluate Term or Variable Importance
 
 ### Methods
 
@@ -62,7 +64,7 @@
 ## Breakdown of predictions
 
 - [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
-  : Evaluate Breakdown of Model Predictions
+  : Evaluate Prediction Breakdowns
 
 ### Methods
 
@@ -76,7 +78,7 @@
 ## Conditional expectations
 
 - [`eval_conditional()`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md)
-  : Evaluate Conditional Expectation (ICE)
+  : Evaluate Individual Conditional Expectations (ICE)
 
 ### Methods
 

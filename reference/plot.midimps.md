@@ -72,6 +72,6 @@ returns a `"ggplot"` object.
 
 ## See also
 
-[`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
 [`eval_importance`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
+[`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)

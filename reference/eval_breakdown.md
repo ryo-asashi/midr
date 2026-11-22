@@ -1,4 +1,4 @@
-# Evaluate Breakdown of Model Predictions
+# Evaluate Prediction Breakdowns
 
 `eval_breakdown()` calculates the contribution of each component
 function (or each variable when `by = "variable"`) of a fitted model to
@@ -88,4 +88,4 @@ comparing breakdowns across observations.
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
 [`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
-[`ggmid.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md)
+[`plot.midbrks`](https://ryo-asashi.github.io/midr/reference/plot.midbrks.md)

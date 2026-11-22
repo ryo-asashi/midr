@@ -85,6 +85,6 @@ returns a `"ggplot"` object.
 
 ## See also
 
-[`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
 [`eval_conditional`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
+[`plot.midcon`](https://ryo-asashi.github.io/midr/reference/plot.midcon.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)

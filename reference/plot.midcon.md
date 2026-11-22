@@ -15,7 +15,6 @@ plot(
   x,
   type = c("iceplot", "centered"),
   theme = NULL,
-  term = NULL,
   var.alpha = NULL,
   var.color = NULL,
   var.linetype = NULL,
@@ -31,7 +30,6 @@ ggmid(
   object,
   type = c("iceplot", "centered"),
   theme = NULL,
-  term = NULL,
   var.alpha = NULL,
   var.color = NULL,
   var.linetype = NULL,
@@ -56,11 +54,6 @@ ggmid(
 - theme:
 
   optional color theme name or `"colortheme"` object.
-
-- term:
-
-  optional term label to plot a single component's ICE curve (requires
-  `keep.effects = TRUE`).
 
 - var.alpha, var.color, var.linetype, var.linewidth:
 

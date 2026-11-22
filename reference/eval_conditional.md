@@ -1,4 +1,4 @@
-# Evaluate Conditional Expectation (ICE)
+# Evaluate Individual Conditional Expectations (ICE)
 
 `eval_conditional()` calculates Individual Conditional Expectation (ICE)
 curves from a fitted model for a single predictor variable.
@@ -17,7 +17,6 @@ eval_conditional(
   max.nsamples = 500L,
   seed = NULL,
   type = c("response", "link"),
-  keep.effects = TRUE,
   ...
 )
 
@@ -30,7 +29,6 @@ eval_conditional(
   max.nsamples = 500L,
   seed = NULL,
   type = c("response", "link"),
-  keep.effects = TRUE,
   ...
 )
 ```
@@ -71,18 +69,11 @@ eval_conditional(
 
   character: `"response"` (default) or `"link"`.
 
-- keep.effects:
-
-  logical. If `TRUE` (default), stores individual term contributions for
-  `variable`.
-
 ## Value
 
 For a `"mid"` object, an object of class `"midcon"` containing
-`observed`, `conditional`, `variable`, `values`, and `ids` (plus
-`observed.effects` and `conditional.effects` when
-`keep.effects = TRUE`). For a `"mids"` collection, a collection of class
-`c("midcons", "midlist")`.
+`observed`, `conditional`, `variable`, `values`, and `ids`. For a
+`"mids"` collection, a collection of class `c("midcons", "midlist")`.
 
 ## Details
 

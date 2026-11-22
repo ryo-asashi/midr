@@ -1,4 +1,4 @@
-# Evaluate Importance of Model Components
+# Evaluate Term or Variable Importance
 
 `eval_importance()` calculates the term/variable importance of a fitted
 model. This measures the average contribution of each component
@@ -105,4 +105,4 @@ variables before computing the importance summary.
 
 [`interpret`](https://ryo-asashi.github.io/midr/reference/interpret.md),
 [`plot.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md),
-[`ggmid.midimp`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
+[`plot.midimps`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)

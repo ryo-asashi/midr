@@ -100,6 +100,6 @@ returns a `"ggplot"` object.
 
 ## See also
 
-[`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
 [`eval_breakdown`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md),
+[`plot.midbrk`](https://ryo-asashi.github.io/midr/reference/plot.midbrk.md),
 [`midlist`](https://ryo-asashi.github.io/midr/reference/midlist.md)
