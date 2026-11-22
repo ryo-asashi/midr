@@ -1,6 +1,6 @@
 # R/eval_conditional.R
 
-#' Evaluate Conditional Expectation (ICE)
+#' Evaluate Conditional Expectations (ICE)
 #'
 #' @description
 #' \code{eval_conditional()} calculates Individual Conditional Expectation (ICE)

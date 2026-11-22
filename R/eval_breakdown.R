@@ -1,6 +1,6 @@
 # R/eval_breakdown.R
 
-#' Evaluate Breakdown of Model Predictions
+#' Evaluate Prediction Breakdown
 #'
 #' @description
 #' \code{eval_breakdown()} calculates the contribution of each component function

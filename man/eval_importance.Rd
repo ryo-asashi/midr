@@ -4,7 +4,7 @@
 \alias{eval_importance}
 \alias{eval_importance.mid}
 \alias{eval_importance.mids}
-\title{Evaluate Importance of Model Components}
+\title{Evaluate Term or Variable Importance}
 \usage{
 eval_importance(object, ...)
 

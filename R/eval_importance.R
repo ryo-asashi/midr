@@ -1,6 +1,6 @@
 # R/eval_importance.R
 
-#' Evaluate Importance of Model Components
+#' Evaluate Term or Variable Importance
 #'
 #' @description
 #' \code{eval_importance()} calculates the term/variable importance of a fitted model.

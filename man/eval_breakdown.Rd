@@ -4,7 +4,7 @@
 \alias{eval_breakdown}
 \alias{eval_breakdown.mid}
 \alias{eval_breakdown.mids}
-\title{Evaluate Breakdown of Model Predictions}
+\title{Evaluate Prediction Breakdown}
 \usage{
 eval_breakdown(object, ...)
 
