@@ -21,7 +21,7 @@
 #' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
 #' imp_v <- eval_importance(mid, by = "variable")
 #'
-#' plot(imp_v, type = "boxplot", theme = "azurerose")
+#' plot(imp_v, type = "boxplot")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   imp <- eval_importance(mid)
@@ -96,6 +96,14 @@ autoplot.midimp <- function(object, ...) {
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(imps, type = "dotchart")
+#' }
+#'
+#' if (requireNamespace("survival", quietly = TRUE)) {
+#'   vet <- na.omit(survival::veteran)
+#'   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
+#'   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
+#'   imp <- eval_importance(survmid)
+#'   plot(imp, type = "series", legend = "topright")
 #' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.

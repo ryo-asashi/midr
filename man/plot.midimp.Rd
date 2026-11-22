@@ -52,7 +52,7 @@ aq <- na.omit(airquality)
 mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
 imp_v <- eval_importance(mid, by = "variable")
 
-plot(imp_v, type = "boxplot", theme = "azurerose")
+plot(imp_v, type = "boxplot")
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   imp <- eval_importance(mid)

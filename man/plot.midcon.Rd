@@ -49,21 +49,7 @@ expressions evaluated in \code{observed} to map aesthetics across curves.}
 
 \item{sample}{optional character vector of observation IDs (\code{.id}) to display.}
 
-\item{...}{additional graphical parameters.
-
-data(airquality, package = "datasets")
-aq <- na.omit(airquality)
-mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
-
-# Slice the Wind:Temp interaction via subset()
-sub <- subset(mid, "Wind:Temp")
-con <- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)
-
-plot(con, type = "centered", var.color = Temp, legend = "topleft")
-
-if (requireNamespace("ggplot2", quietly = TRUE)) {
-  ggmid(con, type = "centered", var.color = Temp)
-}}
+\item{...}{additional graphical parameters.}
 }
 \value{
 \code{plot()} returns \code{NULL} invisibly.
@@ -73,6 +59,22 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"} object.
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects.
+}
+\examples{
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+con <- eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
+plot(con, var.color = Temp, legend = TRUE)
+
+# Slice the Wind:Temp interaction via subset()
+sub <- subset(mid, "Wind:Temp")
+subcon <- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)
+plot(subcon, type = "centered", var.color = Temp, legend = TRUE)
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(con, type = "centered", var.color = Temp)
+}
 }
 \seealso{
 \code{\link{eval_conditional}}, \code{\link{plot.midcons}}

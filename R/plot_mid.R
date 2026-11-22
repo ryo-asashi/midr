@@ -144,6 +144,13 @@ autoplot.mid <- function(object, ...) {
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(mids, terms = "Petal.Length", type = "series")
 #' }
+#'
+#' if (requireNamespace("survival", quietly = TRUE)) {
+#'   vet <- na.omit(survival::veteran)
+#'   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
+#'   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
+#'   plot(survmid, terms = c("karno+1", "celltype+1"), type = "series", legend = TRUE)
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object for a single plot, or a named list of \code{"ggplot"} objects for multiple plots.

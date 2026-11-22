@@ -66,8 +66,8 @@ mids <- interpret(
 )
 cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
 
-plot(cons)
-plot(cons, type = "series")
+plot(cons, legend = "topleft")
+plot(cons, type = "series", legend = "topright")
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   ggmid(cons, type = "series")
