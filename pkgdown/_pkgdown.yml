@@ -72,6 +72,7 @@ reference:
 - subtitle: Methods
   contents:
   - plot.mid
+  - plot.mids
   - predict.mid
   - print.mid
   - summary.mid
