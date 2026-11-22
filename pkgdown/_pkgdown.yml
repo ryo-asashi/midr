@@ -66,7 +66,7 @@ navbar:
 #   - articles/colortheme
 
 reference:
-- title: Fit MID models
+- title: Fit MID Models
   contents:
   - interpret
 - subtitle: Methods
@@ -78,35 +78,35 @@ reference:
   - print.mid
   - summary.mid
   - subset.mid
-- title: Combine MID objects
+- title: Combine MID Objects
   contents:
   - midlist
 - subtitle: Methods
   contents:
   - extract.midlist
   - labels.midlist
-- title: Importance of effects
+- title: Term or Variable Importance
   contents:
   - eval_importance
 - subtitle: Methods
   contents:
   - plot.midimp
   - plot.midimps
-- title: Breakdown of predictions
+- title: Prediction Breakdowns
   contents:
   - eval_breakdown
 - subtitle: Methods
   contents:
   - plot.midbrk
   - plot.midbrks
-- title: Conditional expectations
+- title: Conditional Expectations
   contents:
   - eval_conditional
 - subtitle: Methods
   contents:
   - plot.midcon
   - plot.midcons
-- title: Other functions
+- title: Other Functions
   contents:
   - get_yhat
   - make_link

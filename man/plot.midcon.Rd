@@ -3,7 +3,7 @@
 \name{plot.midcon}
 \alias{plot.midcon}
 \alias{ggmid.midcon}
-\title{Plot Conditional Expectations (ICE)}
+\title{Plot Conditional Expectations}
 \usage{
 \method{plot}{midcon}(
   x,

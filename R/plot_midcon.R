@@ -1,6 +1,6 @@
 # R/plot_midcon.R
 
-#' Plot Conditional Expectations (ICE)
+#' Plot Conditional Expectations
 #'
 #' @description
 #' Visualize Individual Conditional Expectation (ICE) curves for a \code{"midcon"} object.
@@ -68,7 +68,7 @@ autoplot.midcon <- function(object, ...) {
 }
 
 
-#' Compare Conditional Expectations (ICE) Across Models
+#' Compare Conditional Expectations Across Models
 #'
 #' @description
 #' Compare Individual Conditional Expectation (ICE) curves across a \code{"midcons"} collection.

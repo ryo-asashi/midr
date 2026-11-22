@@ -3,7 +3,7 @@
 \name{plot.midcons}
 \alias{plot.midcons}
 \alias{ggmid.midcons}
-\title{Compare Conditional Expectations (ICE) Across Models}
+\title{Compare Conditional Expectations Across Models}
 \usage{
 \method{plot}{midcons}(
   x,

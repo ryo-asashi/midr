@@ -4,7 +4,7 @@
 \alias{eval_conditional}
 \alias{eval_conditional.mid}
 \alias{eval_conditional.mids}
-\title{Evaluate Individual Conditional Expectations (ICE)}
+\title{Evaluate Conditional Expectations}
 \usage{
 eval_conditional(object, ...)
 
