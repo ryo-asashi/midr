@@ -138,6 +138,11 @@ autoplot.midcons <- function(object, ...) {
 
 # internal rendering engines ----
 
+expr_label <- function(expr) {
+  if (is.null(expr)) return(NULL)
+  if (is.character(expr) && length(expr) == 1L) expr else deparse(expr)[1L]
+}
+
 eval_var_expr <- function(expr, env_df) {
   if (is.null(expr)) return(NULL)
   if (is.character(expr) && length(expr) == 1L) {
@@ -217,20 +222,27 @@ render_midcon <- function(
       legend_on <- "color"
       ltitle <- if (is.character(col_expr)) col_expr else deparse(col_expr)[1L]
     }
+    extra_labs <- list()
     if (!is.null(alpha_val)) {
       con$.aval <- alpha_val[idx]
       aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
+      extra_labs$alpha <- expr_label(alpha_expr)
     }
     if (!is.null(lty_val)) {
       con$.lty <- if (is_discrete(lty_val)) lty_val[idx] else factor(lty_val[idx])
       aes_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
+      extra_labs$linetype <- expr_label(lty_expr)
     }
     if (!is.null(lwd_val)) {
       con$.lwd <- lwd_val[idx]
       aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
+      extra_labs$linewidth <- expr_label(lwd_expr)
     }
 
     pl <- ggplot2::ggplot(con, aes_map) + layer_line(...)
+    if (length(extra_labs) > 0L) {
+      pl <- pl + do.call(ggplot2::labs, extra_labs)
+    }
     if (isTRUE(points)) {
       pt_map <- ggplot2::aes(x = .data[[".x"]], y = .data[[".y"]])
       if (!is.null(col_val)) pt_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
@@ -391,30 +403,43 @@ render_midcons <- function(
     if (use_col_aes) {
       aes_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
     }
+    extra_labs <- list()
     if (!is.null(alpha_val)) {
       con$.aval <- alpha_val[idx]
       aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
+      extra_labs$alpha <- expr_label(alpha_expr)
     }
     if (!is.null(lty_val)) {
       con$.lty <- if (is_discrete(lty_val)) lty_val[idx] else factor(lty_val[idx])
       aes_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
+      extra_labs$linetype <- expr_label(lty_expr)
     }
     if (!is.null(lwd_val)) {
       con$.lwd <- lwd_val[idx]
       aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
+      extra_labs$linewidth <- expr_label(lwd_expr)
     }
 
     pl <- ggplot2::ggplot(con, aes_map) + layer_line(...)
+    if (length(extra_labs) > 0L) {
+      pl <- pl + do.call(ggplot2::labs, extra_labs)
+    }
     if (type == "series" && discrete) {
       pl <- pl + layer_point(...)
     }
     if (use_col_aes) {
       pl <- pl + scale_color_theme(theme = th, discrete = is_discrete(con$.cval))
     }
-    pl <- pl + extract_gg_labs(dots, xlab = xlab, ylab = yvar)
+    gg_leg <- legend_dot %||% TRUE
+    series_main <- if (type == "series" && isFALSE(gg_leg) && is.null(dots$main) && is.null(dots$title)) {
+      variable
+    } else {
+      NULL
+    }
+    pl <- pl + extract_gg_labs(dots, xlab = xlab, ylab = yvar, main = series_main)
     return(apply_theme_and_legend(
       pl,
-      legend = legend_dot %||% TRUE,
+      legend = gg_leg,
       legend.on = if (use_col_aes) "color" else character(0L),
       legend.title = legend_title_dot %||% ltitle
     ))
@@ -472,12 +497,17 @@ render_midcons <- function(
   on.exit(graphics::par(mai = opar), add = TRUE)
   graphics::par(mai = adjust_legend_margin(legend_opt, opar))
 
+  series_main <- if (type == "series" && isFALSE(legend_opt) && is.null(dots$main) && is.null(dots$title)) {
+    variable
+  } else {
+    NULL
+  }
   p_args <- cast_to_base_params(
     dots = dots,
     defaults = list(
       x = xvals[ord], y = rep(NA_real_, length(xvals)),
       xlim = range(xvals, na.rm = TRUE), ylim = range(mat, na.rm = TRUE),
-      xlab = xlab, ylab = yvar, type = "n", xaxt = xaxt_val
+      main = series_main, xlab = xlab, ylab = yvar, type = "n", xaxt = xaxt_val
     ),
     alpha.on = NULL
   )
