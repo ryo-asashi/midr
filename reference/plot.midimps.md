@@ -92,4 +92,14 @@ plot(imps, type = "series", legend = "bottom")
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   ggmid(imps, type = "dotchart")
 }
+
+
+if (requireNamespace("survival", quietly = TRUE)) {
+  vet <- na.omit(survival::veteran)
+  fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
+  survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
+  imp <- eval_importance(survmid)
+  plot(imp, type = "series", legend = "topright")
+}
+#> Error in eval(fcl$data, envir = env): object 'vet' not found
 ```

@@ -100,9 +100,9 @@ mids <- interpret(
 #> 'model' not passed: response variable in 'data' is used
 cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
 
-plot(cons)
+plot(cons, legend = "topleft")
 
-plot(cons, type = "series")
+plot(cons, type = "series", legend = "topright")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {

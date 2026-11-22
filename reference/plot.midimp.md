@@ -78,7 +78,7 @@ mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
 #> 'model' not passed: response variable in 'data' is used
 imp_v <- eval_importance(mid, by = "variable")
 
-plot(imp_v, type = "boxplot", theme = "azurerose")
+plot(imp_v, type = "boxplot")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
