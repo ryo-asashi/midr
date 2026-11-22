@@ -62,6 +62,18 @@ Visualize the prediction breakdown for a \code{"midbrk"} object.
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
+\examples{
+data(mtcars, package = "datasets")
+mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+
+plot(brk)
+plot(brk, type = "barplot")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(brk, type = "dotchart")
+}
+}
 \seealso{
 \code{\link{eval_breakdown}}, \code{\link{plot.midbrks}}
 }

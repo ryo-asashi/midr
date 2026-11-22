@@ -58,6 +58,21 @@ Compare Individual Conditional Expectation (ICE) curves across a \code{"midcons"
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects.
 }
+\examples{
+data(iris, package = "datasets")
+mids <- interpret(
+  cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+  data = iris, lambda = 0.5
+)
+cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
+
+plot(cons)
+plot(cons, type = "series")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(cons, type = "series")
+}
+}
 \seealso{
 \code{\link{eval_conditional}}, \code{\link{plot.midcon}}, \code{\link{midlist}}
 }

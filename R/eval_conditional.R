@@ -16,6 +16,12 @@
 #' @param object a \code{"mid"} or \code{"mids"} object.
 #' @param ... additional arguments passed to methods.
 #'
+#' @examples
+#' data(airquality, package = "datasets")
+#' aq <- na.omit(airquality)
+#' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#'
+#' eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
 #' @returns
 #' For a \code{"mid"} object, an object of class \code{"midcon"} containing
 #' \code{observed}, \code{conditional}, \code{variable}, \code{values}, and

@@ -66,6 +66,13 @@ all other predictors \eqn{\mathbf{x}_{i,\setminus j}} fixed:
 
 \deqn{f_{\text{ICE}}(x') = g(x', \mathbf{x}_{i,\setminus j})}
 }
+\examples{
+data(airquality, package = "datasets")
+aq <- na.omit(airquality)
+mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+
+eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
+}
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.midcon}}, \code{\link{ggmid.midcon}}
 }

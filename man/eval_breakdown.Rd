@@ -68,6 +68,14 @@ For a single \code{"mid"} object, passing multiple indices or row names to
 \code{rows} returns a \code{c("midbrks", "midlist")} collection for comparing
 breakdowns across observations.
 }
+\examples{
+data(mtcars, package = "datasets")
+mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+
+eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla", by = "variable")
+eval_breakdown(mid, data = mtcars, rows = c("Toyota Corolla", "Mazda RX4", "Maserati Bora"))
+}
 \seealso{
 \code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{plot.midbrks}}
 }

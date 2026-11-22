@@ -66,6 +66,22 @@ Compare prediction breakdowns across a \code{"midbrks"} collection.
 \code{plot()} renders via base graphics, while \code{ggmid()} returns
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
+\examples{
+data(mtcars, package = "datasets")
+mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+brks <- eval_breakdown(
+  mid, data = mtcars,
+  rows = c("Toyota Corolla", "Mazda RX4", "Maserati Bora"),
+  by = "variable"
+)
+
+plot(brks, type = "dotchart", legend = "bottomright")
+plot(brks, type = "series")
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggmid(brks, type = "dotchart")
+}
+}
 \seealso{
 \code{\link{eval_breakdown}}, \code{\link{plot.midbrk}}, \code{\link{midlist}}
 }

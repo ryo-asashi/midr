@@ -17,6 +17,19 @@
 #' @param sample optional character vector of observation IDs (\code{.id}) to display.
 #' @param ... additional graphical parameters.
 #'
+#' data(airquality, package = "datasets")
+#' aq <- na.omit(airquality)
+#' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
+#'
+#' # Slice the Wind:Temp interaction via subset()
+#' sub <- subset(mid, "Wind:Temp")
+#' con <- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)
+#'
+#' plot(con, type = "centered", var.color = Temp, legend = "topleft")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(con, type = "centered", var.color = Temp)
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
@@ -85,6 +98,20 @@ autoplot.midcon <- function(object, ...) {
 #' @param labels optional numeric or character vector of model labels.
 #' @param ... additional graphical parameters.
 #'
+#' @examples
+#' data(iris, package = "datasets")
+#' mids <- interpret(
+#'   cbind(Sepal.Length, Sepal.Width) ~ (Petal.Length + Petal.Width)^2,
+#'   data = iris, lambda = 0.5
+#' )
+#' cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
+#'
+#' plot(cons)
+#' plot(cons, type = "series")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(cons, type = "series")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.

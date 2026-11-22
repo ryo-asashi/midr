@@ -19,6 +19,17 @@
 #' @param format.args named list of additional arguments passed to \code{\link[base]{format}()}.
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
+#' @examples
+#' data(mtcars, package = "datasets")
+#' mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+#' brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+#'
+#' plot(brk)
+#' plot(brk, type = "barplot")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(brk, type = "dotchart")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
@@ -86,6 +97,21 @@ autoplot.midbrk <- function(object, ...) {
 #' @param labels optional numeric or character vector of model or observation labels.
 #' @param ... additional graphical parameters passed to \code{dualplot}.
 #'
+#' @examples
+#' data(mtcars, package = "datasets")
+#' mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+#' brks <- eval_breakdown(
+#'   mid, data = mtcars,
+#'   rows = c("Toyota Corolla", "Mazda RX4", "Maserati Bora"),
+#'   by = "variable"
+#' )
+#'
+#' plot(brks, type = "dotchart", legend = "bottomright")
+#' plot(brks, type = "series")
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   ggmid(brks, type = "dotchart")
+#' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.

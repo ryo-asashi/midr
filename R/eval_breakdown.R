@@ -22,6 +22,13 @@
 #' @param object a \code{"mid"} or \code{"mids"} object.
 #' @param ... additional arguments passed to methods.
 #'
+#' @examples
+#' data(mtcars, package = "datasets")
+#' mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
+#'
+#' eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+#' eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla", by = "variable")
+#' eval_breakdown(mid, data = mtcars, rows = c("Toyota Corolla", "Mazda RX4", "Maserati Bora"))
 #' @returns
 #' For a single observation, an object of class \code{"midbrk"} containing
 #' \code{breakdown}, \code{data}, \code{intercept}, \code{prediction}, and
