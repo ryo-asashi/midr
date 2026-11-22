@@ -59,5 +59,5 @@ Compare Individual Conditional Expectation (ICE) curves across a \code{"midcons"
 \strong{ggplot2} objects.
 }
 \seealso{
-\code{\link{plot.midcon}}, \code{\link{eval_conditional}}, \code{\link{midlist}}
+\code{\link{eval_conditional}}, \code{\link{plot.midcon}}, \code{\link{midlist}}
 }

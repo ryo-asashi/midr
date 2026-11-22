@@ -4,7 +4,7 @@
 \alias{eval_breakdown}
 \alias{eval_breakdown.mid}
 \alias{eval_breakdown.mids}
-\title{Evaluate Prediction Breakdown}
+\title{Evaluate Prediction Breakdowns}
 \usage{
 eval_breakdown(object, ...)
 
@@ -69,5 +69,5 @@ For a single \code{"mid"} object, passing multiple indices or row names to
 breakdowns across observations.
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrk}}
+\code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{plot.midbrks}}
 }

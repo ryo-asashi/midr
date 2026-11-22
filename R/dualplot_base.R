@@ -492,8 +492,8 @@ draw_surface_base <- function(
     zlim = NULL, middle = 0, xticks = NULL, yticks = NULL, points = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
-  use_theme <- theme %||% getOption("colortheme.diverging", "azurerose")
-  ct <- colortheme(use_theme)
+  theme <- theme %||% getOption("colortheme.diverging", "azurerose")
+  ct <- colortheme(theme)
   zlim <- zlim %||% range(z, na.rm = TRUE)
   if (ct$type == "diverging") {
     zmax <- max(abs(zlim - middle))
@@ -555,7 +555,7 @@ draw_surface_base <- function(
   }
 
   draw_base_legend(
-    values = as.vector(z), theme = use_theme, legend = legend, title = legend.title,
+    values = as.vector(z), theme = theme, legend = legend, title = legend.title,
     style = "fill", middle = middle, limits = zlim
   )
   invisible(NULL)
@@ -575,8 +575,8 @@ draw_matrix_base <- function(
   mai <- adjust_legend_margin(legend, mai)
   graphics::par(mai = mai, las = 1L)
 
-  use_theme <- theme %||% getOption("colortheme.sequential", "grayscale")
-  ct <- colortheme(use_theme)
+  theme <- theme %||% getOption("colortheme.sequential", "grayscale")
+  ct <- colortheme(theme)
   palette <- ct$ramp(seq.int(0, 1, length.out = 256L))
 
   zlim <- range(z, na.rm = TRUE)
@@ -612,7 +612,7 @@ draw_matrix_base <- function(
   }
 
   draw_base_legend(
-    values = as.vector(z), theme = use_theme, legend = legend, title = legend.title,
+    values = as.vector(z), theme = theme, legend = legend, title = legend.title,
     style = "fill", middle = middle, limits = zlim
   )
   invisible(NULL)

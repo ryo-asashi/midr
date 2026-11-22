@@ -9,7 +9,6 @@
   x,
   type = c("iceplot", "centered"),
   theme = NULL,
-  term = NULL,
   var.alpha = NULL,
   var.color = NULL,
   var.linetype = NULL,
@@ -24,7 +23,6 @@
   object,
   type = c("iceplot", "centered"),
   theme = NULL,
-  term = NULL,
   var.alpha = NULL,
   var.color = NULL,
   var.linetype = NULL,
@@ -41,8 +39,6 @@
 \item{type}{visualization style: \code{"iceplot"} (default) or \code{"centered"}.}
 
 \item{theme}{optional color theme name or \code{"colortheme"} object.}
-
-\item{term}{optional term label to plot a single component's ICE curve (requires \code{keep.effects = TRUE}).}
 
 \item{var.alpha, var.color, var.linetype, var.linewidth}{optional variable names or
 expressions evaluated in \code{observed} to map aesthetics across curves.}

@@ -218,45 +218,49 @@ summary.mids <- function(object, max.nmodels = 1L, ...) {
 }
 
 
-#' Extract Submodels from MID Models
+#' Extract Submodels and Coefficients from MID Models
 #'
 #' @description
-#' \code{subset()} methods for a fitted MID model ("mid") or a collection of models ("mids").
-#' It creates a lightweight view of a fitted MID model containing only a specified subset of terms (main effects and/or interactions).
+#' \code{subset()} and \code{coef()} methods for extracting a subset of component
+#' functions from a fitted MID model (\code{"mid"} / \code{"midrib"}) or a
+#' collection of models (\code{"mids"}).
+#' \code{subset()} returns a lightweight submodel object, while \code{coef()}
+#' returns a named list of the fitted intercept and component effect tables.
 #'
-#' @param x a fitted model object (\code{"mid"} or \code{"mids"}).
-#' @param terms a character vector, formula, or \code{\link[stats]{terms}} object specifying the subset of terms to retain.
-#' @param intercept logical. If \code{TRUE}, the intercept is preserved; if \code{FALSE}, it is zeroed out. If \code{NULL} (default), inferred from \code{terms}.
-#' @param data optional data.frame used only when \code{terms} contains \code{"."} shorthand.
+#' @param x,object a fitted model object (\code{"mid"}, \code{"midrib"}, or \code{"mids"} for \code{subset()}).
+#' @param terms an optional character vector, formula, or \code{\link[stats]{terms}} object specifying the subset of terms (and intercept) to retain or extract. Defaults to all terms in the model.
+#' @param intercept logical. If \code{TRUE}, the intercept is preserved or included; if \code{FALSE}, it is zeroed out or omitted. If \code{NULL} (default), inferred from \code{terms}.
 #' @param ... further arguments passed to methods.
 #'
 #' @examples
-#' # Extract a submodel from a fitted MID model
 #' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ ., airquality, lambda = .5)
-#' predict(mid, head(airquality), type = "terms")
+#' mid <- interpret(Ozone ~ Wind * Temp, airquality, k = c(5, 3))
+#'
+#' # Extract a submodel containing only Wind and Temp
 #' submid <- subset(mid, ~ Wind + Temp)
 #' predict(submid, head(airquality), type = "terms")
+#'
+#' # Extract component effect tables without the intercept
+#' coef(mid, terms = c("Wind", "Wind:Temp"), intercept = FALSE)
 #' @returns
-#' A \code{"mid"} (or \code{"mids"}) object containing only the selected component functions.
+#' \code{subset()} returns a \code{"mid"} (or \code{"mids"}) object containing only the selected component functions.
+#' \code{coef()} returns a named list containing the intercept (if included) and data frames of component effects (excluding \code{.density}) for each matched term.
+#'
+#' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
+#'
+#' @name subset.mid
+#' @rdname subset.mid
 #' @exportS3Method base::subset
 #'
 subset.mid <- function(
-    x, terms = NULL, intercept = NULL, data = NULL, ...
+    x, terms = NULL, intercept = NULL, ...
 ) {
   if (is.null(terms) && is.null(intercept)) {
     return(x)
   }
   full <- stats::terms(x)
   env <- environment(full) %||% parent.frame()
-  if (is.null(terms)) {
-    sub <- full
-  } else {
-    if (is.null(data) && any(grepl("\\.", as.character(terms)))) {
-      data <- model_data(x, env = parent.frame())
-    }
-    sub <- as_terms(x = terms, data = data, env = env)
-  }
+  sub <- if (is.null(terms)) full else resolve_terms_arg(x, terms, env = env)
   mlabs <- unique(match_labels(sub, full, nomatch = "fail"))
   intercept <- intercept %||% has_intercept(sub)
   if (length(mlabs) == 0L && !intercept) {
@@ -379,36 +383,15 @@ variable.names.midrib <- function(object, ...) {
 }
 
 
-#' Extract Component Effects from MID Models
-#'
-#' @description
-#' \code{coef()} methods for extracting the fitted intercept and component effect tables from a \code{"mid"} (or \code{"midrib"}) object.
-#'
-#' @param object a fitted \code{"mid"} (or \code{"midrib"}) object.
-#' @param terms an optional character vector, formula, or \code{\link[stats]{terms}} object specifying a subset of terms (and intercept) to extract. Defaults to all terms in \code{object}.
-#' @param ... further arguments passed to or from other methods.
-#'
-#' @returns
-#' A named list containing the intercept (if included in \code{terms}) and data frames of component effects (excluding \code{.density}) for each matched term.
-#'
-#' @examples
-#' data(airquality, package = "datasets")
-#' mid <- interpret(Ozone ~ Wind * Temp, airquality, lambda = .5)
-#' coef(mid, terms = c("Wind", "Wind:Temp"))
-#'
-#' @seealso \code{\link{interpret}}, \code{\link{predict.mid}}
-#'
-#' @rdname coef.mid
+#' @rdname subset.mid
 #' @exportS3Method stats::coef
 #'
-coef.mid <- function(object, terms = NULL, ...) {
-  terms <- if (is.null(terms)) {
-    stats::terms(object)
-  } else {
-    as_terms(terms)
-  }
-  intercept <- has_intercept(terms)
-  labs <- unique(match_labels(terms, object, nomatch = "omit"))
+coef.mid <- function(object, terms = NULL, intercept = NULL, ...) {
+  full <- stats::terms(object)
+  env <- environment(full) %||% parent.frame()
+  sub <- if (is.null(terms)) full else resolve_terms_arg(object, terms, env = env)
+  intercept <- intercept %||% has_intercept(sub)
+  labs <- unique(match_labels(sub, object, nomatch = "omit"))
   res <- lapply(X = labs, FUN = function(lab) {
     vars <- get_variables(lab)
     dat <- if (length(vars) == 1L) {
@@ -426,6 +409,7 @@ coef.mid <- function(object, terms = NULL, ...) {
   res
 }
 
+#' @rdname subset.mid
 #' @exportS3Method stats::coef
 #'
 coef.midrib <- function(object, ...) {
@@ -444,4 +428,20 @@ getCall.midrib <- function(object, ...) {
 #'
 labels.mid <- function(object, ...) {
   get_labels(filter_terms(object, ...))
+}
+
+
+resolve_terms_arg <- function(x, terms, env = parent.frame()) {
+  dat <- NULL
+  if (any(grepl("\\.", as.character(terms)))) {
+    vars <- unique(c(
+      get_response(stats::terms(x)),
+      get_variables(stats::terms(x), raw = TRUE)
+    ))
+    vars <- vars[nzchar(vars)]
+    if (length(vars) > 0L) {
+      dat <- as.data.frame(stats::setNames(rep(list(numeric(0L)), length(vars)), vars))
+    }
+  }
+  as_terms(x = terms, data = dat, env = env)
 }

@@ -79,5 +79,5 @@ and each interaction effect is split equally among its constituent variables
 before computing the importance summary.
 }
 \seealso{
-\code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{ggmid.midimp}}
+\code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{plot.midimps}}
 }

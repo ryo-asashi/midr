@@ -27,7 +27,7 @@
 #' \code{importance}, \code{predictions}, \code{measure}, and \code{by}.
 #' For a \code{"mids"} collection, a collection of class \code{c("midimps", "midlist")}.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{ggmid.midimp}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.midimp}}, \code{\link{plot.midimps}}
 #'
 #' @export eval_importance
 #'

@@ -90,7 +90,7 @@ autoplot.midbrk <- function(object, ...) {
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{plot.midbrk}}, \code{\link{eval_breakdown}}, \code{\link{midlist}}
+#' @seealso \code{\link{eval_breakdown}}, \code{\link{plot.midbrk}}, \code{\link{midlist}}
 #'
 #' @name plot.midbrks
 #' @rdname plot.midbrks
@@ -157,10 +157,10 @@ render_midbrk <- function(
     resid_idx <- setdiff(seq_len(nrow(bd)), idx)
     bd <- bd[idx, , drop = FALSE]
     if (length(resid_idx) > 0L) {
-      resid_sum <- sum(x$breakdown$mid[resid_idx])
+      resid_sum <- sum(x$breakdown$effect[resid_idx])
       extra <- bd[1L, , drop = FALSE]
       extra$term <- others
-      extra$mid <- resid_sum
+      extra$effect <- resid_sum
       if ("order" %in% names(extra)) extra$order <- NA
       bd <- rbind(bd, extra)
       use_others <- TRUE
@@ -169,11 +169,11 @@ render_midbrk <- function(
 
   nmax <- min(max.nterms, nrow(bd), na.rm = TRUE)
   if (!is.na(nmax) && nmax < nrow(bd)) {
-    resid_sum <- sum(bd$mid[seq.int(nmax, nrow(bd))])
+    resid_sum <- sum(bd$effect[seq.int(nmax, nrow(bd))])
     bd <- bd[seq_len(nmax - 1L), , drop = FALSE]
     extra <- bd[1L, , drop = FALSE]
     extra$term <- others
-    extra$mid <- resid_sum
+    extra$effect <- resid_sum
     if ("order" %in% names(extra)) extra$order <- NA
     bd <- rbind(bd, extra)
     use_others <- TRUE
@@ -190,21 +190,24 @@ render_midbrk <- function(
     )
   }
 
+  if (type == "waterfall" && is.null(theme)) {
+    theme <- colortheme_default("qualitative")
+  }
   tvals <- NULL
   ltitle <- "effect"
   if (!is.null(theme)) {
     ct <- colortheme(theme)
     if (ct$type == "qualitative") {
       tvals <- if (type == "waterfall") {
-        factor(ifelse(bd$mid > 0, "positive", "negative"), levels = c("negative", "positive"))
+        factor(ifelse(bd$effect > 0, "positive", "negative"), levels = c("negative", "positive"))
       } else if ("order" %in% names(bd)) {
         bd$order
       } else {
-        factor(ifelse(bd$mid > 0, "positive", "negative"), levels = c("negative", "positive"))
+        factor(ifelse(bd$effect > 0, "positive", "negative"), levels = c("negative", "positive"))
       }
       ltitle <- if (type != "waterfall" && "order" %in% names(bd)) "order" else "sign"
     } else {
-      tvals <- bd$mid
+      tvals <- bd$effect
     }
   }
 
@@ -213,7 +216,7 @@ render_midbrk <- function(
     return(call_dualplot(
       draw_bars,
       list(
-        to = bd$mid, ticks = tick_labs, horizontal = TRUE, type = bar_type,
+        to = bd$effect, ticks = tick_labs, horizontal = TRUE, type = bar_type,
         vline = if (isTRUE(vline)) 0 else NULL,
         theme = theme, theme.values = tvals,
         legend.title = ltitle, xlab = "effect", engine = engine
@@ -223,7 +226,7 @@ render_midbrk <- function(
   }
 
   # waterfall
-  cs <- cumsum(c(x$intercept, bd$mid))
+  cs <- cumsum(c(x$intercept, bd$effect))
   from_vals <- cs[seq_len(nrow(bd))]
   to_vals <- cs[seq_len(nrow(bd)) + 1L]
   call_dualplot(
@@ -248,7 +251,7 @@ render_midbrks <- function(
   type <- match.arg(type, c("barplot", "dotchart", "series"))
   brk <- summarize_midlist(
     object = x, shape = "long",
-    dfname = "breakdown", keycol = "term", valcol = "mid", keys = "term", fill = 0
+    dfname = "breakdown", keycol = "term", valcol = "effect", keys = "term", fill = 0
   )
   brk$term <- as.character(brk$term)
   olabs <- as.character(unique(brk$label))
@@ -280,13 +283,13 @@ render_midbrks <- function(
   }
   use_others <- length(terms_drop) > 0L
   if (use_others) {
-    brk_drop <- brk[brk$term %in% terms_drop, c("label", "mid"), drop = FALSE]
-    df_resid <- stats::aggregate(mid ~ label, data = brk_drop, FUN = sum)
+    brk_drop <- brk[brk$term %in% terms_drop, c("label", "effect"), drop = FALSE]
+    df_resid <- stats::aggregate(effect ~ label, data = brk_drop, FUN = sum)
     df_resid$term <- others
-    brk <- brk[brk$term %in% terms_kept, c("term", "label", "mid"), drop = FALSE]
-    brk <- rbind(brk, df_resid[, c("term", "label", "mid")])
+    brk <- brk[brk$term %in% terms_kept, c("term", "label", "effect"), drop = FALSE]
+    brk <- rbind(brk, df_resid[, c("term", "label", "effect")])
   } else {
-    brk <- brk[brk$term %in% terms_kept, c("term", "label", "mid"), drop = FALSE]
+    brk <- brk[brk$term %in% terms_kept, c("term", "label", "effect"), drop = FALSE]
   }
 
   objs <- as.list(x)
@@ -315,7 +318,7 @@ render_midbrks <- function(
   mat <- matrix(0, nrow = n, ncol = m, dimnames = list(tick_labs, as.character(labels)))
   for (j in seq_len(m)) {
     subbrk <- brk[as.character(brk$label) == as.character(labels[j]), , drop = FALSE]
-    vals <- subbrk$mid[match(tick_labs, subbrk$term)]
+    vals <- subbrk$effect[match(tick_labs, subbrk$term)]
     vals[is.na(vals)] <- 0
     mat[, j] <- vals
   }

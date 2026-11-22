@@ -73,11 +73,11 @@ reference:
   contents:
   - plot.mid
   - plot.mids
+  - persp.mid
   - predict.mid
   - print.mid
   - summary.mid
   - subset.mid
-  - coef.mid
 - title: Combine MID objects
   contents:
   - midlist

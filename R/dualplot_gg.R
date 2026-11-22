@@ -238,6 +238,11 @@ draw_bars_gg <- function(
   g_names <- colnames(to) %||% as.character(seq_len(m))
   cat_levels <- if (horizontal) rev(ticks) else ticks
 
+  cat_lbl <- if (horizontal) ylab else xlab
+  val_lbl <- if (horizontal) xlab else ylab
+  cat_col <- safe_col_name(cat_lbl, "category", c("group", "from", "diff", ".cval"))
+  val_col <- safe_col_name(val_lbl, "to", c("group", "from", "diff", ".cval", cat_col))
+
   df <- data.frame(
     category = factor(rep(ticks, times = m), levels = cat_levels),
     group    = factor(rep(g_names, each = n), levels = g_names),
@@ -246,8 +251,11 @@ draw_bars_gg <- function(
     diff     = as.vector(to - from),
     stringsAsFactors = FALSE
   )
+  names(df)[c(1L, 4L)] <- c(cat_col, val_col)
 
-  use_theme <- !is.null(theme)
+  has_const_aes <- (type == "bar" && !is.null(dots$fill)) ||
+                   (type == "dot" && !is.null(dots$colour))
+  use_theme <- !is.null(theme) && !has_const_aes
   if (use_theme) {
     ct <- colortheme(theme)
     cval <- theme.values %||% (if (m > 1L) df$group else df$diff)
@@ -255,9 +263,9 @@ draw_bars_gg <- function(
   }
 
   pl <- if (horizontal) {
-    ggplot2::ggplot(df, ggplot2::aes(x = .data[["to"]], y = .data[["category"]]))
+    ggplot2::ggplot(df, ggplot2::aes(x = .data[[val_col]], y = .data[[cat_col]]))
   } else {
-    ggplot2::ggplot(df, ggplot2::aes(x = .data[["category"]], y = .data[["to"]]))
+    ggplot2::ggplot(df, ggplot2::aes(x = .data[[cat_col]], y = .data[[val_col]]))
   }
 
   if (!is.null(vline)) {
@@ -273,23 +281,28 @@ draw_bars_gg <- function(
     w <- width %||% (if (connect) 0.6 else 0.9)
     if (connect && m == 1L) {
       hw <- w / 2
-      df$idx <- as.integer(df$category)
+      df$idx <- as.integer(df[[cat_col]])
       df$cmin <- df$idx - hw
       df$cmax <- df$idx + hw
 
       rect_aes <- if (horizontal) {
         ggplot2::aes(
-          xmin = .data[["from"]], xmax = .data[["to"]],
+          xmin = .data[["from"]], xmax = .data[[val_col]],
           ymin = .data[["cmin"]], ymax = .data[["cmax"]]
         )
       } else {
         ggplot2::aes(
           xmin = .data[["cmin"]], xmax = .data[["cmax"]],
-          ymin = .data[["from"]], ymax = .data[["to"]]
+          ymin = .data[["from"]], ymax = .data[[val_col]]
         )
       }
-      if (use_theme) rect_aes$fill <- ggplot2::aes(fill = .data[[".cval"]])[[1L]]
-      pl <- pl + layer_rect(mapping = rect_aes, data = df, ...)
+      rect_args <- list(mapping = rect_aes, data = df)
+      if (use_theme) {
+        rect_args$mapping$fill <- ggplot2::aes(fill = .data[[".cval"]])[[1L]]
+      } else if (is.null(dots$fill)) {
+        rect_args$fill <- "gray65"
+      }
+      pl <- pl + do.call(layer_rect, c(rect_args, list(...)))
 
       if (n > 1L) {
         seg_df <- df[-n, , drop = FALSE]
@@ -302,7 +315,7 @@ draw_bars_gg <- function(
           seg_df$c_next <- df$cmin[-1L]
           pl <- pl + layer_linerange(
             mapping = ggplot2::aes(
-              x = .data[["to"]], ymin = .data[["c_next"]], ymax = .data[["cmax"]]
+              x = .data[[val_col]], ymin = .data[["c_next"]], ymax = .data[["cmax"]]
             ),
             data = seg_df, colour = seg_col, linetype = seg_lty, linewidth = seg_lwd
           )
@@ -311,7 +324,7 @@ draw_bars_gg <- function(
           pl <- pl + ggplot2::geom_segment(
             mapping = ggplot2::aes(
               x = .data[["cmin"]], xend = .data[["c_next"]],
-              y = .data[["to"]],   yend = .data[["to"]]
+              y = .data[[val_col]], yend = .data[[val_col]]
             ),
             data = seg_df, colour = seg_col, linetype = seg_lty, linewidth = seg_lwd
           )
@@ -332,9 +345,9 @@ draw_bars_gg <- function(
     w <- width %||% 0.6
     pos <- if (m > 1L) ggplot2::position_dodge(width = w) else "identity"
     dot_aes <- if (horizontal) {
-      ggplot2::aes(xmin = .data[["from"]], xmax = .data[["to"]], y = .data[["category"]], group = .data[["group"]])
+      ggplot2::aes(xmin = .data[["from"]], xmax = .data[[val_col]], y = .data[[cat_col]], group = .data[["group"]])
     } else {
-      ggplot2::aes(x = .data[["category"]], ymin = .data[["from"]], ymax = .data[["to"]], group = .data[["group"]])
+      ggplot2::aes(x = .data[[cat_col]], ymin = .data[["from"]], ymax = .data[[val_col]], group = .data[["group"]])
     }
     if (use_theme) dot_aes$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
     dot_args <- list(mapping = dot_aes, position = pos)
@@ -357,7 +370,7 @@ draw_bars_gg <- function(
   apply_theme_and_legend(
     pl,
     legend = legend,
-    legend.on = if (type == "bar") "fill" else "color",
+    legend.on = if (use_theme) (if (type == "bar") "fill" else "color") else character(0L),
     legend.title = legend.title
   )
 }
@@ -368,13 +381,14 @@ draw_lines_gg <- function(
     discrete = NULL, limits = NULL, points = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
+  dots <- cast_to_gg_params(list(...))
   y <- as.matrix(y)
   m <- ncol(y)
   discrete <- discrete %||% is_discrete(x)
   g_names <- colnames(y) %||% paste0("series_", seq_len(m))
   x_col <- if (discrete) factor(x, levels = unique(as.character(x))) else x
 
-  use_theme <- !is.null(theme)
+  use_theme <- !is.null(theme) && is.null(dots$colour)
   cvals <- if (use_theme) (theme.values %||% factor(g_names, levels = g_names)) else NULL
 
   xcol <- safe_col_name(xlab, "x", c("group", ".cval"))
@@ -425,7 +439,7 @@ draw_lines_gg <- function(
   apply_theme_and_legend(
     pl,
     legend = legend,
-    legend.on = "color",
+    legend.on = if (use_theme) "color" else character(0L),
     legend.title = legend.title
   )
 }
@@ -438,9 +452,10 @@ draw_points_gg <- function(
 ) {
   xcol <- safe_col_name(xlab, "x", ".cval")
   ycol <- safe_col_name(ylab, "y", c(".cval", xcol))
+  dots <- cast_to_gg_params(list(...))
   df <- stats::setNames(data.frame(x, y), c(xcol, ycol))
 
-  use_theme <- !is.null(theme) && !is.null(theme.values)
+  use_theme <- !is.null(theme) && !is.null(theme.values) && is.null(dots$colour)
   if (use_theme) df$.cval <- theme.values
 
   pt_aes <- if (use_theme) ggplot2::aes(colour = .data[[".cval"]]) else ggplot2::aes()
@@ -465,7 +480,7 @@ draw_points_gg <- function(
   apply_theme_and_legend(
     pl,
     legend = legend,
-    legend.on = "color",
+    legend.on = if (use_theme) "color" else character(0L),
     legend.title = legend.title
   )
 }
@@ -475,16 +490,17 @@ draw_surface_gg <- function(
     zlim = NULL, middle = 0, xticks = NULL, yticks = NULL, points = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
-  xcol <- safe_col_name(xlab, "x", "z")
-  ycol <- safe_col_name(ylab, "y", c("z", xcol))
+  xcol <- safe_col_name(xlab, "x")
+  ycol <- safe_col_name(ylab, "y", xcol)
+  zcol <- safe_col_name(legend.title, "z", c(xcol, ycol))
   grid <- expand.grid(x, y)
   names(grid) <- c(xcol, ycol)
-  grid$z <- as.vector(z)
+  grid[[zcol]] <- as.vector(z)
 
-  use_theme <- theme %||% getOption("colortheme.diverging", "azurerose")
+  theme <- theme %||% getOption("colortheme.diverging", "azurerose")
   pl <- ggplot2::ggplot(grid, ggplot2::aes(x = .data[[xcol]], y = .data[[ycol]])) +
-    layer_raster(mapping = ggplot2::aes(fill = .data[["z"]]), ...) +
-    scale_fill_theme(theme = use_theme, middle = middle, limits = zlim)
+    layer_raster(mapping = ggplot2::aes(fill = .data[[zcol]]), ...) +
+    scale_fill_theme(theme = theme, middle = middle, limits = zlim)
 
   if (!is.null(xticks)) {
     pl <- pl + ggplot2::scale_x_continuous(breaks = seq_along(xticks), labels = xticks)
@@ -501,7 +517,7 @@ draw_surface_gg <- function(
     )
   }
   pl <- pl + ggplot2::labs(title = main, subtitle = sub, x = xlab, y = ylab)
-  apply_theme_and_legend(pl, legend = legend, legend.title = legend.title)
+  apply_theme_and_legend(pl, legend = legend, legend.on = "fill", legend.title = legend.title)
 }
 
 draw_matrix_gg <- function(
@@ -511,16 +527,20 @@ draw_matrix_gg <- function(
 ) {
   m <- nrow(z)
   ticks <- ticks %||% as.character(seq_len(m))
+  xcol <- safe_col_name(xlab, "x")
+  ycol <- safe_col_name(ylab, "y", xcol)
+  zcol <- safe_col_name(legend.title, "z", c(xcol, ycol))
   grid <- expand.grid(
-    x = factor(ticks, levels = ticks),
-    y = factor(ticks, levels = ticks)
+    factor(ticks, levels = ticks),
+    factor(ticks, levels = ticks)
   )
-  grid$z <- as.vector(z)
-  use_theme <- theme %||% getOption("colortheme.sequential", "grayscale")
+  names(grid) <- c(xcol, ycol)
+  grid[[zcol]] <- as.vector(z)
+  theme <- theme %||% getOption("colortheme.sequential", "grayscale")
 
-  pl <- ggplot2::ggplot(grid, ggplot2::aes(x = .data[["x"]], y = .data[["y"]])) +
-    layer_tile(mapping = ggplot2::aes(fill = .data[["z"]]), ...) +
-    scale_fill_theme(theme = use_theme, middle = middle) +
+  pl <- ggplot2::ggplot(grid, ggplot2::aes(x = .data[[xcol]], y = .data[[ycol]])) +
+    layer_tile(mapping = ggplot2::aes(fill = .data[[zcol]]), ...) +
+    scale_fill_theme(theme = theme, middle = middle) +
     ggplot2::labs(title = main, subtitle = sub, x = xlab, y = ylab)
   apply_theme_and_legend(pl, legend = legend, legend.title = legend.title)
 }
@@ -533,16 +553,23 @@ draw_boxes_gg <- function(
   x <- as.list(x)
   keep <- vapply(x, function(v) is.numeric(v) || is.logical(v), logical(1L))
   x <- lapply(x[keep], as.numeric)
+  dots <- cast_to_gg_params(list(...))
   nms <- names(x) %||% as.character(seq_along(x))
-  use_theme <- !is.null(theme)
+  use_theme <- !is.null(theme) && is.null(dots$fill)
   cvals <- if (use_theme) (theme.values %||% factor(nms, levels = nms)) else NULL
   cat_levels <- if (horizontal) rev(nms) else nms
+
+  cat_lbl <- if (horizontal) ylab else xlab
+  val_lbl <- if (horizontal) xlab else ylab
+  cat_col <- safe_col_name(cat_lbl, "category", ".cval")
+  val_col <- safe_col_name(val_lbl, "value", c(".cval", cat_col))
 
   df_list <- lapply(seq_along(x), function(i) {
     out <- data.frame(
       category = factor(rep(nms[i], length(x[[i]])), levels = cat_levels),
       value = x[[i]]
     )
+    names(out) <- c(cat_col, val_col)
     if (use_theme) out$.cval <- cvals[i]
     out
   })
@@ -550,10 +577,10 @@ draw_boxes_gg <- function(
 
   box_aes <- if (use_theme) ggplot2::aes(fill = .data[[".cval"]]) else ggplot2::aes()
   pl <- if (horizontal) {
-    ggplot2::ggplot(df, ggplot2::aes(x = .data[["value"]], y = .data[["category"]])) +
+    ggplot2::ggplot(df, ggplot2::aes(x = .data[[val_col]], y = .data[[cat_col]])) +
       layer_boxplot(mapping = box_aes, ...)
   } else {
-    ggplot2::ggplot(df, ggplot2::aes(x = .data[["category"]], y = .data[["value"]])) +
+    ggplot2::ggplot(df, ggplot2::aes(x = .data[[cat_col]], y = .data[[val_col]])) +
       layer_boxplot(mapping = box_aes, ...)
   }
 
@@ -561,5 +588,10 @@ draw_boxes_gg <- function(
     pl <- pl + scale_fill_theme(theme = theme)
   }
   pl <- pl + ggplot2::labs(title = main, subtitle = sub, x = xlab, y = ylab)
-  apply_theme_and_legend(pl, legend = legend, legend.title = legend.title)
+  apply_theme_and_legend(
+    pl,
+    legend = legend,
+    legend.on = if (use_theme) "fill" else character(0L),
+    legend.title = legend.title
+  )
 }

@@ -3,35 +3,49 @@
 \name{subset.mid}
 \alias{subset.mid}
 \alias{subset.mids}
-\title{Extract Submodels from MID Models}
+\alias{coef.mid}
+\alias{coef.midrib}
+\title{Extract Submodels and Coefficients from MID Models}
 \usage{
-\method{subset}{mid}(x, terms = NULL, intercept = NULL, data = NULL, ...)
+\method{subset}{mid}(x, terms = NULL, intercept = NULL, ...)
 
 \method{subset}{mids}(x, ...)
+
+\method{coef}{mid}(object, terms = NULL, intercept = NULL, ...)
+
+\method{coef}{midrib}(object, ...)
 }
 \arguments{
-\item{x}{a fitted model object (\code{"mid"} or \code{"mids"}).}
+\item{x, object}{a fitted model object (\code{"mid"}, \code{"midrib"}, or \code{"mids"} for \code{subset()}).}
 
-\item{terms}{a character vector, formula, or \code{\link[stats]{terms}} object specifying the subset of terms to retain.}
+\item{terms}{an optional character vector, formula, or \code{\link[stats]{terms}} object specifying the subset of terms (and intercept) to retain or extract. Defaults to all terms in the model.}
 
-\item{intercept}{logical. If \code{TRUE}, the intercept is preserved; if \code{FALSE}, it is zeroed out. If \code{NULL} (default), inferred from \code{terms}.}
-
-\item{data}{optional data.frame used only when \code{terms} contains \code{"."} shorthand.}
+\item{intercept}{logical. If \code{TRUE}, the intercept is preserved or included; if \code{FALSE}, it is zeroed out or omitted. If \code{NULL} (default), inferred from \code{terms}.}
 
 \item{...}{further arguments passed to methods.}
 }
 \value{
-A \code{"mid"} (or \code{"mids"}) object containing only the selected component functions.
+\code{subset()} returns a \code{"mid"} (or \code{"mids"}) object containing only the selected component functions.
+\code{coef()} returns a named list containing the intercept (if included) and data frames of component effects (excluding \code{.density}) for each matched term.
 }
 \description{
-\code{subset()} methods for a fitted MID model ("mid") or a collection of models ("mids").
-It creates a lightweight view of a fitted MID model containing only a specified subset of terms (main effects and/or interactions).
+\code{subset()} and \code{coef()} methods for extracting a subset of component
+functions from a fitted MID model (\code{"mid"} / \code{"midrib"}) or a
+collection of models (\code{"mids"}).
+\code{subset()} returns a lightweight submodel object, while \code{coef()}
+returns a named list of the fitted intercept and component effect tables.
 }
 \examples{
-# Extract a submodel from a fitted MID model
 data(airquality, package = "datasets")
-mid <- interpret(Ozone ~ ., airquality, lambda = .5)
-predict(mid, head(airquality), type = "terms")
+mid <- interpret(Ozone ~ Wind * Temp, airquality, k = c(5, 3))
+
+# Extract a submodel containing only Wind and Temp
 submid <- subset(mid, ~ Wind + Temp)
 predict(submid, head(airquality), type = "terms")
+
+# Extract component effect tables without the intercept
+coef(mid, terms = c("Wind", "Wind:Temp"), intercept = FALSE)
+}
+\seealso{
+\code{\link{interpret}}, \code{\link{predict.mid}}
 }

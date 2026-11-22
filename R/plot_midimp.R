@@ -77,7 +77,7 @@ autoplot.midimp <- function(object, ...) {
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{plot.midimp}}, \code{\link{eval_importance}}, \code{\link{midlist}}
+#' @seealso \code{\link{eval_importance}}, \code{\link{plot.midimp}}, \code{\link{midlist}}
 #'
 #' @name plot.midimps
 #' @rdname plot.midimps

@@ -50,5 +50,5 @@ Compare term or variable importance across a \code{"midimps"} collection.
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \seealso{
-\code{\link{plot.midimp}}, \code{\link{eval_importance}}, \code{\link{midlist}}
+\code{\link{eval_importance}}, \code{\link{plot.midimp}}, \code{\link{midlist}}
 }

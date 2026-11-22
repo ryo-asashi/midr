@@ -4,7 +4,7 @@
 \alias{eval_conditional}
 \alias{eval_conditional.mid}
 \alias{eval_conditional.mids}
-\title{Evaluate Conditional Expectations (ICE)}
+\title{Evaluate Individual Conditional Expectations (ICE)}
 \usage{
 eval_conditional(object, ...)
 
@@ -16,7 +16,6 @@ eval_conditional(object, ...)
   max.nsamples = 500L,
   seed = NULL,
   type = c("response", "link"),
-  keep.effects = TRUE,
   ...
 )
 
@@ -28,7 +27,6 @@ eval_conditional(object, ...)
   max.nsamples = 500L,
   seed = NULL,
   type = c("response", "link"),
-  keep.effects = TRUE,
   ...
 )
 }
@@ -50,15 +48,11 @@ are randomly subsampled.}
 \item{seed}{optional integer seed for subsampling.}
 
 \item{type}{character: \code{"response"} (default) or \code{"link"}.}
-
-\item{keep.effects}{logical. If \code{TRUE} (default), stores individual
-term contributions for \code{variable}.}
 }
 \value{
 For a \code{"mid"} object, an object of class \code{"midcon"} containing
 \code{observed}, \code{conditional}, \code{variable}, \code{values}, and
-\code{ids} (plus \code{observed.effects} and \code{conditional.effects} when
-\code{keep.effects = TRUE}).
+\code{ids}.
 For a \code{"mids"} collection, a collection of class \code{c("midcons", "midlist")}.
 }
 \description{

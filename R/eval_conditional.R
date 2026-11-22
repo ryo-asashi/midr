@@ -1,6 +1,6 @@
 # R/eval_conditional.R
 
-#' Evaluate Conditional Expectations (ICE)
+#' Evaluate Individual Conditional Expectations (ICE)
 #'
 #' @description
 #' \code{eval_conditional()} calculates Individual Conditional Expectation (ICE)
@@ -19,8 +19,7 @@
 #' @returns
 #' For a \code{"mid"} object, an object of class \code{"midcon"} containing
 #' \code{observed}, \code{conditional}, \code{variable}, \code{values}, and
-#' \code{ids} (plus \code{observed.effects} and \code{conditional.effects} when
-#' \code{keep.effects = TRUE}).
+#' \code{ids}.
 #' For a \code{"mids"} collection, a collection of class \code{c("midcons", "midlist")}.
 #'
 #' @seealso \code{\link{interpret}}, \code{\link{plot.midcon}}, \code{\link{ggmid.midcon}}
@@ -40,13 +39,11 @@ UseMethod("eval_conditional")
 #'   are randomly subsampled.
 #' @param seed optional integer seed for subsampling.
 #' @param type character: \code{"response"} (default) or \code{"link"}.
-#' @param keep.effects logical. If \code{TRUE} (default), stores individual
-#'   term contributions for \code{variable}.
 #' @exportS3Method midr::eval_conditional
 #'
 eval_conditional.mid <- function(
     object, variable, data = NULL, resolution = 100L, max.nsamples = 500L,
-    seed = NULL, type = c("response", "link"), keep.effects = TRUE, ...
+    seed = NULL, type = c("response", "link"), ...
 ) {
   type <- match.arg(type)
   if (!is.character(variable) || length(variable) != 1L) {
@@ -125,16 +122,18 @@ eval_conditional.mid <- function(
   names(con_df)[2L] <- variable
 
   res <- list(
-    observed    = data.frame(.id = ids, yhat = yhat, data, stringsAsFactors = FALSE),
+    observed    = data.frame(
+      .id = ids,
+      yhat = yhat,
+      data[, setdiff(names(data), c(".id", "yhat")), drop = FALSE],
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    ),
     conditional = con_df,
     ids         = ids,
     variable    = variable,
     values      = values
   )
-  if (isTRUE(keep.effects)) {
-    res$observed.effects <- pvar_obs
-    res$conditional.effects <- pmat_con
-  }
   attr(res, "term.labels") <- tvar
   attr(res, "n") <- n
   class(res) <- "midcon"
@@ -147,15 +146,12 @@ eval_conditional.mid <- function(
 #'
 eval_conditional.mids <- function(
     object, variable, data = NULL, resolution = 100L, max.nsamples = 500L,
-    seed = NULL, type = c("response", "link"), keep.effects = TRUE, ...
+    seed = NULL, type = c("response", "link"), ...
 ) {
   type <- match.arg(type)
   mods <- as.list(object)
   if (missing(max.nsamples)) {
     max.nsamples <- max(1L, 100L %/% max(1L, length(mods)))
-  }
-  if (missing(keep.effects)) {
-    keep.effects <- FALSE
   }
   if (is.null(seed)) {
     seed <- sample.int(1e6L, 1L)
@@ -163,7 +159,7 @@ eval_conditional.mids <- function(
   out <- suppressMessages(lapply(
     X = mods, FUN = eval_conditional.mid, variable = variable, data = data,
     resolution = resolution, max.nsamples = max.nsamples, seed = seed,
-    type = type, keep.effects = keep.effects, ...
+    type = type, ...
   ))
   class(out) <- c("midcons", "midlist")
   out

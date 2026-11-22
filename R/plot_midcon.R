@@ -10,7 +10,6 @@
 #' @param x,object a \code{"midcon"} object.
 #' @param type visualization style: \code{"iceplot"} (default) or \code{"centered"}.
 #' @param theme optional color theme name or \code{"colortheme"} object.
-#' @param term optional term label to plot a single component's ICE curve (requires \code{keep.effects = TRUE}).
 #' @param var.alpha,var.color,var.linetype,var.linewidth optional variable names or
 #'   expressions evaluated in \code{observed} to map aesthetics across curves.
 #' @param reference integer index of the grid point used for centering when \code{type = "centered"}.
@@ -29,12 +28,12 @@
 #' @exportS3Method base::plot
 #'
 plot.midcon <- function(
-    x, type = c("iceplot", "centered"), theme = NULL, term = NULL,
+    x, type = c("iceplot", "centered"), theme = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
     reference = 1L, points = TRUE, sample = NULL, ...
 ) {
   render_midcon(
-    x = x, type = type, theme = theme, term = term,
+    x = x, type = type, theme = theme,
     col_expr = substitute(var.color), alpha_expr = substitute(var.alpha),
     lty_expr = substitute(var.linetype), lwd_expr = substitute(var.linewidth),
     reference = reference, points = points, sample = sample,
@@ -48,12 +47,12 @@ plot.midcon <- function(
 #' @exportS3Method midr::ggmid
 #'
 ggmid.midcon <- function(
-    object, type = c("iceplot", "centered"), theme = NULL, term = NULL,
+    object, type = c("iceplot", "centered"), theme = NULL,
     var.alpha = NULL, var.color = NULL, var.linetype = NULL, var.linewidth = NULL,
     reference = 1L, points = TRUE, sample = NULL, ...
 ) {
   render_midcon(
-    x = object, type = type, theme = theme, term = term,
+    x = object, type = type, theme = theme,
     col_expr = substitute(var.color), alpha_expr = substitute(var.alpha),
     lty_expr = substitute(var.linetype), lwd_expr = substitute(var.linewidth),
     reference = reference, points = points, sample = sample,
@@ -90,7 +89,7 @@ autoplot.midcon <- function(object, ...) {
 #' \code{plot()} returns \code{NULL} invisibly.
 #' \code{ggmid()} returns a \code{"ggplot"} object.
 #'
-#' @seealso \code{\link{plot.midcon}}, \code{\link{eval_conditional}}, \code{\link{midlist}}
+#' @seealso \code{\link{eval_conditional}}, \code{\link{plot.midcon}}, \code{\link{midlist}}
 #'
 #' @name plot.midcons
 #' @rdname plot.midcons
@@ -156,27 +155,20 @@ rescale01 <- function(x) {
 }
 
 render_midcon <- function(
-    x, type, theme, term, col_expr, alpha_expr, lty_expr, lwd_expr,
+    x, type, theme, col_expr, alpha_expr, lty_expr, lwd_expr,
     reference, points, sample, engine, ...
 ) {
   dots <- list(...)
+  legend_dot <- dots$legend
+  legend_title_dot <- dots$legend.title
+  dots$legend <- NULL
+  dots$legend.title <- NULL
   type <- match.arg(type, c("iceplot", "centered"))
   variable <- x$variable
   obs <- x$observed
   con <- x$conditional
   values <- x$values
   yvar <- "yhat"
-
-  if (!is.null(term)) {
-    if (is.null(x$conditional.effects)) {
-      stop("term effects are not stored in 'x' (re-run with keep.effects = TRUE)", call. = FALSE)
-    }
-    term <- match_labels(term, attr(x, "term.labels", exact = TRUE), nomatch = "NA")
-    if (is.na(term)) stop("specified 'term' is not found in 'x'", call. = FALSE)
-    yvar <- paste0("mid(", term, ")")
-    obs[[yvar]] <- x$observed.effects[, term]
-    con[[yvar]] <- x$conditional.effects[, term]
-  }
 
   if (type == "centered") {
     if (reference < 0L) reference <- length(values)
@@ -248,7 +240,7 @@ render_midcon <- function(
       pl <- pl + scale_color_theme(theme = theme)
     }
     pl <- pl + extract_gg_labs(dots, xlab = variable, ylab = yvar)
-    legend_opt <- dots$legend %||% (!is.null(col_val))
+    legend_opt <- legend_dot %||% (!is.null(col_val))
     return(apply_theme_and_legend(pl, legend = legend_opt, legend.on = legend_on, legend.title = ltitle))
   }
 
@@ -268,7 +260,7 @@ render_midcon <- function(
   flvs <- if (fv) levels(factor(values)) else NULL
   xvals <- if (fv) seq_along(flvs) else values
 
-  legend_opt <- dots$legend %||% FALSE
+  legend_opt <- legend_dot %||% FALSE
   opar <- graphics::par("mai")
   on.exit(graphics::par(mai = opar), add = TRUE)
   graphics::par(mai = adjust_legend_margin(legend_opt, opar))
@@ -303,7 +295,7 @@ render_midcon <- function(
     do.call(graphics::points.default, pt_args)
   }
   if (!is.null(col_val) && !isFALSE(legend_opt)) {
-    ltitle <- dots$legend.title %||% (if (is.character(col_expr)) col_expr else deparse(col_expr)[1L])
+    ltitle <- legend_title_dot %||% (if (is.character(col_expr)) col_expr else deparse(col_expr)[1L])
     draw_base_legend(values = col_val, theme = theme, legend = legend_opt, title = ltitle, style = "line")
   }
   invisible(NULL)
@@ -315,6 +307,10 @@ render_midcons <- function(
     reference, sample, labels, engine, ...
 ) {
   dots <- list(...)
+  legend_dot <- dots$legend
+  legend_title_dot <- dots$legend.title
+  dots$legend <- NULL
+  dots$legend.title <- NULL
   type <- match.arg(type, c("iceplot", "centered", "series"))
   objs <- as.list(x)
   first <- objs[[1L]]
@@ -404,7 +400,7 @@ render_midcons <- function(
 
     pl <- ggplot2::ggplot(con, aes_map) + layer_line(...) + scale_color_theme(theme = th)
     pl <- pl + extract_gg_labs(dots, xlab = xlab, ylab = yvar)
-    return(apply_theme_and_legend(pl, legend = dots$legend %||% TRUE, legend.on = "color", legend.title = ltitle))
+    return(apply_theme_and_legend(pl, legend = legend_dot %||% TRUE, legend.on = "color", legend.title = legend_title_dot %||% ltitle))
   }
 
   # graphics backend
@@ -454,7 +450,7 @@ render_midcons <- function(
     leg_title <- NULL
   }
 
-  legend_opt <- dots$legend %||% FALSE
+  legend_opt <- legend_dot %||% FALSE
   opar <- graphics::par("mai")
   on.exit(graphics::par(mai = opar), add = TRUE)
   graphics::par(mai = adjust_legend_margin(legend_opt, opar))
@@ -489,7 +485,7 @@ render_midcons <- function(
   if (!isFALSE(legend_opt)) {
     draw_base_legend(
       values = leg_vals, theme = th, legend = legend_opt,
-      title = dots$legend.title %||% leg_title, style = "line"
+      title = legend_title_dot %||% leg_title, style = "line"
     )
   }
   invisible(NULL)

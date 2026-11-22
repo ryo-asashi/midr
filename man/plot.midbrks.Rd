@@ -67,5 +67,5 @@ Compare prediction breakdowns across a \code{"midbrks"} collection.
 \strong{ggplot2} objects via the \code{dualplot} engine.
 }
 \seealso{
-\code{\link{plot.midbrk}}, \code{\link{eval_breakdown}}, \code{\link{midlist}}
+\code{\link{eval_breakdown}}, \code{\link{plot.midbrk}}, \code{\link{midlist}}
 }

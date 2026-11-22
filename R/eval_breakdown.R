@@ -1,6 +1,6 @@
 # R/eval_breakdown.R
 
-#' Evaluate Prediction Breakdown
+#' Evaluate Prediction Breakdowns
 #'
 #' @description
 #' \code{eval_breakdown()} calculates the contribution of each component function
@@ -29,7 +29,7 @@
 #' For a \code{"mids"} collection or a \code{"mid"} object with multiple \code{rows}
 #' selections, a collection of class \code{c("midbrks", "midlist")}.
 #'
-#' @seealso \code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{ggmid.midbrk}}
+#' @seealso \code{\link{interpret}}, \code{\link{plot.midbrk}}, \code{\link{plot.midbrks}}
 #'
 #' @export eval_breakdown
 #'
@@ -167,7 +167,7 @@ summary.midbrk <- function(object, ...) {
 summary.midbrks <- function(object, ...) {
   summarize_midlist(
     object = object, shape = "wide",
-    dfname = "breakdown", keycol = "term", valcol = "mid",
+    dfname = "breakdown", keycol = "term", valcol = "effect",
     keys = "term", fill = 0
   )
 }
@@ -185,7 +185,7 @@ as.data.frame.midbrk <- function(x, row.names = NULL, optional = FALSE, ...) {
 as.data.frame.midbrks <- function(x, row.names = NULL, optional = FALSE, ...) {
   summarize_midlist(
     object = x, shape = "long",
-    dfname = "breakdown", keycol = "term", valcol = "mid",
+    dfname = "breakdown", keycol = "term", valcol = "effect",
     keys = "term"
   )
 }
@@ -197,7 +197,7 @@ build_midbrk <- function(vals, row_dat, ints, link, by, sort) {
   terms <- names(if (isTRUE(sort)) base::sort(abs(vals), decreasing = TRUE) else vals)
   df <- data.frame(
     term = factor(terms, levels = rev(terms)),
-    mid = unname(vals[terms]),
+    effect = unname(vals[terms]),
     stringsAsFactors = FALSE
   )
   if (by == "term") {
