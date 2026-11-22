@@ -308,3 +308,10 @@ weighted_rmse <- function(x, w = NULL, na.rm = TRUE) {
 weighted_medae <- function(x, w = NULL, na.rm = TRUE) {
   unname(weighted_quantile(abs(x), w = w, probs = 0.5, na.rm = na.rm, names = FALSE))
 }
+
+
+#' @exportS3Method base::labels
+#'
+labels.midimp <- function(object, ...) {
+  get_labels(filter_terms(object, ...))
+}

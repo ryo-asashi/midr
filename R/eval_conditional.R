@@ -224,3 +224,10 @@ as.data.frame.midcon <- function(x, row.names = NULL, optional = FALSE, ...) {
 as.data.frame.midcons <- function(x, row.names = NULL, optional = FALSE, ...) {
   summary.midcons(x)
 }
+
+
+#' @exportS3Method base::labels
+#'
+labels.midcon <- function(object, ...) {
+  get_labels(filter_terms(object, ...))
+}

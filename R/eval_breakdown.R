@@ -224,3 +224,10 @@ build_midbrk <- function(vals, row_dat, ints, link, by, sort) {
   class(out) <- "midbrk"
   out
 }
+
+
+#' @exportS3Method base::labels
+#'
+labels.midbrk <- function(object, ...) {
+  get_labels(filter_terms(object, ...))
+}
