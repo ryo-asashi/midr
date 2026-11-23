@@ -92,7 +92,7 @@ img {
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The goal of <strong>midr</strong> is to provide a model-agnostic framework for interpreting black-box predictive models by constructing a globally interpretable surrogate model via <strong>Maximum Interpretation Decomposition (MID)</strong>. MID finds an optimal functional ANOVA decomposition (main effects and low-order interactions) that minimizes the squared error against the target model’s predictions. The theoretical foundations are described in Iwasawa &amp; Matsumori (2026) [Forthcoming], and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
+<p>The goal of ‘midr’ is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements ‘Maximum Interpretation Decomposition’ (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2026) [Forthcoming], and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -121,14 +121,13 @@ img {
 <span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span> <span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span></span>
-<span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu">ranger</span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
-<span></span>
-<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">rf</span>, lambda <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="va">fit_rf</span> <span class="op">&lt;-</span> <span class="fu">ranger</span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, mtry <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span><span class="op">^</span><span class="fl">2</span>, <span class="va">train</span>, <span class="va">fit_rf</span>, lambda <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="va">mid</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; interpret(formula = medv ~ .^2, data = train, model = rf, lambda = 0.1)</span></span>
+<span><span class="co">#&gt; interpret(formula = medv ~ .^2, data = train, model = fit_rf,</span></span>
+<span><span class="co">#&gt;  lambda = 0.1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model Class: ranger</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -142,12 +141,14 @@ img {
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Uninterpreted Variation Ratio: 0.016248</span></span>
 <span></span>
+<span><span class="va">preds_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_rf</span>, <span class="va">valid</span><span class="op">)</span><span class="op">$</span><span class="va">predictions</span></span>
 <span><span class="va">preds_mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mid</span>, <span class="va">valid</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  rf_rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span> <span class="op">-</span> <span class="va">preds_rf</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span><span class="va">loss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  ranger_rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">valid</span><span class="op">$</span><span class="va">medv</span> <span class="op">-</span> <span class="va">preds_rf</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  surrogate_rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">preds_rf</span> <span class="op">-</span> <span class="va">preds_mid</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;        rf_rmse surrogate_rmse </span></span>
+<span><span class="va">loss</span></span>
+<span><span class="co">#&gt;    ranger_rmse surrogate_rmse </span></span>
 <span><span class="co">#&gt;       3.351362       1.106667</span></span></code></pre></div>
 <p>Component functions can be visualized using either base graphics (<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>) or <code>ggplot2</code> (<code><a href="reference/plot.mid.html">ggmid()</a></code>). Setting <code>main.effects = TRUE</code> (or <code>terms = "lstat * dis"</code>) displays the total of main and interaction effects.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">

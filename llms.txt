@@ -1,14 +1,15 @@
 # midr
 
-The goal of **midr** is to provide a model-agnostic framework for
-interpreting black-box predictive models by constructing a globally
-interpretable surrogate model via **Maximum Interpretation Decomposition
-(MID)**. MID finds an optimal functional ANOVA decomposition (main
-effects and low-order interactions) that minimizes the squared error
-against the target model’s predictions. The theoretical foundations are
-described in Iwasawa & Matsumori (2026) \[Forthcoming\], and the package
-itself is detailed in [Asashiba et
-al. (2025)](https://arxiv.org/abs/2506.08338).
+The goal of ‘midr’ is to provide a model-agnostic method for
+interpreting and explaining black-box predictive models by creating a
+globally interpretable surrogate model. The package implements ‘Maximum
+Interpretation Decomposition’ (MID), a functional decomposition
+technique that finds an optimal additive approximation of the original
+model. This approximation is achieved by minimizing the squared error
+between the predictions of the black-box model and the surrogate model.
+The theoretical foundations of MID are described in Iwasawa & Matsumori
+(2026) \[Forthcoming\], and the package itself is detailed in [Asashiba
+et al. (2025)](https://arxiv.org/abs/2506.08338).
 
 ## Installation
 
@@ -48,14 +49,13 @@ idx <- sample(nrow(Boston), nrow(Boston) * 0.75)
 train <- Boston[ idx, ]
 valid <- Boston[-idx, ]
 
-rf <- ranger(medv ~ ., train, mtry = 5)
-preds_rf <- predict(rf, valid)$predictions
-
-mid <- interpret(medv ~ .^2, train, rf, lambda = 0.1)
+fit_rf <- ranger(medv ~ ., train, mtry = 5)
+mid <- interpret(medv ~ .^2, train, fit_rf, lambda = 0.1)
 mid
 #> 
 #> Call:
-#> interpret(formula = medv ~ .^2, data = train, model = rf, lambda = 0.1)
+#> interpret(formula = medv ~ .^2, data = train, model = fit_rf,
+#>  lambda = 0.1)
 #> 
 #> Model Class: ranger
 #> 
@@ -69,12 +69,14 @@ mid
 #> 
 #> Uninterpreted Variation Ratio: 0.016248
 
+preds_rf <- predict(fit_rf, valid)$predictions
 preds_mid <- predict(mid, valid)
-c(
-  rf_rmse = sqrt(mean((valid$medv - preds_rf)^2)),
+loss <- c(
+  ranger_rmse = sqrt(mean((valid$medv - preds_rf)^2)),
   surrogate_rmse = sqrt(mean((preds_rf - preds_mid)^2))
 )
-#>        rf_rmse surrogate_rmse 
+loss
+#>    ranger_rmse surrogate_rmse 
 #>       3.351362       1.106667
 ```
 
