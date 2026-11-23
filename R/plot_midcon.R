@@ -22,12 +22,12 @@
 #' aq <- na.omit(airquality)
 #' mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
 #' con <- eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
-#' plot(con, var.color = Temp, legend = TRUE)
+#' plot(con, var.color = Temp)
 #'
 #' # Slice the Wind:Temp interaction via subset()
 #' sub <- subset(mid, "Wind:Temp")
 #' subcon <- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)
-#' plot(subcon, type = "centered", var.color = Temp, legend = TRUE)
+#' plot(subcon, type = "centered", var.color = Temp)
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(con, type = "centered", var.color = Temp)
@@ -109,7 +109,7 @@ autoplot.midcon <- function(object, ...) {
 #' cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamples = 20L)
 #'
 #' plot(cons, legend = "topleft")
-#' plot(cons, type = "series", legend = "topright")
+#' plot(cons, type = "series")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(cons, type = "series")

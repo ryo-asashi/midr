@@ -75,11 +75,19 @@ brks <- eval_breakdown(
   by = "variable"
 )
 
-plot(brks, type = "dotchart", legend = "bottomright")
+plot(brks, type = "dotchart")
 plot(brks, type = "series")
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   ggmid(brks, type = "dotchart")
+}
+
+if (requireNamespace("survival", quietly = TRUE)) {
+  vet <- na.omit(survival::veteran)
+  fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
+  survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
+  brk <- eval_breakdown(survmid, data = vet[1L, , drop = FALSE])
+  plot(brk, type = "series")
 }
 }
 \seealso{

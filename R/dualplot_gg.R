@@ -189,7 +189,7 @@ apply_theme_and_legend <- function(
   if (length(lab_args) > 0L) {
     pl <- pl + do.call(ggplot2::labs, lab_args)
   }
-  if (isFALSE(legend)) {
+  if (isFALSE(legend) || is.null(legend)) {
     return(pl + ggplot2::theme(legend.position = "none"))
   }
   if (is.character(legend) && length(legend) == 1L) {

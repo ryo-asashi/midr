@@ -44,7 +44,7 @@ draw_bars <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_bars_base else { check_ggplot2(); draw_bars_gg }
   fn(
     to = to, from = from, ticks = ticks, horizontal = horizontal, type = type,
@@ -80,7 +80,7 @@ draw_lines <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_lines_base else { check_ggplot2(); draw_lines_gg }
   fn(
     x = x, y = y, theme = theme, theme.values = theme.values,
@@ -115,7 +115,7 @@ draw_points <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_points_base else { check_ggplot2(); draw_points_gg }
   fn(
     x = x, y = y, theme = theme, theme.values = theme.values,
@@ -152,7 +152,7 @@ draw_surface <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_surface_base else { check_ggplot2(); draw_surface_gg }
   fn(
     x = x, y = y, z = z, theme = theme, legend = legend, legend.title = legend.title,
@@ -183,7 +183,7 @@ draw_matrix <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_matrix_base else { check_ggplot2(); draw_matrix_gg }
   fn(
     z = z, ticks = ticks, theme = theme, legend = legend, legend.title = legend.title,
@@ -212,7 +212,7 @@ draw_boxes <- function(
     engine = getOption("dualplot.engine", "graphics")
 ) {
   engine <- match.arg(engine, c("graphics", "ggplot2"))
-  legend <- legend %||% (engine == "ggplot2")
+  legend <- legend %||% TRUE
   fn <- if (engine == "graphics") draw_boxes_base else { check_ggplot2(); draw_boxes_gg }
   fn(
     x = x, theme = theme, theme.values = theme.values,

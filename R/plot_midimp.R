@@ -91,8 +91,8 @@ autoplot.midimp <- function(object, ...) {
 #' mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
 #' imps <- eval_importance(mids, by = "variable")
 #'
-#' plot(imps, type = "dotchart", legend = "bottomright")
-#' plot(imps, type = "series", legend = "bottom")
+#' plot(imps, type = "dotchart")
+#' plot(imps, type = "series")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(imps, type = "dotchart")
@@ -102,8 +102,8 @@ autoplot.midimp <- function(object, ...) {
 #'   vet <- na.omit(survival::veteran)
 #'   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
 #'   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
-#'   imp <- eval_importance(survmid)
-#'   plot(imp, type = "series", legend = "topright")
+#'   imp <- eval_importance(survmid, data = vet)
+#'   plot(imp, type = "series")
 #' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.

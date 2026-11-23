@@ -14,10 +14,10 @@ adjust_left_margin <- function(ticks, mai = graphics::par("mai"), pad = 1 / 16) 
 }
 
 normalize_legend_pos <- function(legend) {
-  if (isFALSE(legend) || is.null(legend)) return(NULL)
+  if (isFALSE(legend) || is.null(legend)) return("none")
   if (isTRUE(legend)) return("right")
   .valid_pos <- c("topright", "topleft", "bottomright", "bottomleft",
-                  "top", "bottom", "left", "right")
+                  "top", "bottom", "left", "right", "none")
   match.arg(as.character(legend)[1L], .valid_pos)
 }
 
@@ -44,14 +44,14 @@ as_param_matrix <- function(x, nrow, ncol) {
 }
 
 draw_base_legend <- function(
-    values, theme, legend = FALSE, title = NULL,
+    values, theme, legend = TRUE, title = NULL,
     style = c("fill", "line", "point"), middle = 0, limits = NULL,
     pch = 16L, lty = 1L, lwd = 1L
 ) {
-  if (isFALSE(legend) || is.null(legend) || is.null(theme) || is.null(values)) {
+  pos <- normalize_legend_pos(legend)
+  if (pos == "none" || is.null(theme) || is.null(values)) {
     return(invisible(NULL))
   }
-  pos <- normalize_legend_pos(legend)
   is_outside <- pos %in% c("top", "bottom", "left", "right")
   is_horiz <- pos %in% c("top", "bottom")
   style <- match.arg(style)
@@ -195,7 +195,7 @@ draw_base_legend <- function(
 
 draw_bars_base <- function(
     to, from = 0, ticks = NULL, horizontal = TRUE, type = c("bar", "dot"),
-    theme = NULL, theme.values = NULL, legend = FALSE, legend.title = NULL,
+    theme = NULL, theme.values = NULL, legend = TRUE, legend.title = NULL,
     middle = 0, limits = NULL, width = NULL, vline = NULL, connect = FALSE,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
@@ -348,7 +348,7 @@ draw_bars_base <- function(
 
 draw_lines_base <- function(
     x, y, theme = NULL, theme.values = NULL,
-    legend = FALSE, legend.title = NULL,
+    legend = TRUE, legend.title = NULL,
     discrete = NULL, limits = NULL, points = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
@@ -422,7 +422,7 @@ draw_lines_base <- function(
 
 draw_points_base <- function(
     x, y, theme = NULL, theme.values = NULL,
-    legend = FALSE, legend.title = NULL, middle = 0,
+    legend = TRUE, legend.title = NULL, middle = 0,
     xticks = NULL, yticks = NULL, xlim = NULL, ylim = NULL,
     overlay = FALSE, main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
@@ -488,7 +488,7 @@ draw_points_base <- function(
 }
 
 draw_surface_base <- function(
-    x, y, z, theme = NULL, legend = FALSE, legend.title = NULL,
+    x, y, z, theme = NULL, legend = TRUE, legend.title = NULL,
     zlim = NULL, middle = 0, xticks = NULL, yticks = NULL, points = NULL,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
@@ -563,7 +563,7 @@ draw_surface_base <- function(
 
 draw_matrix_base <- function(
     z, ticks = rownames(z), theme = NULL,
-    legend = FALSE, legend.title = NULL, middle = 0,
+    legend = TRUE, legend.title = NULL, middle = 0,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
   m <- nrow(z)
@@ -620,7 +620,7 @@ draw_matrix_base <- function(
 
 draw_boxes_base <- function(
     x, theme = NULL, theme.values = NULL,
-    legend = FALSE, legend.title = NULL, horizontal = TRUE,
+    legend = TRUE, legend.title = NULL, horizontal = TRUE,
     main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
   x <- as.list(x)
