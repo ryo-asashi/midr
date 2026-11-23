@@ -1,4 +1,4 @@
-# Compare Term or Variable Importance Across Models
+# Compare Term/Variable Importance Across Models
 
 Compare term or variable importance across a `"midimps"` collection.
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via
@@ -84,9 +84,9 @@ mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 
 #> 'model' not passed: response variable in 'data' is used
 imps <- eval_importance(mids, by = "variable")
 
-plot(imps, type = "dotchart")
+plot(imps, type = "dotchart", legend = "bottomright")
 
-plot(imps, type = "series")
+plot(imps, type = "series", legend = "topleft")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -99,6 +99,6 @@ if (requireNamespace("survival", quietly = TRUE)) {
   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
   imp <- eval_importance(survmid, data = vet)
-  plot(imp, type = "series")
+  plot(imp, type = "series", legend = "topright")
 }
 ```

@@ -1,4 +1,4 @@
-# Evaluate Term or Variable Importance
+# Evaluate Term/Variable Importance
 
 `eval_importance()` calculates the term/variable importance of a fitted
 model. This measures the average contribution of each component

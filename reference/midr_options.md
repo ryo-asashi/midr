@@ -58,7 +58,7 @@ midr_options()
 #> [1] "hcl"
 #> 
 #> $registry
-#> <environment: 0x621944decf08>
+#> <environment: 0x5a9070cba2e0>
 #> 
 #> $sequential
 #> [1] "bluescale"

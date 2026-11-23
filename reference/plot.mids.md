@@ -112,7 +112,7 @@ mids <- interpret(
 
 plot(mids, terms = "Petal.Length", legend = "topleft")
 
-plot(mids, terms = "Petal.Length", type = "series", legend = "bottom")
+plot(mids, terms = "Petal.Length", type = "series")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -124,7 +124,7 @@ if (requireNamespace("survival", quietly = TRUE)) {
   vet <- na.omit(survival::veteran)
   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
-  plot(survmid, terms = c("karno+1", "celltype+1"), type = "series", legend = TRUE)
+  plot(survmid, terms = c("karno+1", "celltype+1"), type = "series", legend = "topright")
 }
 
 ```

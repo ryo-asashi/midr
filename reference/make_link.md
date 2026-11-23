@@ -117,7 +117,7 @@ print(lk)
 #> 
 #> function (mu) 
 #> stats::qt(mu, df = df)
-#> <environment: 0x62195487c120>
+#> <environment: 0x5a908a04f830>
 plot(x <- seq(-5, 5, length.out = 50), lk$linkinv(x), type = "l")
 lk <- make_link("robit", df = 1)
 cat(lk$name) # cauchit
@@ -147,7 +147,7 @@ make_link("shifted.log", h = 1) # Returns link="log1p"
 #> 
 #> function (mu) 
 #> log1p(mu)
-#> <environment: 0x6219544105e8>
+#> <environment: 0x5a908a566128>
 
 # Box-Cox with lambda=1 simplifies to shifted identity
 make_link("box-cox", lambda = 1)
@@ -155,5 +155,5 @@ make_link("box-cox", lambda = 1)
 #> 
 #> function (mu) 
 #> mu + h
-#> <environment: 0x621947e09c10>
+#> <environment: 0x5a9083e8a058>
 ```

@@ -104,9 +104,9 @@ returns a `"ggplot"` object.
 data(mtcars, package = "datasets")
 mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
 #> 'model' not passed: response variable in 'data' is used
-brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corona")
 
-plot(brk)
+plot(brk, legend = "bottomleft")
 
 plot(brk, type = "barplot")
 
