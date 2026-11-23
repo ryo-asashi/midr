@@ -21,6 +21,20 @@ normalize_legend_pos <- function(legend) {
   match.arg(as.character(legend)[1L], .valid_pos)
 }
 
+has_base_legend <- function(values, theme, legend = TRUE, limits = NULL) {
+  pos <- normalize_legend_pos(legend)
+  if (pos == "none" || is.null(theme) || is.null(values)) {
+    return(FALSE)
+  }
+  ct <- colortheme(theme)
+  if (is_discrete(values) || ct$type == "qualitative") {
+    f <- if (is.factor(values)) droplevels(values) else factor(values)
+    return(length(levels(f)) > 0L)
+  }
+  rng <- limits %||% range(values, na.rm = TRUE, finite = TRUE)
+  all(is.finite(rng)) && diff(rng) > 0
+}
+
 adjust_legend_margin <- function(legend, mai = graphics::par("mai"), space = 0.5) {
   if (isFALSE(legend) || is.null(legend)) return(mai)
   pos <- normalize_legend_pos(legend)
@@ -214,12 +228,6 @@ draw_bars_base <- function(
   g_names <- colnames(to) %||% as.character(seq_len(m))
   from <- as_param_matrix(from %||% 0, n, m)
 
-  opar <- graphics::par(c("mai", "las"))
-  on.exit(graphics::par(opar), add = TRUE)
-  mai <- if (horizontal) adjust_left_margin(ticks) else graphics::par("mai")
-  mai <- adjust_legend_margin(legend, mai)
-  graphics::par(mai = mai, las = if (horizontal) 1L else graphics::par("las"))
-
   theme_cols <- NULL
   cval <- NULL
   if (!is.null(theme)) {
@@ -250,6 +258,14 @@ draw_bars_base <- function(
   mgn <- if (!is.finite(diff(rng)) || diff(rng) == 0) 0.5 else abs(diff(rng)) * 0.02
   limits <- limits %||% c(rng[1L] - mgn, rng[2L] + mgn)
   at <- if (horizontal) rev(seq_len(n)) else seq_len(n)
+
+  opar <- graphics::par(c("mai", "las"))
+  on.exit(graphics::par(opar), add = TRUE)
+  mai <- if (horizontal) adjust_left_margin(ticks) else graphics::par("mai")
+  if (has_base_legend(cval, theme, legend, limits = limits)) {
+    mai <- adjust_legend_margin(legend, mai)
+  }
+  graphics::par(mai = mai, las = if (horizontal) 1L else graphics::par("las"))
 
   graphics::plot.new()
   graphics::plot.window(
@@ -358,13 +374,6 @@ draw_lines_base <- function(
   x_num <- if (discrete) seq_along(x) else as.numeric(x)
   ord <- if (discrete) seq_along(x_num) else order(x_num)
 
-  pos <- normalize_legend_pos(legend)
-  if (!is.null(pos) && pos %in% c("top", "bottom", "left", "right")) {
-    opar <- graphics::par("mai")
-    on.exit(graphics::par(mai = opar), add = TRUE)
-    graphics::par(mai = adjust_legend_margin(pos, opar))
-  }
-
   dots <- list(...)
   g_names <- colnames(y) %||% paste0("series_", seq_len(m))
   theme_cols <- NULL
@@ -372,6 +381,15 @@ draw_lines_base <- function(
   if (!is.null(theme)) {
     cval <- theme.values %||% factor(g_names, levels = g_names)
     theme_cols <- map_to_colors(cval, theme = theme)
+  }
+
+  if (has_base_legend(cval, theme, legend)) {
+    pos <- normalize_legend_pos(legend)
+    if (pos %in% c("top", "bottom", "left", "right")) {
+      opar <- graphics::par("mai")
+      on.exit(graphics::par(mai = opar), add = TRUE)
+      graphics::par(mai = adjust_legend_margin(pos, opar))
+    }
   }
 
   defaults <- list(
@@ -426,13 +444,6 @@ draw_points_base <- function(
     xticks = NULL, yticks = NULL, xlim = NULL, ylim = NULL,
     overlay = FALSE, main = NULL, sub = NULL, xlab = NULL, ylab = NULL, ...
 ) {
-  pos <- normalize_legend_pos(legend)
-  if (!is.null(pos) && pos %in% c("top", "bottom", "left", "right")) {
-    opar <- graphics::par("mai")
-    on.exit(graphics::par(mai = opar), add = TRUE)
-    graphics::par(mai = adjust_legend_margin(pos, opar))
-  }
-
   theme_cols <- NULL
   if (!is.null(theme) && !is.null(theme.values)) {
     theme_cols <- map_to_colors(theme.values, theme = theme, middle = middle)
@@ -450,6 +461,15 @@ draw_points_base <- function(
     )
     do.call(graphics::points.default, args)
     return(invisible(NULL))
+  }
+
+  if (has_base_legend(theme.values, theme, legend)) {
+    pos <- normalize_legend_pos(legend)
+    if (pos %in% c("top", "bottom", "left", "right")) {
+      opar <- graphics::par("mai")
+      on.exit(graphics::par(mai = opar), add = TRUE)
+      graphics::par(mai = adjust_legend_margin(pos, opar))
+    }
   }
 
   has_custom_axes <- !is.null(xticks) || !is.null(yticks)
@@ -500,11 +520,13 @@ draw_surface_base <- function(
     zlim <- c(-zmax, zmax) + middle
   }
 
-  pos <- normalize_legend_pos(legend)
-  if (!is.null(pos) && pos %in% c("top", "bottom", "left", "right")) {
-    opar <- graphics::par("mai")
-    on.exit(graphics::par(mai = opar), add = TRUE)
-    graphics::par(mai = adjust_legend_margin(pos, opar))
+  if (has_base_legend(as.vector(z), theme, legend, limits = zlim)) {
+    pos <- normalize_legend_pos(legend)
+    if (pos %in% c("top", "bottom", "left", "right")) {
+      opar <- graphics::par("mai")
+      on.exit(graphics::par(mai = opar), add = TRUE)
+      graphics::par(mai = adjust_legend_margin(pos, opar))
+    }
   }
 
   dots <- cast_to_base_params(dots = list(...), defaults = list(), alpha.on = NULL)
@@ -569,12 +591,6 @@ draw_matrix_base <- function(
   m <- nrow(z)
   ticks <- ticks %||% as.character(seq_len(m))
 
-  opar <- graphics::par(c("mai", "las"))
-  on.exit(graphics::par(opar), add = TRUE)
-  mai <- adjust_left_margin(ticks)
-  mai <- adjust_legend_margin(legend, mai)
-  graphics::par(mai = mai, las = 1L)
-
   theme <- theme %||% getOption("colortheme.sequential", "grayscale")
   ct <- colortheme(theme)
   palette <- ct$ramp(seq.int(0, 1, length.out = 256L))
@@ -584,6 +600,14 @@ draw_matrix_base <- function(
     zmax <- max(abs(zlim - middle))
     zlim <- c(-zmax, zmax) + middle
   }
+
+  opar <- graphics::par(c("mai", "las"))
+  on.exit(graphics::par(opar), add = TRUE)
+  mai <- adjust_left_margin(ticks)
+  if (has_base_legend(as.vector(z), theme, legend, limits = zlim)) {
+    mai <- adjust_legend_margin(legend, mai)
+  }
+  graphics::par(mai = mai, las = 1L)
 
   defaults <- list(
     x = seq_len(m), y = seq_len(m), z = z, zlim = zlim,
@@ -635,7 +659,9 @@ draw_boxes_base <- function(
   opar <- graphics::par(c("mai", "las"))
   on.exit(graphics::par(opar), add = TRUE)
   mai <- if (horizontal) adjust_left_margin(nms) else graphics::par("mai")
-  mai <- adjust_legend_margin(legend, mai)
+  if (has_base_legend(cval, theme, legend)) {
+    mai <- adjust_legend_margin(legend, mai)
+  }
   graphics::par(mai = mai, las = if (horizontal) 1L else graphics::par("las"))
   theme_cols <- if (!is.null(theme)) map_to_colors(cval, theme = theme) else NULL
 
