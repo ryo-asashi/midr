@@ -102,7 +102,7 @@ cons <- eval_conditional(mids, variable = "Petal.Length", data = iris, max.nsamp
 
 plot(cons, legend = "topleft")
 
-plot(cons, type = "series", legend = "topright")
+plot(cons, type = "series")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {

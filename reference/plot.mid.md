@@ -147,10 +147,10 @@ mid <- interpret(Volume ~ Girth * Height, data = trees, lambda = 0.2)
 
 plot(mid, terms = "Girth")
 
-plot(mid, terms = "Girth:Height")
+plot(mid, terms = "Girth * Height")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
-  ggmid(mid, terms = "Girth * Height + 1")
+  ggmid(mid, terms = "Girth * Height")
 }
 ```

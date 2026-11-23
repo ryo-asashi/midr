@@ -98,14 +98,14 @@ mid <- interpret(Ozone ~ (Solar.R + Wind + Temp)^2, data = aq, lambda = 0.5)
 #> 'model' not passed: response variable in 'data' is used
 con <- eval_conditional(mid, variable = "Wind", data = aq, max.nsamples = 30L)
 #> number of observations exceeds 'max.nsamples': a sample of 30 observations from 'data' is used
-plot(con, var.color = Temp, legend = TRUE)
+plot(con, var.color = Temp)
 
 
 # Slice the Wind:Temp interaction via subset()
 sub <- subset(mid, "Wind:Temp")
 subcon <- eval_conditional(sub, variable = "Wind", data = aq, max.nsamples = 30L)
 #> number of observations exceeds 'max.nsamples': a sample of 30 observations from 'data' is used
-plot(subcon, type = "centered", var.color = Temp, legend = TRUE)
+plot(subcon, type = "centered", var.color = Temp)
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {

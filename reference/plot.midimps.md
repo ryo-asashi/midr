@@ -84,9 +84,9 @@ mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 
 #> 'model' not passed: response variable in 'data' is used
 imps <- eval_importance(mids, by = "variable")
 
-plot(imps, type = "dotchart", legend = "bottomright")
+plot(imps, type = "dotchart")
 
-plot(imps, type = "series", legend = "bottom")
+plot(imps, type = "series")
 
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -98,8 +98,7 @@ if (requireNamespace("survival", quietly = TRUE)) {
   vet <- na.omit(survival::veteran)
   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
-  imp <- eval_importance(survmid)
-  plot(imp, type = "series", legend = "topright")
+  imp <- eval_importance(survmid, data = vet)
+  plot(imp, type = "series")
 }
-#> Error in eval(fcl$data, envir = env): object 'vet' not found
 ```
