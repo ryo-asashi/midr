@@ -3,7 +3,7 @@
 \name{plot.midimp}
 \alias{plot.midimp}
 \alias{ggmid.midimp}
-\title{Plot Term or Variable Importance}
+\title{Plot Term/Variable Importance}
 \usage{
 \method{plot}{midimp}(
   x,

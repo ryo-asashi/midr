@@ -22,9 +22,9 @@
 #' @examples
 #' data(mtcars, package = "datasets")
 #' mid <- interpret(mpg ~ (wt + hp + cyl)^2, data = mtcars, lambda = 0.5)
-#' brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corolla")
+#' brk <- eval_breakdown(mid, data = mtcars, rows = "Toyota Corona")
 #'
-#' plot(brk)
+#' plot(brk, legend = "bottomleft")
 #' plot(brk, type = "barplot")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -106,8 +106,8 @@ autoplot.midbrk <- function(object, ...) {
 #'   by = "variable"
 #' )
 #'
-#' plot(brks, type = "dotchart")
-#' plot(brks, type = "series")
+#' plot(brks, type = "dotchart", legend = "bottomright")
+#' plot(brks, type = "series", legend = "topright")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(brks, type = "dotchart")
@@ -118,7 +118,7 @@ autoplot.midbrk <- function(object, ...) {
 #'   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
 #'   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
 #'   brk <- eval_breakdown(survmid, data = vet[1L, , drop = FALSE])
-#'   plot(brk, type = "series")
+#'   plot(brk, type = "series", legend = "topright")
 #' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
@@ -328,7 +328,7 @@ render_midbrks <- function(
 
   objs <- as.list(x)
   same_data <- length(objs) <= 1L || all(vapply(
-    objs[-1L],
+    objs[-1L, drop = FALSE],
     function(o) isTRUE(all.equal(o$data, objs[[1L]]$data, check.attributes = FALSE)),
     logical(1L)
   ))

@@ -301,7 +301,7 @@ render_midcon <- function(
   flvs <- if (fv) levels(factor(values)) else NULL
   xvals <- if (fv) seq_along(flvs) else values
 
-  legend_opt <- legend_dot %||% FALSE
+  legend_opt <- legend_dot %||% (!is.null(col_val))
   opar <- graphics::par("mai")
   on.exit(graphics::par(mai = opar), add = TRUE)
   graphics::par(mai = adjust_legend_margin(legend_opt, opar))
@@ -521,7 +521,7 @@ render_midcons <- function(
     leg_title <- NULL
   }
 
-  legend_opt <- legend_dot %||% FALSE
+  legend_opt <- legend_dot %||% TRUE
   opar <- graphics::par("mai")
   on.exit(graphics::par(mai = opar), add = TRUE)
   graphics::par(mai = adjust_legend_margin(legend_opt, opar))

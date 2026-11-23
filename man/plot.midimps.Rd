@@ -3,7 +3,7 @@
 \name{plot.midimps}
 \alias{plot.midimps}
 \alias{ggmid.midimps}
-\title{Compare Term or Variable Importance Across Models}
+\title{Compare Term/Variable Importance Across Models}
 \usage{
 \method{plot}{midimps}(
   x,
@@ -54,8 +54,8 @@ data(iris, package = "datasets")
 mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
 imps <- eval_importance(mids, by = "variable")
 
-plot(imps, type = "dotchart")
-plot(imps, type = "series")
+plot(imps, type = "dotchart", legend = "bottomright")
+plot(imps, type = "series", legend = "topleft")
 
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   ggmid(imps, type = "dotchart")
@@ -66,7 +66,7 @@ if (requireNamespace("survival", quietly = TRUE)) {
   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
   imp <- eval_importance(survmid, data = vet)
-  plot(imp, type = "series")
+  plot(imp, type = "series", legend = "topright")
 }
 }
 \seealso{

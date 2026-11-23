@@ -83,7 +83,7 @@ draw_base_legend <- function(
 
     leg_args <- list(
       legend = lvls, title = title, horiz = is_horiz,
-      bty = "n", bg = NA, cex = 0.85,
+      bty = "n", bg = NA, cex = 0.85, y.intersp = 1.25,
       text.font = font_axis, title.font = font_lab
     )
     if (style == "fill") {

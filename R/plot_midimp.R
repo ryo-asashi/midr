@@ -1,6 +1,6 @@
 # R/plot_midimp.R
 
-#' Plot Term or Variable Importance
+#' Plot Term/Variable Importance
 #'
 #' @description
 #' Visualize term or variable importance for a \code{"midimp"} object.
@@ -71,7 +71,7 @@ autoplot.midimp <- function(object, ...) {
 }
 
 
-#' Compare Term or Variable Importance Across Models
+#' Compare Term/Variable Importance Across Models
 #'
 #' @description
 #' Compare term or variable importance across a \code{"midimps"} collection.
@@ -91,8 +91,8 @@ autoplot.midimp <- function(object, ...) {
 #' mids <- interpret(cbind(Sepal.Length, Sepal.Width) ~ .^2, data = iris, lambda = 1)
 #' imps <- eval_importance(mids, by = "variable")
 #'
-#' plot(imps, type = "dotchart")
-#' plot(imps, type = "series")
+#' plot(imps, type = "dotchart", legend = "bottomright")
+#' plot(imps, type = "series", legend = "topleft")
 #'
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   ggmid(imps, type = "dotchart")
@@ -103,7 +103,7 @@ autoplot.midimp <- function(object, ...) {
 #'   fit <- survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno + age, data = vet)
 #'   survmid <- interpret(~ trt + celltype + karno + age, data = vet, model = fit, lambda = .1)
 #'   imp <- eval_importance(survmid, data = vet)
-#'   plot(imp, type = "series")
+#'   plot(imp, type = "series", legend = "topright")
 #' }
 #' @returns
 #' \code{plot()} returns \code{NULL} invisibly.
