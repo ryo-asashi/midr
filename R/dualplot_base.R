@@ -262,7 +262,7 @@ draw_bars_base <- function(
   opar <- graphics::par(c("mai", "las"))
   on.exit(graphics::par(opar), add = TRUE)
   mai <- if (horizontal) adjust_left_margin(ticks) else graphics::par("mai")
-  if (has_base_legend(cval, theme, legend, limits = limits)) {
+  if (has_base_legend(cval, theme, legend)) {
     mai <- adjust_legend_margin(legend, mai)
   }
   graphics::par(mai = mai, las = if (horizontal) 1L else graphics::par("las"))
@@ -356,7 +356,7 @@ draw_bars_base <- function(
     draw_base_legend(
       values = cval, theme = theme, legend = legend, title = legend.title,
       style = if (type == "bar") "fill" else "point",
-      middle = middle, limits = limits, pch = dots$pch %||% 16L
+      middle = middle, pch = dots$pch %||% 16L
     )
   }
   invisible(NULL)
