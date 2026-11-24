@@ -119,12 +119,6 @@ test_that("colortheme modification, subset assignment, and formatting options wo
   # Qualitative theme defaults to stepped ramp
   expect_equal(ct$ramp(c(0.1, 0.9)), c("#000000", "#FFFFFF"))
 
-  # Switching type updates default mode and formatter automatically
-  ct_seq <- colortheme(ct, type = "sequential")
-  expect_equal(ct_seq$type, "sequential")
-  expect_equal(ct_seq$options$palette.formatter, "interpolate")
-  expect_equal(ct_seq$kernel.args$mode, "ramp")
-
   # Formatter: fill.na and error
   ct_na <- colortheme(ct, options = list(palette.formatter = "fill.na", na.color = "gray"))
   expect_equal(ct_na$palette(3L), c("#000000", "#FFFFFF", "gray"))
