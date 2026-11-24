@@ -1,6 +1,6 @@
 # R/plot_midimp.R
 
-#' Plot Term/Variable Importance
+#' Plot Term and Variable Importance
 #'
 #' @description
 #' Visualize term or variable importance for a \code{"midimp"} object.
@@ -71,7 +71,7 @@ autoplot.midimp <- function(object, ...) {
 }
 
 
-#' Compare Term/Variable Importance Across Models
+#' Compare Term and Variable Importance Across Models
 #'
 #' @description
 #' Compare term or variable importance across a \code{"midimps"} collection.

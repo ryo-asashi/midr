@@ -3,7 +3,7 @@
 \name{plot.midimps}
 \alias{plot.midimps}
 \alias{ggmid.midimps}
-\title{Compare Term/Variable Importance Across Models}
+\title{Compare Term and Variable Importance Across Models}
 \usage{
 \method{plot}{midimps}(
   x,

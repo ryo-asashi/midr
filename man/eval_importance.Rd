@@ -4,7 +4,7 @@
 \alias{eval_importance}
 \alias{eval_importance.mid}
 \alias{eval_importance.mids}
-\title{Evaluate Term/Variable Importance}
+\title{Evaluate Term and Variable Importance}
 \usage{
 eval_importance(object, ...)
 
@@ -62,7 +62,7 @@ For a \code{"mid"} object, an object of class \code{"midimp"} containing
 For a \code{"mids"} collection, a collection of class \code{c("midimps", "midlist")}.
 }
 \description{
-\code{eval_importance()} calculates the term/variable importance of a fitted model.
+\code{eval_importance()} calculates the term and variable importance of a fitted model.
 This measures the average contribution of each component function, or each
 variable when \code{by = "variable"}, across a dataset.
 }

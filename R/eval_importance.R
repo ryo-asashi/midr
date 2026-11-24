@@ -1,9 +1,9 @@
 # R/eval_importance.R
 
-#' Evaluate Term/Variable Importance
+#' Evaluate Term and Variable Importance
 #'
 #' @description
-#' \code{eval_importance()} calculates the term/variable importance of a fitted model.
+#' \code{eval_importance()} calculates the term and variable importance of a fitted model.
 #' This measures the average contribution of each component function, or each
 #' variable when \code{by = "variable"}, across a dataset.
 #'

@@ -18,9 +18,9 @@ Interpretation Decomposition’ (MID), a functional decomposition
 technique that finds an optimal additive approximation of the original
 model. This approximation is achieved by minimizing the squared error
 between the predictions of the black-box model and the surrogate model.
-The theoretical foundations of MID are described in Iwasawa & Matsumori
-(2026) \[Forthcoming\], and the package itself is detailed in [Asashiba
-et al. (2025)](https://arxiv.org/abs/2506.08338).
+The theoretical foundations of MID are described in Matsumori et
+al. (2026), and the package itself is detailed in [Asashiba et
+al. (2025)](https://arxiv.org/abs/2506.08338).
 
 ## Installation
 
@@ -185,8 +185,8 @@ wrap_plots(
 ## Multi-Model Comparison and SurvMID(t)
 
 Multiple MID models can be bundled with `midlist()` (producing a `mids`
-/ `midrib` collection) to compare surrogates across different black-box
-models or hyperparameters.
+collection) to compare surrogates across different black-box models or
+hyperparameters.
 
 ``` r
 lm_fit <- lm(medv ~ ., train)
@@ -200,11 +200,7 @@ wrap_plots(
   nrow = 1L,
   ggmid(mids, "lstat", legend = "topright") +
     labs(subtitle = "Main Effect Comparison"),
-  ggmid(
-    eval_importance(mids),
-    max.nterms = 14,
-    legend = "bottomright"
-  ) +
+  ggmid(eval_importance(mids), max.nterms = 14, legend = "bottomright") +
     labs(subtitle = "Importance Comparison")
 )
 ```
@@ -212,9 +208,9 @@ wrap_plots(
 <img src="man/figures/README-multi_model-1.png" width="100%" />
 
 When `interpret()` is given a prediction function that returns an
-$n \times K$ matrix—such as survival probabilities evaluated at multiple
-time horizons $t_1, \dots, t_K$—it automatically fits a time-dependent
-collection (**SurvMID(t)**) in a single call.
+$n \times m$ matrix such as survival probabilities evaluated at multiple
+time horizons $t_1, \dots, t_m$, it automatically fits a time-dependent
+collection (`midrib`, **SurvMID(t)**) in a single call.
 
 ``` r
 library(survival)
@@ -242,9 +238,9 @@ wrap_plots(
 
 ## References
 
-\[1\] Iwasawa, H. & Matsumori, Y. (2026). “A Functional Decomposition
-Approach to Maximize the Interpretability of Black-Box Models”.
-\[Forthcoming\]
+\[1\] Matsumori, Y., Asashiba, R., Kozuma, R. & Iwasawa, H. (2026). “A
+Functional Decomposition Approach to Maximize the Interpretability of
+Black-Box Models”.
 
 \[2\] Asashiba, R., Kozuma, R. & Iwasawa, H. (2025). “midr: Learning
 from Black-Box Models by Maximum Interpretation Decomposition”.
