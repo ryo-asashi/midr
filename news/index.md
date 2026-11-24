@@ -12,12 +12,10 @@ and internal data structures.
   [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md),
   [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md),
   [`eval_conditional()`](https://ryo-asashi.github.io/midr/reference/eval_conditional.md),
-  `eval_loss()`, `weighted_r2()`,
   [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md),
   [`make_encoder()`](https://ryo-asashi.github.io/midr/reference/make_encoder.md),
   [`make_link()`](https://ryo-asashi.github.io/midr/reference/make_link.md),
-  and
-  [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md).
+  and so on.
 - [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
   and
   [`eval_breakdown()`](https://ryo-asashi.github.io/midr/reference/eval_breakdown.md)
@@ -32,10 +30,6 @@ and internal data structures.
   standard R modeling idioms, along with
   [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) methods
   for `"midimp"`, `"midbrk"`, and `"midcon"` objects.
-- `eval_loss()` evaluates surrogate fidelity and prediction error
-  directly against a target `model` (via
-  [`get_yhat()`](https://ryo-asashi.github.io/midr/reference/get_yhat.md))
-  or observed response.
 
 #### Visualization & Color Themes
 
@@ -59,7 +53,8 @@ and internal data structures.
   [`scale_color_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md),
   [`scale_fill_theme()`](https://ryo-asashi.github.io/midr/reference/scale_color_theme.md),
   [`as_palette()`](https://ryo-asashi.github.io/midr/reference/as_palette.md),
-  [`as_ramp()`](https://ryo-asashi.github.io/midr/reference/as_palette.md)).
+  [`as_ramp()`](https://ryo-asashi.github.io/midr/reference/as_palette.md);
+  unexported).
 - [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md)
   now provides a single interface for package verbosity, solver hooks,
   plotting backend (`engine`, `gg.theme`), and default color themes
@@ -67,10 +62,6 @@ and internal data structures.
 
 #### Improvements & Dependencies
 
-- Streamlined
-  [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
-  and encoder internals (`encoder$frame` and getter helpers) to reduce
-  memory footprint and copy-on-modify overhead.
 - Removed the `Imports` dependency on **rlang**.
 
 #### Deprecated & Removed

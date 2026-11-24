@@ -7,9 +7,8 @@ Interpretation Decomposition' (MID), a functional decomposition
 technique that finds an optimal additive approximation of the original
 model. This approximation is achieved by minimizing the squared error
 between the predictions of the black-box model and the surrogate model.
-The theoretical foundations of MID are described in Iwasawa & Matsumori
-(2025) \[Forthcoming\], and the package itself is detailed in Asashiba
-et al. (2025)
+The theoretical foundations of MID are described in Matsumori et al.
+(2026), and the package itself is detailed in Asashiba et al. (2025)
 [doi:10.48550/arXiv.2506.08338](https://doi.org/10.48550/arXiv.2506.08338)
 .
 
