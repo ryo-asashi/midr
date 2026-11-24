@@ -8,7 +8,7 @@ adjust_left_margin <- function(ticks, mai = graphics::par("mai"), pad = 1 / 16) 
     graphics::strwidth(as.character(ticks), units = "inches", cex = cex),
     na.rm = TRUE
   )
-  req <- mai[4L] + req + pad
+  req <- 0.42 + req + pad
   if (mai[2L] < req) mai[2L] <- req
   mai
 }
@@ -38,10 +38,10 @@ has_base_legend <- function(values, theme, legend = TRUE, limits = NULL) {
 adjust_legend_margin <- function(legend, mai = graphics::par("mai"), space = 0.5) {
   if (isFALSE(legend) || is.null(legend)) return(mai)
   pos <- normalize_legend_pos(legend)
-  if (pos == "bottom") mai[1L] <- mai[1L] + space * 0.85
-  if (pos == "left")   mai[2L] <- mai[2L] + space
-  if (pos == "top")    mai[3L] <- mai[3L] + space * 0.85
-  if (pos == "right")  mai[4L] <- mai[4L] + space
+  if (pos == "bottom") mai[1L] <- max(mai[1L], 1.02 + space * 0.85)
+  if (pos == "left")   mai[2L] <- max(mai[2L], 0.82 + space)
+  if (pos == "top")    mai[3L] <- max(mai[3L], 0.82 + space * 0.85)
+  if (pos == "right")  mai[4L] <- max(mai[4L], 0.42 + space)
   mai
 }
 

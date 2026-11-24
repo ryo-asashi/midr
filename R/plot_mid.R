@@ -532,15 +532,12 @@ render_mids <- function(
     stop("none of the specified main effect 'terms' are in 'x'; ",
          "interaction 'terms' are ignored", call. = FALSE)
   }
-  if (!is.null(limits) && anyNA(limits)) limits <- NULL
-
   nums <- suppressWarnings(as.numeric(labels))
   labels_parsed <- if (!anyNA(nums)) nums else factor(labels, levels = unique(labels))
   discrete_labels <- is_discrete(labels_parsed)
   eff_legend <- dots$legend %||% TRUE
 
-  out <- vector("list", n)
-  names(out) <- mlab
+  prep <- vector("list", n)
   for (i in seq_len(n)) {
     term <- mlab[i]
     base <- if (inherits(x, "midrib")) x else {
@@ -561,6 +558,32 @@ render_mids <- function(
     fmat <- stats::predict(x, newdata = nd, terms = t_spec, type = "link")
     if (!is.matrix(fmat)) fmat <- matrix(fmat, ncol = 1L)
     colnames(fmat) <- as.character(labels)
+    prep[[i]] <- list(term = term, enc = enc, xvals = xvals, fmat = fmat)
+  }
+
+  # Sync limits across multiple plots (or fill partial NA limits)
+  sync_ok <- (n == 1L && !all(is.na(limits))) ||
+    (n > 1L && (length(unique(int_vec)) == 1L || !all(is.na(limits))))
+  if (!is.null(limits) && anyNA(limits) && sync_ok) {
+    vals <- unlist(lapply(prep, `[[`, "fmat"), use.names = FALSE)
+    has_bars <- (type == "effect") &&
+      any(vapply(prep, function(p) p$enc$type == "factor", logical(1L)))
+    if (has_bars) vals <- c(0, vals)
+    if (length(vals) > 0L && any(is.finite(vals))) {
+      rng_all <- range(vals, na.rm = TRUE, finite = TRUE)
+      if (is.na(limits[1L])) limits[1L] <- rng_all[1L]
+      if (is.na(limits[2L])) limits[2L] <- rng_all[2L]
+    }
+  }
+  if (!is.null(limits) && anyNA(limits)) limits <- NULL
+
+  out <- vector("list", n)
+  names(out) <- mlab
+  for (i in seq_len(n)) {
+    term <- prep[[i]]$term
+    enc <- prep[[i]]$enc
+    xvals <- prep[[i]]$xvals
+    fmat <- prep[[i]]$fmat
 
     if (type == "effect") {
       th <- theme %||% colortheme_default(if (discrete_labels) "qualitative" else "sequential")
