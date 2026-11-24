@@ -75,9 +75,13 @@ and internal data structures.
 
 #### Deprecated & Removed
 
-- Legacy dot-case functions (including `mid.importance()`,
-  `mid.breakdown()`, `mid.conditional()`, `get.yhat()`, `color.theme()`,
-  `weighted.loss()`, `mid.terms()`, `mid.effect()`, and `mid.plots()`)
+- Legacy dot-case functions (including
+  [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  [`mid.conditional()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  `get.yhat()`, `color.theme()`, `weighted.loss()`, `mid.terms()`,
+  `mid.effect()`, and
+  [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md))
   are deprecated or superseded by their snake_case, `eval_*()`,
   [`subset()`](https://rdrr.io/r/base/subset.html), and
   [`coef()`](https://rdrr.io/r/stats/coef.html) counterparts.
@@ -111,10 +115,12 @@ for the upcoming release.
 - `mid.terms()` and `mid.effect()` are deprecated and replaced by
   `term.labels()` and `term.effect()`, which can be applied to any
   additive model.
-- `mid.plots()` is deprecated, superseded by the new capabilities of
+- [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  is deprecated, superseded by the new capabilities of
   [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
   and [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
-- `par.midr()` is renamed to `midr.par()`.
+- [`par.midr()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  is renamed to `midr.par()`.
 
 ## midr 0.6.1.903
 
@@ -147,8 +153,9 @@ CRAN release: 2026-05-01
 
 - Fixed methods of `get.yhat()` for models created with packages
   including “model_fit”, “workflow” and “rpf”.
-- `theme_midr()` now accepts optional arguments `...` for new parameters
-  introduced from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
+- [`theme_midr()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  now accepts optional arguments `...` for new parameters introduced
+  from **ggplot2** 4.0.0; `ink`, `paper` and `accent`.
 
 ## midr 0.6.0.903
 
@@ -278,7 +285,9 @@ efficiency improvements for large-scale data analysis.
 
 ## midr 0.5.2.906
 
-- The `format` argument in `mid.breakdown()` is deprecated.
+- The `format` argument in
+  [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  is deprecated.
 - `plot.mid.breakdown()` and `ggmid.mid.breakdown()` now have a new
   argument `format.args`, which is passed to
   [`base::format()`](https://rdrr.io/r/base/format.html) to format the
@@ -301,13 +310,15 @@ efficiency improvements for large-scale data analysis.
   term-wise decomposition of the fitted values).
 - Optimized [`predict()`](https://rdrr.io/r/stats/predict.html) engine:
   Re-implemented the prediction logic using a matrix-free approach.
-- On-demand Decomposition: Functions like `mid.importance()` now perform
-  term-wise decomposition on-the-fly using the new optimized prediction
-  engine.
-- `mid.importance()` introduced a new argument `max.nkeeps` (default:
-  10,000). While importance scores are calculated using the full dataset
-  for maximum accuracy, the function now optionally retains only a
-  weighted random sample of the term-wise predictions.
+- On-demand Decomposition: Functions like
+  [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  now perform term-wise decomposition on-the-fly using the new optimized
+  prediction engine.
+- [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  introduced a new argument `max.nkeeps` (default: 10,000). While
+  importance scores are calculated using the full dataset for maximum
+  accuracy, the function now optionally retains only a weighted random
+  sample of the term-wise predictions.
 - Standardized `predict` outputs: For `type = "terms"`, the intercept is
   now stored in the `constant` attribute of the returned matrix,
   aligning with standard R conventions (e.g., `predict.lm`).

@@ -1,4 +1,4 @@
-# Compare Term/Variable Importance Across Models
+# Compare Term and Variable Importance Across Models
 
 Compare term or variable importance across a `"midimps"` collection.
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via

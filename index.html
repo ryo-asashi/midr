@@ -92,7 +92,7 @@ img {
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The goal of ‘midr’ is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements ‘Maximum Interpretation Decomposition’ (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Iwasawa &amp; Matsumori (2026) [Forthcoming], and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
+<p>The goal of ‘midr’ is to provide a model-agnostic method for interpreting and explaining black-box predictive models by creating a globally interpretable surrogate model. The package implements ‘Maximum Interpretation Decomposition’ (MID), a functional decomposition technique that finds an optimal additive approximation of the original model. This approximation is achieved by minimizing the squared error between the predictions of the black-box model and the surrogate model. The theoretical foundations of MID are described in Matsumori et al. (2026), and the package itself is detailed in <a href="https://arxiv.org/abs/2506.08338" class="external-link">Asashiba et al. (2025)</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -225,7 +225,7 @@ img {
 <div class="section level2">
 <h2 id="multi-model-comparison-and-survmidt">Multi-Model Comparison and SurvMID(t)<a class="anchor" aria-label="anchor" href="#multi-model-comparison-and-survmidt"></a>
 </h2>
-<p>Multiple MID models can be bundled with <code><a href="reference/midlist.html">midlist()</a></code> (producing a <code>mids</code> / <code>midrib</code> collection) to compare surrogates across different black-box models or hyperparameters.</p>
+<p>Multiple MID models can be bundled with <code><a href="reference/midlist.html">midlist()</a></code> (producing a <code>mids</code> collection) to compare surrogates across different black-box models or hyperparameters.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span><span class="op">)</span></span>
 <span><span class="va">mid_lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">train</span>, <span class="va">lm_fit</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -238,15 +238,11 @@ img {
 <span>  nrow <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="fu"><a href="reference/plot.mid.html">ggmid</a></span><span class="op">(</span><span class="va">mids</span>, <span class="st">"lstat"</span>, legend <span class="op">=</span> <span class="st">"topright"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Main Effect Comparison"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/plot.mid.html">ggmid</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="reference/eval_importance.html">eval_importance</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span>,</span>
-<span>    max.nterms <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>    legend <span class="op">=</span> <span class="st">"bottomright"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/plot.mid.html">ggmid</a></span><span class="op">(</span><span class="fu"><a href="reference/eval_importance.html">eval_importance</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span>, max.nterms <span class="op">=</span> <span class="fl">14</span>, legend <span class="op">=</span> <span class="st">"bottomright"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Importance Comparison"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-multi_model-1.png" width="100%"></p>
-<p>When <code><a href="reference/interpret.html">interpret()</a></code> is given a prediction function that returns an <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">n \times K</annotation></semantics></math> matrix—such as survival probabilities evaluated at multiple time horizons <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">t_1, \dots, t_K</annotation></semantics></math>—it automatically fits a time-dependent collection (<strong>SurvMID(t)</strong>) in a single call.</p>
+<p>When <code><a href="reference/interpret.html">interpret()</a></code> is given a prediction function that returns an <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">n \times m</annotation></semantics></math> matrix such as survival probabilities evaluated at multiple time horizons <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">t_1, \dots, t_m</annotation></semantics></math>, it automatically fits a time-dependent collection (<code>midrib</code>, <strong>SurvMID(t)</strong>) in a single call.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"veteran"</span>, package <span class="op">=</span> <span class="st">"survival"</span><span class="op">)</span></span>
@@ -272,7 +268,7 @@ img {
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>[1] Iwasawa, H. &amp; Matsumori, Y. (2026). “A Functional Decomposition Approach to Maximize the Interpretability of Black-Box Models”. [Forthcoming]</p>
+<p>[1] Matsumori, Y., Asashiba, R., Kozuma, R. &amp; Iwasawa, H. (2026). “A Functional Decomposition Approach to Maximize the Interpretability of Black-Box Models”.</p>
 <p>[2] Asashiba, R., Kozuma, R. &amp; Iwasawa, H. (2025). “midr: Learning from Black-Box Models by Maximum Interpretation Decomposition”. <a href="https://arxiv.org/abs/2506.08338" class="external-link uri">https://arxiv.org/abs/2506.08338</a></p>
 <p>[3] Goldstein, A., Kapelner, A., Bleich, J., &amp; Pitkin, E. (2015). “Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation”. <em>Journal of Computational and Graphical Statistics</em>, <em>24</em>(1), 44–65. <a href="https://doi.org/10.1080/10618600.2014.907095" class="external-link uri">https://doi.org/10.1080/10618600.2014.907095</a></p>
 </div>

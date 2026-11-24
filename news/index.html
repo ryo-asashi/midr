@@ -85,7 +85,7 @@ img {
 </ul></div>
 <div class="section level4">
 <h4 id="deprecated--removed-0-7-0">Deprecated &amp; Removed<a class="anchor" aria-label="anchor" href="#deprecated--removed-0-7-0"></a></h4>
-<ul><li>Legacy dot-case functions (including <code>mid.importance()</code>, <code>mid.breakdown()</code>, <code>mid.conditional()</code>, <code>get.yhat()</code>, <code>color.theme()</code>, <code>weighted.loss()</code>, <code>mid.terms()</code>, <code>mid.effect()</code>, and <code>mid.plots()</code>) are deprecated or superseded by their snake_case, <code>eval_*()</code>, <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code>, and <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> counterparts.</li>
+<ul><li>Legacy dot-case functions (including <code><a href="../reference/midr-deprecated.html">mid.importance()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.breakdown()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.conditional()</a></code>, <code>get.yhat()</code>, <code>color.theme()</code>, <code>weighted.loss()</code>, <code>mid.terms()</code>, <code>mid.effect()</code>, and <code><a href="../reference/midr-deprecated.html">mid.plots()</a></code>) are deprecated or superseded by their snake_case, <code>eval_*()</code>, <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code>, and <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> counterparts.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -112,9 +112,9 @@ img {
 <li>
 <code>mid.terms()</code> and <code>mid.effect()</code> are deprecated and replaced by <code>term.labels()</code> and <code>term.effect()</code>, which can be applied to any additive model.</li>
 <li>
-<code>mid.plots()</code> is deprecated, superseded by the new capabilities of <code><a href="../reference/plot.mid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
+<code><a href="../reference/midr-deprecated.html">mid.plots()</a></code> is deprecated, superseded by the new capabilities of <code><a href="../reference/plot.mid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
 <li>
-<code>par.midr()</code> is renamed to <code>midr.par()</code>.</li>
+<code><a href="../reference/midr-deprecated.html">par.midr()</a></code> is renamed to <code>midr.par()</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -137,7 +137,7 @@ img {
 <h2 class="pkg-version" data-toc-text="0.6.0.904" id="midr-060904">midr 0.6.0.904<a class="anchor" aria-label="anchor" href="#midr-060904"></a></h2>
 <ul><li>Fixed methods of <code>get.yhat()</code> for models created with packages including “model_fit”, “workflow” and “rpf”.</li>
 <li>
-<code>theme_midr()</code> now accepts optional arguments <code>...</code> for new parameters introduced from <strong>ggplot2</strong> 4.0.0; <code>ink</code>, <code>paper</code> and <code>accent</code>.</li>
+<code><a href="../reference/midr-deprecated.html">theme_midr()</a></code> now accepts optional arguments <code>...</code> for new parameters introduced from <strong>ggplot2</strong> 4.0.0; <code>ink</code>, <code>paper</code> and <code>accent</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0.903" id="midr-060903">midr 0.6.0.903<a class="anchor" aria-label="anchor" href="#midr-060903"></a></h2>
@@ -206,7 +206,7 @@ img {
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2.906" id="midr-052906">midr 0.5.2.906<a class="anchor" aria-label="anchor" href="#midr-052906"></a></h2>
-<ul><li>The <code>format</code> argument in <code>mid.breakdown()</code> is deprecated.</li>
+<ul><li>The <code>format</code> argument in <code><a href="../reference/midr-deprecated.html">mid.breakdown()</a></code> is deprecated.</li>
 <li>
 <code>plot.mid.breakdown()</code> and <code>ggmid.mid.breakdown()</code> now have a new argument <code>format.args</code>, which is passed to <code><a href="https://rdrr.io/r/base/format.html" class="external-link">base::format()</a></code> to format the predictor values stored in “mid.breakdown” objects.</li>
 <li>The <code>format</code> argument in <code>plot.mid.breakdown()</code> and <code>ggmid.mid.breakdown()</code> is renamed to <code>label.format</code>. The formatting strings now support more flexible formats, such as “%t=%v, %t=%v” for interactions.</li>
@@ -219,9 +219,9 @@ img {
 <h2 class="pkg-version" data-toc-text="0.5.2.904" id="midr-052904">midr 0.5.2.904<a class="anchor" aria-label="anchor" href="#midr-052904"></a></h2>
 <ul><li>Memory-efficient <code><a href="../reference/interpret.html">interpret()</a></code>: The model object no longer stores the massive <code>fitted.matrix</code> (the term-wise decomposition of the fitted values).</li>
 <li>Optimized <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> engine: Re-implemented the prediction logic using a matrix-free approach.</li>
-<li>On-demand Decomposition: Functions like <code>mid.importance()</code> now perform term-wise decomposition on-the-fly using the new optimized prediction engine.</li>
+<li>On-demand Decomposition: Functions like <code><a href="../reference/midr-deprecated.html">mid.importance()</a></code> now perform term-wise decomposition on-the-fly using the new optimized prediction engine.</li>
 <li>
-<code>mid.importance()</code> introduced a new argument <code>max.nkeeps</code> (default: 10,000). While importance scores are calculated using the full dataset for maximum accuracy, the function now optionally retains only a weighted random sample of the term-wise predictions.</li>
+<code><a href="../reference/midr-deprecated.html">mid.importance()</a></code> introduced a new argument <code>max.nkeeps</code> (default: 10,000). While importance scores are calculated using the full dataset for maximum accuracy, the function now optionally retains only a weighted random sample of the term-wise predictions.</li>
 <li>Standardized <code>predict</code> outputs: For <code>type = "terms"</code>, the intercept is now stored in the <code>constant</code> attribute of the returned matrix, aligning with standard R conventions (e.g., <code>predict.lm</code>).</li>
 <li>Removed the redundant <code>fitted.matrix</code> reference in <code>interpret.default</code> to prevent memory leaks during the estimation process.</li>
 </ul></div>

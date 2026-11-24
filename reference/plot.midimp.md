@@ -1,4 +1,4 @@
-# Plot Term/Variable Importance
+# Plot Term and Variable Importance
 
 Visualize term or variable importance for a `"midimp"` object.
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) renders via

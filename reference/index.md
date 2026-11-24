@@ -50,16 +50,16 @@
 ## Term or Variable Importance
 
 - [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md)
-  : Evaluate Term/Variable Importance
+  : Evaluate Term and Variable Importance
 
 ### Methods
 
 - [`plot(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
   [`ggmid(`*`<midimp>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimp.md)
-  : Plot Term/Variable Importance
+  : Plot Term and Variable Importance
 - [`plot(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
   [`ggmid(`*`<midimps>`*`)`](https://ryo-asashi.github.io/midr/reference/plot.midimps.md)
-  : Compare Term/Variable Importance Across Models
+  : Compare Term and Variable Importance Across Models
 
 ## Prediction Breakdowns
 
