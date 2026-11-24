@@ -242,6 +242,7 @@ render_midcon <- function(
     obs$.y <- obs[[yvar]]
 
     aes_map <- ggplot2::aes(x = .data[[".x"]], y = .data[[".y"]], group = .data[[".id"]])
+    line_map <- ggplot2::aes()
     legend_on <- character(0L)
     ltitle <- NULL
     if (!is.null(col_val)) {
@@ -254,28 +255,28 @@ render_midcon <- function(
     extra_labs <- list()
     if (!is.null(alpha_val)) {
       con$.aval <- alpha_val[idx]
-      aes_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
+      line_map$alpha <- ggplot2::aes(alpha = .data[[".aval"]])[[1L]]
       extra_labs$alpha <- expr_label(alpha_expr)
     }
     if (!is.null(lty_val)) {
       con$.lty <- if (is_discrete(lty_val)) lty_val[idx] else factor(lty_val[idx])
-      aes_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
+      line_map$linetype <- ggplot2::aes(linetype = .data[[".lty"]])[[1L]]
       extra_labs$linetype <- expr_label(lty_expr)
     }
     if (!is.null(lwd_val)) {
       con$.lwd <- lwd_val[idx]
-      aes_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
+      line_map$linewidth <- ggplot2::aes(linewidth = .data[[".lwd"]])[[1L]]
       extra_labs$linewidth <- expr_label(lwd_expr)
     }
 
-    pl <- ggplot2::ggplot(con, aes_map) + layer_line(...)
+    pl <- ggplot2::ggplot(con, aes_map) + layer_line(mapping = line_map, ...)
     if (length(extra_labs) > 0L) {
       pl <- pl + do.call(ggplot2::labs, extra_labs)
     }
     if (isTRUE(points)) {
       pt_map <- ggplot2::aes(x = .data[[".x"]], y = .data[[".y"]])
       if (!is.null(col_val)) pt_map$colour <- ggplot2::aes(colour = .data[[".cval"]])[[1L]]
-      pl <- pl + layer_point(mapping = pt_map, data = obs, ...)
+      pl <- pl + layer_point(mapping = pt_map, data = obs, inherit.aes = FALSE, ...)
     }
     if (!is.null(theme) && !is.null(col_val)) {
       pl <- pl + scale_color_theme(theme = theme, discrete = is_discrete(con$.cval))
