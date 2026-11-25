@@ -65,10 +65,10 @@ img {
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'midlist'</span></span>
-<span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, drop <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/missing.html" class="external-link">missing</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span> <span class="cn">TRUE</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">]</span></span>
+<span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'midrib'</span></span>
-<span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, drop <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/missing.html" class="external-link">missing</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span> <span class="cn">TRUE</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">]</span></span>
+<span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'midrib'</span></span>
 <span><span class="va">x</span><span class="op">[[</span><span class="va">i</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -87,7 +87,7 @@ img {
 
 
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the result is coerced to the lowest possible dimension. For a collection (e.g., "mids"), extracting a single element drops it to a base object (e.g., "mid").</p></dd>
+<dd><p>logical. If <code>TRUE</code> and a single element is selected, the result is simplified to a base object (e.g., "mid"). Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
@@ -102,8 +102,8 @@ img {
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".</p>
-<p>When extracting items using <code>[</code>, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps").
-By default, if a single base object is extracted (<code>length(i) == 1L</code>) and <code>drop = TRUE</code>, the object is simplified to a single base object (e.g., "mid", "midimp").
+<p>When extracting items using <code>[</code>, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps") by default (<code>drop = FALSE</code>).
+If <code>drop = TRUE</code> and a single base object is extracted (<code>length(i) == 1L</code>), the object is simplified to a single base object (e.g., "mid", "midimp").
 <code>[[</code> always extracts a single base object.</p>
     </div>
     <div class="section level2">

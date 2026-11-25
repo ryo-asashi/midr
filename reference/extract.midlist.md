@@ -7,10 +7,10 @@ object.
 
 ``` r
 # S3 method for class 'midlist'
-x[i, drop = if (missing(i)) TRUE else length(i) == 1L]
+x[i, drop = FALSE]
 
 # S3 method for class 'midrib'
-x[i, drop = if (missing(i)) TRUE else length(i) == 1L]
+x[i, drop = FALSE]
 
 # S3 method for class 'midrib'
 x[[i, exact = TRUE]]
@@ -29,9 +29,8 @@ x[[i, exact = TRUE]]
 
 - drop:
 
-  logical. If `TRUE` the result is coerced to the lowest possible
-  dimension. For a collection (e.g., "mids"), extracting a single
-  element drops it to a base object (e.g., "mid").
+  logical. If `TRUE` and a single element is selected, the result is
+  simplified to a base object (e.g., "mid"). Defaults to `FALSE`.
 
 - exact:
 
@@ -51,9 +50,9 @@ single base class: "mid", "midimp", "midcon", or "midbrk".
 
 When extracting items using `[`, it returns a subsetted "midlist" or
 "midrib" object, preserving its collection class (e.g., "mids",
-"midimps"). By default, if a single base object is extracted
-(`length(i) == 1L`) and `drop = TRUE`, the object is simplified to a
-single base object (e.g., "mid", "midimp"). `[[` always extracts a
+"midimps") by default (`drop = FALSE`). If `drop = TRUE` and a single
+base object is extracted (`length(i) == 1L`), the object is simplified
+to a single base object (e.g., "mid", "midimp"). `[[` always extracts a
 single base object.
 
 ## See also
