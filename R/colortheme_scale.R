@@ -24,6 +24,7 @@
 #' @seealso \code{\link{colortheme}}
 #'
 #' @keywords internal
+#' @export
 scale_color_theme <- function(
     theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "colour"
 ) {
@@ -61,7 +62,7 @@ scale_color_theme <- function(
 
 
 #' @rdname scale_color_theme
-#' @keywords internal
+#' @export
 scale_colour_theme <- function(
     theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "colour"
 ) {
@@ -73,7 +74,7 @@ scale_colour_theme <- function(
 
 
 #' @rdname scale_color_theme
-#' @keywords internal
+#' @export
 scale_fill_theme <- function(
     theme = NULL, ..., discrete = NULL, middle = 0, aesthetics = "fill"
 ) {
