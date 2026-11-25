@@ -555,10 +555,27 @@ render_mids <- function(
     }
     nd <- stats::setNames(data.frame(xvals), term)
     t_spec <- if (int_vec[i]) term else c(term, "-1")
-    fmat <- stats::predict(x, newdata = nd, terms = t_spec, type = "link")
-    if (!is.matrix(fmat)) fmat <- matrix(fmat, ncol = 1L)
-    colnames(fmat) <- as.character(labels)
-    prep[[i]] <- list(term = term, enc = enc, xvals = xvals, fmat = fmat)
+    if (inherits(x, "midrib")) {
+      fmat <- stats::predict(x, newdata = nd, terms = t_spec, type = "link")
+      if (!is.matrix(fmat)) fmat <- matrix(fmat, ncol = 1L)
+      colnames(fmat) <- as.character(labels)
+      keep_idx <- seq_along(labels)
+    } else {
+      objs <- as.list(x)
+      has_t <- vapply(
+        objs,
+        function(m) term %in% get_labels(filter_terms(m, order = 1L)),
+        logical(1L)
+      )
+      keep_idx <- which(has_t)
+      fmat <- sapply(
+        objs[keep_idx, drop = FALSE],
+        function(m) as.numeric(stats::predict(m, newdata = nd, terms = t_spec, type = "link"))
+      )
+      if (!is.matrix(fmat)) fmat <- matrix(fmat, nrow = nrow(nd))
+      colnames(fmat) <- as.character(labels)[keep_idx]
+    }
+    prep[[i]] <- list(term = term, enc = enc, xvals = xvals, fmat = fmat, keep_idx = keep_idx)
   }
 
   # Sync limits across multiple plots (or fill partial NA limits)
@@ -584,6 +601,8 @@ render_mids <- function(
     enc <- prep[[i]]$enc
     xvals <- prep[[i]]$xvals
     fmat <- prep[[i]]$fmat
+    keep_idx <- prep[[i]]$keep_idx
+    labs_sub <- labels_parsed[keep_idx]
 
     if (type == "effect") {
       th <- theme %||% colortheme_default(if (discrete_labels) "qualitative" else "sequential")
@@ -593,7 +612,7 @@ render_mids <- function(
           list(
             to = fmat, ticks = as.character(xvals), horizontal = FALSE,
             limits = limits, theme = th,
-            theme.values = rep(labels_parsed, each = nrow(fmat)),
+            theme.values = rep(labs_sub, each = nrow(fmat)),
             xlab = term, ylab = "effect", engine = engine
           ),
           dots
@@ -603,7 +622,7 @@ render_mids <- function(
           draw_lines,
           list(
             x = xvals, y = fmat, limits = limits, theme = th,
-            theme.values = labels_parsed,
+            theme.values = labs_sub,
             xlab = term, ylab = "effect", engine = engine
           ),
           dots
@@ -614,7 +633,7 @@ render_mids <- function(
       ymat <- t(fmat)
       colnames(ymat) <- as.character(xvals)
       s_args <- list(
-        x = labels_parsed, y = ymat, discrete = discrete_labels,
+        x = labs_sub, y = ymat, discrete = discrete_labels,
         limits = limits, theme = th, theme.values = xvals,
         xlab = "", ylab = "effect", engine = engine
       )

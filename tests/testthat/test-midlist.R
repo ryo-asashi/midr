@@ -1,5 +1,3 @@
-# tests/testthat/test-midlist.R
-
 make_mock_midrib <- function() {
   x <- list(
     intercept = c(m1 = 1.0, m2 = 2.0, m3 = 3.0),
@@ -72,16 +70,16 @@ test_that("[.midrib subsets correctly with positive indices", {
   expect_equal(length(sub2$ratio), 2)
 })
 
-test_that("[.midrib drops to 'mid' class when length(i) == 1", {
+test_that("[.midrib preserves 'midrib' by default and drops to 'mid' when drop = TRUE", {
   ml <- make_mock_midrib()
   sub1 <- ml[2]
-  expect_s3_class(sub1, "mid")
-  expect_null(names(sub1$intercept))
-  expect_null(names(sub1$ratio))
-  expect_equal(sub1$intercept, 2.0, ignore_attr = TRUE)
-  sub1_nodrop <- ml[2, drop = FALSE]
-  expect_s3_class(sub1_nodrop, "midrib")
-  expect_equal(names(sub1_nodrop$intercept), "m2")
+  expect_s3_class(sub1, "midrib")
+  expect_equal(names(sub1$intercept), "m2")
+  sub1_drop <- ml[2, drop = TRUE]
+  expect_s3_class(sub1_drop, "mid")
+  expect_null(names(sub1_drop$intercept))
+  expect_null(names(sub1_drop$ratio))
+  expect_equal(sub1_drop$intercept, 2.0, ignore_attr = TRUE)
 })
 
 test_that("[.midrib handles negative indices (Negative Indexing)", {
@@ -90,8 +88,11 @@ test_that("[.midrib handles negative indices (Negative Indexing)", {
   expect_s3_class(sub_neg, "midrib")
   expect_equal(names(sub_neg$intercept), c("m2", "m3"))
   sub_neg2 <- ml[-c(1, 3)]
-  expect_s3_class(sub_neg2, "mid")
-  expect_equal(sub_neg2$intercept, 2.0, ignore_attr = TRUE)
+  expect_s3_class(sub_neg2, "midrib")
+  expect_equal(names(sub_neg2$intercept), "m2")
+  sub_neg2_drop <- ml[-c(1, 3), drop = TRUE]
+  expect_s3_class(sub_neg2_drop, "mid")
+  expect_equal(sub_neg2_drop$intercept, 2.0, ignore_attr = TRUE)
   expect_error(ml[c(1, -2)], "only 0's may be mixed with negative subscripts")
 })
 
@@ -167,8 +168,12 @@ test_that("summary and as.data.frame work for midcons", {
   expect_equal(sum_wide$m2, c(1.6, 2.6))
 })
 
-test_that("[.midlist.importance preserves class", {
+test_that("[.midlist preserves class by default and drops when drop = TRUE", {
   ml_imp <- make_mock_importance()
-  sub_imp <- ml_imp[1, drop = FALSE]
+  sub_imp <- ml_imp[1]
   expect_s3_class(sub_imp, "midimps")
+  expect_equal(length(sub_imp), 1L)
+  sub_imp_drop <- ml_imp[1, drop = TRUE]
+  expect_false(inherits(sub_imp_drop, "midimps"))
+  expect_true("importance" %in% names(sub_imp_drop))
 })

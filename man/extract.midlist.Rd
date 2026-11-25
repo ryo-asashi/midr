@@ -7,9 +7,9 @@
 \alias{[[.midrib}
 \title{Subset MID Collection Objects}
 \usage{
-\method{[}{midlist}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
+\method{[}{midlist}(x, i, drop = FALSE)
 
-\method{[}{midrib}(x, i, drop = if (missing(i)) TRUE else length(i) == 1L)
+\method{[}{midrib}(x, i, drop = FALSE)
 
 \method{[[}{midrib}(x, i, exact = TRUE)
 }
@@ -18,7 +18,7 @@
 
 \item{i}{indices specifying elements to extract. Can be numeric, character, or logical vectors.}
 
-\item{drop}{logical. If \code{TRUE} the result is coerced to the lowest possible dimension. For a collection (e.g., "mids"), extracting a single element drops it to a base object (e.g., "mid").}
+\item{drop}{logical. If \code{TRUE} and a single element is selected, the result is simplified to a base object (e.g., "mid"). Defaults to \code{FALSE}.}
 
 \item{exact}{logical. If \code{TRUE}, exact matching is used for character strings.}
 }
@@ -33,8 +33,8 @@ S3 methods to extract parts of a "midlist" or "midrib" collection object.
 \details{
 A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".
 
-When extracting items using \code{[}, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps").
-By default, if a single base object is extracted (\code{length(i) == 1L}) and \code{drop = TRUE}, the object is simplified to a single base object (e.g., "mid", "midimp").
+When extracting items using \code{[}, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps") by default (\code{drop = FALSE}).
+If \code{drop = TRUE} and a single base object is extracted (\code{length(i) == 1L}), the object is simplified to a single base object (e.g., "mid", "midimp").
 \code{[[} always extracts a single base object.
 }
 \examples{

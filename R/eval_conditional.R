@@ -156,6 +156,15 @@ eval_conditional.mids <- function(
 ) {
   type <- match.arg(type)
   mods <- as.list(object)
+  has_var <- vapply(
+    mods,
+    function(m) length(get_labels(filter_terms(m, require = variable, raw = FALSE))) > 0L,
+    logical(1L)
+  )
+  mods <- mods[has_var, drop = FALSE]
+  if (length(mods) == 0L) {
+    stop(sprintf("variable '%s' is not found in any model in 'object'", variable), call. = FALSE)
+  }
   if (missing(max.nsamples)) {
     max.nsamples <- max(1L, 100L %/% max(1L, length(mods)))
   }

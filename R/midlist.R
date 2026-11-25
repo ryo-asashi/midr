@@ -155,7 +155,7 @@ labels.midrib <- function(object, ...) {
 #' @export
 #'
 `labels<-` <- function(object, value)
-  UseMethod("labels<-")
+UseMethod("labels<-")
 
 #' @rdname labels.midlist
 #' @export
@@ -208,13 +208,13 @@ labels.midrib <- function(object, ...) {
 #' @details
 #' A "midlist" or "midrib" object stores multiple objects of the same single base class: "mid", "midimp", "midcon", or "midbrk".
 #'
-#' When extracting items using \code{[}, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps").
-#' By default, if a single base object is extracted (\code{length(i) == 1L}) and \code{drop = TRUE}, the object is simplified to a single base object (e.g., "mid", "midimp").
+#' When extracting items using \code{[}, it returns a subsetted "midlist" or "midrib" object, preserving its collection class (e.g., "mids", "midimps") by default (\code{drop = FALSE}).
+#' If \code{drop = TRUE} and a single base object is extracted (\code{length(i) == 1L}), the object is simplified to a single base object (e.g., "mid", "midimp").
 #' \code{[[} always extracts a single base object.
 #'
 #' @param x a collection object of class "midlist" or "midrib".
 #' @param i indices specifying elements to extract. Can be numeric, character, or logical vectors.
-#' @param drop logical. If \code{TRUE} the result is coerced to the lowest possible dimension. For a collection (e.g., "mids"), extracting a single element drops it to a base object (e.g., "mid").
+#' @param drop logical. If \code{TRUE} and a single element is selected, the result is simplified to a base object (e.g., "mid"). Defaults to \code{FALSE}.
 #' @param exact logical. If \code{TRUE}, exact matching is used for character strings.
 #'
 #' @examples
@@ -250,10 +250,10 @@ labels.midrib <- function(object, ...) {
 #' @export
 #'
 `[.midlist` <- function(
-    x, i, drop = if (missing(i)) TRUE else length(i) == 1L
+    x, i, drop = FALSE
 ) {
   out <- NextMethod("[")
-  if (drop && length(out) == 1L) return(out[[1L]])
+  if (isTRUE(drop) && length(out) == 1L) return(out[[1L]])
   class(out) <- class(x)
   out
 }
@@ -263,7 +263,7 @@ labels.midrib <- function(object, ...) {
 #' @export
 #'
 `[.midrib` <- function(
-    x, i, drop = if (missing(i)) TRUE else length(i) == 1L
+    x, i, drop = FALSE
 ) {
   nm <- labels(x)
   if (missing(i)) {
