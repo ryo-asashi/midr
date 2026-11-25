@@ -113,7 +113,6 @@ reference:
   - make_encoder
 - subtitle: Miscellaneous
   contents:
-  - midr_options
   - theme_monograph
   - par_monograph
-  # - shapviz.mid
+  - midr_options

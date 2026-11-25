@@ -234,3 +234,14 @@ make_persp_axis <- function(enc, var, data, use_raw, res, lumped, mar = 0.499) {
   vals <- seq(rng[1L], rng[2L], length.out = res)
   list(values = vals, coords = vals)
 }
+
+
+#' @exportS3Method graphics::persp
+#'
+persp.mids <- function(x, ...) {
+  stop(
+    "'persp()' is not supported for 'mids' objects; ",
+    "subset a single model first (e.g., persp(x[[1L]], ...))",
+    call. = FALSE
+  )
+}

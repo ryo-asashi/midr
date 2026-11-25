@@ -183,6 +183,7 @@ render_midbrk <- function(
 
   use_others <- FALSE
   if (!is.null(terms)) {
+    terms <- match_labels(terms, bd$term, nomatch = "omit")
     idx <- match(terms, bd$term)
     idx <- idx[!is.na(idx)]
     if (length(idx) == 0L) {
@@ -300,8 +301,7 @@ render_midbrks <- function(
 
   terms_all <- as.character(unique(brk$term))
   terms_kept <- if (!is.null(terms)) {
-    idx <- match(terms, terms_all)
-    terms_all[idx[!is.na(idx)]]
+    match_labels(terms, terms_all, nomatch = "omit")
   } else {
     terms_all
   }

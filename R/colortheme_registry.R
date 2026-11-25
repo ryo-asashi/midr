@@ -53,7 +53,7 @@ colortheme_default <- function(
 ) {
   type <- match.arg(type)
   package_default <- switch(
-    type, sequential = "bluescale", diverging = "azurerose", qualitative = "hcl"
+    type, sequential = "bluescale", diverging = "azurerose", qualitative = "ukiyoe"
   )
   if (!use.options) return(package_default)
   getOption(paste0("colortheme.", type), default = package_default)

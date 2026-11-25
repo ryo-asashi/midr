@@ -157,6 +157,7 @@ render_midimp <- function(
   type <- match.arg(type, c("barplot", "dotchart", "heatmap", "boxplot"))
   imp <- x$importance
   if (!is.null(terms)) {
+    terms <- match_labels(terms, as.character(imp$term), nomatch = "omit")
     idx <- match(terms, as.character(imp$term), nomatch = 0L)
     imp <- imp[idx, , drop = FALSE]
   }
@@ -273,7 +274,7 @@ render_midimps <- function(
   terms <- if (is.null(terms)) {
     all_terms
   } else {
-    all_terms[match(terms, all_terms, nomatch = 0L)]
+    match_labels(terms, all_terms, nomatch = "omit")
   }
   if (!is.null(max.nterms) && !is.na(max.nterms)) {
     terms <- utils::head(terms, max.nterms)
