@@ -55,10 +55,10 @@ midr_options()
 #> [1] "azurerose"
 #> 
 #> $qualitative
-#> [1] "hcl"
+#> [1] "ukiyoe"
 #> 
 #> $registry
-#> <environment: 0x5beec02d49f8>
+#> <environment: 0x64db695b7600>
 #> 
 #> $sequential
 #> [1] "bluescale"

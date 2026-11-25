@@ -101,9 +101,9 @@
 
 ### Miscellaneous
 
-- [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md)
-  : Set or Get Global Options for midr
 - [`theme_monograph()`](https://ryo-asashi.github.io/midr/reference/theme_monograph.md)
   : Monograph Visual Theme for ggplot2
 - [`par_monograph()`](https://ryo-asashi.github.io/midr/reference/par_monograph.md)
   : Monograph Graphical Parameters for Base Graphics
+- [`midr_options()`](https://ryo-asashi.github.io/midr/reference/midr_options.md)
+  : Set or Get Global Options for midr
