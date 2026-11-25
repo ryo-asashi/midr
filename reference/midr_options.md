@@ -58,7 +58,7 @@ midr_options()
 #> [1] "ukiyoe"
 #> 
 #> $registry
-#> <environment: 0x588b7fd02b30>
+#> <environment: 0x5da936d2cd38>
 #> 
 #> $sequential
 #> [1] "bluescale"

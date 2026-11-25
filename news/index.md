@@ -44,8 +44,9 @@ and internal data structures.
   /
   [`par_monograph()`](https://ryo-asashi.github.io/midr/reference/par_monograph.md)
   styling.
-- Replaced the legacy `color.theme()` utilities with the internalized
-  `colortheme` engine
+- Replaced the legacy
+  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  utilities with the internalized `colortheme` engine
   ([`colortheme()`](https://ryo-asashi.github.io/midr/reference/colortheme.md),
   [`colorthemes()`](https://ryo-asashi.github.io/midr/reference/colorthemes.md),
   [`register_colortheme()`](https://ryo-asashi.github.io/midr/reference/colorthemes.md),
@@ -70,8 +71,12 @@ and internal data structures.
   [`mid.importance()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
   [`mid.breakdown()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
   [`mid.conditional()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
-  `get.yhat()`, `color.theme()`, `weighted.loss()`, `mid.terms()`,
-  `mid.effect()`, and
+  `get.yhat()`,
+  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  `weighted.loss()`,
+  [`mid.terms()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md),
+  and
   [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md))
   are deprecated or superseded by their snake_case, `eval_*()`,
   [`subset()`](https://rdrr.io/r/base/subset.html), and
@@ -98,14 +103,17 @@ for the upcoming release.
 
 #### Deprecated & Defunct
 
-- `set.color.theme()` will be deprecated to standardize the API naming
-  conventions. Please use `color.theme.register()` instead.
+- [`set.color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  will be deprecated to standardize the API naming conventions. Please
+  use `color.theme.register()` instead.
 - `color.theme.info()` is renamed to `color.themes()`.
 - `color.theme.env()` is deprecated. To access the color theme registry,
   please use `midr.options("color.theme.registry")` instead.
-- `mid.terms()` and `mid.effect()` are deprecated and replaced by
-  `term.labels()` and `term.effect()`, which can be applied to any
-  additive model.
+- [`mid.terms()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  and
+  [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  are deprecated and replaced by `term.labels()` and `term.effect()`,
+  which can be applied to any additive model.
 - [`mid.plots()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
   is deprecated, superseded by the new capabilities of
   [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
@@ -199,7 +207,8 @@ CRAN release: 2026-03-08
   simultaneous modeling of multiple responses.
 - Introduction of “midlist”: Implemented the “midlist” class to handle
   multiple MID models efficiently. Methods such as
-  [`predict()`](https://rdrr.io/r/stats/predict.html) and `mid.effect()`
+  [`predict()`](https://rdrr.io/r/stats/predict.html) and
+  [`mid.effect()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
   have been vectorized to handle “midlist” objects using optimized
   matrix operations.
 - Performance Optimization: Significant reduction in compilation time
@@ -375,8 +384,9 @@ Second release on CRAN.
 
 ## midr 0.5.0.908
 
-- Rewrote `color.theme()` to significantly enhance its functionality and
-  flexibility.
+- Rewrote
+  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  to significantly enhance its functionality and flexibility.
 
 ## midr 0.5.0.906
 
@@ -406,15 +416,17 @@ Second release on CRAN.
 - Fixed a bug in
   [`interpret.default()`](https://ryo-asashi.github.io/midr/reference/interpret.md)
   that caused inconsistency between “fitted.values” and “residuals”.
-- Fixed an issue in `mid.f()` (`mid.effect()`) to correctly handle
-  vector recycling when an input’s length is 1.
+- Fixed an issue in `mid.f()`
+  ([`mid.effect()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md))
+  to correctly handle vector recycling when an input’s length is 1.
 - Fixed `autoplot.mid.conditional()` to avoid redundant evaluation of
   the “mid” object.
 - Updated the automatic determination method for the number of knots
   (`k`) in
   [`interpret()`](https://ryo-asashi.github.io/midr/reference/interpret.md).
-- Added support for type suffixes in `color.theme()` for easier theme
-  specification.
+- Added support for type suffixes in
+  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md)
+  for easier theme specification.
 
 ## midr 0.5.0.902
 
@@ -430,7 +442,8 @@ Second release on CRAN.
 - Corrected the “HCL” color theme to be properly categorized as a
   “qualitative” theme.
 - Changed the rounding method used in numeric “encoder” objects.
-- Updated the article and examples related to `color.theme()`.
+- Updated the article and examples related to
+  [`color.theme()`](https://ryo-asashi.github.io/midr/reference/midr-deprecated.md).
 
 ## midr 0.5.0.900
 

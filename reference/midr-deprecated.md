@@ -1,8 +1,8 @@
 # Deprecated Functions in midr
 
 These functions are provided for compatibility with older versions of
-midr and will be removed in a future release. Please use the
-corresponding replacement functions listed below.
+midr (and downstream packages transitioning to midr 0.7.0) and will be
+removed in a future release.
 
 - `mid.importance()`: use
   [`eval_importance()`](https://ryo-asashi.github.io/midr/reference/eval_importance.md).
@@ -23,6 +23,16 @@ corresponding replacement functions listed below.
   [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
   or [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
 
+- `mid.terms()`: use [`labels()`](https://rdrr.io/r/base/labels.html).
+
+- `mid.effect()`: use
+  [`predict.mid()`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
+  with `type = "terms"`.
+
+- `color.theme()`, `set.color.theme()`: color theme helpers are now
+  internal; see
+  [`colortheme`](https://ryo-asashi.github.io/midr/reference/colortheme.md).
+
 ## Usage
 
 ``` r
@@ -37,6 +47,14 @@ theme_midr(...)
 par.midr(...)
 
 mid.plots(...)
+
+mid.terms(...)
+
+mid.effect(...)
+
+color.theme(...)
+
+set.color.theme(...)
 ```
 
 ## Arguments
