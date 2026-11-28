@@ -58,7 +58,7 @@ img {
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Set or Get Global Options for midr</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/zzz.R" class="external-link"><code>R/zzz.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ryo-asashi/midr/blob/main/R/midr_options.R" class="external-link"><code>R/midr_options.R</code></a></small>
       <div class="d-none name"><code>midr_options.Rd</code></div>
     </div>
 
@@ -95,8 +95,8 @@ of the previous option values.</p>
 <li><p><code>message.appendLF</code>: logical passed to <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> (default <code>TRUE</code>).</p></li>
 <li><p><code>engine</code>: default plotting backend, <code>"graphics"</code> or <code>"ggplot2"</code>.</p></li>
 <li><p><code>gg.theme</code>: optional <strong>ggplot2</strong> theme object applied by <code><a href="plot.mid.html">ggmid()</a></code> / <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code>.</p></li>
-<li><p><code>sequential</code>, <code>diverging</code>, <code>qualitative</code>: default color theme names or objects.</p></li>
 <li><p><code>solver.&lt;name&gt;</code>: custom OLS solver function <code>function(x, y)</code> for <code>interpret(method = "&lt;name&gt;")</code>.</p></li>
+<li><p><code>sequential</code>, <code>diverging</code>, <code>qualitative</code>: default color theme names or objects.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -106,10 +106,10 @@ of the previous option values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "azurerose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $qualitative</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ukiyoe"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hcl"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $registry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5da936d2cd38&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x564d02536ff0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $sequential</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "bluescale"</span>

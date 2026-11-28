@@ -96,7 +96,7 @@ By default (`theme = NULL`), surface coloring is left to
 [`graphics::persp()`](https://rdrr.io/r/graphics/persp.html). When a
 `theme` is supplied, surface facets are colored according to their mean
 effect values using
-[`map_to_colors()`](https://ryo-asashi.github.io/midr/reference/map_to_colors.md).
+[`map_to_colors()`](https://ryo-asashi.github.io/colortheme/reference/map_to_colors.html).
 
 ## See also
 
@@ -111,7 +111,7 @@ mid <- interpret(mpg ~ wt * hp + factor(am), data = mtcars, lambda = 0.5)
 #> 'model' not passed: response variable in 'data' is used
 
 # Plot only the interaction effect
-persp(mid, terms = "wt:hp", theme = "BuRd", theta = 225, phi = 45)
+persp(mid, terms = "wt:hp", theta = 225, phi = 45)
 
 
 # Include constituent main effects
@@ -119,5 +119,5 @@ persp(mid, terms = "wt * hp", theme = "azurerose", theta = 135, phi = 20)
 
 
 # Plot additive main effects with higher resolution
-persp(mid, terms = "wt + hp", resolution = 80L, theta = 135, phi = 20)
+persp(mid, terms = "wt + hp", theme = "steps", resolution = 80L, theta = 135, phi = 20)
 ```

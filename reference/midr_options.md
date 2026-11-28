@@ -41,11 +41,11 @@ Supported option names (passed without package prefixes) include:
   [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md) /
   [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html).
 
-- `sequential`, `diverging`, `qualitative`: default color theme names or
-  objects.
-
 - `solver.<name>`: custom OLS solver function `function(x, y)` for
   `interpret(method = "<name>")`.
+
+- `sequential`, `diverging`, `qualitative`: default color theme names or
+  objects.
 
 ## Examples
 
@@ -55,10 +55,10 @@ midr_options()
 #> [1] "azurerose"
 #> 
 #> $qualitative
-#> [1] "ukiyoe"
+#> [1] "hcl"
 #> 
 #> $registry
-#> <environment: 0x5da936d2cd38>
+#> <environment: 0x564d02536ff0>
 #> 
 #> $sequential
 #> [1] "bluescale"

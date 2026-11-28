@@ -9,9 +9,6 @@ mid.conditional(): use eval_conditional().
 theme_midr(): use theme_monograph().
 par.midr(): use par_monograph().
 mid.plots(): use ggmid() or plot().
-mid.terms(): use labels().
-mid.effect(): use predict.mid() with type = &quot;terms&quot;.
-color.theme(), set.color.theme(): color theme helpers are now internal; see colortheme.
 
 "><meta property="og:description" content="These functions are provided for compatibility with older versions of
 midr (and downstream packages transitioning to midr 0.7.0) and
@@ -23,9 +20,6 @@ mid.conditional(): use eval_conditional().
 theme_midr(): use theme_monograph().
 par.midr(): use par_monograph().
 mid.plots(): use ggmid() or plot().
-mid.terms(): use labels().
-mid.effect(): use predict.mid() with type = &quot;terms&quot;.
-color.theme(), set.color.theme(): color theme helpers are now internal; see colortheme.
 
 "><meta property="og:image" content="https://ryo-asashi.github.io/midr/logo.png"><style>
 [data-bs-theme="dark"] img,
@@ -96,9 +90,6 @@ will be removed in a future release.</p>
 <li><p><code>theme_midr()</code>: use <code><a href="theme_monograph.html">theme_monograph()</a></code>.</p></li>
 <li><p><code>par.midr()</code>: use <code><a href="par_monograph.html">par_monograph()</a></code>.</p></li>
 <li><p><code>mid.plots()</code>: use <code><a href="plot.mid.html">ggmid()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</p></li>
-<li><p><code>mid.terms()</code>: use <code><a href="https://rdrr.io/r/base/labels.html" class="external-link">labels()</a></code>.</p></li>
-<li><p><code>mid.effect()</code>: use <code><a href="predict.mid.html">predict.mid()</a></code> with <code>type = "terms"</code>.</p></li>
-<li><p><code>color.theme()</code>, <code>set.color.theme()</code>: color theme helpers are now internal; see <code><a href="colortheme.html">colortheme</a></code>.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -113,15 +104,7 @@ will be removed in a future release.</p>
 <span></span>
 <span><span class="fu">par.midr</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mid.plots</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">mid.terms</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">mid.effect</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">color.theme</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">set.color.theme</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mid.plots</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">

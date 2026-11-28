@@ -23,16 +23,6 @@ removed in a future release.
   [`ggmid()`](https://ryo-asashi.github.io/midr/reference/plot.mid.md)
   or [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
 
-- `mid.terms()`: use [`labels()`](https://rdrr.io/r/base/labels.html).
-
-- `mid.effect()`: use
-  [`predict.mid()`](https://ryo-asashi.github.io/midr/reference/predict.mid.md)
-  with `type = "terms"`.
-
-- `color.theme()`, `set.color.theme()`: color theme helpers are now
-  internal; see
-  [`colortheme`](https://ryo-asashi.github.io/midr/reference/colortheme.md).
-
 ## Usage
 
 ``` r
@@ -47,14 +37,6 @@ theme_midr(...)
 par.midr(...)
 
 mid.plots(...)
-
-mid.terms(...)
-
-mid.effect(...)
-
-color.theme(...)
-
-set.color.theme(...)
 ```
 
 ## Arguments

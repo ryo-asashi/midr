@@ -72,7 +72,7 @@ img {
 <div class="section level4">
 <h4 id="visualization--color-themes-0-7-0">Visualization &amp; Color Themes<a class="anchor" aria-label="anchor" href="#visualization--color-themes-0-7-0"></a></h4>
 <ul><li>Unified <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, <code><a href="../reference/plot.mid.html">ggmid()</a></code>, and <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> across <code>"mid"</code>, <code>"midimp"</code>, <code>"midbrk"</code>, <code>"midcon"</code>, and their collection classes onto a dual-backend (<code>graphics</code> / <code>ggplot2</code>) rendering engine with consistent behavior and <code><a href="../reference/theme_monograph.html">theme_monograph()</a></code> / <code><a href="../reference/par_monograph.html">par_monograph()</a></code> styling.</li>
-<li>Replaced the legacy <code><a href="../reference/midr-deprecated.html">color.theme()</a></code> utilities with the internalized <code>colortheme</code> engine (<code><a href="../reference/colortheme.html">colortheme()</a></code>, <code><a href="../reference/colorthemes.html">colorthemes()</a></code>, <code><a href="../reference/colorthemes.html">register_colortheme()</a></code>, <code><a href="../reference/map_to_colors.html">map_to_colors()</a></code>, <code><a href="../reference/scale_color_theme.html">scale_color_theme()</a></code>, <code><a href="../reference/scale_color_theme.html">scale_fill_theme()</a></code>, <code><a href="../reference/as_palette.html">as_palette()</a></code>, <code><a href="../reference/as_palette.html">as_ramp()</a></code>; unexported).</li>
+<li>Replaced the legacy <code>color.theme()</code> utilities with the internalized <code>colortheme</code> engine (<code>colortheme()</code>, <code>colorthemes()</code>, <code>register_colortheme()</code>, <code>map_to_colors()</code>, <code>scale_color_theme()</code>, <code>scale_fill_theme()</code>, <code>as_palette()</code>, <code>as_ramp()</code>; unexported).</li>
 <li>
 <code><a href="../reference/midr_options.html">midr_options()</a></code> now provides a single interface for package verbosity, solver hooks, plotting backend (<code>engine</code>, <code>gg.theme</code>), and default color themes (<code>sequential</code>, <code>diverging</code>, <code>qualitative</code>).</li>
 </ul></div>
@@ -82,7 +82,7 @@ img {
 </ul></div>
 <div class="section level4">
 <h4 id="deprecated--removed-0-7-0">Deprecated &amp; Removed<a class="anchor" aria-label="anchor" href="#deprecated--removed-0-7-0"></a></h4>
-<ul><li>Legacy dot-case functions (including <code><a href="../reference/midr-deprecated.html">mid.importance()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.breakdown()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.conditional()</a></code>, <code>get.yhat()</code>, <code><a href="../reference/midr-deprecated.html">color.theme()</a></code>, <code>weighted.loss()</code>, <code><a href="../reference/midr-deprecated.html">mid.terms()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.effect()</a></code>, and <code><a href="../reference/midr-deprecated.html">mid.plots()</a></code>) are deprecated or superseded by their snake_case, <code>eval_*()</code>, <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code>, and <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> counterparts.</li>
+<ul><li>Legacy dot-case functions (including <code><a href="../reference/midr-deprecated.html">mid.importance()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.breakdown()</a></code>, <code><a href="../reference/midr-deprecated.html">mid.conditional()</a></code>, <code>get.yhat()</code>, <code>color.theme()</code>, <code>weighted.loss()</code>, <code>mid.terms()</code>, <code>mid.effect()</code>, and <code><a href="../reference/midr-deprecated.html">mid.plots()</a></code>) are deprecated or superseded by their snake_case, <code>eval_*()</code>, <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code>, and <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> counterparts.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -101,13 +101,13 @@ img {
 <div class="section level4">
 <h4 id="deprecated--defunct-0-6-2-900">Deprecated &amp; Defunct<a class="anchor" aria-label="anchor" href="#deprecated--defunct-0-6-2-900"></a></h4>
 <ul><li>
-<code><a href="../reference/midr-deprecated.html">set.color.theme()</a></code> will be deprecated to standardize the API naming conventions. Please use <code>color.theme.register()</code> instead.</li>
+<code>set.color.theme()</code> will be deprecated to standardize the API naming conventions. Please use <code>color.theme.register()</code> instead.</li>
 <li>
 <code>color.theme.info()</code> is renamed to <code>color.themes()</code>.</li>
 <li>
 <code>color.theme.env()</code> is deprecated. To access the color theme registry, please use <code>midr.options("color.theme.registry")</code> instead.</li>
 <li>
-<code><a href="../reference/midr-deprecated.html">mid.terms()</a></code> and <code><a href="../reference/midr-deprecated.html">mid.effect()</a></code> are deprecated and replaced by <code>term.labels()</code> and <code>term.effect()</code>, which can be applied to any additive model.</li>
+<code>mid.terms()</code> and <code>mid.effect()</code> are deprecated and replaced by <code>term.labels()</code> and <code>term.effect()</code>, which can be applied to any additive model.</li>
 <li>
 <code><a href="../reference/midr-deprecated.html">mid.plots()</a></code> is deprecated, superseded by the new capabilities of <code><a href="../reference/plot.mid.html">ggmid()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
 <li>
@@ -162,7 +162,7 @@ img {
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3.903" id="midr-053903">midr 0.5.3.903<a class="anchor" aria-label="anchor" href="#midr-053903"></a></h2>
 <ul><li>Multivariate Response Support: <code><a href="../reference/interpret.html">interpret()</a></code> now accepts a matrix for the response variable <code>y</code>, allowing for simultaneous modeling of multiple responses.</li>
-<li>Introduction of “midlist”: Implemented the “midlist” class to handle multiple MID models efficiently. Methods such as <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code><a href="../reference/midr-deprecated.html">mid.effect()</a></code> have been vectorized to handle “midlist” objects using optimized matrix operations.</li>
+<li>Introduction of “midlist”: Implemented the “midlist” class to handle multiple MID models efficiently. Methods such as <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code>mid.effect()</code> have been vectorized to handle “midlist” objects using optimized matrix operations.</li>
 <li>Performance Optimization: Significant reduction in compilation time and binary size by removing the heavy dependency on <strong>RcppEigen</strong> headers for the core Laplacian smoothing algorithm.</li>
 </ul></div>
     <div class="section level2">
@@ -268,7 +268,7 @@ img {
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.908" id="midr-050908">midr 0.5.0.908<a class="anchor" aria-label="anchor" href="#midr-050908"></a></h2>
-<ul><li>Rewrote <code><a href="../reference/midr-deprecated.html">color.theme()</a></code> to significantly enhance its functionality and flexibility.</li>
+<ul><li>Rewrote <code>color.theme()</code> to significantly enhance its functionality and flexibility.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.906" id="midr-050906">midr 0.5.0.906<a class="anchor" aria-label="anchor" href="#midr-050906"></a></h2>
@@ -287,10 +287,10 @@ img {
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.903" id="midr-050903">midr 0.5.0.903<a class="anchor" aria-label="anchor" href="#midr-050903"></a></h2>
 <ul><li>Fixed a bug in <code><a href="../reference/interpret.html">interpret.default()</a></code> that caused inconsistency between “fitted.values” and “residuals”.</li>
-<li>Fixed an issue in <code>mid.f()</code> (<code><a href="../reference/midr-deprecated.html">mid.effect()</a></code>) to correctly handle vector recycling when an input’s length is 1.</li>
+<li>Fixed an issue in <code>mid.f()</code> (<code>mid.effect()</code>) to correctly handle vector recycling when an input’s length is 1.</li>
 <li>Fixed <code>autoplot.mid.conditional()</code> to avoid redundant evaluation of the “mid” object.</li>
 <li>Updated the automatic determination method for the number of knots (<code>k</code>) in <code><a href="../reference/interpret.html">interpret()</a></code>.</li>
-<li>Added support for type suffixes in <code><a href="../reference/midr-deprecated.html">color.theme()</a></code> for easier theme specification.</li>
+<li>Added support for type suffixes in <code>color.theme()</code> for easier theme specification.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.902" id="midr-050902">midr 0.5.0.902<a class="anchor" aria-label="anchor" href="#midr-050902"></a></h2>
@@ -303,7 +303,7 @@ img {
 <h2 class="pkg-version" data-toc-text="0.5.0.901" id="midr-050901">midr 0.5.0.901<a class="anchor" aria-label="anchor" href="#midr-050901"></a></h2>
 <ul><li>Corrected the “HCL” color theme to be properly categorized as a “qualitative” theme.</li>
 <li>Changed the rounding method used in numeric “encoder” objects.</li>
-<li>Updated the article and examples related to <code><a href="../reference/midr-deprecated.html">color.theme()</a></code>.</li>
+<li>Updated the article and examples related to <code>color.theme()</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.900" id="midr-050900">midr 0.5.0.900<a class="anchor" aria-label="anchor" href="#midr-050900"></a></h2>
