@@ -66,19 +66,19 @@ plotted in sequence.
 
 By default (\code{theme = NULL}), surface coloring is left to
 \code{graphics::persp()}. When a \code{theme} is supplied, surface facets are
-colored according to their mean effect values using \code{\link{map_to_colors}()}.
+colored according to their mean effect values using \code{\link[colortheme]{map_to_colors}()}.
 }
 \examples{
 mid <- interpret(mpg ~ wt * hp + factor(am), data = mtcars, lambda = 0.5)
 
 # Plot only the interaction effect
-persp(mid, terms = "wt:hp", theme = "BuRd", theta = 225, phi = 45)
+persp(mid, terms = "wt:hp", theta = 225, phi = 45)
 
 # Include constituent main effects
 persp(mid, terms = "wt * hp", theme = "azurerose", theta = 135, phi = 20)
 
 # Plot additive main effects with higher resolution
-persp(mid, terms = "wt + hp", resolution = 80L, theta = 135, phi = 20)
+persp(mid, terms = "wt + hp", theme = "steps", resolution = 80L, theta = 135, phi = 20)
 }
 \seealso{
 \code{\link[graphics]{persp}}, \code{\link{plot.mid}}, \code{\link{subset.mid}}

@@ -8,10 +8,6 @@
 \alias{theme_midr}
 \alias{par.midr}
 \alias{mid.plots}
-\alias{mid.terms}
-\alias{mid.effect}
-\alias{color.theme}
-\alias{set.color.theme}
 \title{Deprecated Functions in midr}
 \usage{
 mid.importance(...)
@@ -25,14 +21,6 @@ theme_midr(...)
 par.midr(...)
 
 mid.plots(...)
-
-mid.terms(...)
-
-mid.effect(...)
-
-color.theme(...)
-
-set.color.theme(...)
 }
 \arguments{
 \item{...}{Additional arguments passed to the replacement function.}
@@ -52,9 +40,6 @@ will be removed in a future release.
   \item \code{theme_midr()}: use \code{\link{theme_monograph}()}.
   \item \code{par.midr()}: use \code{\link{par_monograph}()}.
   \item \code{mid.plots()}: use \code{\link{ggmid}()} or \code{\link{plot}()}.
-  \item \code{mid.terms()}: use \code{\link[base]{labels}()}.
-  \item \code{mid.effect()}: use \code{\link{predict.mid}()} with \code{type = "terms"}.
-  \item \code{color.theme()}, \code{set.color.theme()}: color theme helpers are now internal; see \code{\link{colortheme}}.
 }
 }
 \details{

@@ -1,7 +1,5 @@
 # R/utillity.R
 
-# utility functions
-
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 
@@ -16,9 +14,11 @@ verbose <- function(text, verbosity = 1L, level = 1L, timestamp = FALSE) {
   }
 }
 
+
 add_s <- function(n, noun, suffix = "s") {
   paste0(n, " ", noun, if (is.numeric(n) && n != 1L) suffix)
 }
+
 
 examples <- function(x, n = 3L, ...) {
   if (is.data.frame(x)) x <- as.matrix(x)
@@ -70,7 +70,6 @@ interaction_frame <- function(x, y) {
   z
 }
 
-# extract objects from fitted models ----
 
 get_intercept <- function(object) {
   if (inherits(object, c("mid", "midrib"))) {
@@ -83,7 +82,7 @@ get_intercept <- function(object) {
 
 model_reframe <- function(object, data, na.action = NULL) {
   fm <- stats::formula(object)
-  naa <- stats::na.action(data) %||% stats::na.action(object)
+  naa <- stats::na.action(data)
   wts <- stats::model.weights(data)
   if (!is.data.frame(data) && !is.environment(data)) {
     data <- as.data.frame(data)
@@ -96,8 +95,12 @@ model_reframe <- function(object, data, na.action = NULL) {
   out <- tryCatch(
     do.call(stats::model.frame.default, args),
     error = function(e) {
-      args$formula[[2L]] <- NULL
-      do.call(stats::model.frame.default, args)
+      if (length(args$formula) == 3L) {
+        args$formula[[2L]] <- NULL
+        do.call(stats::model.frame.default, args)
+      } else {
+        stop(e)
+      }
     }
   )
   if (!is.null(wts)) {
@@ -113,35 +116,44 @@ model_reframe <- function(object, data, na.action = NULL) {
 
 
 model_data <- function(object, env = parent.frame(), na.action = NULL) {
+  force(env)
   fcl <- stats::getCall(object)
-  dat <- NULL
-  if (!is.null(fcl$data)) {
-    dat <- eval(fcl$data, envir = env)
-  } else if (!is.null(fcl$formula)) {
-    fml <- stats::formula(object)
-    env <- environment(fml) %||% env
-    dat <- stats::get_all_vars(fml, data = env)
-  } else if (!is.null(fcl$x)) {
-    x <- eval(fcl$x, envir = env)
-    if (!is.null(ncol(x)) && is.null(colnames(x))) {
-      colnames(x) <- paste0("x", seq_len(ncol(x)))
+  if (is.null(fcl)) return(NULL)
+  dat <- tryCatch({
+    if (!is.null(fcl$data)) {
+      eval(fcl$data, envir = env)
+    } else if (!is.null(fcl$formula)) {
+      fml <- stats::formula(object)
+      fml_env <- environment(fml) %||% env
+      stats::get_all_vars(fml, data = fml_env)
+    } else if (!is.null(fcl$x)) {
+      x <- eval(fcl$x, envir = env)
+      if (!is.null(ncol(x)) && is.null(colnames(x))) {
+        colnames(x) <- paste0("x", seq_len(ncol(x)))
+      }
+      res <- as.data.frame(x)
+      if (!is.null(fcl$y)) {
+        res$y <- eval(fcl$y, envir = env)
+      }
+      res
+    } else {
+      NULL
     }
-    dat <- as.data.frame(x)
-    if (!is.null(fcl$y)) {
-      dat$y <- eval(fcl$y, envir = env)
-    }
-  }
-  if (is.null(dat))
-    return(NULL)
+  }, error = function(e) NULL)
+  if (!is.data.frame(dat) && !is.list(dat)) return(NULL)
   if (!is.null(fcl$weights)) {
-    wts <- eval(fcl$weights, envir = dat, enclos = env)
-    if (!is.null(wts))
-      dat[["(weights)"]] <- wts
+    wts <- tryCatch(
+      eval(fcl$weights, envir = dat, enclos = env),
+      error = function(e) NULL
+    )
+    if (!is.null(wts)) dat[["(weights)"]] <- wts
   }
   if (!is.null(fcl$subset)) {
-    idx <- eval(fcl$subset, envir = dat, enclos = env)
-    if (!is.null(idx))
-      dat <- dat[idx, , drop = FALSE]
+    idx <- tryCatch(
+      eval(fcl$subset, envir = dat, enclos = env),
+      error = function(e) NULL
+    )
+    if (!is.null(idx)) dat <- dat[idx, , drop = FALSE]
   }
   if (!is.null(na.action)) {
     dat <- do.call(na.action, list(dat))

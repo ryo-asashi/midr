@@ -229,6 +229,7 @@ render_midcon <- function(
   lty_val <- eval_var_expr(lty_expr, obs)
   lwd_val <- eval_var_expr(lwd_expr, obs)
 
+  if (is.factor(col_val)) col_val <- droplevels(col_val)
   if (!is.null(col_val) && is.null(theme)) {
     theme <- colortheme_default(if (is_discrete(col_val)) "qualitative" else "sequential")
   }
@@ -279,7 +280,7 @@ render_midcon <- function(
       pl <- pl + layer_point(mapping = pt_map, data = obs, inherit.aes = FALSE, ...)
     }
     if (!is.null(theme) && !is.null(col_val)) {
-      pl <- pl + scale_color_theme(theme = theme, discrete = is_discrete(con$.cval))
+      pl <- pl + colortheme::scale_color_theme(theme = theme, discrete = is_discrete(con$.cval))
     }
     pl <- pl + extract_gg_labs(dots, xlab = variable, ylab = yvar)
     legend_opt <- legend_dot %||% (!is.null(col_val))
@@ -293,7 +294,7 @@ render_midcon <- function(
   ok <- !is.na(rows_idx) & !is.na(cols_idx)
   mat[cbind(rows_idx[ok], cols_idx[ok])] <- con[[yvar]][ok]
 
-  aes_col <- if (!is.null(col_val)) map_to_colors(col_val, theme = theme) else dots$col %||% 1L
+  aes_col <- if (!is.null(col_val)) colortheme::map_to_colors(col_val, theme = theme) else dots$col %||% 1L
   aes_alpha <- if (!is.null(alpha_val)) rescale01(alpha_val) * 0.75 + 0.25 else dots$alpha %||% 1
   aes_lty <- if (!is.null(lty_val)) pmin(floor(rescale01(lty_val) * 5) + 1L, 6L) else dots$lty %||% 1L
   aes_lwd <- if (!is.null(lwd_val)) rescale01(lwd_val) * 2.5 + 0.5 else dots$lwd %||% 1
@@ -458,7 +459,7 @@ render_midcons <- function(
       pl <- pl + layer_point(...)
     }
     if (use_col_aes) {
-      pl <- pl + scale_color_theme(theme = th, discrete = is_discrete(con$.cval))
+      pl <- pl + colortheme::scale_color_theme(theme = th, discrete = is_discrete(con$.cval))
     }
     gg_leg <- legend_dot %||% TRUE
     series_main <- if (type == "series" && isFALSE(gg_leg) && is.null(dots$main) && is.null(dots$title)) {
@@ -484,7 +485,7 @@ render_midcons <- function(
 
   if (type == "series") {
     th <- theme %||% colortheme_default(if (fv) "qualitative" else "sequential")
-    basecol <- dots$col %||% map_to_colors(values, theme = th)
+    basecol <- dots$col %||% colortheme::map_to_colors(values, theme = th)
     mat <- matrix(NA_real_, nrow = nlabs, ncol = n * nvals)
     r_idx <- match(as.character(con$label), as.character(labels))
     c_idx <- (match(con[[variable]], values) - 1L) * n + match(con$.id, obs$.id)
@@ -503,7 +504,7 @@ render_midcons <- function(
     leg_title <- variable
   } else {
     th <- theme %||% colortheme_default(if (discrete) "qualitative" else "sequential")
-    basecol <- dots$col %||% map_to_colors(labels_parsed, theme = th)
+    basecol <- dots$col %||% colortheme::map_to_colors(labels_parsed, theme = th)
     mat <- matrix(NA_real_, nrow = nvals, ncol = n * nlabs)
     r_idx <- match(con[[variable]], values)
     c_idx <- (match(as.character(con$label), as.character(labels)) - 1L) * n + match(con$.id, obs$.id)

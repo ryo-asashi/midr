@@ -175,7 +175,7 @@ render_midimp <- function(
     tvals <- NULL
     ltitle <- "importance"
     if (!is.null(theme)) {
-      ct <- colortheme(theme)
+      ct <- colortheme::colortheme(theme)
       if (ct$type == "qualitative" && "order" %in% names(imp)) {
         tvals <- imp$order
         ltitle <- "order"
@@ -219,7 +219,7 @@ render_midimp <- function(
     return(call_dualplot(
       draw_matrix,
       list(
-        z = mat, ticks = tags, theme = use_theme,
+        z = mat, xticks = tags, yticks = tags, theme = use_theme,
         legend.title = "importance", engine = engine
       ),
       dots
@@ -232,7 +232,7 @@ render_midimp <- function(
   tvals <- NULL
   ltitle <- "importance"
   if (!is.null(theme)) {
-    ct <- colortheme(theme)
+    ct <- colortheme::colortheme(theme)
     if (ct$type == "qualitative" && "order" %in% names(imp)) {
       tvals <- imp$order
       ltitle <- "order"

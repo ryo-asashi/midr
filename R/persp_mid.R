@@ -17,7 +17,7 @@
 #'
 #' By default (\code{theme = NULL}), surface coloring is left to
 #' \code{graphics::persp()}. When a \code{theme} is supplied, surface facets are
-#' colored according to their mean effect values using \code{\link{map_to_colors}()}.
+#' colored according to their mean effect values using \code{\link[colortheme]{map_to_colors}()}.
 #'
 #' @param x a \code{"mid"} object, typically the result of \code{\link{interpret}()}.
 #' @param terms a character vector of term labels/expressions or a formula
@@ -49,13 +49,13 @@
 #' mid <- interpret(mpg ~ wt * hp + factor(am), data = mtcars, lambda = 0.5)
 #'
 #' # Plot only the interaction effect
-#' persp(mid, terms = "wt:hp", theme = "BuRd", theta = 225, phi = 45)
+#' persp(mid, terms = "wt:hp", theta = 225, phi = 45)
 #'
 #' # Include constituent main effects
 #' persp(mid, terms = "wt * hp", theme = "azurerose", theta = 135, phi = 20)
 #'
 #' # Plot additive main effects with higher resolution
-#' persp(mid, terms = "wt + hp", resolution = 80L, theta = 135, phi = 20)
+#' persp(mid, terms = "wt + hp", theme = "steps", resolution = 80L, theta = 135, phi = 20)
 #' @exportS3Method graphics::persp
 #'
 persp.mid <- function(
@@ -206,7 +206,7 @@ render_persp_submodel <- function(
     ny <- ncol(z)
     z_facet <- (z[-nx, -ny] + z[-1L, -ny] + z[-nx, -1L] + z[-1L, -1L]) / 4
     middle <- if (has_intercept(stats::terms(sub))) get_intercept(sub) else 0
-    args$col <- map_to_colors(as.vector(z_facet), theme = theme, middle = middle)
+    args$col <- colortheme::map_to_colors(as.vector(z_facet), theme = theme, middle = middle)
   }
 
   do.call(graphics::persp, args)

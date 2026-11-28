@@ -231,7 +231,7 @@ render_midbrk <- function(
   tvals <- NULL
   ltitle <- "effect"
   if (!is.null(theme)) {
-    ct <- colortheme(theme)
+    ct <- colortheme::colortheme(theme)
     if (ct$type == "qualitative") {
       tvals <- if (type == "waterfall") {
         factor(ifelse(bd$effect > 0, "positive", "negative"), levels = c("negative", "positive"))

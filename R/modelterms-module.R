@@ -1,5 +1,10 @@
+# Generated from modelterms package -- do not edit by hand
+# Source: https://github.com/ryo-asashi/modelterms
+
 # R/modelterms.R
-# Safe Manipulation and Extraction of Model Terms
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 
 #' Coerce, Inspect, Filter, and Match Model Terms and Labels
 #'
@@ -114,11 +119,36 @@
 #'   \item \code{has_response()}, \code{has_intercept()}: a scalar logical (\code{TRUE} or \code{FALSE}).
 #' }
 #'
-#' @name modelterms
-#' @keywords internal
+#' @examples
+#' # Coercion with as_terms()
+#' t1 <- as_terms(c("b:a", "a", "1"))
+#' get_labels(t1)
+#' has_intercept(t1)
+#'
+#' t2 <- as_terms(".^2", response = "Ozone", data = airquality[, 1:4])
+#' get_labels(t2)
+#'
+#' # Extracting labels, variables, and response at three levels
+#' fml <- log(y) ~ x1 + log(x2) + x1:log(x2) + I(x1 * x2)
+#' get_response(fml, raw = FALSE)
+#' get_response(fml, raw = TRUE)
+#' get_labels(fml)
+#' get_variables(fml, raw = FALSE)
+#' get_variables(fml, raw = TRUE)
+#' get_variables(fml, raw = TRUE, by.term = TRUE)
+#'
+#' # Subsetting, filtering, and modifying response/intercept
+#' filter_terms(fml, "log(x2):x1")
+#' get_labels(filter_terms(fml, order = 1))
+#' get_labels(filter_terms(fml, require = "x2", remove = "x1", raw = TRUE))
+#' filter_terms(fml, drop = "log(x2):x1", response = FALSE)
+#' filter_terms(fml, order = 1, response = "yhat", intercept = FALSE)
+#'
+#' # Order-invariant label matching
+#' match_labels(c("x1", "log(x2):x1", "I(x2 * x1)"), fml, nomatch = "pass")
+#' @noRd
 NULL
 
-# local helpers
 
 is_strict_label <- function(str) {
   if (is.na(str) || !nzchar(trimws(str))) return(FALSE)
@@ -136,11 +166,6 @@ is_strict_label <- function(str) {
 }
 
 
-try_terms <- function(x, ...) {
-  tryCatch(as_terms(x, ...), error = function(e) NULL)
-}
-
-
 format_labels <- function(x, ...) {
   if (!is.character(x)) {
     vlist <- get_variables(x, raw = FALSE, by.term = TRUE, ...)
@@ -152,7 +177,7 @@ format_labels <- function(x, ...) {
   if (length(x) == 0L) return(character(0L))
   unname(vapply(x, function(lab) {
     if (!is_strict_label(lab)) return(NA_character_)
-    obj <- try_terms(lab)
+    obj <- tryCatch(as_terms(lab), error = function(e) NULL)
     if (is.null(obj)) return(NA_character_)
     vars <- sort.int(get_variables(obj, raw = FALSE))
     if (length(vars) == 0L) return(NA_character_)
@@ -161,10 +186,6 @@ format_labels <- function(x, ...) {
 }
 
 
-# exports
-
-#' @rdname modelterms
-#' @keywords internal
 as_terms <- function(
     x, response = NULL, intercept = NULL, data = NULL, keep.order = NULL,
     env = parent.frame(), ...
@@ -259,8 +280,6 @@ as_terms <- function(
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 filter_terms <- function(
     x, keep = NULL, drop = NULL, order = NULL, require = NULL, remove = NULL,
     raw = TRUE, response = NULL, intercept = NULL, ...
@@ -315,15 +334,11 @@ filter_terms <- function(
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 get_labels <- function(x, ...) {
   attr(as_terms(x, ...), "term.labels") %||% character(0L)
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 match_labels <- function(
     x, y, nomatch = c("omit", "pass", "fail"), use.names = TRUE, ...
 ) {
@@ -340,9 +355,10 @@ match_labels <- function(
   if (nomatch != "pass" && anyNA(out)) {
     ng <- is.na(out)
     if (nomatch == "fail") {
+      n_ng <- sum(ng)
       stop(
-        add_s(sum(ng), "invalid label"), " found: ",
-        paste0(xlabs[ng], collapse = ", "),
+        n_ng, if (n_ng == 1L) " invalid label" else " invalid labels",
+        " found: ", paste0(xlabs[ng], collapse = ", "),
         call. = FALSE
       )
     }
@@ -352,8 +368,6 @@ match_labels <- function(
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 get_order <- function(x, use.names = TRUE, ...) {
   obj <- as_terms(x, ...)
   out <- attr(obj, "order") %||% integer(0L)
@@ -364,8 +378,6 @@ get_order <- function(x, use.names = TRUE, ...) {
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 get_variables <- function(x, raw = FALSE, by.term = FALSE, ...) {
   facs <- attr(as_terms(x, ...), "factors")
   if (is.null(facs) || length(facs) == 0L) {
@@ -393,8 +405,6 @@ get_variables <- function(x, raw = FALSE, by.term = FALSE, ...) {
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 get_response <- function(x, raw = FALSE, ...) {
   obj <- as_terms(x, ...)
   if (!has_response(obj)) return(NULL)
@@ -406,15 +416,11 @@ get_response <- function(x, raw = FALSE, ...) {
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 has_response <- function(x, ...) {
   isTRUE(attr(as_terms(x, ...), "response") > 0L)
 }
 
 
-#' @rdname modelterms
-#' @keywords internal
 has_intercept <- function(x, ...) {
   isTRUE(attr(as_terms(x, ...), "intercept") > 0L)
 }
